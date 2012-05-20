@@ -1,4 +1,4 @@
 node-stub-server
 ================
 
-A nodejs, redis-based, request-configurable server
+A nodejs, mongo-based, request-configurable server for stubbing RESTful endpoints
