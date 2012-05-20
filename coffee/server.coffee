@@ -1,5 +1,5 @@
 http = require 'http'
-admin = require('./models/admin').Admin
+Admin = require('./servers/admin').Admin
 mongo = require 'mongodb'
 
 stubport = 80
@@ -17,6 +17,5 @@ stub = http.createServer (request, response) ->
 
 stub.listen stubport
 
-adminPoint = admin()
-
-adminPoint.server.listen adminport
+adminServer = http.createServer Admin().server
+adminServer.listen adminport

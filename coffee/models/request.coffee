@@ -1,8 +1,11 @@
-Request = module.exports.Request = (req) ->
-   req = req ? {}
-   this.method = req.method
-   this.url = req.url
-   this['accept-language'] = req['accept-language']
-   this['content-type'] = req['content-type']
-   console.log req
-   return this
+ObjectID = require('mongodb').ObjectID
+
+Request = module.exports.Request = (request) ->
+   request = request ? {}
+   return {
+      _id : new ObjectID()
+      method : request.method
+      url : request.url
+      'accept-language' : request['accept-language']
+      'content-type' : request['content-type']
+   }
