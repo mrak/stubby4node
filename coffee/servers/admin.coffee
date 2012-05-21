@@ -1,10 +1,15 @@
-http = require 'http'
-qs = require 'querystring'
-Request = require('../models/request').Request
+mongo = require 'mongodb'
+server = new mongo.Server 'localhost', 27017, {auto_reconnect : true}
 
 Admin = module.exports.Admin = () ->
    me = {
-      goPUT : (request, response, signature) ->
+      qs: require 'querystring'
+
+      db: new mongo.Db 'stubserver', server
+
+      RnR: require('../models/requestresponse').RequestResponse()
+
+      goPUT : (request, response) ->
          post = ''
          signature =
             method : request.method
@@ -15,31 +20,39 @@ Admin = module.exports.Admin = () ->
 
          request.on 'end', () ->
             if post
-               signature.post = qs.parse post
+               signature.post = me.qs.parse post
 
-         newRequest = Request signature
+         newRnR = me.RnR signature
          response.writeHead 204, {}
          response.end()
 
-      goPOST : (request, response, signature) ->
-         post = ''
-         signature =
-            method : request.method
-            url : request.url
-
-         request.on 'data', (data) ->
-            post += data
+      goPOST : (request, response) ->
+         data = ''
+         request.on 'data', (chunk) ->
+            data += chunk
 
          request.on 'end', () ->
-            if post
-               signature.post = qs.parse post
+            data = me.qs.parse data
+            rNr = me.RnR.create data
 
-         newRequest = Request signature
+            me.db.open (err, db) ->
+               if not err
+                  db.collection 'rnr', (err, collection) ->
+                     if not err
+                        collection.insert rNr, {safe:true}, (err, result) ->
+                           if not err
+                              response.writeHead 201, {
+                                 'Content-Location' : "#{request.headers.host}/#{rNr._id}"
+                              }
+                              response.end()
+                           else
+                              me.sendSaveError()
+                     else
+                        me.sendServerError()
+               else
+                  me.sendServerError()
 
-         response.writeHead 201, {
-            'Content-Location' : "#{request.headers.host}/#{newRequest._id}"
-         }
-         response.end()
+
 
       goDELETE : (request, response) ->
          response.writeHead 204, {}
@@ -60,6 +73,14 @@ Admin = module.exports.Admin = () ->
 
       sendNotFound : (response) ->
          response.writeHead 404, {'Content-Type': 'text/plain'}
+         response.end()
+
+      sendServerError : () ->
+         response.writeHead 500, {'Content-Type':'text/plain'}
+         response.end()
+
+      sendSaveError : () ->
+         response.writeHead 507, {'Content-Type':'text/plain'}
          response.end()
 
       urlValid : (url) ->

@@ -1,18 +1,12 @@
 http = require 'http'
 Admin = require('./servers/admin').Admin
-mongo = require 'mongodb'
 
 stubport = 80
 adminport = 81
-mongohost = 'localhost'
-mongoport = mongo.Connection.DEFAULT_PORT
-
-db = new mongo.Db 'stubserver', new mongo.Server(mongohost, mongoport, {}), {}
-db.open(() -> {})
 
 stub = http.createServer (request, response) ->
-   response.writeHead 200, {"Content-Type": "application/json"}
-   response.write '{"message":"Hello World"}'
+   response.writeHead 200, {"Content-Type": "text/plain"}
+   response.write 'nothing implemented yet'
    response.end()
 
 stub.listen stubport
