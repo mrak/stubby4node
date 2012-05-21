@@ -1,11 +1,15 @@
 mongo = require 'mongodb'
 server = new mongo.Server 'localhost', 27017, {auto_reconnect : true}
+ObjectID = mongo.ObjectID
 
 Admin = module.exports.Admin = () ->
+   db = new mongo.Db 'stubserver', server
+   db.open () -> {}
+
    me = {
       qs: require 'querystring'
 
-      db: new mongo.Db 'stubserver', server
+      db: db
 
       RnR: require('../models/requestresponse').RequestResponse()
 
@@ -22,7 +26,6 @@ Admin = module.exports.Admin = () ->
             if post
                signature.post = me.qs.parse post
 
-         newRnR = me.RnR signature
          response.writeHead 204, {}
          response.end()
 
@@ -35,33 +38,53 @@ Admin = module.exports.Admin = () ->
             data = me.qs.parse data
             rNr = me.RnR.create data
 
-            me.db.open (err, db) ->
+            db.collection 'rnr', (err, collection) ->
                if not err
-                  db.collection 'rnr', (err, collection) ->
+                  collection.insert rNr, {safe:true}, (err, result) ->
                      if not err
-                        collection.insert rNr, {safe:true}, (err, result) ->
-                           if not err
-                              response.writeHead 201, {
-                                 'Content-Location' : "#{request.headers.host}/#{rNr._id}"
-                              }
-                              response.end()
-                           else
-                              me.sendSaveError()
+                        response.writeHead 201, {
+                           'Content-Location' : "#{request.headers.host}/#{rNr._id}"
+                        }
+                        response.end()
                      else
-                        me.sendServerError()
+                        me.sendSaveError response
                else
-                  me.sendServerError()
-
-
+                  me.sendServerError response
 
       goDELETE : (request, response) ->
-         response.writeHead 204, {}
-         response.end()
+         id = request.url.replace /^\/([a-f0-9]*)$/, '$1'
+
+         db.collection 'rnr', (err, collection) ->
+            if not err
+               collection.remove {_id : new ObjectID id}, {safe : true}, (err, result) ->
+                  if not err
+                     if not result
+                        me.sendNotFound response
+                     else
+                        response.writeHead 204, {}
+                        response.end()
+                  else
+                     me.sendServerError response
+            else
+               me.sendServerError response
 
       goGET : (request, response) ->
-         response.writeHead 200, {'Content-Type': 'application/json'}
-         response.write JSON.stringify(request.headers)
-         response.end()
+         id = request.url.replace /^\/([a-f0-9]*)$/, '$1'
+
+         db.collection 'rnr', (err, collection) ->
+            if not err
+               collection.findOne {_id : new ObjectID id}, (err, result) ->
+                  if not err
+                     if not result
+                        me.sendNotFound response
+                     else
+                        response.writeHead 200, {}
+                        response.write JSON.stringify result
+                        response.end()
+                  else
+                     me.sendServerError response
+            else
+               me.sendServerError response
 
       sendNotSupported : (response) ->
          response.writeHead 405, {
@@ -75,11 +98,11 @@ Admin = module.exports.Admin = () ->
          response.writeHead 404, {'Content-Type': 'text/plain'}
          response.end()
 
-      sendServerError : () ->
+      sendServerError : (response) ->
          response.writeHead 500, {'Content-Type':'text/plain'}
          response.end()
 
-      sendSaveError : () ->
+      sendSaveError : (response) ->
          response.writeHead 507, {'Content-Type':'text/plain'}
          response.end()
 
