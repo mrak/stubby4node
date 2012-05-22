@@ -1,15 +1,12 @@
 http = require 'http'
 Admin = require('./servers/admin').Admin
+Stub = require('./servers/stub').Stub
 
 stubport = 80
 adminport = 81
 
-stub = http.createServer (request, response) ->
-   response.writeHead 200, {"Content-Type": "text/plain"}
-   response.write 'nothing implemented yet'
-   response.end()
-
-stub.listen stubport
+stubServer = http.createServer Stub().server
+stubServer.listen stubport
 
 adminServer = http.createServer Admin().server
 adminServer.listen adminport
