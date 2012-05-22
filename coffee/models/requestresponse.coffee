@@ -15,7 +15,7 @@ RequestResponse = module.exports.RequestResponse = () ->
          data = data ? {}
 
          if data.method and data.method not in methods then return null
-         if data.status and typeof(data.status) not 'number' then return null
+         if data.status and not parseInt data.status then return null
          if not data.url then return null
 
          rnr =
