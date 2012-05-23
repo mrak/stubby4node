@@ -5,8 +5,8 @@ Stub = require('./servers/stub').Stub
 stubport = 80
 adminport = 81
 
-stubServer = http.createServer Stub().server
-stubServer.listen stubport
+stubServer = (new Stub()).server
+http.createServer(stubServer).listen stubport
 
-adminServer = http.createServer Admin().server
-adminServer.listen adminport
+adminServer  = (new Admin()).server
+http.createServer(adminServer).listen adminport

@@ -1,170 +1,112 @@
-mongo = require 'mongodb'
-server = new mongo.Server 'localhost', 27017, {auto_reconnect : true}
-ObjectID = mongo.ObjectID
+RnR = require('../models/requestresponse').RequestResponse
 
-Admin = module.exports.Admin = () ->
-   db = new mongo.Db 'stubserver', server
-   db.open () -> {}
-   urlPattern = /^\/([a-f0-9]{24})?$/
+module.exports.Admin = class Admin
+   constructor : ->
+      @RnR = new RnR()
+      @qs = require 'querystring'
 
-   me = {
-      qs: require 'querystring'
+   urlPattern : /^\/([0-9]+)?$/
 
-      db: db
+   goPUT : (request, response) =>
+      id = @getId request
+      if not id
+         @send.notSupported response
+         return
 
-      RnR: require('../models/requestresponse').RequestResponse()
+      data = ''
+      request.on 'data', (chunk) ->
+         data += chunk
 
-      goPUT : (request, response) ->
-         id = request.url.replace urlPattern, '$1'
+      request.on 'end', =>
+         data = @qs.parse data
 
-         if id
-            data = ''
-            request.on 'data', (chunk) ->
-               data += chunk
+         success = => @send.noContent response
+         error = => @send.serverError response
+         notFound = => @send.notFound response
 
-            request.on 'end', () ->
-               data = me.qs.parse data
-               rNr = me.RnR.create data
+         @RnR.update id, data, success, error, notFound
 
-               if not rNr
-                  me.send.saveError response
-                  return
+   goPOST : (request, response) ->
+      data = ''
+      request.on 'data', (chunk) ->
+         data += chunk
 
-               rNr._id = new ObjectID id
+      request.on 'end', =>
+         data = @qs.parse data
 
-               db.collection 'rnr', (err, collection) ->
-                  if not err
-                     collection.update {_id : new ObjectID id}, rNr, {safe:true}, (err, result) ->
-                        if not err
-                           if result
-                              me.send.noContent response
-                           else
-                              me.send.notFound response
-                        else
-                           me.send.saveError response
-                  else
-                     me.send.serverError response
-         else
-            me.send.notFound response
+         success = (id) => @send.created response, request, id
+         error = => @send.saveError response
 
+         successful = @RnR.create data, success, error
+         if not successful then @send.saveError response
 
-      goPOST : (request, response) ->
-         data = ''
-         request.on 'data', (chunk) ->
-            data += chunk
+   goDELETE : (request, response) =>
+      id = @getId request
+      if not id
+         @send.notSupported response
+         return
 
-         request.on 'end', () ->
-            data = me.qs.parse data
-            rNr = me.RnR.create data
+      success = => @send.noContent response
+      error = => @send.serverError response
+      notFound = => @send.notFound response
 
-            if not rNr
-               me.send.saveError response
-               return
+      @RnR.delete id, success, error, notFound
 
-            db.collection 'rnr', (err, collection) ->
-               if not err
-                  collection.insert rNr, {safe:true}, (err, result) ->
-                     if not err
-                        me.send.created response, request, rNr._id
-                     else
-                        me.send.saveError response
-               else
-                  me.send.serverError response
+   goGET : (request, response) =>
+      id = @getId request
+      success = (data) => @send.ok response, data
+      error = => @send.serverError response
+      notFound = => @send.notFound response
+      noContent = => @send.noContent response
 
-      goDELETE : (request, response) ->
-         id = me.getId request
+      if id
+         @RnR.retrieve id, success, error, notFound
+      else
+         @RnR.gather success, error, noContent
 
-         db.collection 'rnr', (err, collection) ->
-            if not err
-               collection.remove {_id : new ObjectID id}, {safe : true}, (err, result) ->
-                  if not err
-                     if not result
-                        me.send.notFound response
-                     else
-                        me.send.noContent response
-                  else
-                     me.send.serverError response
-            else
-               me.send.serverError response
+   send :
+      ok : (response, result) ->
+         response.writeHead 200, {'Content-Type' : 'application/json'}
+         response.write JSON.stringify result
+         response.end()
 
-      goGET : (request, response) ->
-         id = me.getId request
+      created : (response, request, id) ->
+         response.writeHead 201, {'Content-Location' : "#{request.headers.host}/#{id}"}
+         response.end()
 
-         if id
-            db.collection 'rnr', (err, collection) ->
-               if not err
-                  collection.findOne {_id : new ObjectID id}, (err, result) ->
-                     if not err
-                        if not result
-                           me.send.notFound response
-                        else
-                           me.send.ok response, result
-                     else
-                        me.send.serverError response
-               else
-                  me.send.serverError response
-         else
-            db.collection 'rnr', (err, collection) ->
-               if not err
-                  collection.find().toArray (err, result) ->
-                     if not err
-                        if result.length
-                           me.send.ok response, result
-                        else
-                           me.send.noContent response
-                     else
-                        me.send.serverError response
-               else
-                  me.send.serverError response
+      noContent : (response) ->
+         response.writeHead 204, {}
+         response.end()
 
-      send :
-         ok : (response, result) ->
-            response.writeHead 200, {'Content-Type' : 'application/json'}
-            response.write JSON.stringify result
-            response.end()
+      notSupported : (response) ->
+         response.writeHead 405, {}
+         response.end()
 
-         created : (response, request, id) ->
-            response.writeHead 201, {'Content-Location' : "#{request.headers.host}/#{id}"}
-            response.end()
+      notFound : (response) ->
+         response.writeHead 404, {'Content-Type' : 'text/plain'}
+         response.end()
 
-         noContent : (response) ->
-            response.writeHead 204, {}
-            response.end()
+      serverError : (response) ->
+         response.writeHead 500, {'Content-Type' : 'text/plain'}
+         response.end()
 
-         notSupported : (response) ->
-            response.writeHead 405, {
-               'Content-Type' : 'text/plain'
-               'Allow' : 'GET, POST, PUT, DELETE, OPTIONS'
-               'Content-Length' : 0
-            }
-            response.end()
+      saveError : (response) ->
+         response.writeHead 507, {'Content-Type' : 'text/plain'}
+         response.end()
 
-         notFound : (response) ->
-            response.writeHead 404, {'Content-Type' : 'text/plain'}
-            response.end()
+   urlValid : (url) ->
+      return url.match @urlPattern
 
-         serverError : (response) ->
-            response.writeHead 500, {'Content-Type' : 'text/plain'}
-            response.end()
+   getId : (request) ->
+      return request.url.replace @urlPattern, '$1'
 
-         saveError : (response) ->
-            response.writeHead 507, {'Content-Type' : 'text/plain'}
-            response.end()
-
-      urlValid : (url) ->
-         return url.match urlPattern
-
-      getId : (request) ->
-         return request.url.replace urlPattern, '$1'
-
-      server : (request, response) ->
-         if me.urlValid request.url
-            switch request.method.toUpperCase()
-               when 'PUT'    then me.goPUT request, response
-               when 'POST'   then me.goPOST request, response
-               when 'DELETE' then me.goDELETE request, response
-               when 'GET'    then me.goGET request, response
-               else me.send.notSupported response
-         else
-            me.send.notFound response
-   }
+   server : (request, response) =>
+      if @urlValid request.url
+         switch request.method.toUpperCase()
+            when 'PUT'    then @goPUT request, response
+            when 'POST'   then @goPOST request, response
+            when 'DELETE' then @goDELETE request, response
+            when 'GET'    then @goGET request, response
+            else @send.notSupported response
+      else
+         @send.notFound response
