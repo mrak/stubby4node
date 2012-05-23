@@ -6,11 +6,23 @@ module.exports.Stub = class Stub
       @qs = require 'querystring'
 
    server : (request, response) =>
-      post = null
+      data = null
       request.on 'data', (chunk) ->
-         post = post ? ''
-         post += chunk
+         data = data ? ''
+         data += chunk
 
-      request.on 'end', () ->
-         post = @qs.parse post if post?
-         responseData = @RnR.find post
+      request.on 'end', () =>
+         criteria =
+            url : request.url
+            method : request.method
+            post : data
+         success = (rNr) ->
+            response.writeHead rNr.status, JSON.parse(rNr.headers)
+            response.write rNr.content
+            response.end()
+         error = ->
+            response.writeHead 500, {}
+            response.end()
+
+         rNr = @RnR.find criteria, success, error
+

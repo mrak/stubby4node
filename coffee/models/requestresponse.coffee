@@ -25,6 +25,7 @@ module.exports.RequestResponse = class Requestresponse
       update   : 'UPDATE rNr SET url=$url,method=$method,post=$post,headers=$headers,status=$status,content=$content WHERE rowid = $id'
       delete   : 'DELETE FROM rNr WHERE rowid = ?'
       gather   : 'SELECT rowid AS id, * FROM rNr'
+      find     : 'SELECT headers,status,content FROM rNr WHERE url=$url AND method=$method AND post=$post'
 
    purify : (data) ->
       data = data ? {}
@@ -88,3 +89,10 @@ module.exports.RequestResponse = class Requestresponse
             success rows
          else
             none()
+
+   find : (data, success, error) ->
+      @db.get @sql.find, data, (err,row) ->
+         if err or not row
+            error()
+         else
+            success row

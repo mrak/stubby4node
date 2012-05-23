@@ -27,6 +27,9 @@ module.exports.Admin = class Admin
          @RnR.update id, data, success, error, notFound
 
    goPOST : (request, response) ->
+      id = @getId request
+      if id then return @send.notSupported response
+
       data = ''
       request.on 'data', (chunk) ->
          data += chunk
