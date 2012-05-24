@@ -4,18 +4,19 @@ A configurable server for mocking/stubbing external systems during development. 
 
 ## Requirements
 
-* node.js (build with v0.6.15)
-* sqlite3
-* coffeescript
+* [node.js](http://nodejs.org/) (built with v0.6.15)
+* [sqlite3](https://github.com/developmentseed/node-sqlite3)
+* [CoffeeScript](http://coffeescript.org/)
 
 ### Optionals (for Guard)
 
 * ruby
 * bundler
 
-### More Optionals (for debugging)
+### More Optionals (for debugging/testing)
 
-* node-inspector
+* [node-inspector](https://github.com/dannycoates/node-inspector)
+* [jasmine-node](https://github.com/mhevery/jasmine-node)
 
 ## Installation
 
@@ -39,7 +40,7 @@ A configurable server for mocking/stubbing external systems during development. 
 
 Some systems require you to `sudo` before running services on port 80
 
-`[sudo] node js/server.js`
+    [sudo] node js/server.js
 
 ## The Admin Portal
 
@@ -75,6 +76,12 @@ Send a `DELETE` request to `localhost:81/<id>`
 ## The Stub Portal
 
 Requests sent to any url at `localhost` or `localhost:80` will respond with the configured headers, status code, and content given that the request url, method and post data matches. Otherwise, it will return a `404 : Not Found`
+
+## Running tests
+
+From the root directory run:
+
+    jasmine-node --coffee spec
 
 ## TODO
 
