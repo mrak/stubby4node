@@ -1,4 +1,4 @@
-sqlite3 = require('sqlite3').verbose()
+sqlite3 = require 'sqlite3'
 
 module.exports.RequestResponse = class RequestResponse
    constructor : () ->
@@ -37,11 +37,12 @@ module.exports.RequestResponse = class RequestResponse
          $method : data.method ? 'GET'
          $post : data.post
          $headers : data.headers ? '{}'
-         $status : parseInt(data.status) ? 200
+         $status : parseInt(data.status ? 200)
          $content : data.content
 
    create : (data, success, error) ->
       rNr = @purify data
+      if not rNr then return error()
 
       @db.run @sql.create, rNr, (err) ->
          if err

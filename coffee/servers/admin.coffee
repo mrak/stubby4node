@@ -3,10 +3,10 @@ module.exports.Admin = class Admin
       @RnR = rNr
       @qs = require 'querystring'
 
-   urlPattern : /^\/([0-9]+)?$/
+   urlPattern : /^\/([1-9][0-9]*)?$/
 
    goPUT : (request, response) =>
-      id = @getId request
+      id = @getId request.url
       if not id
          @send.notSupported response
          return
@@ -25,7 +25,7 @@ module.exports.Admin = class Admin
          @RnR.update id, data, success, error, notFound
 
    goPOST : (request, response) ->
-      id = @getId request
+      id = @getId request.url
       if id then return @send.notSupported response
 
       data = ''
@@ -38,11 +38,10 @@ module.exports.Admin = class Admin
          success = (id) => @send.created response, request, id
          error = => @send.saveError response
 
-         successful = @RnR.create data, success, error
-         if not successful then @send.saveError response
+         @RnR.create data, success, error
 
    goDELETE : (request, response) =>
-      id = @getId request
+      id = @getId request.url
       if not id
          @send.notSupported response
          return
@@ -54,7 +53,7 @@ module.exports.Admin = class Admin
       @RnR.delete id, success, error, notFound
 
    goGET : (request, response) =>
-      id = @getId request
+      id = @getId request.url
       success = (data) => @send.ok response, data
       error = => @send.serverError response
       notFound = => @send.notFound response
@@ -92,14 +91,14 @@ module.exports.Admin = class Admin
          response.end()
 
       saveError : (response) ->
-         response.writeHead 507, {'Content-Type' : 'text/plain'}
+         response.writeHead 422, {'Content-Type' : 'text/plain'}
          response.end()
 
    urlValid : (url) ->
-      return url.match @urlPattern
+      return url.match(@urlPattern)?
 
-   getId : (request) ->
-      return request.url.replace @urlPattern, '$1'
+   getId : (url) ->
+      return url.replace @urlPattern, '$1'
 
    server : (request, response) =>
       if @urlValid request.url
