@@ -88,3 +88,7 @@ From the root directory run:
 * `PUT`ing and `POST`ing multiple responses at a time.
 * Ability to set up responses via JSON
 * configurable ports via command-line
+* SOAP request/response compliance
+* Dynamic port switches
+* HTTP auth mocking
+* Accepting patterns for randomized responses
