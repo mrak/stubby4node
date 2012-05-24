@@ -33,7 +33,10 @@ module.exports.Admin = class Admin
          data += chunk
 
       request.on 'end', =>
-         data = @qs.parse data
+         if request.headers['content-type'] is 'application/json'
+            data = JSON.parse data
+         else
+            data = @qs.parse data
 
          success = (id) => @send.created response, request, id
          error = => @send.saveError response
