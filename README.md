@@ -19,21 +19,21 @@ A configurable server for mocking/stubbing external systems during development. 
 
 ## Installation
 
-`git clone git://github.com/Afmrak/node-stub-server.git <project-directory>`
+    git clone git://github.com/Afmrak/node-stub-server.git <project-directory>
 
-`cd <project-directory>`
+    cd <project-directory>
 
-`npm install sqlite3`
+    npm install sqlite3
 
-`npm install -g coffee-script`
+    npm install -g coffee-script
 
-`coffee --compile --output js coffee`
+    coffee --compile --output js coffee
 
 ### To have Guard automagically compile your coffeescripts as they are edited (assuming ruby and bundler installed)
 
-`bundle install`
+    bundle install
 
-`bundle exec guard`
+    bundle exec guard
 
 ## Starting the Server(s)
 
