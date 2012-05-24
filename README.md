@@ -1,4 +1,4 @@
 node-stub-server
 ================
 
-A nodejs, mongo-based, request-configurable server for stubbing RESTful endpoints
+A configurable server for mocking/stubbing external systems during development. Uses Node.js and SQLite3

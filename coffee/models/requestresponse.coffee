@@ -1,9 +1,7 @@
-uuid = require 'node-uuid'
-sqlite3 = require 'sqlite3'
+sqlite3 = require('sqlite3').verbose()
 
-module.exports.RequestResponse = class Requestresponse
-   constructor : ->
-      @uuid = require 'node-uuid'
+module.exports.RequestResponse = class RequestResponse
+   constructor : () ->
       @db = new sqlite3.Database ':memory:'
       @db.run 'CREATE TABLE rNr (url,method,post,headers,status,content)', (error) ->
          if error then console.log "Can't create database!"
@@ -25,7 +23,7 @@ module.exports.RequestResponse = class Requestresponse
       update   : 'UPDATE rNr SET url=$url,method=$method,post=$post,headers=$headers,status=$status,content=$content WHERE rowid = $id'
       delete   : 'DELETE FROM rNr WHERE rowid = ?'
       gather   : 'SELECT rowid AS id, * FROM rNr'
-      find     : 'SELECT headers,status,content FROM rNr WHERE url=$url AND method=$method AND post=$post'
+      find     : 'SELECT headers,status,content FROM rNr WHERE url = $url AND method is $method AND post is $post'
 
    purify : (data) ->
       data = data ? {}
@@ -90,9 +88,8 @@ module.exports.RequestResponse = class Requestresponse
          else
             none()
 
-   find : (data, success, error) ->
+   find : (data, success, error, notFound) ->
       @db.get @sql.find, data, (err,row) ->
-         if err or not row
-            error()
-         else
-            success row
+         if err then return error()
+         if not row then return notFound()
+         success row

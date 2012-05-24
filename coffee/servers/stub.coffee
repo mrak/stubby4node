@@ -1,8 +1,6 @@
-RnR = require('../models/requestresponse').RequestResponse
-
 module.exports.Stub = class Stub
-   constructor : ->
-      @RnR = new RnR()
+   constructor : (rNr) ->
+      @RnR = rNr
       @qs = require 'querystring'
 
    server : (request, response) =>
@@ -13,9 +11,9 @@ module.exports.Stub = class Stub
 
       request.on 'end', () =>
          criteria =
-            url : request.url
-            method : request.method
-            post : data
+            $url : request.url
+            $method : request.method
+            $post : data
          success = (rNr) ->
             response.writeHead rNr.status, JSON.parse(rNr.headers)
             response.write rNr.content
@@ -23,6 +21,9 @@ module.exports.Stub = class Stub
          error = ->
             response.writeHead 500, {}
             response.end()
+         notFound = ->
+            response.writeHead 404, {}
+            response.end()
 
-         rNr = @RnR.find criteria, success, error
+         rNr = @RnR.find criteria, success, error, notFound
 
