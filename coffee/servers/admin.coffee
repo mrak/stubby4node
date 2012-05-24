@@ -1,8 +1,6 @@
-RnR = require('../models/requestresponse').RequestResponse
-
 module.exports.Admin = class Admin
-   constructor : ->
-      @RnR = new RnR()
+   constructor : (rNr) ->
+      @RnR = rNr
       @qs = require 'querystring'
 
    urlPattern : /^\/([0-9]+)?$/
