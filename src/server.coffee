@@ -1,8 +1,8 @@
 http = require 'http'
 yaml = require 'js-yaml'
 fs = require 'fs'
-Admin = require('./servers/admin').Admin
-Stub = require('./servers/stub').Stub
+Admin = require('./portals/admin').Admin
+Stub = require('./portals/stub').Stub
 RnR = require('./models/requestresponse').RequestResponse
 rNr = null
 stubport = 80

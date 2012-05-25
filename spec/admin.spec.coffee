@@ -1,4 +1,4 @@
-Admin = require('../src/servers/admin').Admin
+Admin = require('../src/portals/admin').Admin
 
 describe 'Admin', ->
    response = null
