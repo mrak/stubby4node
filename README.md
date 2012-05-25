@@ -24,6 +24,7 @@ A configurable server for mocking/stubbing external systems during development. 
     git clone git://github.com/Afmrak/node-stub-server.git <project-directory>
     cd <project-directory>
     npm install sqlite3
+    npm install js-yaml
     npm install -g coffee-script
     coffee --compile --output js coffee
 
