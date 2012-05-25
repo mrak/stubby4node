@@ -4,14 +4,15 @@ A configurable server for mocking/stubbing external systems during development. 
 
 ## Requirements
 
-* [node.js](http://nodejs.org/) (built with v0.6.15)
+* [node.js](http://nodejs.org/) (developed using v0.6.15)
 * [sqlite3](https://github.com/developmentseed/node-sqlite3)
 * [CoffeeScript](http://coffeescript.org/)
+* [JS-YAML](https://github.com/nodeca/js-yaml)
 
 ### Optionals (for Guard)
 
-* ruby
-* bundler
+* Ruby
+* [Bundler](https://github.com/carlhuda/bundler/)
 
 ### More Optionals (for debugging/testing)
 
@@ -21,19 +22,14 @@ A configurable server for mocking/stubbing external systems during development. 
 ## Installation
 
     git clone git://github.com/Afmrak/node-stub-server.git <project-directory>
-
     cd <project-directory>
-
     npm install sqlite3
-
     npm install -g coffee-script
-
     coffee --compile --output js coffee
 
 ### To have Guard automagically compile your coffeescripts as they are edited (assuming ruby and bundler installed)
 
     bundle install
-
     bundle exec guard
 
 ## Starting the Server(s)
@@ -42,18 +38,28 @@ Some systems require you to `sudo` before running services on port 80
 
     [sudo] node js/server.js
 
+## Command-line switches
+
+`--stub <port>` to supply a port number for the stub portal
+
+`--admin <port>` to supply a port number for the admin portal
+
+`--file <file(.json|.yml|.yaml)>` containing a list of responses to pre-populate the server with
+
 ## The Admin Portal
 
 The admin portal is a RESTful endpoint running on `localhost:81`.
 
-### Creating a Stubbed Response
+### POST a Stubbed Response
 
-Submit `POST` requests to `localhost:81` with the following six POST parameters:
+Submit `POST` requests to `localhost:81` with the following six POST parameters. These parameters can also be supplied via a JSON object if the `Content-Type` of the request is set to `application/json`
 
+#### Request
 * **url**: the url you want the stub server to respond to. Include exact `GET` parameters here
 * **method**: POST, GET, PUT, DELETE, etc.
 * **post**: the textual post data, either plain text or in query-string format that is required for the response you are stubbing
-* **headers**: a JSON string containing key/value pairings of any header fields the server should respond to the given url with
+#### Response
+* **headers**: a JSON object containing key/value pairings of any header fields the server should respond to the given url with
 * **status**: the HTTP 1.1 status code the response should use (i.e. 200)
 * **content**: the content body of the response. JSON, HTML, whatever as a string
 
@@ -86,8 +92,6 @@ From the root directory run:
 ## TODO
 
 * `PUT`ing and `POST`ing multiple responses at a time.
-* Ability to set up responses via JSON
-* configurable ports via command-line
 * SOAP request/response compliance
 * Dynamic port switches
 * HTTP auth mocking

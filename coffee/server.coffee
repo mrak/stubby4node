@@ -4,7 +4,7 @@ fs = require 'fs'
 Admin = require('./servers/admin').Admin
 Stub = require('./servers/stub').Stub
 RnR = require('./models/requestresponse').RequestResponse
-rNr = new RnR()
+rNr = null
 stubport = 80
 adminport = 81
 
@@ -19,6 +19,8 @@ if fileOptionIndex
             rNr = new RnR JSON.parse file
          when 'yaml','yml'
             rNr = new RnR yaml.load file
+
+rNr = rNr ? new RnR()
 
 stubOptionIndex = process.argv.indexOf('--stub') + 1
 stubport = parseInt(process.argv[stubOptionIndex]) ? stubport if stubOptionIndex
