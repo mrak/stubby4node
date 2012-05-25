@@ -1,4 +1,4 @@
-RnR = require('../coffee/models/requestresponse').RequestResponse
+RnR = require('../src/models/requestresponse').RequestResponse
 sut = null
 
 describe 'RequestResponse', ->

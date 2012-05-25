@@ -9,11 +9,6 @@ A configurable server for mocking/stubbing external systems during development. 
 * [CoffeeScript](http://coffeescript.org/)
 * [JS-YAML](https://github.com/nodeca/js-yaml)
 
-### Optionals (for Guard)
-
-* Ruby
-* [Bundler](https://github.com/carlhuda/bundler/)
-
 ### More Optionals (for debugging/testing)
 
 * [node-inspector](https://github.com/dannycoates/node-inspector)
@@ -28,16 +23,11 @@ A configurable server for mocking/stubbing external systems during development. 
     npm install -g coffee-script
     coffee --compile --output js coffee
 
-### To have Guard automagically compile your coffeescripts as they are edited (assuming ruby and bundler installed)
-
-    bundle install
-    bundle exec guard
-
 ## Starting the Server(s)
 
 Some systems require you to `sudo` before running services on port 80
 
-    [sudo] node js/server.js
+    [sudo] coffee coffee/server.coffee
 
 ## Command-line switches
 
@@ -92,8 +82,8 @@ From the root directory run:
 
 ## TODO
 
-* `PUT`ing and `POST`ing multiple responses at a time.
+* `PUT`ing multiple responses at a time.
 * SOAP request/response compliance
-* Dynamic port switches
+* Dynamic port switching
 * HTTP auth mocking
-* Accepting patterns for randomized responses
+* Randomized responses based on supplied pattern (exploratory QA abuse)

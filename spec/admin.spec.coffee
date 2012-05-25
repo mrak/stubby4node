@@ -1,4 +1,4 @@
-Admin = require('../coffee/servers/admin').Admin
+Admin = require('../src/servers/admin').Admin
 
 describe 'Admin', ->
    response = null
