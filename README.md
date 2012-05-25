@@ -27,13 +27,13 @@ A configurable server for mocking/stubbing external systems during development. 
 
 Some systems require you to `sudo` before running services on port 80
 
-    [sudo] coffee coffee/server.coffee
+    [sudo] coffee src/server.coffee
 
 ## Command-line switches
 
-`--stub <port>` to supply a port number for the stub portal
+`--stub <port>` to supply a port number for the stub portal (defaults to 80)
 
-`--admin <port>` to supply a port number for the admin portal
+`--admin <port>` to supply a port number for the admin portal (defaults to 81)
 
 `--file <file(.json|.yml|.yaml)>` containing a list of responses to pre-populate the server with
 
