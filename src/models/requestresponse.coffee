@@ -51,10 +51,8 @@ module.exports.RequestResponse = class RequestResponse
          if not rNr then return error()
 
          @db.run @sql.create, rNr, (err) ->
-            if err
-               error()
-            else
-               success(@lastID)
+            if err then return error()
+            success(@lastID)
 
       if data instanceof Array
          data.forEach insert
@@ -63,42 +61,30 @@ module.exports.RequestResponse = class RequestResponse
 
    retrieve : (id, success, error, missing) ->
       @db.get @sql.retrieve, id, (err,row) ->
-         if err
-            error()
-         else if row
-            success row
-         else
-            missing()
+         if err then return error()
+         if row then return success row
+         missing()
 
    update : (id, data, success, error, missing) ->
       rNr = @purify data
       rNr["$id"] = id
 
       @db.run @sql.update, rNr, (err) ->
-         if err
-            error()
-         else if @changes
-            success()
-         else
-            missing()
+         if err then return error()
+         if @changes then return success()
+         missing()
 
    delete : (id, success, error, missing) ->
       @db.run @sql.delete, id, (err) ->
-         if err
-            error()
-         else if @changes
-            success()
-         else
-            missing()
+         if err then return error()
+         if @changes then return success()
+         missing()
 
    gather : (success, error, none) ->
       @db.all @sql.gather, (err, rows) ->
-         if err
-            error()
-         else if rows.length
-            success rows
-         else
-            none()
+         if err then return error()
+         if rows.length then return success rows
+         none()
 
    find : (data, success, error, notFound) ->
       @db.get @sql.find, data, (err,row) ->

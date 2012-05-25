@@ -48,9 +48,7 @@ module.exports.Admin = class Admin
 
    goDELETE : (request, response) =>
       id = @getId request.url
-      if not id
-         @send.notSupported response
-         return
+      if not id then return @send.notSupported response
 
       success = => @send.noContent response
       error = => @send.serverError response
