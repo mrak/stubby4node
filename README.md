@@ -43,16 +43,18 @@ The admin portal is a RESTful endpoint running on `localhost:81`.
 
 ### POST a Stubbed Response
 
-Submit `POST` requests to `localhost:81` with the following six POST parameters. These parameters can also be supplied via a JSON object if the `Content-Type` of the request is set to `application/json`
+Submit `POST` requests to `localhost:81` with the following JSON structure and `Content-Type` set to `application/json`. If you want to use POST paramters instead, use the six fields **url, method, post, headers, status, content** as POST params.
 
-#### Request
-* **url**: the url you want the stub server to respond to. Include exact `GET` parameters here
-* **method**: POST, GET, PUT, DELETE, etc.
-* **post**: the textual post data, either plain text or in query-string format that is required for the response you are stubbing
-#### Response
-* **headers**: a JSON object containing key/value pairings of any header fields the server should respond to the given url with
-* **status**: the HTTP 1.1 status code the response should use (i.e. 200)
-* **content**: the content body of the response. JSON, HTML, whatever as a string
+```yaml
+request:
+   url: the url you want the stub server to respond to. Include exact GET url will query parameters here
+   method: POST, GET, PUT, DELETE, etc.
+   post: the textual post data, either plain text or in query-string format that is required for the response you are stubbing
+response:
+   headers: a JSON object containing key/value pairings of any header fields the server should respond to the given url with
+   status: the HTTP 1.1 status code the response should use (i.e. 200)
+   content: the content body of the response. JSON, HTML, whatever as a string
+```
 
 On success, the response with contain `Content-Location : localhost/<id>` in the header for future reference
 

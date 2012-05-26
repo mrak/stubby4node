@@ -9,18 +9,21 @@ describe 'RequestResponse', ->
       data = null
 
       beforeEach ->
-         data = url : '/'
+         data =
+            request:
+               url : '/'
+            response: {}
 
       it 'should return null if no url specified', ->
          expected = null
-         data.url = null
+         data.request.url = null
          actual = sut.purify data
 
          expect(actual).toBe expected
 
       it 'should return null for unknown HTTP method', ->
          expected = null
-         data.method = 'unknown method'
+         data.request.method = 'unknown method'
 
          actual = sut.purify data
 
@@ -28,14 +31,14 @@ describe 'RequestResponse', ->
 
       it 'should return null for non-integer status codes', ->
          expected = null
-         data.status = 'word'
+         data.response.status = 'word'
 
          actual = sut.purify data
 
          expect(actual).toBe expected
 
       it 'should stringify headers if supplied as object', ->
-         data.headers =
+         data.response.headers =
             'Content-Type' : 'application/json'
          expected = '{"Content-Type":"application/json"}'
 
@@ -131,6 +134,7 @@ describe 'RequestResponse', ->
 
          it 'should call success if operation returns a row', ->
             row = 'any row'
+            spyOn(sut, 'construct').andReturn row
             sut.db.get = (something, anything, callback) -> callback(null, row)
 
             sut.retrieve id, success, error, missing
@@ -219,6 +223,7 @@ describe 'RequestResponse', ->
 
          it 'should call success if operation returns some rows', ->
             rows = ['some', 'rows']
+            spyOn(sut, 'construct').andReturn rows
             sut.db.all = (something, callback) -> callback(null, rows)
 
             sut.gather success, error, none

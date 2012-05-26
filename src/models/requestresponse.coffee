@@ -29,21 +29,48 @@ module.exports.RequestResponse = class RequestResponse
       gather   : 'SELECT rowid AS id, * FROM rNr'
       find     : 'SELECT headers,status,content FROM rNr WHERE url = $url AND method is $method AND post is $post'
 
+   construct : (data) ->
+      if data instanceof Array
+         toReturn = []
+         for row in data
+            toReturn.push
+               id : row.id
+               request :
+                  url : row.url
+                  method : row.method
+                  post : row.post
+               response :
+                  headers : JSON.parse row.headers
+                  content : row.content
+                  status : row.status
+         return toReturn
+      else
+         toReturn =
+            id : data.id
+            request :
+               url : data.url
+               method : data.method
+               post : data.post
+            response :
+               headers : JSON.parse data.headers
+               content : data.content
+               status : data.status
+
    purify : (data) ->
       data = data ? {}
 
-      if data.method and data.method not in @methods then return null
-      if data.status and not parseInt data.status then return null
-      if not data.url then return null
-      if typeof data.headers is 'object' then data.headers = JSON.stringify data.headers
+      if data.request.method and data.request.method not in @methods then return null
+      if data.response.status and not parseInt data.response.status then return null
+      if not data.request.url then return null
+      if typeof data.response.headers is 'object' then data.response.headers = JSON.stringify data.response.headers
 
       rNr =
-         $url : data.url
-         $method : data.method ? 'GET'
-         $post : data.post
-         $headers : data.headers ? '{}'
-         $status : parseInt(data.status ? 200)
-         $content : data.content
+         $url : data.request.url
+         $method : data.request.method ? 'GET'
+         $post : data.request.post
+         $headers : data.response.headers ? '{}'
+         $status : parseInt(data.response.status ? 200)
+         $content : data.response.content
 
    create : (data, success, error) ->
       insert = (item) =>
@@ -60,9 +87,10 @@ module.exports.RequestResponse = class RequestResponse
          insert data
 
    retrieve : (id, success, error, missing) ->
-      @db.get @sql.retrieve, id, (err,row) ->
+      @db.get @sql.retrieve, id, (err,row) =>
          if err then return error()
-         if row then return success row
+         if row
+            return success @construct row
          missing()
 
    update : (id, data, success, error, missing) ->
@@ -81,9 +109,9 @@ module.exports.RequestResponse = class RequestResponse
          missing()
 
    gather : (success, error, none) ->
-      @db.all @sql.gather, (err, rows) ->
+      @db.all @sql.gather, (err, rows) =>
          if err then return error()
-         if rows.length then return success rows
+         if rows.length then return success @construct rows
          none()
 
    find : (data, success, error, notFound) ->
