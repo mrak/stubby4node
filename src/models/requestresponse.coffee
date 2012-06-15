@@ -40,7 +40,7 @@ module.exports.RequestResponse = class RequestResponse
                   method : row.method
                   post : row.post
                response :
-                  headers : JSON.parse row.headers
+                  headers : if typeof data.headers is "object" then JSON.parse data.headers else ""
                   content : row.content
                   status : row.status
          return toReturn
@@ -52,7 +52,7 @@ module.exports.RequestResponse = class RequestResponse
                method : data.method
                post : data.post
             response :
-               headers : JSON.parse data.headers
+               headers : if typeof data.headers is "object" then JSON.parse data.headers else ""
                content : data.content
                status : data.status
 
