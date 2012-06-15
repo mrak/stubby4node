@@ -21,7 +21,6 @@ A configurable server for mocking/stubbing external systems during development. 
     npm install sqlite3
     npm install js-yaml
     npm install -g coffee-script
-    coffee --compile --output js coffee
 
 ## Starting the Server(s)
 
@@ -45,18 +44,18 @@ The admin portal is a RESTful endpoint running on `localhost:81`.
 
 Submit `POST` requests to `localhost:81` with the following JSON structure and `Content-Type` set to `application/json`. If you want to use POST paramters instead, use the six fields **url, method, post, headers, status, content** as POST params.
 
-```yaml
+```
 request:
-   url: the url you want the stub server to respond to. Include exact GET url will query parameters here
-   method: POST, GET, PUT, DELETE, etc.
-   post: the textual post data, either plain text or in query-string format that is required for the response you are stubbing
+   url: /path/to/something?a=anything&b=more
+   method: POST
+   post: this is some post data in textual format
 response:
-   headers: a JSON object containing key/value pairings of any header fields the server should respond to the given url with
-   status: the HTTP 1.1 status code the response should use (i.e. 200)
-   content: the content body of the response. JSON, HTML, whatever as a string
+   headers: {"Content-Type":"application/json"}
+   status: 200
+   content: You're request was successfully processed!
 ```
 
-On success, the response with contain `Content-Location : localhost/<id>` in the header for future reference
+On success, the response will contain `Content-Location` in the header with the newly created resources' location
 
 ### GET the Current List of Stubbed Responses
 
@@ -66,7 +65,7 @@ Performing a `GET` request on `localhost:81/<id>` will return the JSON object re
 
 ### Change existing responses
 
-Perform `PUT` requests in the same format as using `POST`, only this time supply the id. For instance, to update the response with id 4 you would `PUT` to `localhost:81/4`.
+Perform `PUT` requests in the same format as using `POST`, only this time supply the id in the path. For instance, to update the response with id 4 you would `PUT` to `localhost:81/4`.
 
 ### Deleting responses
 
@@ -74,9 +73,13 @@ Send a `DELETE` request to `localhost:81/<id>`
 
 ## The Stub Portal
 
-Requests sent to any url at `localhost` or `localhost:80` will respond with the configured headers, status code, and content given that the request url, method and post data matches. Otherwise, it will return a `404 : Not Found`
+Requests sent to any url at `localhost` or `localhost:80` will respond with the configured headers, status code, and content of any matching resources in the admin portal. Otherwise, it will return a `404 : Not Found`
 
 ## Running tests
+
+If you don't have jasmine-node already, install it:
+
+    npm install -g jasmine-node
 
 From the root directory run:
 
