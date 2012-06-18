@@ -1,6 +1,6 @@
 sqlite3 = require 'sqlite3'
 
-module.exports.RequestResponse = class RequestResponse
+module.exports.Endpoint = class Endpoint
    constructor : (file) ->
       success = -> console.log "Successfully in row from file"
       error = -> console.error "Unable to parse file"

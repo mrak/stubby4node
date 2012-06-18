@@ -1,7 +1,7 @@
-RnR = require('../src/models/requestresponse').RequestResponse
+RnR = require('../src/models/endpoint').Endpoint
 sut = null
 
-describe 'RequestResponse', ->
+describe 'Endpoint', ->
    beforeEach ->
       sut = new RnR()
 
