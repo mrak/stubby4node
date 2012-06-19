@@ -191,8 +191,11 @@ describe 'Admin', ->
          expect(sut.goDELETE).toHaveBeenCalled()
 
    describe 'POST data handlers', ->
+      contract = null
+
       beforeEach ->
          request.on = (event, callback) -> callback()
+         spyOn(sut, 'Contract').andReturn true
 
       describe 'goPUT', ->
          it 'should send not supported if there is no id in the url', ->
@@ -203,12 +206,28 @@ describe 'Admin', ->
 
             expect(sut.send.notSupported).toHaveBeenCalled()
 
-         it 'should update item if id was gathered from url', ->
-            spyOn(sut, 'getId').andReturn 'anything'
+      describe 'processPUT', ->
+         it 'should update item if data is JSON parsable', ->
+            data = '{"property":"value"}'
 
-            sut.goPUT request, response
+            sut.processPUT "any id", data, response
 
             expect(rNr.update).toHaveBeenCalled()
+
+         it 'should not update item if data isnt JSON parsable', ->
+            data = "<H#rg"
+
+            sut.processPUT "any id", data, response
+
+            expect(rNr.update).not.toHaveBeenCalled()
+
+         it 'should return BAD REQUEST when contract is violated', ->
+            sut.Contract.andReturn false
+            spyOn sut.send, 'badRequest'
+
+            sut.processPUT request, response
+
+            expect(sut.send.badRequest).toHaveBeenCalled()
 
       describe 'goPOST', ->
          it 'should send not supported if there is an id in the url', ->
@@ -219,12 +238,20 @@ describe 'Admin', ->
 
             expect(sut.send.notSupported).toHaveBeenCalled()
 
-         it 'should create item if no id was gathered', ->
-            spyOn(sut, 'getId').andReturn ''
+      describe 'processPOST', ->
+         it 'should create item if data is JSON parsable', ->
+            data = '{"property":"value"}'
 
-            sut.goPOST request, response
+            sut.processPOST data, response, request
 
             expect(rNr.create).toHaveBeenCalled()
+
+         it 'should not create item if data isnt JSON parsable', ->
+            data = "<H#rg"
+
+            sut.processPOST data, response, request
+
+            expect(rNr.create).not.toHaveBeenCalled()
 
       describe 'goDELETE', ->
          it 'should send not supported for the root url', ->

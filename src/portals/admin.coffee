@@ -1,7 +1,9 @@
+yaml = require 'js-yaml'
+
 module.exports.Admin = class Admin
    constructor : (rNr) ->
       @RnR = rNr
-      @qs = require 'querystring'
+      @Contract = require('../models/Contract').Contract
 
    urlPattern : /^\/([1-9][0-9]*)?$/
 
@@ -15,17 +17,7 @@ module.exports.Admin = class Admin
       request.on 'data', (chunk) ->
          data += chunk
 
-      request.on 'end', =>
-         if request.headers['content-type'] is 'application/json'
-            data = JSON.parse data
-         else
-            data = @qs.parse data
-
-         success = => @send.noContent response
-         error = => @send.serverError response
-         notFound = => @send.notFound response
-
-         @RnR.update id, data, success, error, notFound
+      request.on 'end', => @processPUT id, data, response
 
    goPOST : (request, response) ->
       id = @getId request.url
@@ -35,16 +27,7 @@ module.exports.Admin = class Admin
       request.on 'data', (chunk) ->
          data += chunk
 
-      request.on 'end', =>
-         if request.headers['content-type'] is 'application/json'
-            data = JSON.parse data
-         else
-            data = @qs.parse data
-
-         success = (id) => @send.created response, request, id
-         error = => @send.saveError response
-
-         @RnR.create data, success, error
+      request.on 'end', => @processPOST data, response, request
 
    goDELETE : (request, response) =>
       id = @getId request.url
@@ -67,6 +50,31 @@ module.exports.Admin = class Admin
          @RnR.retrieve id, success, error, notFound
       else
          @RnR.gather success, error, noContent
+
+   processPUT : (id, data, response) =>
+      try
+         data = JSON.parse data
+      catch e
+         return @send.badRequest response
+
+      if not @Contract data then return @send.badRequest response
+
+      success = => @send.noContent response
+      error = => @send.serverError response
+      notFound = => @send.notFound response
+
+      @RnR.update id, data, success, error, notFound
+
+   processPOST : (data, response, request) =>
+      try
+         data = JSON.parse data
+      catch e
+         return @send.badRequest response
+
+      success = (id) => @send.created response, request, id
+      error = => @send.saveError response
+
+      @RnR.create data, success, error
 
    send :
       ok : (response, result) ->
@@ -96,6 +104,10 @@ module.exports.Admin = class Admin
 
       saveError : (response) ->
          response.writeHead 422, {'Content-Type' : 'text/plain'}
+         response.end()
+
+      badRequest : (response) ->
+         response.writeHead 400, {'Content-Type' : 'text/plain'}
          response.end()
 
    urlValid : (url) ->

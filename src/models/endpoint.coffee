@@ -29,32 +29,26 @@ module.exports.Endpoint = class Endpoint
       gather   : 'SELECT rowid AS id, * FROM rNr'
       find     : 'SELECT headers,status,content FROM rNr WHERE url = $url AND method is $method AND post is $post'
 
-   construct : (data) ->
+   construct : (data) =>
       if data instanceof Array
          toReturn = []
          for row in data
-            toReturn.push
-               id : row.id
-               request :
-                  url : row.url
-                  method : row.method
-                  post : row.post
-               response :
-                  headers : if typeof data.headers is "object" then JSON.parse data.headers else ""
-                  content : row.content
-                  status : row.status
+            toReturn.push @unflatten row
          return toReturn
       else
-         toReturn =
-            id : data.id
-            request :
-               url : data.url
-               method : data.method
-               post : data.post
-            response :
-               headers : if typeof data.headers is "object" then JSON.parse data.headers else ""
-               content : data.content
-               status : data.status
+         return @unflatten row
+
+   unflatten: (data) ->
+      toReturn =
+         id : data.id
+         request :
+            url : data.url
+            method : data.method
+            post : data.post
+         response :
+            headers : if typeof data.headers is "string" then JSON.parse data.headers else ""
+            content : data.content
+            status : data.status
 
    purify : (data) ->
       data = data ? {}
