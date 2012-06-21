@@ -1,4 +1,4 @@
-# Node Stub Server
+# stubby4node
 
 A configurable server for mocking/stubbing external systems during development. Uses Node.js and SQLite3. Written in Coffeescript
 
