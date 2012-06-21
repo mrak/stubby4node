@@ -1,9 +1,9 @@
-RnR = require('../src/models/endpoint').Endpoint
+Endpoint = require('../src/models/endpoint').Endpoint
 sut = null
 
 describe 'Endpoint', ->
    beforeEach ->
-      sut = new RnR()
+      sut = new Endpoint()
 
    describe 'flatten4SQL defaults', ->
       data = null

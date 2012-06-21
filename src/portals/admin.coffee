@@ -1,5 +1,3 @@
-yaml = require 'js-yaml'
-
 module.exports.Admin = class Admin
    constructor : (endpoint) ->
       @Endpoint = endpoint
