@@ -3,6 +3,7 @@ request =
       if not url then return false
       true
    method : (method) ->
+      if not method then return true
       return method in [
          'GET'
          'PUT'
@@ -17,14 +18,14 @@ request =
 
 response =
    status : (status) ->
-      if status and not parseInt status then return false
+      if not status then return true
+      if not parseInt status then return false
       true
    headers : (headers) ->
       if headers instanceof Array then return false
       if typeof headers isnt 'object' then return false
       true
    content : -> true
-
 
 module.exports.Contract = class Contract
    constructor : (endpoint) ->

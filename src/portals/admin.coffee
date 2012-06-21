@@ -71,6 +71,8 @@ module.exports.Admin = class Admin
       catch e
          return @send.badRequest response
 
+      if not @Contract data then return @send.badRequest response
+
       success = (id) => @send.created response, request, id
       error = => @send.saveError response
 

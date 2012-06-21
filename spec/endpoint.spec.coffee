@@ -5,69 +5,34 @@ describe 'Endpoint', ->
    beforeEach ->
       sut = new RnR()
 
-   describe 'purify', ->
+   describe 'flatten4SQL defaults', ->
       data = null
 
       beforeEach ->
          data =
-            request:
-               url : '/'
-            response: {}
+            request : {}
+            response : {}
 
-      it 'should return null if no url specified', ->
-         expected = null
-         data.request.url = null
-         actual = sut.purify data
+      it 'should default method to GET', ->
+         expected = 'GET'
 
-         expect(actual).toBe expected
+         actual = sut.flatten4SQL data
 
-      it 'should return null for unknown HTTP method', ->
-         expected = null
-         data.request.method = 'unknown method'
+         expect(actual.$method).toBe expected
 
-         actual = sut.purify data
+      it 'should default status to 200', ->
+         expected = 200
 
-         expect(actual).toBe expected
+         actual = sut.flatten4SQL data
 
-      it 'should return null for non-integer status codes', ->
-         expected = null
-         data.response.status = 'word'
+         expect(actual.$status).toBe expected
 
-         actual = sut.purify data
+      it 'should default headers to empty JSON', ->
+         expected = '{}'
 
-         expect(actual).toBe expected
+         actual = sut.flatten4SQL data
 
-      it 'should stringify headers if supplied as object', ->
-         data.response.headers =
-            'Content-Type' : 'application/json'
-         expected = '{"Content-Type":"application/json"}'
-
-         actual = sut.purify data
-
-         expect(actual.$headers).toEqual expected
-
-
-      describe 'defaults', ->
-         it 'should default method to GET', ->
-            expected = 'GET'
-
-            actual = sut.purify data
-
-            expect(actual.$method).toBe expected
-
-         it 'should default status to 200', ->
-            expected = 200
-
-            actual = sut.purify data
-
-            expect(actual.$status).toBe expected
-
-         it 'should default headers to empty JSON', ->
-            expected = '{}'
-
-            actual = sut.purify data
-
-            expect(actual.$headers).toBe expected
+         expect(actual.$headers).toBe expected
 
    describe 'operations', ->
       success = null
@@ -79,9 +44,9 @@ describe 'Endpoint', ->
          missing = jasmine.createSpy 'missing'
 
       describe 'create', ->
-         it 'should puify and run database call for each item given a list', ->
+         it 'should flatten4SQL and run database call for each item given a list', ->
             spyOn sut.db, 'run'
-            spyOn(sut, 'purify').andReturn "a non-emtpy value"
+            spyOn(sut, 'flatten4SQL').andReturn "a non-emtpy value"
             data = [
                "item1"
                "item2"
@@ -90,21 +55,21 @@ describe 'Endpoint', ->
             sut.create data
 
             expect(sut.db.run.callCount).toEqual data.length
-            expect(sut.purify.callCount).toEqual data.length
+            expect(sut.flatten4SQL.callCount).toEqual data.length
 
-         it 'should puify and run database call given one item', ->
+         it 'should flatten4SQL and run database call given one item', ->
             spyOn sut.db, 'run'
-            spyOn(sut, 'purify').andReturn "a non-emtpy value"
+            spyOn(sut, 'flatten4SQL').andReturn "a non-emtpy value"
             data = "item1"
 
             sut.create data
 
             expect(sut.db.run.callCount).toEqual 1
-            expect(sut.purify.callCount).toEqual 1
+            expect(sut.flatten4SQL.callCount).toEqual 1
 
          it "should call error if database can't create", ->
             sut.db.run = (something, anything, callback) -> callback("an error message")
-            spyOn(sut, 'purify').andReturn "a non-emtpy value"
+            spyOn(sut, 'flatten4SQL').andReturn "a non-emtpy value"
             data = "item1"
 
             sut.create data, success, error
@@ -115,7 +80,7 @@ describe 'Endpoint', ->
          it "should call success with id if database creates item", ->
             id = "created id"
             sut.db.run = (something, anything, callback) -> callback.call(lastID: id)
-            spyOn(sut, 'purify').andReturn "a non-emtpy value"
+            spyOn(sut, 'flatten4SQL').andReturn "a non-emtpy value"
             data = "item1"
 
             sut.create data, success, error
@@ -153,13 +118,13 @@ describe 'Endpoint', ->
          data = "some data"
 
          beforeEach ->
-            spyOn(sut, 'purify').andReturn "something"
+            spyOn(sut, 'flatten4SQL').andReturn "something"
 
-         it 'should purify data', ->
+         it 'should flatten4SQL data', ->
 
             sut.update id, data, success, error
 
-            expect(sut.purify).toHaveBeenCalled()
+            expect(sut.flatten4SQL).toHaveBeenCalled()
 
          it 'should call error when database errors out', ->
             sut.db.run = (something, anything, callback) -> callback("an error")

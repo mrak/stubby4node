@@ -6,20 +6,18 @@ module.exports.Endpoint = class Endpoint
       error = -> console.error "Unable to parse file"
 
       @db = new sqlite3.Database ':memory:'
-      @db.run 'CREATE TABLE rNr (url,method,post,headers,status,content)', (err) =>
-         if err then return console.error "Can't create database!"
-         if file? then @create file, success, error
-
-   methods : [
-      'GET'
-      'PUT'
-      'POST'
-      'HEAD'
-      'TRACE'
-      'DELETE'
-      'CONNECT'
-      'OPTIONS'
-   ]
+      @db.run '''
+         CREATE TABLE rNr (
+            url TEXT,
+            method TEXT,
+            post TEXT,
+            headers TEXT,
+            status NUMBER,
+            content TEXT
+         )
+         ''', (err) =>
+            if err then return console.error "Can't create database!"
+            if file? then @create file, success, error
 
    sql :
       create   : 'INSERT INTO rNr VALUES ($url,$method,$post,$headers,$status,$content)'
@@ -33,12 +31,12 @@ module.exports.Endpoint = class Endpoint
       if data instanceof Array
          toReturn = []
          for row in data
-            toReturn.push @unflatten row
+            toReturn.push @unflattenFromSQL row
          return toReturn
       else
-         return @unflatten row
+         return @unflattenFromSQL row
 
-   unflatten: (data) ->
+   unflattenFromSQL: (data) ->
       toReturn =
          id : data.id
          request :
@@ -46,29 +44,22 @@ module.exports.Endpoint = class Endpoint
             method : data.method
             post : data.post
          response :
-            headers : if typeof data.headers is "string" then JSON.parse data.headers else ""
+            headers : JSON.parse data.headers
             content : data.content
             status : data.status
 
-   purify : (data) ->
-      data = data ? {}
-
-      if data.request.method and data.request.method not in @methods then return null
-      if data.response.status and not parseInt data.response.status then return null
-      if not data.request.url then return null
-      if typeof data.response.headers is 'object' then data.response.headers = JSON.stringify data.response.headers
-
+   flatten4SQL : (data) ->
       rNr =
          $url : data.request.url
          $method : data.request.method ? 'GET'
          $post : data.request.post
-         $headers : data.response.headers ? '{}'
-         $status : parseInt(data.response.status ? 200)
+         $headers : JSON.stringify(data.response.headers ? {})
+         $status : parseInt(data.response.status) or 200
          $content : data.response.content
 
    create : (data, success, error) ->
       insert = (item) =>
-         rNr = @purify item
+         rNr = @flatten4SQL item
          if not rNr then return error()
 
          @db.run @sql.create, rNr, (err) ->
@@ -88,7 +79,7 @@ module.exports.Endpoint = class Endpoint
          missing()
 
    update : (id, data, success, error, missing) ->
-      rNr = @purify data
+      rNr = @flatten4SQL data
       rNr["$id"] = id
 
       @db.run @sql.update, rNr, (err) ->

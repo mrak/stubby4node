@@ -222,12 +222,14 @@ describe 'Admin', ->
             expect(rNr.update).not.toHaveBeenCalled()
 
          it 'should return BAD REQUEST when contract is violated', ->
+            data = '{"property":"value"}'
             sut.Contract.andReturn false
             spyOn sut.send, 'badRequest'
 
-            sut.processPUT request, response
+            sut.processPUT "any id", data, response
 
             expect(sut.send.badRequest).toHaveBeenCalled()
+            expect(sut.Contract).toHaveBeenCalled()
 
       describe 'goPOST', ->
          it 'should send not supported if there is an id in the url', ->
@@ -252,6 +254,16 @@ describe 'Admin', ->
             sut.processPOST data, response, request
 
             expect(rNr.create).not.toHaveBeenCalled()
+
+         it 'should return BAD REQUEST when contract is violated', ->
+            data = '{"property":"value"}'
+            sut.Contract.andReturn false
+            spyOn sut.send, 'badRequest'
+
+            sut.processPOST data, response, request
+
+            expect(sut.send.badRequest).toHaveBeenCalled()
+            expect(sut.Contract).toHaveBeenCalled()
 
       describe 'goDELETE', ->
          it 'should send not supported for the root url', ->
