@@ -3,8 +3,8 @@ yaml = require 'js-yaml'
 fs = require 'fs'
 Admin = require('./portals/admin').Admin
 Stub = require('./portals/stub').Stub
-RnR = require('./models/endpoint').Endpoint
-rNr = null
+Endpoint = require('./models/endpoint').Endpoint
+endpoint = null
 stubport = 80
 adminport = 81
 
@@ -16,11 +16,11 @@ if fileOptionIndex
    if file
       switch extension
          when 'json'
-            rNr = new RnR JSON.parse file
+            endpoint = new Endpoint JSON.parse file
          when 'yaml','yml'
-            rNr = new RnR yaml.load file
+            endpoint = new Endpoint yaml.load file
 
-rNr = rNr ? new RnR()
+endpoint = endpoint ? new Endpoint()
 
 stubOptionIndex = process.argv.indexOf('--stub') + 1
 stubport = parseInt(process.argv[stubOptionIndex]) ? stubport if stubOptionIndex
@@ -28,10 +28,10 @@ stubport = parseInt(process.argv[stubOptionIndex]) ? stubport if stubOptionIndex
 adminOptionIndex = process.argv.indexOf('--admin') + 1
 adminport = parseInt(process.argv[adminOptionIndex]) ? adminport if adminOptionIndex
 
-stubServer = (new Stub(rNr)).server
+stubServer = (new Stub(endpoint)).server
 http.createServer(stubServer).listen stubport
 console.log "Stub portal running at localhost:#{stubport}"
 
-adminServer  = (new Admin(rNr)).server
+adminServer  = (new Admin(endpoint)).server
 http.createServer(adminServer).listen adminport
 console.log "Admin portal running at localhost:#{adminport}"

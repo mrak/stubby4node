@@ -1,8 +1,8 @@
 yaml = require 'js-yaml'
 
 module.exports.Admin = class Admin
-   constructor : (rNr) ->
-      @RnR = rNr
+   constructor : (endpoint) ->
+      @Endpoint = endpoint
       @Contract = require('../models/Contract').Contract
 
    urlPattern : /^\/([1-9][0-9]*)?$/
@@ -37,7 +37,7 @@ module.exports.Admin = class Admin
       error = => @send.serverError response
       notFound = => @send.notFound response
 
-      @RnR.delete id, success, error, notFound
+      @Endpoint.delete id, success, error, notFound
 
    goGET : (request, response) =>
       id = @getId request.url
@@ -47,9 +47,9 @@ module.exports.Admin = class Admin
       noContent = => @send.noContent response
 
       if id
-         @RnR.retrieve id, success, error, notFound
+         @Endpoint.retrieve id, success, error, notFound
       else
-         @RnR.gather success, error, noContent
+         @Endpoint.gather success, error, noContent
 
    processPUT : (id, data, response) =>
       try
@@ -63,7 +63,7 @@ module.exports.Admin = class Admin
       error = => @send.serverError response
       notFound = => @send.notFound response
 
-      @RnR.update id, data, success, error, notFound
+      @Endpoint.update id, data, success, error, notFound
 
    processPOST : (data, response, request) =>
       try
@@ -76,7 +76,7 @@ module.exports.Admin = class Admin
       success = (id) => @send.created response, request, id
       error = => @send.saveError response
 
-      @RnR.create data, success, error
+      @Endpoint.create data, success, error
 
    send :
       ok : (response, result) ->

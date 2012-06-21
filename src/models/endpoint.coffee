@@ -7,7 +7,7 @@ module.exports.Endpoint = class Endpoint
 
       @db = new sqlite3.Database ':memory:'
       @db.run '''
-         CREATE TABLE rNr (
+         CREATE TABLE endpoints (
             url TEXT,
             method TEXT,
             post TEXT,
@@ -20,24 +20,24 @@ module.exports.Endpoint = class Endpoint
             if file? then @create file, success, error
 
    sql :
-      create   : 'INSERT INTO rNr VALUES ($url,$method,$post,$headers,$status,$content)'
-      retrieve : 'SELECT rowid AS id, * FROM rNr WHERE id = ?'
-      update   : 'UPDATE rNr SET url=$url,method=$method,post=$post,headers=$headers,status=$status,content=$content WHERE rowid = $id'
-      delete   : 'DELETE FROM rNr WHERE rowid = ?'
-      gather   : 'SELECT rowid AS id, * FROM rNr'
-      find     : 'SELECT headers,status,content FROM rNr WHERE url = $url AND method is $method AND post is $post'
+      create   : 'INSERT INTO endpoints VALUES ($url,$method,$post,$headers,$status,$content)'
+      retrieve : 'SELECT rowid AS id, * FROM endpoints WHERE id = ?'
+      update   : 'UPDATE endpoints SET url=$url,method=$method,post=$post,headers=$headers,status=$status,content=$content WHERE rowid = $id'
+      delete   : 'DELETE FROM endpoints WHERE rowid = ?'
+      gather   : 'SELECT rowid AS id, * FROM endpoints'
+      find     : 'SELECT headers,status,content FROM endpoints WHERE url = $url AND method is $method AND post is $post'
 
    construct : (data) =>
       if data instanceof Array
          toReturn = []
          for row in data
-            toReturn.push @unflattenFromSQL row
+            toReturn.push @unflatten row
          return toReturn
       else
-         return @unflattenFromSQL row
+         return @unflatten row
 
-   unflattenFromSQL: (data) ->
-      toReturn =
+   unflatten: (data) ->
+      endpoint =
          id : data.id
          request :
             url : data.url
@@ -49,7 +49,7 @@ module.exports.Endpoint = class Endpoint
             status : data.status
 
    flatten4SQL : (data) ->
-      rNr =
+      row =
          $url : data.request.url
          $method : data.request.method ? 'GET'
          $post : data.request.post
@@ -59,10 +59,10 @@ module.exports.Endpoint = class Endpoint
 
    create : (data, success, error) ->
       insert = (item) =>
-         rNr = @flatten4SQL item
-         if not rNr then return error()
+         endpoint = @flatten4SQL item
+         if not endpoint then return error()
 
-         @db.run @sql.create, rNr, (err) ->
+         @db.run @sql.create, endpoint, (err) ->
             if err then return error()
             success(@lastID)
 
@@ -79,10 +79,10 @@ module.exports.Endpoint = class Endpoint
          missing()
 
    update : (id, data, success, error, missing) ->
-      rNr = @flatten4SQL data
-      rNr["$id"] = id
+      endpoint = @flatten4SQL data
+      endpoint["$id"] = id
 
-      @db.run @sql.update, rNr, (err) ->
+      @db.run @sql.update, endpoint, (err) ->
          if err then return error()
          if @changes then return success()
          missing()
