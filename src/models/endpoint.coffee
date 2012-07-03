@@ -6,15 +6,6 @@ module.exports.Endpoint = class Endpoint
       @lastId = 0
       @create data, success, error
 
-   construct : (data) =>
-      if data instanceof Array
-         toReturn = []
-         for row in data
-            toReturn.push @unflatten row
-         return toReturn
-      else
-         return @unflatten row
-
    applyDefaults : (data) ->
       data.request.method = data.request.method ? 'GET'
       data.response.headers = JSON.stringify(data.response.headers ? {})
@@ -26,7 +17,7 @@ module.exports.Endpoint = class Endpoint
          @applyDefaults item
          item.id = ++@lastId
          @db[item.id] = item
-         success()
+         success item.id
 
       if data instanceof Array
          data.forEach insert
