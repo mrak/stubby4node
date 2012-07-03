@@ -1,12 +1,14 @@
 fs = require 'fs'
 
 module.exports.CLI = class CLI
-   constructor : (argv) ->
+   constructor : ->
+      argv = process.argv
       @file = '[]'
       @ports =
          stub : 80
          admin : 81
-      fileOptionIndex = argv.indexOf('--file') + 1
+
+      fileOptionIndex = argv.indexOf('--file') + 1 or argv.indexOf('-f') + 1
       if fileOptionIndex
          filename = argv[fileOptionIndex]
          file = fs.readFileSync filename, 'utf8'
@@ -21,10 +23,11 @@ module.exports.CLI = class CLI
                      console.dir e
                      @file = []
                when 'yaml','yml'
-                  @file = require('js-yaml').yaml.load file
+                  yaml = require 'js-yaml'
+                  @file = yaml.load file
 
-      stubOptionIndex = process.argv.indexOf('--stub') + 1
-      @ports.stub = parseInt(process.argv[stubOptionIndex]) ? @ports.stub if stubOptionIndex
+      stubOptionIndex = argv.indexOf('--stub') + 1 or argv.indexOf('-s') + 1
+      @ports.stub = parseInt(argv[stubOptionIndex]) ? @ports.stub if stubOptionIndex
 
-      adminOptionIndex = process.argv.indexOf('--admin') + 1
-      @ports.admin = parseInt(process.argv[adminOptionIndex]) ? @ports.admin if adminOptionIndex
+      adminOptionIndex = argv.indexOf('--admin') + 1 or argv.indexOf('-a') + 1
+      @ports.admin = parseInt(argv[adminOptionIndex]) ? @ports.admin if adminOptionIndex

@@ -4,7 +4,7 @@ Stub = require('./portals/stub').Stub
 Endpoint = require('./models/endpoint').Endpoint
 CLI = require('./cli').CLI
 
-cli = new CLI process.argv
+cli = new CLI()
 endpoint = new Endpoint(cli.file)
 
 stubServer = (new Stub(endpoint)).server

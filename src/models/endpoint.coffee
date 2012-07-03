@@ -8,9 +8,10 @@ module.exports.Endpoint = class Endpoint
 
    applyDefaults : (data) ->
       data.request.method = data.request.method ? 'GET'
-      data.response.headers = JSON.stringify(data.response.headers ? {})
+      data.request.post = data.request.post ? null
+      data.response.headers = data.response.headers ? {}
       data.response.status = parseInt(data.response.status) or 200
-      data
+      return data
 
    create : (data, success, error) ->
       insert = (item)=>
