@@ -1,5 +1,5 @@
 fs = require 'fs'
-yaml = require 'js-yaml'
+#yaml = require 'js-yaml'
 
 module.exports.CLI = class CLI
    constructor : (argv) ->
@@ -15,7 +15,12 @@ module.exports.CLI = class CLI
          if file
             switch extension
                when 'json'
-                  @file = JSON.parse file
+                  try
+                     @file = JSON.parse file
+                  catch e
+                     console.error "Couldn't load #{filename} due to syntax errors:"
+                     console.dir e
+                     @file = []
                when 'yaml','yml'
                   @file = yaml.load file
 

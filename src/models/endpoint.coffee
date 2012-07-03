@@ -1,31 +1,10 @@
-sqlite3 = require 'sqlite3'
-
 module.exports.Endpoint = class Endpoint
-   constructor : (file) ->
-      success = -> console.log "Successfully in row from file"
-      error = -> console.error "Unable to parse file"
-
-      @db = new sqlite3.Database ':memory:'
-      @db.run '''
-         CREATE TABLE endpoints (
-            url TEXT,
-            method TEXT,
-            post TEXT,
-            headers TEXT,
-            status NUMBER,
-            content TEXT
-         )
-         ''', (err) =>
-            if err then return console.error "Can't create database!"
-            if file? then @create file, success, error
-
-   sql :
-      create   : 'INSERT INTO endpoints VALUES ($url,$method,$post,$headers,$status,$content)'
-      retrieve : 'SELECT rowid AS id, * FROM endpoints WHERE id = ?'
-      update   : 'UPDATE endpoints SET url=$url,method=$method,post=$post,headers=$headers,status=$status,content=$content WHERE rowid = $id'
-      delete   : 'DELETE FROM endpoints WHERE rowid = ?'
-      gather   : 'SELECT rowid AS id, * FROM endpoints'
-      find     : 'SELECT headers,status,content FROM endpoints WHERE url = $url AND method is $method AND post is $post'
+   constructor : (data)->
+      success = -> console.log 'Created an endpoint'
+      error = -> console.log 'The ef? Something went wrong...'
+      @db = {}
+      @lastId = 0
+      @create data, success, error
 
    construct : (data) =>
       if data instanceof Array
@@ -36,71 +15,57 @@ module.exports.Endpoint = class Endpoint
       else
          return @unflatten row
 
-   unflatten: (data) ->
-      endpoint =
-         id : data.id
-         request :
-            url : data.url
-            method : data.method
-            post : data.post
-         response :
-            headers : JSON.parse data.headers
-            content : data.content
-            status : data.status
-
-   flatten4SQL : (data) ->
-      row =
-         $url : data.request.url
-         $method : data.request.method ? 'GET'
-         $post : data.request.post
-         $headers : JSON.stringify(data.response.headers ? {})
-         $status : parseInt(data.response.status) or 200
-         $content : data.response.content
+   applyDefaults : (data) ->
+      data.request.method = data.request.method ? 'GET'
+      data.response.headers = JSON.stringify(data.response.headers ? {})
+      data.response.status = parseInt(data.response.status) or 200
+      data
 
    create : (data, success, error) ->
-      insert = (item) =>
-         endpoint = @flatten4SQL item
-         if not endpoint then return error()
-
-         @db.run @sql.create, endpoint, (err) ->
-            if err then return error()
-            success(@lastID)
+      insert = (item)=>
+         @applyDefaults item
+         item.id = ++@lastId
+         @db[item.id] = item
+         success()
 
       if data instanceof Array
          data.forEach insert
-      else
+      else if data
          insert data
 
    retrieve : (id, success, error, missing) ->
-      @db.get @sql.retrieve, id, (err,row) =>
-         if err then return error()
-         if row
-            return success @construct row
-         missing()
+      if not @db[id] then return missing()
+
+      success @db[id]
 
    update : (id, data, success, error, missing) ->
-      endpoint = @flatten4SQL data
-      endpoint["$id"] = id
+      if not @db[id] then return missing()
 
-      @db.run @sql.update, endpoint, (err) ->
-         if err then return error()
-         if @changes then return success()
-         missing()
+      endpoint = @applyDefaults data
+      endpoint.id = id
+
+      @db[endpoint.id] = endpoint
+      success()
 
    delete : (id, success, error, missing) ->
-      @db.run @sql.delete, id, (err) ->
-         if err then return error()
-         if @changes then return success()
-         missing()
+      if not @db[id] then return missing()
+
+      delete @db[id]
+      success()
 
    gather : (success, error, none) ->
-      @db.all @sql.gather, (err, rows) =>
-         if err then return error()
-         if rows.length then return success @construct rows
-         none()
+      all = []
+
+      for id, endpoint of @db
+         all.push endpoint
+
+      if all.length is 0 then none() else success all
 
    find : (data, success, error, notFound) ->
-      @db.get @sql.find, data, (err,row) ->
-         if err then return error()
-         if not row then return notFound()
-         success row
+      for id, endpoint of @db
+         if endpoint.request.url is data.url and
+         endpoint.request.post is data.post and
+         endpoint.request.method is data.method
+            return success endpoint.response
+
+      notFound()

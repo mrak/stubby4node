@@ -10,9 +10,9 @@ module.exports.Stub = class Stub
 
       request.on 'end', =>
          criteria =
-            $url : request.url
-            $method : request.method
-            $post : data
+            url : request.url
+            method : request.method
+            post : data
          success = (rNr) ->
             response.writeHead rNr.status, JSON.parse(rNr.headers)
             response.write rNr.content if rNr.content?
