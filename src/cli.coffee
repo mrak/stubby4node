@@ -3,7 +3,7 @@ fs = require 'fs'
 module.exports.CLI = class CLI
    constructor : ->
       argv = process.argv
-      @file = '[]'
+      @file = []
       @ports =
          stub : 80
          admin : 81
