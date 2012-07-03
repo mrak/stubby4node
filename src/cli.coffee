@@ -1,5 +1,4 @@
 fs = require 'fs'
-#yaml = require 'js-yaml'
 
 module.exports.CLI = class CLI
    constructor : (argv) ->
@@ -22,7 +21,7 @@ module.exports.CLI = class CLI
                      console.dir e
                      @file = []
                when 'yaml','yml'
-                  @file = yaml.load file
+                  @file = require('js-yaml').yaml.load file
 
       stubOptionIndex = process.argv.indexOf('--stub') + 1
       @ports.stub = parseInt(process.argv[stubOptionIndex]) ? @ports.stub if stubOptionIndex
