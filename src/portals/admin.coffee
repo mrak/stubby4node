@@ -1,7 +1,11 @@
+#INCLUDES BEGIN
+Contract = require('../models/Contract').Contract
+#INCLUDES END
+
 module.exports.Admin = class Admin
    constructor : (endpoint) ->
       @Endpoint = endpoint
-      @Contract = require('../models/Contract').Contract
+      @Contract = Contract
 
    urlPattern : /^\/([1-9][0-9]*)?$/
 

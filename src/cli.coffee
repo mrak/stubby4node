@@ -1,5 +1,4 @@
 fs = require 'fs'
-
 module.exports.CLI = class CLI
    constructor : ->
       argv = process.argv

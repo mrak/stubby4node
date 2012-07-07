@@ -1,8 +1,11 @@
-http = require 'http'
+#INCLUDES BEGIN
 Admin = require('./portals/admin').Admin
 Stub = require('./portals/stub').Stub
 Endpoint = require('./models/endpoint').Endpoint
 CLI = require('./cli').CLI
+#INCLUDES END
+
+http = require 'http'
 
 cli = new CLI()
 endpoint = new Endpoint(cli.file)
