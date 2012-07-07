@@ -1,10 +1,9 @@
 module.exports.Endpoint = class Endpoint
    constructor : (data)->
       success = -> console.log 'Created an endpoint'
-      error = -> console.log 'The ef? Something went wrong...'
       @db = {}
       @lastId = 0
-      @create data, success, error
+      @create data, success
 
    applyDefaults : (data) ->
       data.request.method = data.request.method ? 'GET'
@@ -13,7 +12,7 @@ module.exports.Endpoint = class Endpoint
       data.response.status = parseInt(data.response.status) or 200
       return data
 
-   create : (data, success, error) ->
+   create : (data, success) ->
       insert = (item)=>
          @applyDefaults item
          item.id = ++@lastId

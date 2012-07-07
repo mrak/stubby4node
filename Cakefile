@@ -7,12 +7,10 @@ option '-f', '--file [FILE]', 'data file'
 fs = require 'fs'
 
 task 'run', 'Run the stub and admin portals', (options) ->
-   args = [
-      'src/server.coffee'
-   ]
-   args.concat ['-a', options.admin] if options.admin
-   args.concat ['-s', options.stub] if options.stub
-   args.concat ['-f', options.file] if options.file?
+   args = ['src/server.coffee']
+   args = args.concat '-a', options.admin if options.admin?
+   args = args.concat '-s', options.stub if options.stub?
+   args = args.concat '-f', options.file if options.file?
 
    coffee = spawn 'coffee', args
 

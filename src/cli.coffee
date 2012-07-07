@@ -4,8 +4,10 @@ module.exports.CLI = class CLI
       argv = process.argv
       @file = []
       @ports =
-         stub : 80
-         admin : 81
+         stub : 8882
+         admin : 8889
+         #stub : 80
+         #admin : 81
 
       fileOptionIndex = argv.indexOf('--file') + 1 or argv.indexOf('-f') + 1
       if fileOptionIndex
