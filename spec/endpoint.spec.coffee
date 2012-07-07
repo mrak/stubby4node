@@ -27,12 +27,12 @@ describe 'Endpoint', ->
 
          expect(actual.response.status).toBe expected
 
-      it 'should default headers to empty JSON', ->
-         expected = '{}'
+      it 'should default headers to empty object', ->
+         expected = {}
 
          actual = sut.applyDefaults data
 
-         expect(actual.response.headers).toBe expected
+         expect(actual.response.headers).toEqual expected
 
    describe 'operations', ->
       success = null

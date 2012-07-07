@@ -9,12 +9,10 @@ fs = require 'fs'
 task 'run', 'Run the stub and admin portals', (options) ->
    args = [
       'src/server.coffee'
-      '-a'
-      options.admin or 81
-      '-s'
-      options.stub or 80
    ]
-   args.concat [ '-f', options.file] if options.file?
+   args.concat ['-a', options.admin] if options.admin
+   args.concat ['-s', options.stub] if options.stub
+   args.concat ['-f', options.file] if options.file?
 
    coffee = spawn 'coffee', args
 
