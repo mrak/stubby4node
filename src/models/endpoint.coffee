@@ -10,6 +10,7 @@ module.exports.Endpoint = class Endpoint
       data.request.post = data.request.post ? null
       data.response.headers = data.response.headers ? {}
       data.response.status = parseInt(data.response.status) or 200
+      data.response.content = JSON.stringify(data.response.content) if typeof data.response.content is 'object'
       return data
 
    create : (data, success) ->

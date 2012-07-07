@@ -4,6 +4,7 @@ option '-f', '--file [FILE]', 'data file'
 
 {print} = require 'util'
 {spawn} = require 'child_process'
+{exec} = require 'child_process'
 fs = require 'fs'
 
 task 'run', 'Run the stub and admin portals', (options) ->
@@ -45,3 +46,14 @@ task 'singlefile', 'Generates stubby4node as a single .coffee file', ->
       fs.writeFile singlefile, appContents.join('\n\n'), 'utf8', (err) ->
          throw err if err
          console.log "Generated #{singlefile}"
+
+task 'convert', 'Converts stubby4j formatted yaml to stubby4node formatted json', ->
+   fs.readFile 'data.yaml', 'utf8', (err, yaml) ->
+      throw err if err
+      yaml = yaml.replace /\n?httplifecycle:\n /g,'-'
+      yaml = yaml.replace /\sbody:/g,' content:'
+      fs.writeFile 'data.yaml', yaml, 'utf8', (err) ->
+         throw err if err
+         console.log 'Conversion complete.'
+
+         exec 'js-yaml -j data.yaml > data.json'
