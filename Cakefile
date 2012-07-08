@@ -1,26 +1,5 @@
-option '-s', '--stub [PORT]', 'stub port'
-option '-a', '--admin [PORT]', 'admin port'
-option '-f', '--file [FILE]', 'data file'
-
-{print} = require 'util'
-{spawn} = require 'child_process'
 {exec} = require 'child_process'
 fs = require 'fs'
-
-task 'run', 'Run the stub and admin portals', (options) ->
-   args = ['src/server.coffee']
-   args = args.concat '-a', options.admin if options.admin?
-   args = args.concat '-s', options.stub if options.stub?
-   args = args.concat '-f', options.file if options.file?
-
-   coffee = spawn 'coffee', args
-
-   coffee.stderr.on 'data', (data) ->
-      process.stderr.write data.toString()
-   coffee.stdout.on 'data', (data) ->
-      print data.toString()
-   coffee.on 'exit', (code) ->
-      callback?() if code is 0
 
 task 'singlefile', 'Generates stubby4node as a single .coffee file', ->
    singlefile = 'stubby4node.coffee'
@@ -47,13 +26,14 @@ task 'singlefile', 'Generates stubby4node as a single .coffee file', ->
          throw err if err
          console.log "Generated #{singlefile}"
 
-task 'convert', 'Converts stubby4j formatted yaml to stubby4node formatted json', ->
-   fs.readFile 'data.yaml', 'utf8', (err, yaml) ->
+task 'convert', 'Converts stubby4j formatted yaml data to stubby4node formatted json data', ->
+   fs.readFile 'data/data.yaml', 'utf8', (err, yaml) ->
       throw err if err
       yaml = yaml.replace /\n?httplifecycle:\n /g,'-'
       yaml = yaml.replace /\sbody:/g,' content:'
-      fs.writeFile 'data.yaml', yaml, 'utf8', (err) ->
+      fs.writeFile 'data/data4node.yaml', yaml, 'utf8', (err) ->
          throw err if err
-         console.log 'Conversion complete.'
-
-         exec 'js-yaml -j data.yaml > data.json'
+         exec 'js-yaml -j data/data4node.yaml > data/data.json', ->
+            fs.unlink 'data/data4node.yaml', (err) ->
+               throw err if err
+               console.log 'Conversion complete. Generated data/data.json'
