@@ -22,8 +22,10 @@ task 'singlefile', 'Generates stubby4node as a single .coffee file', ->
          process() if --remaining is 0
 
    process = ->
+      appContents.unshift "#!/usr/bin/env coffee"
       fs.writeFile singlefile, appContents.join('\n\n'), 'utf8', (err) ->
          throw err if err
+         fs.chmodSync singlefile, '755'
          console.log "Generated #{singlefile}"
 
 task 'convert', 'Converts stubby4j formatted yaml data to stubby4node formatted json data', ->
