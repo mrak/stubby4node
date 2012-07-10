@@ -1,9 +1,7 @@
-#INCLUDES BEGIN
 Admin = require('./portals/admin').Admin
 Stub = require('./portals/stub').Stub
 Endpoint = require('./models/endpoint').Endpoint
 CLI = require('./cli').CLI
-#INCLUDES END
 
 http = require 'http'
 

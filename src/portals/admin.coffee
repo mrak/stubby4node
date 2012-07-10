@@ -1,8 +1,6 @@
-#INCLUDES BEGIN
 Contract = require('../models/Contract').Contract
-#INCLUDES END
 
-module.exports.Admin = class Admin
+exports.Admin = class Admin
    constructor : (endpoint) ->
       @Endpoint = endpoint
       @Contract = Contract

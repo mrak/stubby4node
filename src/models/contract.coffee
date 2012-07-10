@@ -27,7 +27,7 @@ response =
       true
    content : -> true
 
-module.exports.Contract = class Contract
+exports.Contract = class Contract
    constructor : (endpoint) ->
       if typeof endpoint is 'string'
          try

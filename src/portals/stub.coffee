@@ -1,8 +1,6 @@
-#INCLUDES BEGIN
-cli = new require('../cli').CLI()
-#INCLUDES END
+cli = new (require('../cli').CLI)()
 
-module.exports.Stub = class Stub
+exports.Stub = class Stub
    constructor : (rNr) ->
       @RnR = rNr
 

@@ -1,8 +1,6 @@
-#INCLUDES BEGIN
-cli = new require('../cli').CLI()
-#INCLUDES END
+cli = new (require('../cli').CLI)()
 
-module.exports.Endpoint = class Endpoint
+exports.Endpoint = class Endpoint
    constructor : (data)->
       success = -> cli.success 'Created an endpoint'
       @db = {}
