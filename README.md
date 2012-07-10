@@ -4,7 +4,7 @@ A configurable server for mocking/stubbing external systems during development. 
 
 ## Requirements
 
-* [node.js](http://nodejs.org/) (developed using v0.6.15)
+* [node.js](http://nodejs.org/) (tested with v0.6.15-v0.8.1)
 * [CoffeeScript](http://coffeescript.org/)
 
 ### More Optionals (for debugging/testing)
@@ -14,27 +14,29 @@ A configurable server for mocking/stubbing external systems during development. 
 * [jasmine-node](https://github.com/mhevery/jasmine-node)
 
 ## Installation
+Assuming you have node and Coffee-Script installed:
 
-    git clone git://github.com/Afmrak/node-stub-server.git
-    npm install -g coffee-script
+    git clone git://github.com/Afmrak/stubby4node.git
+    cd stubby4node
+    cake build
 
 ## Starting the Server(s)
 
 Some systems require you to `sudo` before running services on port 80
 
-    [sudo] coffee src/server.coffee
+    [sudo] ./stubby4node
 
 ## Command-line switches
 
-`--stub (-s) <port>` to supply a port number for the stub portal (defaults to 80)
+`-s, --stub [PORT]` to supply a port number for the stub portal (defaults to 80)
 
-`--admin (-a) <port>` to supply a port number for the admin portal (defaults to 81)
+`-a, --admin [PORT]` to supply a port number for the admin portal (defaults to 81)
 
-`--file (-f) file.{json|yml|yaml}` containing a list of endpoints to pre-populate the server with
+`-f, --file [FILE.{json|yml|yaml}]` containing a list of endpoints to pre-populate the server with
 
 ## The Admin Portal
 
-The admin portal is a RESTful endpoint running on `localhost:81`.
+The admin portal is a RESTful(ish) endpoint running on `localhost:81`.
 
 ### POST a Stubbed Response
 
@@ -51,7 +53,7 @@ response:
    content: You're request was successfully processed!
 ```
 
-On success, the response will contain `Content-Location` in the header with the newly created resources' location
+If you want to load more than one endpoint via file, use either a JSON array or YAML list (-) syntax. On success, the response will contain `Content-Location` in the header with the newly created resources' location
 
 ### GET the Current List of Stubbed Responses
 

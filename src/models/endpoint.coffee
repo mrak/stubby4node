@@ -1,6 +1,10 @@
+#INCLUDES BEGIN
+cli = new require('../cli').CLI()
+#INCLUDES END
+
 module.exports.Endpoint = class Endpoint
    constructor : (data)->
-      success = -> console.log 'Created an endpoint'
+      success = -> cli.success 'Created an endpoint'
       @db = {}
       @lastId = 0
       @create data, success
@@ -25,12 +29,12 @@ module.exports.Endpoint = class Endpoint
       else if data
          insert data
 
-   retrieve : (id, success, error, missing) ->
+   retrieve : (id, success, missing) ->
       if not @db[id] then return missing()
 
       success @db[id]
 
-   update : (id, data, success, error, missing) ->
+   update : (id, data, success, missing) ->
       if not @db[id] then return missing()
 
       endpoint = @applyDefaults data
@@ -39,13 +43,13 @@ module.exports.Endpoint = class Endpoint
       @db[endpoint.id] = endpoint
       success()
 
-   delete : (id, success, error, missing) ->
+   delete : (id, success, missing) ->
       if not @db[id] then return missing()
 
       delete @db[id]
       success()
 
-   gather : (success, error, none) ->
+   gather : (success, none) ->
       all = []
 
       for id, endpoint of @db
@@ -53,7 +57,7 @@ module.exports.Endpoint = class Endpoint
 
       if all.length is 0 then none() else success all
 
-   find : (data, success, error, notFound) ->
+   find : (data, success, notFound) ->
       for id, endpoint of @db
          if endpoint.request.url is data.url and
          endpoint.request.post is data.post and

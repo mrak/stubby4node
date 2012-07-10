@@ -1,8 +1,8 @@
 {exec} = require 'child_process'
 fs = require 'fs'
 
-task 'singlefile', 'Generates stubby4node as a single .coffee file', ->
-   singlefile = 'stubby4node.coffee'
+task 'build', 'Generates stubby4node as a single .coffee file', ->
+   singlefile = 'stubby4node'
    appContents = new Array
    files = [
       'cli'

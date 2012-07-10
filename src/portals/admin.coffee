@@ -36,22 +36,20 @@ module.exports.Admin = class Admin
       if not id then return @send.notSupported response
 
       success = => @send.noContent response
-      error = => @send.serverError response
       notFound = => @send.notFound response
 
-      @Endpoint.delete id, success, error, notFound
+      @Endpoint.delete id, success, notFound
 
    goGET : (request, response) =>
       id = @getId request.url
       success = (data) => @send.ok response, data
-      error = => @send.serverError response
       notFound = => @send.notFound response
       noContent = => @send.noContent response
 
       if id
-         @Endpoint.retrieve id, success, error, notFound
+         @Endpoint.retrieve id, success, notFound
       else
-         @Endpoint.gather success, error, noContent
+         @Endpoint.gather success, noContent
 
    processPUT : (id, data, response) =>
       try
@@ -62,10 +60,9 @@ module.exports.Admin = class Admin
       if not @Contract data then return @send.badRequest response
 
       success = => @send.noContent response
-      error = => @send.serverError response
       notFound = => @send.notFound response
 
-      @Endpoint.update id, data, success, error, notFound
+      @Endpoint.update id, data, success, notFound
 
    processPOST : (data, response, request) =>
       try
@@ -76,9 +73,8 @@ module.exports.Admin = class Admin
       if not @Contract data then return @send.badRequest response
 
       success = (id) => @send.created response, request, id
-      error = => @send.saveError response
 
-      @Endpoint.create data, success, error
+      @Endpoint.create data, success
 
    send :
       ok : (response, result) ->
