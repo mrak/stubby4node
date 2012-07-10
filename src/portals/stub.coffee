@@ -3,6 +3,8 @@ module.exports.Stub = class Stub
       @RnR = rNr
 
    server : (request, response) =>
+      date = new Date()
+      console.log "#{date.getHours()}:#{date.getMinutes()}:#{date.getSeconds()} -> #{request.method} #{request.url}"
       data = null
       request.on 'data', (chunk) ->
          data = data ? ''

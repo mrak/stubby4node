@@ -32,3 +32,15 @@ module.exports.CLI = class CLI
 
       adminOptionIndex = argv.indexOf('--admin') + 1 or argv.indexOf('-a') + 1
       @ports.admin = parseInt(argv[adminOptionIndex]) ? @ports.admin if adminOptionIndex
+
+   red: '\u001b[31m'
+   yellow: '\u001b[33m'
+   blue: '\u001b[34m'
+   reset: '\u001b[0m'
+
+   info: (msg) ->
+      console.log "#{@blue}#{msg}#{@reset}"
+   error: (msg) ->
+      console.error "#{@red}#{msg}#{@reset}"
+   warn: (msg) ->
+      console.warn "#{@yellow}#{msg}#{@yellow}"
