@@ -22,7 +22,6 @@ exports.Stub = class Stub
             method : request.method
             post : data
          success = (rNr) ->
-            debugger
             response.writeHead rNr.status, rNr.headers
             if typeof rNr.content is 'object' then rNr.content = JSON.stringify rNr.content
             response.write rNr.content if rNr.content?

@@ -34,6 +34,22 @@ describe 'Endpoint', ->
 
          expect(actual.response.headers).toEqual expected
 
+      it 'should default post to null', ->
+         expected = null
+
+         actual = sut.applyDefaults data
+
+         expect(actual.request.post).toEqual expected
+
+      it 'should stringify object content in response', ->
+         expected = '{"property":"value"}'
+         data.response.content =
+            property: "value"
+
+         actual = sut.applyDefaults data
+
+         expect(actual.response.content).toEqual expected
+
    describe 'operations', ->
       success = null
       error = null
@@ -173,3 +189,13 @@ describe 'Endpoint', ->
 
             expect(missing).toHaveBeenCalled()
 
+         it 'should call success after timeout if data response has a wait time', ->
+            row =
+               request: {}
+               response:
+                  wait: 1000
+
+            sut.db = [row]
+            sut.find data, success, missing
+            expect(success).not.toHaveBeenCalled()
+            waitsFor (-> success.callCount is 1), 'Success call was never called', 1000

@@ -60,6 +60,9 @@ exports.Endpoint = class Endpoint
          if endpoint.request.url is data.url and
          endpoint.request.post is data.post and
          endpoint.request.method is data.method
-            return success endpoint.response
+            if parseInt endpoint.response.wait
+               return setTimeout (-> success endpoint.response), endpoint.response.wait
+            else
+               return success endpoint.response
 
       notFound()
