@@ -44,6 +44,16 @@ The admin portal is a RESTful(ish) endpoint running on `localhost:81`.
 
 Submit `POST` requests to `localhost:81` or load a file (-f) with the following structure:
 
+* `request`: describes the client's call to the server
+   * `method`: GET/POST/PUT/DELETE/etc.
+   * `url`: the URI string. GET parameters should also be included inline here
+   * `post`: a string matching the textual body of the response.
+* `response`: describes the server's response to the client
+   * `headers`: a key/value map of headers the server should use in it's response
+   * `wait`: the time in milliseconds the server should wait before responding. Useful for testing timeouts and latency
+   * `content`: the textual body of the server's response to the client
+   * `status`: the numerical HTTP status code (200 for OK, 404 for NOT FOUND, etc.)
+
 #### YAML (file only)
 ```yaml
 -  request:
@@ -53,6 +63,7 @@ Submit `POST` requests to `localhost:81` or load a file (-f) with the following 
    response:
       headers:
          Content-Type: application/json
+      wait: 1000
       status: 200
       content: You're request was successfully processed!
 
@@ -63,7 +74,7 @@ Submit `POST` requests to `localhost:81` or load a file (-f) with the following 
    response:
       headers:
          Content-Type: application/json
-         Access-Control-Allow-Origin: *
+         Access-Control-Allow-Origin: "*"
       status: 204
       content:
 
@@ -91,7 +102,8 @@ Submit `POST` requests to `localhost:81` or load a file (-f) with the following 
       "status": 200, 
       "headers": {
         "Content-Type": "application/json"
-      }, 
+      },
+      "wait": 1000,
       "content": "You're request was successfully processed!"
     }
   }, 
