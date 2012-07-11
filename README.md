@@ -1,6 +1,6 @@
 # stubby4node
 
-A configurable server for mocking/stubbing external systems during development. Uses Node.js and written in Coffeescript
+A light-weight (9kb) configurable server for mocking/stubbing external systems during development. Uses Node.js and written in Coffeescript
 
 ## Requirements
 
@@ -20,6 +20,8 @@ Assuming you have node and Coffee-Script installed:
     cd stubby4node
     cake build
 
+This will create the executable `stubby4node` in the root level of the project.
+
 ## Starting the Server(s)
 
 Some systems require you to `sudo` before running services on port 80
@@ -38,24 +40,96 @@ Some systems require you to `sudo` before running services on port 80
 
 The admin portal is a RESTful(ish) endpoint running on `localhost:81`.
 
-### POST a Stubbed Response
+### Supplying Endpoints to Stub
 
-Submit `POST` requests to `localhost:81` or load a file with the following YAML structure.
+Submit `POST` requests to `localhost:81` or load a file (-f) with the following structure:
 
+#### YAML (file only)
+```yaml
+-  request:
+      url: /path/to/something
+      method: POST
+      post: this is some post data in textual format
+   response:
+      headers:
+         Content-Type: application/json
+      status: 200
+      content: You're request was successfully processed!
+
+-  request:
+      url: /path/to/anotherThing?a=anything&b=more
+      method: GET
+      post:
+   response:
+      headers:
+         Content-Type: application/json
+         Access-Control-Allow-Origin: *
+      status: 204
+      content:
+
+-  request:
+      url: /path/to/thing
+      method: POST
+      post: this is some post data in textual format
+   response:
+      headers:
+         Content-Type: application/json
+      status: 304
+      content:
 ```
-request:
-   url: /path/to/something?a=anything&b=more
-   method: POST
-   post: this is some post data in textual format
-response:
-   headers: {"Content-Type":"application/json"}
-   status: 200
-   content: You're request was successfully processed!
+
+#### JSON (file or POST/PUT)
+```json
+[
+  {
+    "request": {
+      "url": "/path/to/something", 
+      "post": "this is some post data in textual format", 
+      "method": "POST"
+    }, 
+    "response": {
+      "status": 200, 
+      "headers": {
+        "Content-Type": "application/json"
+      }, 
+      "content": "You're request was successfully processed!"
+    }
+  }, 
+  {
+    "request": {
+      "url": "/path/to/anotherThing?a=anything&b=more", 
+      "post": null, 
+      "method": "GET"
+    }, 
+    "response": {
+      "status": 204, 
+      "headers": {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      }, 
+      "content": null
+    }
+  }, 
+  {
+    "request": {
+      "url": "/path/to/thing", 
+      "post": "this is some post data in textual format", 
+      "method": "POST"
+    }, 
+    "response": {
+      "status": 304, 
+      "headers": {
+        "Content-Type": "application/json"
+      }, 
+      "content": null
+    }
+  }
+]
 ```
 
 If you want to load more than one endpoint via file, use either a JSON array or YAML list (-) syntax. On success, the response will contain `Content-Location` in the header with the newly created resources' location
 
-### GET the Current List of Stubbed Responses
+### Getting the Current List of Stubbed Responses
 
 Performing a `GET` request on `localhost:81` will return a JSON array of all currently saved responses. It will reply with `204 : No Content` if there are none saved.
 
@@ -88,5 +162,5 @@ From the root directory run:
 * `PUT`ing multiple responses at a time.
 * SOAP request/response compliance
 * Dynamic port switching
-* HTTP auth mocking
+* HTTP/SSL auth mocking
 * Randomized responses based on supplied pattern (exploratory QA abuse)
