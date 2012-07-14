@@ -50,8 +50,8 @@ Submit `POST` requests to `localhost:81` or load a file (-f) with the following 
    * `post`: a string matching the textual body of the response.
 * `response`: describes the server's response to the client
    * `headers`: a key/value map of headers the server should use in it's response
-   * `wait`: the time in milliseconds the server should wait before responding. Useful for testing timeouts and latency
-   * `content`: the textual body of the server's response to the client
+   * `latency`: the time in milliseconds the server should wait before responding. Useful for testing timeouts and latency
+   * `body`: the textual body of the server's response to the client
    * `status`: the numerical HTTP status code (200 for OK, 404 for NOT FOUND, etc.)
 
 #### YAML (file only)
@@ -63,9 +63,9 @@ Submit `POST` requests to `localhost:81` or load a file (-f) with the following 
    response:
       headers:
          Content-Type: application/json
-      wait: 1000
+      latency: 1000
       status: 200
-      content: You're request was successfully processed!
+      body: You're request was successfully processed!
 
 -  request:
       url: /path/to/anotherThing?a=anything&b=more
@@ -76,7 +76,7 @@ Submit `POST` requests to `localhost:81` or load a file (-f) with the following 
          Content-Type: application/json
          Access-Control-Allow-Origin: "*"
       status: 204
-      content:
+      body:
 
 -  request:
       url: /path/to/thing
@@ -86,7 +86,7 @@ Submit `POST` requests to `localhost:81` or load a file (-f) with the following 
       headers:
          Content-Type: application/json
       status: 304
-      content:
+      body:
 ```
 
 #### JSON (file or POST/PUT)
@@ -103,8 +103,8 @@ Submit `POST` requests to `localhost:81` or load a file (-f) with the following 
       "headers": {
         "Content-Type": "application/json"
       },
-      "wait": 1000,
-      "content": "You're request was successfully processed!"
+      "latency": 1000,
+      "body": "You're request was successfully processed!"
     }
   }, 
   {
@@ -119,7 +119,7 @@ Submit `POST` requests to `localhost:81` or load a file (-f) with the following 
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*"
       }, 
-      "content": null
+      "body": null
     }
   }, 
   {
@@ -133,7 +133,7 @@ Submit `POST` requests to `localhost:81` or load a file (-f) with the following 
       "headers": {
         "Content-Type": "application/json"
       }, 
-      "content": null
+      "body": null
     }
   }
 ]

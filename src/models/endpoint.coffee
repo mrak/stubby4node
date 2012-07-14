@@ -12,7 +12,7 @@ exports.Endpoint = class Endpoint
       data.request.post = data.request.post ? null
       data.response.headers = data.response.headers ? {}
       data.response.status = parseInt(data.response.status) or 200
-      data.response.content = JSON.stringify(data.response.content) if typeof data.response.content is 'object'
+      data.response.body = JSON.stringify(data.response.body) if typeof data.response.body is 'object'
       return data
 
    create : (data, success) ->
@@ -60,8 +60,8 @@ exports.Endpoint = class Endpoint
          if endpoint.request.url is data.url and
          endpoint.request.post is data.post and
          endpoint.request.method is data.method
-            if parseInt endpoint.response.wait
-               return setTimeout (-> success endpoint.response), endpoint.response.wait
+            if parseInt endpoint.response.latency
+               return setTimeout (-> success endpoint.response), endpoint.response.latency
             else
                return success endpoint.response
 

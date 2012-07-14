@@ -23,8 +23,8 @@ exports.Stub = class Stub
             post : data
          success = (rNr) ->
             response.writeHead rNr.status, rNr.headers
-            if typeof rNr.content is 'object' then rNr.content = JSON.stringify rNr.content
-            response.write rNr.content if rNr.content?
+            if typeof rNr.body is 'object' then rNr.body = JSON.stringify rNr.body
+            response.write rNr.body if rNr.body?
             response.end()
             cli.success outputMsg
          error = ->

@@ -25,7 +25,8 @@ response =
       if headers instanceof Array then return false
       if typeof headers isnt 'object' then return false
       true
-   content : -> true
+   body : -> true
+   latency : -> true
 
 exports.Contract = class Contract
    constructor : (endpoint) ->
@@ -42,5 +43,6 @@ exports.Contract = class Contract
              request.post(endpoint.request.post) and
              response.status(endpoint.response.status) and
              response.headers(endpoint.response.headers) and
-             response.content(endpoint.response.content)
+             response.body(endpoint.response.body)
+             response.latency(endpoint.response.latency)
 

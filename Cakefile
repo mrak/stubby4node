@@ -40,8 +40,6 @@ task 'convert', 'Converts stubby4j formatted yaml data to stubby4node formatted 
       yaml = yaml.replace /: \*$/gm, ': "*"'
       # replace httplifecycle: with YAML sequence character '-'
       yaml = yaml.replace /\n?httplifecycle:\n\s/g,'-'
-      # stubby4j uses 'body' stubby4node uses 'content'
-      yaml = yaml.replace /\sbody:/g,' content:'
 
       fs.writeFile 'data/data4node.yaml', yaml, 'utf8', (err) ->
          throw err if err
