@@ -13,7 +13,7 @@ describe 'Contract', ->
             headers : 
                property : 'value'
             status : 204
-            content : 'success!'
+            body : 'success!'
 
    it 'should return true for valid data', ->
       result = sut data
@@ -115,8 +115,8 @@ describe 'Contract', ->
 
             expect(result).toBeFalsy()
 
-      it 'should allow empty content', ->
-         data.response.content = null
+      it 'should allow empty body', ->
+         data.response.body = null
 
          result = sut data
 

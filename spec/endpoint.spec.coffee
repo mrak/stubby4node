@@ -41,14 +41,14 @@ describe 'Endpoint', ->
 
          expect(actual.request.post).toEqual expected
 
-      it 'should stringify object content in response', ->
+      it 'should stringify object body in response', ->
          expected = '{"property":"value"}'
-         data.response.content =
+         data.response.body =
             property: "value"
 
          actual = sut.applyDefaults data
 
-         expect(actual.response.content).toEqual expected
+         expect(actual.response.body).toEqual expected
 
    describe 'operations', ->
       success = null
@@ -189,11 +189,11 @@ describe 'Endpoint', ->
 
             expect(missing).toHaveBeenCalled()
 
-         it 'should call success after timeout if data response has a wait time', ->
+         it 'should call success after timeout if data response has a latency', ->
             row =
                request: {}
                response:
-                  wait: 1000
+                  latency: 1000
 
             sut.db = [row]
             sut.find data, success, missing
