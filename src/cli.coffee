@@ -34,9 +34,10 @@ exports.CLI = class CLI
       @ports.admin = parseInt(argv[adminOptionIndex]) ? @ports.admin if adminOptionIndex
 
    red: '\u001b[31m'
-   yellow: '\u001b[33m'
    green: '\u001b[32m'
+   yellow: '\u001b[33m'
    blue: '\u001b[34m'
+   purple: '\u001b[35m'
    reset: '\u001b[0m'
 
    info: (msg) ->
@@ -46,4 +47,6 @@ exports.CLI = class CLI
    error: (msg) ->
       console.error "#{@red}#{msg}#{@reset}"
    warn: (msg) ->
-      console.warn "#{@yellow}#{msg}#{@yellow}"
+      console.warn "#{@yellow}#{msg}#{@reset}"
+   notice: (msg) ->
+      console.log "#{@purple}#{msg}#{@reset}"

@@ -1,4 +1,5 @@
 Contract = require('../models/Contract').Contract
+cli = new (require('../cli').CLI)()
 
 exports.Admin = class Admin
    constructor : (endpoint) ->
@@ -115,6 +116,12 @@ exports.Admin = class Admin
       return url.replace @urlPattern, '$1'
 
    server : (request, response) =>
+      date = new Date()
+      hours = "0#{date.getHours()}".slice -2
+      minutes = "0#{date.getMinutes()}".slice -2
+      seconds = "0#{date.getSeconds()}".slice -2
+      cli.info "#{hours}:#{minutes}:#{seconds} -> #{request.method} #{request.headers.host}#{request.url}"
+
       if @urlValid request.url
          switch request.method.toUpperCase()
             when 'PUT'    then @goPUT request, response

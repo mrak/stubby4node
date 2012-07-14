@@ -2,7 +2,7 @@ cli = new (require('../cli').CLI)()
 
 exports.Endpoint = class Endpoint
    constructor : (data)->
-      success = -> cli.success 'Created an endpoint'
+      success = -> cli.notice 'Created an endpoint'
       @db = {}
       @lastId = 0
       @create data, success

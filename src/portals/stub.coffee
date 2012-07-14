@@ -9,7 +9,7 @@ exports.Stub = class Stub
       hours = "0#{date.getHours()}".slice -2
       minutes = "0#{date.getMinutes()}".slice -2
       seconds = "0#{date.getSeconds()}".slice -2
-      outputMsg = "#{hours}:#{minutes}:#{seconds} -> #{request.method} #{request.url}"
+      outputMsg = "#{hours}:#{minutes}:#{seconds} -> #{request.method} #{request.headers.host}#{request.url}"
 
       data = null
       request.on 'data', (chunk) ->
