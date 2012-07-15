@@ -1,8 +1,8 @@
-cli = new (require('../cli').CLI)()
+CLI = require('../cli').CLI
 
 exports.Endpoint = class Endpoint
    constructor : (data)->
-      success = -> cli.notice 'Created an endpoint'
+      success = -> CLI.notice 'Created an endpoint'
       @db = {}
       @lastId = 0
       @create data, success

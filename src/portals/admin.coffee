@@ -1,5 +1,5 @@
 Contract = require('../models/Contract').Contract
-cli = new (require('../cli').CLI)()
+CLI = require('../cli').CLI
 
 exports.Admin = class Admin
    constructor : (endpoint) ->
@@ -120,7 +120,7 @@ exports.Admin = class Admin
       hours = "0#{date.getHours()}".slice -2
       minutes = "0#{date.getMinutes()}".slice -2
       seconds = "0#{date.getSeconds()}".slice -2
-      cli.info "#{hours}:#{minutes}:#{seconds} -> #{request.method} #{request.headers.host}#{request.url}"
+      CLI.info "#{hours}:#{minutes}:#{seconds} -> #{request.method} #{request.headers.host}#{request.url}"
 
       if @urlValid request.url
          switch request.method.toUpperCase()

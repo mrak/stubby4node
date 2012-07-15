@@ -1,37 +1,68 @@
 fs = require 'fs'
-exports.CLI = class CLI
-   constructor : ->
-      argv = process.argv
-      @file = []
-      @ports =
-         #stub : 8882
-         #admin : 8889
-         stub : 80
-         admin : 81
+exports.CLI = CLI =
+   help: (argv, quit = false) ->
+      argv ?= process.argv
+
+      if '--help' in argv or '-h' in argv
+         console.log """
+            stubby4node [-s <port>] [-a <port>] [-f <file>] [-h]\n
+            -s, --stub [PORT]                    port that stub portal should run on
+            -a, --admin [PORT]                   port that admin portal should run on
+            -f, --file [FILE.{json|yml|yaml}]    data file to pre-load endoints
+            -h, --help                           this help text
+         """
+         process.exit 0 if quit
+
+   getAdmin: (argv) ->
+      argv ?= process.argv
+      admin = 81
+
+      adminOptionIndex = argv.indexOf('--admin') + 1 or argv.indexOf('-a') + 1
+      admin = parseInt(argv[adminOptionIndex]) ? admin if adminOptionIndex
+
+      return admin
+
+   getStub: (argv) ->
+      argv ?= process.argv
+      stub = 80
+
+      stubOptionIndex = argv.indexOf('--stub') + 1 or argv.indexOf('-s') + 1
+      stub = parseInt(argv[stubOptionIndex]) ? stub if stubOptionIndex
+
+      return stub
+
+   getFile: (argv) ->
+      argv ?= process.argv
+      file = []
 
       fileOptionIndex = argv.indexOf('--file') + 1 or argv.indexOf('-f') + 1
       if fileOptionIndex
          filename = argv[fileOptionIndex]
-         file = fs.readFileSync filename, 'utf8'
+         filedata = fs.readFileSync filename, 'utf8'
          extension = filename.replace /^.*\.([a-zA-Z0-9]+)$/, '$1'
-         if file
+         if filedata
             switch extension
                when 'json'
                   try
-                     @file = JSON.parse file
+                     file = JSON.parse filedata
                   catch e
                      console.error "Couldn't load #{filename} due to syntax errors:"
                      console.dir e
-                     @file = []
+                     file = []
                when 'yaml','yml'
                   yaml = require 'js-yaml'
-                  @file = yaml.load file
+                  file = yaml.load filedata
 
-      stubOptionIndex = argv.indexOf('--stub') + 1 or argv.indexOf('-s') + 1
-      @ports.stub = parseInt(argv[stubOptionIndex]) ? @ports.stub if stubOptionIndex
+      return file
 
-      adminOptionIndex = argv.indexOf('--admin') + 1 or argv.indexOf('-a') + 1
-      @ports.admin = parseInt(argv[adminOptionIndex]) ? @ports.admin if adminOptionIndex
+   getArgs: (argv) ->
+      argv ?= process.argv
+      @help argv, true
+
+      args =
+         file: @getFile argv
+         stub: @getStub argv
+         admin: @getAdmin argv
 
    red: '\u001b[31m'
    green: '\u001b[32m'

@@ -1,4 +1,4 @@
-cli = new (require('../cli').CLI)()
+CLI = require('../cli').CLI
 
 exports.Stub = class Stub
    constructor : (rNr) ->
@@ -26,15 +26,15 @@ exports.Stub = class Stub
             if typeof rNr.body is 'object' then rNr.body = JSON.stringify rNr.body
             response.write rNr.body if rNr.body?
             response.end()
-            cli.success outputMsg
+            CLI.success outputMsg
          error = ->
             response.writeHead 500, {}
-            cli.error "#{outputMsg} unexpectedly generated a server error"
+            CLI.error "#{outputMsg} unexpectedly generated a server error"
             response.end()
          notFound = ->
             response.writeHead 404, {}
             response.end()
-            cli.warn "#{outputMsg} is not a registered endpoint"
+            CLI.warn "#{outputMsg} is not a registered endpoint"
 
          try
             rNr = @RnR.find criteria, success, notFound

@@ -5,17 +5,17 @@ CLI = require('./cli').CLI
 
 http = require 'http'
 
-cli = new CLI()
-endpoint = new Endpoint(cli.file)
+args = CLI.getArgs()
+endpoint = new Endpoint(args.file)
 
 console.log ''
 
 stubServer = (new Stub(endpoint)).server
-http.createServer(stubServer).listen cli.ports.stub
-cli.info "Stub portal running at localhost:#{cli.ports.stub}"
+http.createServer(stubServer).listen args.stub
+CLI.info "Stub portal running at localhost:#{args.stub}"
 
 adminServer  = (new Admin(endpoint)).server
-http.createServer(adminServer).listen cli.ports.admin
-cli.info "Admin portal running at localhost:#{cli.ports.admin}"
+http.createServer(adminServer).listen args.admin
+CLI.info "Admin portal running at localhost:#{args.admin}"
 
 console.log '\nREQUESTS:'

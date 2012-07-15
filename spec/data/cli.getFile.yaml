@@ -1,0 +1,19 @@
+-  request:
+      url: /testput
+      method: PUT
+      post: test data
+   response:
+      headers:
+         content-type: text/plain
+      status: 404
+      latency: 2000
+      body: test response
+-  request:
+      url: /testdelete
+      method: DELETE
+      post: null
+   response:
+      headers:
+         content-type: text/plain
+      status: 204
+      body: null
