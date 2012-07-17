@@ -30,11 +30,14 @@ Some systems require you to `sudo` before running services on port 80
 
 ## Command-line switches
 
-`-s, --stub [PORT]` to supply a port number for the stub portal (defaults to 80)
+```
+stubby4node [-s <port>] [-a <port>] [-f <file>] [-h]
 
-`-a, --admin [PORT]` to supply a port number for the admin portal (defaults to 81)
-
-`-f, --file [FILE.{json|yml|yaml}]` containing a list of endpoints to pre-populate the server with
+-s, --stub [PORT]                    port that stub portal should run on
+-a, --admin [PORT]                   port that admin portal should run on
+-f, --file [FILE.{json|yml|yaml}]    data file to pre-load endoints
+-h, --help                           this help text
+```
 
 ## The Admin Portal
 
