@@ -4,7 +4,7 @@ A light-weight (9kb) configurable server for mocking/stubbing external systems d
 
 ## Requirements
 
-* [node.js](http://nodejs.org/) (tested with v0.6.15-v0.8.1)
+* [node.js](http://nodejs.org/) (tested with v0.6.15-v0.8.2)
 * [CoffeeScript](http://coffeescript.org/)
 
 ### More Optionals (for debugging/testing)
