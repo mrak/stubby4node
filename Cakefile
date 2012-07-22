@@ -2,7 +2,7 @@
 fs = require 'fs'
 
 task 'build', 'Generates stubby4node as a single executeable file', ->
-   singlefile = 'stubby4node'
+   singlefile = 'bin/stubby4node'
    appSrc = new Array
    files = [
       'cli'

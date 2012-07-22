@@ -9,6 +9,11 @@ describe 'Contract', ->
             url : "something"
             method : 'POST'
             post : 'form data'
+            headers :
+               property : 'value'
+            auth:
+               username : 'Afmrak'
+               password : 'stubby'
          response :
             headers : 
                property : 'value'
@@ -28,19 +33,50 @@ describe 'Contract', ->
 
          expect(result).toBeFalsy()
 
-      it 'should return false for a missing url', ->
-         data.request.url = null
+      describe 'headers', ->
+         it 'can be absent', ->
+            data.request.headers = null
 
-         result = sut data
+            result = sut data
 
-         expect(result).toBeFalsy()
+            expect(result).toBeTruthy()
 
-      it 'should allow a missing method (defaults to 200)', ->
-         data.request.method = null
+         it 'cannot be an array', ->
+            data.request.headers = ['one', 'two']
 
-         result = sut data
+            result = sut data
 
-         expect(result).toBeTruthy()
+            expect(result).toBeFalsy()
+
+         it 'cannot be a string', ->
+            data.request.headers = 'one'
+
+            result = sut data
+
+            expect(result).toBeFalsy()
+
+      describe 'url', ->
+         it 'should return false for a missing url', ->
+            data.request.url = null
+
+            result = sut data
+
+            expect(result).toBeFalsy()
+
+      describe 'method', ->
+         it 'should allow a missing method (defaults to GET)', ->
+            data.request.method = null
+
+            result = sut data
+
+            expect(result).toBeTruthy()
+
+         it 'should fail if method isnt HTTP 1.1', ->
+            data.request.method = 'QUEST'
+
+            result = sut data
+
+            expect(result).toBeFalsy()
 
       it 'should allow a missing post field', ->
          data.request.post = null

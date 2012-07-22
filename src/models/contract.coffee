@@ -2,6 +2,10 @@ request =
    url : (url) ->
       if not url then return false
       true
+   headers : (headers) ->
+      if headers instanceof Array then return false
+      if typeof headers isnt 'object' then return false
+      true
    method : (method) ->
       if not method then return true
       return method in [
@@ -38,11 +42,9 @@ exports.Contract = class Contract
 
       if not endpoint.request or not endpoint.response then return false
 
-      return request.url(endpoint.request.url) and
-             request.method(endpoint.request.method) and
-             request.post(endpoint.request.post) and
-             response.status(endpoint.response.status) and
-             response.headers(endpoint.response.headers) and
-             response.body(endpoint.response.body)
-             response.latency(endpoint.response.latency)
+      for property of request
+         if not request[property] endpoint.request[property] then return false
+      for property of response
+         if not response[property] endpoint.response[property] then return false
 
+      return true

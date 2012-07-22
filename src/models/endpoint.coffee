@@ -57,12 +57,13 @@ exports.Endpoint = class Endpoint
 
    find : (data, success, notFound) ->
       for id, endpoint of @db
-         if endpoint.request.url is data.url and
-         endpoint.request.post is data.post and
-         endpoint.request.method is data.method
-            if parseInt endpoint.response.latency
-               return setTimeout (-> success endpoint.response), endpoint.response.latency
-            else
-               return success endpoint.response
+         if endpoint.request.url isnt data.url then continue
+         if endpoint.request.post isnt data.post then continue
+         if endpoint.request.method isnt data.method then continue
+
+         if parseInt endpoint.response.latency
+            return setTimeout (-> success endpoint.response), endpoint.response.latency
+         else
+            return success endpoint.response
 
       notFound()
