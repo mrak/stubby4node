@@ -184,6 +184,50 @@ describe 'Endpoint', ->
 
             expect(success).toHaveBeenCalledWith row.response
 
+         it 'should return response if all headers of request match', ->
+            row =
+               request:
+                  headers:
+                     'content-type': 'application/json'
+               response: {}
+            data =
+               headers:
+                  'content-type': 'application/json'
+
+            sut.db = [row]
+
+            sut.find data, success, missing
+
+            expect(success).toHaveBeenCalledWith row.response
+
+         it 'should NOT return response if all headers of request dont match', ->
+            row =
+               request:
+                  headers:
+                     'content-type': 'application/json'
+               response: {}
+            data =
+               headers:
+                  'authentication': 'Basic gibberish:password'
+
+            sut.db = [row]
+
+            sut.find data, success, missing
+
+            expect(success).not.toHaveBeenCalled()
+
+         it 'should return response if no headers are on endpoint or response', ->
+            row =
+               request: {}
+               response: {}
+            data = {}
+
+            sut.db = [row]
+
+            sut.find data, success, missing
+
+            expect(success).toHaveBeenCalledWith row.response
+
          it 'should call missing if operation does not find item', ->
             sut.find data, success, missing
 

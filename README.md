@@ -50,6 +50,7 @@ Submit `POST` requests to `localhost:81` or load a file (-f) with the following 
 * `request`: describes the client's call to the server
    * `method`: GET/POST/PUT/DELETE/etc.
    * `url`: the URI string. GET parameters should also be included inline here
+   * `headers`: a key/value map of headers the server should respond to
    * `post`: a string matching the textual body of the response.
 * `response`: describes the server's response to the client
    * `headers`: a key/value map of headers the server should use in it's response
@@ -62,6 +63,8 @@ Submit `POST` requests to `localhost:81` or load a file (-f) with the following 
 -  request:
       url: /path/to/something
       method: POST
+      headers:
+         authorization: "Basic usernamez:passwordinBase64"
       post: this is some post data in textual format
    response:
       headers:
@@ -73,6 +76,8 @@ Submit `POST` requests to `localhost:81` or load a file (-f) with the following 
 -  request:
       url: /path/to/anotherThing?a=anything&b=more
       method: GET
+      headers:
+         Content-Type: application/json
       post:
    response:
       headers:
@@ -84,6 +89,8 @@ Submit `POST` requests to `localhost:81` or load a file (-f) with the following 
 -  request:
       url: /path/to/thing
       method: POST
+      headers:
+         Content-Type: application/json
       post: this is some post data in textual format
    response:
       headers:
@@ -99,6 +106,9 @@ Submit `POST` requests to `localhost:81` or load a file (-f) with the following 
     "request": {
       "url": "/path/to/something", 
       "post": "this is some post data in textual format", 
+      "headers": {
+         "authorization": "Basic usernamez:passwordinBase64"
+      },
       "method": "POST"
     }, 
     "response": {
@@ -113,6 +123,9 @@ Submit `POST` requests to `localhost:81` or load a file (-f) with the following 
   {
     "request": {
       "url": "/path/to/anotherThing?a=anything&b=more", 
+      "headers": {
+        "Content-Type": "application/json"
+      },
       "post": null, 
       "method": "GET"
     }, 
@@ -128,6 +141,9 @@ Submit `POST` requests to `localhost:81` or load a file (-f) with the following 
   {
     "request": {
       "url": "/path/to/thing", 
+      "headers": {
+        "Content-Type": "application/json"
+      },
       "post": "this is some post data in textual format", 
       "method": "POST"
     }, 
