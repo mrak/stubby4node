@@ -12,11 +12,13 @@
 # Installation
 Assuming you have node and Coffee-Script installed:
 
+## via source
+
     git clone git://github.com/Afmrak/stubby4node.git
     cd stubby4node
     cake build
 
-## OR
+## or via npm
 
     npm install -g stubby
 
@@ -194,3 +196,9 @@ From the root directory run:
 * Dynamic port switching
 * HTTP/SSL auth mocking
 * Randomized responses based on supplied pattern (exploratory QA abuse)
+
+# NOTES
+
+* __Copyright__ 2012 Eric Mrak, Alexander Zagniotov, Isa Goksu
+* __License__ Apache v2.0
+

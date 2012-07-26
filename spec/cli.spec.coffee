@@ -64,26 +64,26 @@ describe 'CLI', ->
 
    describe 'getStub', ->
       it 'should return default if no flag provided', ->
-         expected = 80
+         expected = 8882
          actual = sut.getStub []
 
          expect(actual).toBe expected
 
       it 'should return supplied value when provided', ->
-         expected = 8882
+         expected = 80
          actual = sut.getStub ['-s', expected]
 
          expect(actual).toBe expected
 
    describe 'getAdmin', ->
       it 'should return default if no flag provided', ->
-         expected = 81
+         expected = 8889
          actual = sut.getAdmin []
 
          expect(actual).toBe expected
 
       it 'should return supplied value when provided', ->
-         expected = 8889
+         expected = 81
          actual = sut.getAdmin ['-a', expected]
 
          expect(actual).toBe expected
