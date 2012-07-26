@@ -25,10 +25,10 @@
    ],
    "scripts": {
       "preinstall": "cake build",
-      "start": "coffee ./bin/stubby"
+      "start": "coffee ./stubby"
    },
    "bin": {
-      "stubby": "./bin/stubby"
+      "stubby": "./stubby"
    },
    "repository": {
       "type": "git",
