@@ -1,38 +1,34 @@
-# stubby4node
-
-A light-weight configurable server for mocking/stubbing external systems during development. Uses Node.js and written in Coffeescript
-
-## Requirements
+# Requirements
 
 * [node.js](http://nodejs.org/) (tested with v0.6.15-v0.8.2)
 * [CoffeeScript](http://coffeescript.org/)
 
-### More Optionals (for debugging/testing)
+## More Optionals (for debugging/testing)
 
 * [JS-YAML](https://github.com/nodeca/js-yaml) for loading yaml files
 * [node-inspector](https://github.com/dannycoates/node-inspector)
 * [jasmine-node](https://github.com/mhevery/jasmine-node)
 
-## Installation
+# Installation
 Assuming you have node and Coffee-Script installed:
 
     git clone git://github.com/Afmrak/stubby4node.git
     cd stubby4node
     cake build
 
-### OR
+## OR
 
     npm install -g stubby
 
 This will create the executable `stubby` in the root level of the project.
 
-## Starting the Server(s)
+# Starting the Server(s)
 
 Some systems require you to `sudo` before running services on port 80 (stubby's default)
 
-    [sudo] ./stubby
+    [sudo] stubby
 
-## Command-line switches
+# Command-line switches
 
 ```
 stubby [-s <port>] [-a <port>] [-f <file>] [-h]
@@ -43,11 +39,11 @@ stubby [-s <port>] [-a <port>] [-f <file>] [-h]
 -h, --help                           this help text
 ```
 
-## The Admin Portal
+# The Admin Portal
 
 The admin portal is a RESTful(ish) endpoint running on `localhost:81`.
 
-### Supplying Endpoints to Stub
+## Supplying Endpoints to Stub
 
 Submit `POST` requests to `localhost:81` or load a file (-f) with the following structure:
 
@@ -62,7 +58,7 @@ Submit `POST` requests to `localhost:81` or load a file (-f) with the following 
    * `body`: the textual body of the server's response to the client
    * `status`: the numerical HTTP status code (200 for OK, 404 for NOT FOUND, etc.)
 
-#### YAML (file only)
+### YAML (file only)
 ```yaml
 -  request:
       url: /path/to/something
@@ -103,7 +99,7 @@ Submit `POST` requests to `localhost:81` or load a file (-f) with the following 
       body:
 ```
 
-#### JSON (file or POST/PUT)
+### JSON (file or POST/PUT)
 ```json
 [
   {
@@ -164,25 +160,25 @@ Submit `POST` requests to `localhost:81` or load a file (-f) with the following 
 
 If you want to load more than one endpoint via file, use either a JSON array or YAML list (-) syntax. On success, the response will contain `Content-Location` in the header with the newly created resources' location
 
-### Getting the Current List of Stubbed Responses
+## Getting the Current List of Stubbed Responses
 
 Performing a `GET` request on `localhost:81` will return a JSON array of all currently saved responses. It will reply with `204 : No Content` if there are none saved.
 
 Performing a `GET` request on `localhost:81/<id>` will return the JSON object representing the response with the supplied id.
 
-### Change existing responses
+## Change existing responses
 
 Perform `PUT` requests in the same format as using `POST`, only this time supply the id in the path. For instance, to update the response with id 4 you would `PUT` to `localhost:81/4`.
 
-### Deleting responses
+## Deleting responses
 
 Send a `DELETE` request to `localhost:81/<id>`
 
-## The Stub Portal
+# The Stub Portal
 
 Requests sent to any url at `localhost` or `localhost:80` will search through the available endpoints and, if a match is found, respond with that endpoint's `response` data
 
-## Running tests
+# Running tests
 
 If you don't have jasmine-node already, install it:
 
@@ -192,7 +188,7 @@ From the root directory run:
 
     jasmine-node --coffee spec
 
-## TODO
+# TODO
 
 * `PUT`ing multiple responses at a time.
 * SOAP request/response compliance
