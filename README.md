@@ -1,6 +1,6 @@
 # stubby4node
 
-A light-weight (9kb) configurable server for mocking/stubbing external systems during development. Uses Node.js and written in Coffeescript
+A light-weight configurable server for mocking/stubbing external systems during development. Uses Node.js and written in Coffeescript
 
 ## Requirements
 
@@ -20,18 +20,22 @@ Assuming you have node and Coffee-Script installed:
     cd stubby4node
     cake build
 
-This will create the executable `stubby4node` in the root level of the project.
+### OR
+
+    npm install -g stubby
+
+This will create the executable `stubby` in the root level of the project.
 
 ## Starting the Server(s)
 
-Some systems require you to `sudo` before running services on port 80
+Some systems require you to `sudo` before running services on port 80 (stubby's default)
 
-    [sudo] ./stubby4node
+    [sudo] ./stubby
 
 ## Command-line switches
 
 ```
-stubby4node [-s <port>] [-a <port>] [-f <file>] [-h]
+stubby [-s <port>] [-a <port>] [-f <file>] [-h]
 
 -s, --stub [PORT]                    port that stub portal should run on
 -a, --admin [PORT]                   port that admin portal should run on
