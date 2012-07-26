@@ -5,17 +5,17 @@ exports.CLI = CLI =
 
       if '--help' in argv or '-h' in argv
          console.log """
-            stubby4node [-s <port>] [-a <port>] [-f <file>] [-h]\n
-            -s, --stub [PORT]                    port that stub portal should run on
-            -a, --admin [PORT]                   port that admin portal should run on
-            -f, --file [FILE.{json|yml|yaml}]    data file to pre-load endoints
-            -h, --help                           this help text
+            stubby [-s <port>] [-a <port>] [-f <file>] [-h]\n
+            -s, --stub [PORT]                    Port that stub portal should run on. Defaults to 8882
+            -a, --admin [PORT]                   Port that admin portal should run on. Defaults to 8889
+            -f, --file [FILE.{json|yml|yaml}]    Data file to pre-load endoints.
+            -h, --help                           This help text.
          """
          process.exit 0 if quit
 
    getAdmin: (argv) ->
       argv ?= process.argv
-      admin = 81
+      admin = 8889
 
       adminOptionIndex = argv.indexOf('--admin') + 1 or argv.indexOf('-a') + 1
       admin = parseInt(argv[adminOptionIndex]) ? admin if adminOptionIndex
@@ -24,7 +24,7 @@ exports.CLI = CLI =
 
    getStub: (argv) ->
       argv ?= process.argv
-      stub = 80
+      stub = 8882
 
       stubOptionIndex = argv.indexOf('--stub') + 1 or argv.indexOf('-s') + 1
       stub = parseInt(argv[stubOptionIndex]) ? stub if stubOptionIndex

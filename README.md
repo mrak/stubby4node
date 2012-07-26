@@ -24,28 +24,27 @@ This will create the executable `stubby` in the root level of the project.
 
 # Starting the Server(s)
 
-Some systems require you to `sudo` before running services on port 80 (stubby's default)
+Some systems require you to `sudo` before running services on port certain ports (like 80)
 
     [sudo] stubby
 
 # Command-line switches
 
 ```
-stubby [-s <port>] [-a <port>] [-f <file>] [-h]
-
--s, --stub [PORT]                    port that stub portal should run on
--a, --admin [PORT]                   port that admin portal should run on
--f, --file [FILE.{json|yml|yaml}]    data file to pre-load endoints
--h, --help                           this help text
+stubby [-s <port>] [-a <port>] [-f <file>] [-h]\n
+-s, --stub [PORT]                    Port that stub portal should run on. Defaults to 8882
+-a, --admin [PORT]                   Port that admin portal should run on. Defaults to 8889
+-f, --file [FILE.{json|yml|yaml}]    Data file to pre-load endoints.
+-h, --help                           This help text.
 ```
 
 # The Admin Portal
 
-The admin portal is a RESTful(ish) endpoint running on `localhost:81`.
+The admin portal is a RESTful(ish) endpoint running on `localhost:8889`.
 
 ## Supplying Endpoints to Stub
 
-Submit `POST` requests to `localhost:81` or load a file (-f) with the following structure:
+Submit `POST` requests to `localhost:8889` or load a file (-f) with the following structure:
 
 * `request`: describes the client's call to the server
    * `method`: GET/POST/PUT/DELETE/etc.
@@ -162,21 +161,21 @@ If you want to load more than one endpoint via file, use either a JSON array or 
 
 ## Getting the Current List of Stubbed Responses
 
-Performing a `GET` request on `localhost:81` will return a JSON array of all currently saved responses. It will reply with `204 : No Content` if there are none saved.
+Performing a `GET` request on `localhost:8889` will return a JSON array of all currently saved responses. It will reply with `204 : No Content` if there are none saved.
 
-Performing a `GET` request on `localhost:81/<id>` will return the JSON object representing the response with the supplied id.
+Performing a `GET` request on `localhost:8889/<id>` will return the JSON object representing the response with the supplied id.
 
 ## Change existing responses
 
-Perform `PUT` requests in the same format as using `POST`, only this time supply the id in the path. For instance, to update the response with id 4 you would `PUT` to `localhost:81/4`.
+Perform `PUT` requests in the same format as using `POST`, only this time supply the id in the path. For instance, to update the response with id 4 you would `PUT` to `localhost:8889/4`.
 
 ## Deleting responses
 
-Send a `DELETE` request to `localhost:81/<id>`
+Send a `DELETE` request to `localhost:8889/<id>`
 
 # The Stub Portal
 
-Requests sent to any url at `localhost` or `localhost:80` will search through the available endpoints and, if a match is found, respond with that endpoint's `response` data
+Requests sent to any url at `localhost` or `localhost:8882` will search through the available endpoints and, if a match is found, respond with that endpoint's `response` data
 
 # Running tests
 
