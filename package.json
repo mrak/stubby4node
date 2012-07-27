@@ -41,13 +41,9 @@
    "optionalDependencies": {
       "js-yaml": ">=1.0.1"
    },
-   "devDependencies": {
-      "jasmine-node": "1.0.x",
-      "node-inspector": "0.2.x"
-   },
    "preferGlobal": true,
    "license": "Apache",
    "engine": {
-      "node": ">=0.6.15"
+      "node": ">=0.4.12"
    }
 }
