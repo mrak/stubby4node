@@ -1,0 +1,316 @@
+#!/usr/bin/env coffee
+fs = require 'fs'
+exports.CLI = CLI =
+   help: (argv, quit = false) ->
+      argv ?= process.argv
+      if '--help' in argv or '-h' in argv
+         console.log """
+            stubby [-s <port>] [-a <port>] [-f <file>] [-h]\n
+            -s, --stub [PORT]                    Port that stub portal should run on. Defaults to 8882
+            -a, --admin [PORT]                   Port that admin portal should run on. Defaults to 8889
+            -f, --file [FILE.{json|yml|yaml}]    Data file to pre-load endoints.
+            -h, --help                           This help text.
+         """
+         process.exit 0 if quit
+   getAdmin: (argv) ->
+      argv ?= process.argv
+      admin = 8889
+      adminOptionIndex = argv.indexOf('--admin') + 1 or argv.indexOf('-a') + 1
+      admin = parseInt(argv[adminOptionIndex]) ? admin if adminOptionIndex
+      return admin
+   getStub: (argv) ->
+      argv ?= process.argv
+      stub = 8882
+      stubOptionIndex = argv.indexOf('--stub') + 1 or argv.indexOf('-s') + 1
+      stub = parseInt(argv[stubOptionIndex]) ? stub if stubOptionIndex
+      return stub
+   getFile: (argv) ->
+      argv ?= process.argv
+      file = []
+      fileOptionIndex = argv.indexOf('--file') + 1 or argv.indexOf('-f') + 1
+      if fileOptionIndex
+         filename = argv[fileOptionIndex]
+         filedata = fs.readFileSync filename, 'utf8'
+         extension = filename.replace /^.*\.([a-zA-Z0-9]+)$/, '$1'
+         if filedata
+            switch extension
+               when 'json'
+                  try
+                     file = JSON.parse filedata
+                  catch e
+                     console.error "Couldn't load #{filename} due to syntax errors:"
+                     console.dir e
+                     file = []
+               when 'yaml','yml'
+                  yaml = require 'js-yaml'
+                  file = yaml.load filedata
+      return file
+   getArgs: (argv) ->
+      argv ?= process.argv
+      @help argv, true
+      args =
+         file: @getFile argv
+         stub: @getStub argv
+         admin: @getAdmin argv
+   red: '\u001b[31m'
+   green: '\u001b[32m'
+   yellow: '\u001b[33m'
+   blue: '\u001b[34m'
+   purple: '\u001b[35m'
+   reset: '\u001b[0m'
+   info: (msg) ->
+      console.log "#{@blue}#{msg}#{@reset}"
+   success: (msg) ->
+      console.log "#{@green}#{msg}#{@reset}"
+   error: (msg) ->
+      console.error "#{@red}#{msg}#{@reset}"
+   warn: (msg) ->
+      console.warn "#{@yellow}#{msg}#{@reset}"
+   notice: (msg) ->
+      console.log "#{@purple}#{msg}#{@reset}"
+request =
+   url : (url) ->
+      if not url then return false
+      true
+   headers : (headers) ->
+      if headers instanceof Array then return false
+      if typeof headers isnt 'object' then return false
+      true
+   method : (method) ->
+      if not method then return true
+      return method in [
+         'GET'
+         'PUT'
+         'POST'
+         'HEAD'
+         'TRACE'
+         'DELETE'
+         'CONNECT'
+         'OPTIONS'
+      ]
+   post : (post) -> true
+response =
+   status : (status) ->
+      if not status then return true
+      if not parseInt status then return false
+      true
+   headers : (headers) ->
+      if headers instanceof Array then return false
+      if typeof headers isnt 'object' then return false
+      true
+   body : -> true
+   latency : -> true
+exports.Contract = class Contract
+   constructor : (endpoint) ->
+      if typeof endpoint is 'string'
+         try
+            endpoint = JSON.parse endpoint
+         catch e
+            return false
+      if not endpoint.request or not endpoint.response then return false
+      for property of request
+         if not request[property] endpoint.request[property] then return false
+      for property of response
+         if not response[property] endpoint.response[property] then return false
+      return true
+exports.Endpoint = class Endpoint
+   constructor : (data)->
+      success = -> CLI.notice 'Created an endpoint'
+      @db = {}
+      @lastId = 0
+      @create data, success
+   applyDefaults : (data) ->
+      data.request.method = data.request.method ? 'GET'
+      data.request.post = data.request.post ? null
+      data.response.headers = data.response.headers ? {}
+      data.response.status = parseInt(data.response.status) or 200
+      data.response.body = JSON.stringify(data.response.body) if typeof data.response.body is 'object'
+      return data
+   create : (data, success) ->
+      insert = (item)=>
+         @applyDefaults item
+         item.id = ++@lastId
+         @db[item.id] = item
+         success item.id
+      if data instanceof Array
+         data.forEach insert
+      else if data
+         insert data
+   retrieve : (id, success, missing) ->
+      if not @db[id] then return missing()
+      success @db[id]
+   update : (id, data, success, missing) ->
+      if not @db[id] then return missing()
+      endpoint = @applyDefaults data
+      endpoint.id = id
+      @db[endpoint.id] = endpoint
+      success()
+   delete : (id, success, missing) ->
+      if not @db[id] then return missing()
+      delete @db[id]
+      success()
+   gather : (success, none) ->
+      all = []
+      for id, endpoint of @db
+         all.push endpoint
+      if all.length is 0 then none() else success all
+   find : (data, success, notFound) ->
+      for id, endpoint of @db
+         if endpoint.request.url isnt data.url then continue
+         if endpoint.request.post isnt data.post then continue
+         if endpoint.request.method isnt data.method then continue
+         headersMatch = true
+         if endpoint.request.headers? and data.headers?
+            for key, value of endpoint.request.headers
+               if endpoint.request.headers[key] isnt data.headers[key] then headersMatch = false
+         if not headersMatch then continue
+         if parseInt endpoint.response.latency
+            return setTimeout (-> success endpoint.response), endpoint.response.latency
+         else
+            return success endpoint.response
+      notFound()
+exports.Stub = class Stub
+   constructor : (rNr) ->
+      @RnR = rNr
+   server : (request, response) =>
+      date = new Date()
+      hours = "0#{date.getHours()}".slice -2
+      minutes = "0#{date.getMinutes()}".slice -2
+      seconds = "0#{date.getSeconds()}".slice -2
+      outputMsg = "#{hours}:#{minutes}:#{seconds} -> #{request.method} #{request.headers.host}#{request.url}"
+      data = null
+      request.on 'data', (chunk) ->
+         data = data ? ''
+         data += chunk
+      request.on 'end', =>
+         criteria =
+            url : request.url
+            method : request.method
+            post : data
+         success = (rNr) ->
+            response.writeHead rNr.status, rNr.headers
+            if typeof rNr.body is 'object' then rNr.body = JSON.stringify rNr.body
+            response.write rNr.body if rNr.body?
+            response.end()
+            CLI.success outputMsg
+         error = ->
+            response.writeHead 500, {}
+            CLI.error "#{outputMsg} unexpectedly generated a server error"
+            response.end()
+         notFound = ->
+            response.writeHead 404, {}
+            response.end()
+            CLI.warn "#{outputMsg} is not a registered endpoint"
+         try
+            rNr = @RnR.find criteria, success, notFound
+         catch e
+            error()
+exports.Admin = class Admin
+   constructor : (endpoint) ->
+      @Endpoint = endpoint
+      @Contract = Contract
+   urlPattern : /^\/([1-9][0-9]*)?$/
+   goPUT : (request, response) =>
+      id = @getId request.url
+      if not id
+         @send.notSupported response
+         return
+      data = ''
+      request.on 'data', (chunk) ->
+         data += chunk
+      request.on 'end', => @processPUT id, data, response
+   goPOST : (request, response) ->
+      id = @getId request.url
+      if id then return @send.notSupported response
+      data = ''
+      request.on 'data', (chunk) ->
+         data += chunk
+      request.on 'end', => @processPOST data, response, request
+   goDELETE : (request, response) =>
+      id = @getId request.url
+      if not id then return @send.notSupported response
+      success = => @send.noContent response
+      notFound = => @send.notFound response
+      @Endpoint.delete id, success, notFound
+   goGET : (request, response) =>
+      id = @getId request.url
+      success = (data) => @send.ok response, data
+      notFound = => @send.notFound response
+      noContent = => @send.noContent response
+      if id
+         @Endpoint.retrieve id, success, notFound
+      else
+         @Endpoint.gather success, noContent
+   processPUT : (id, data, response) =>
+      try
+         data = JSON.parse data
+      catch e
+         return @send.badRequest response
+      if not @Contract data then return @send.badRequest response
+      success = => @send.noContent response
+      notFound = => @send.notFound response
+      @Endpoint.update id, data, success, notFound
+   processPOST : (data, response, request) =>
+      try
+         data = JSON.parse data
+      catch e
+         return @send.badRequest response
+      if not @Contract data then return @send.badRequest response
+      success = (id) => @send.created response, request, id
+      @Endpoint.create data, success
+   send :
+      ok : (response, result) ->
+         response.writeHead 200, {'Content-Type' : 'application/json'}
+         response.write JSON.stringify result
+         response.end()
+      created : (response, request, id) ->
+         response.writeHead 201, {'Content-Location' : "#{request.headers.host}/#{id}"}
+         response.end()
+      noContent : (response) ->
+         response.writeHead 204, {}
+         response.end()
+      notSupported : (response) ->
+         response.writeHead 405, {}
+         response.end()
+      notFound : (response) ->
+         response.writeHead 404, {'Content-Type' : 'text/plain'}
+         response.end()
+      serverError : (response) ->
+         response.writeHead 500, {'Content-Type' : 'text/plain'}
+         response.end()
+      saveError : (response) ->
+         response.writeHead 422, {'Content-Type' : 'text/plain'}
+         response.end()
+      badRequest : (response) ->
+         response.writeHead 400, {'Content-Type' : 'text/plain'}
+         response.end()
+   urlValid : (url) ->
+      return url.match(@urlPattern)?
+   getId : (url) ->
+      return url.replace @urlPattern, '$1'
+   server : (request, response) =>
+      date = new Date()
+      hours = "0#{date.getHours()}".slice -2
+      minutes = "0#{date.getMinutes()}".slice -2
+      seconds = "0#{date.getSeconds()}".slice -2
+      CLI.info "#{hours}:#{minutes}:#{seconds} -> #{request.method} #{request.headers.host}#{request.url}"
+      if @urlValid request.url
+         switch request.method.toUpperCase()
+            when 'PUT'    then @goPUT request, response
+            when 'POST'   then @goPOST request, response
+            when 'DELETE' then @goDELETE request, response
+            when 'GET'    then @goGET request, response
+            else @send.notSupported response
+      else
+         @send.notFound response
+http = require 'http'
+args = CLI.getArgs()
+endpoint = new Endpoint(args.file)
+console.log ''
+stubServer = (new Stub(endpoint)).server
+http.createServer(stubServer).listen args.stub
+CLI.info "Stub portal running at localhost:#{args.stub}"
+adminServer  = (new Admin(endpoint)).server
+http.createServer(adminServer).listen args.admin
+CLI.info "Admin portal running at localhost:#{args.admin}"
+console.log '\nREQUESTS:'
