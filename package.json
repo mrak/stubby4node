@@ -44,6 +44,6 @@
    "preferGlobal": true,
    "license": "Apache",
    "engine": {
-      "node": ">=0.4.12"
+      "node": ">=0.6.x"
    }
 }
