@@ -1,6 +1,12 @@
 {exec} = require 'child_process'
 fs = require 'fs'
 
+task 'test', 'Runs jasmine specs against the sources', ->
+   exec 'jasmine-node --coffee spec', (error, stdout, stderr) ->
+      console.log stdout
+      console.error stderr
+      if error then throw error
+
 task 'build', 'Generates stubby4node as a single executeable file', ->
    singlefile = 'stubby'
    appSrc = new Array

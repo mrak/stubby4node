@@ -25,7 +25,8 @@
    ],
    "scripts": {
       "preinstall": "cake build",
-      "start": "coffee ./stubby"
+      "start": "coffee ./stubby",
+      "test": "cake test"
    },
    "bin": {
       "stubby": "./stubby"
