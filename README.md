@@ -15,7 +15,6 @@
 * [jasmine-node](https://github.com/mhevery/jasmine-node)
 
 # Installation
-Assuming you have node and Coffee-Script installed:
 
 ## via source
 
@@ -23,7 +22,7 @@ Assuming you have node and Coffee-Script installed:
     cd stubby4node
     cake build
 
-## or via npm
+## via npm
 
     npm install -g stubby
 
