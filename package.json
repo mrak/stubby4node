@@ -23,6 +23,7 @@
          "email": "enmrak@gmail.com"
       }
    ],
+   "files": ["stubby"],
    "scripts": {
       "prepublish": "cake build",
       "start": "coffee ./stubby",
