@@ -1,0 +1,276 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>stubby4node by Afmrak</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>stubby4node</h1>
+        <p>A configurable server for stubbing external systems during development. Uses Node.js and written in Coffeescript</p>
+
+        <p class="view"><a href="https://github.com/Afmrak/stubby4node">View the Project on GitHub <small>Afmrak/stubby4node</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/Afmrak/stubby4node/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/Afmrak/stubby4node/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/Afmrak/stubby4node">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p><a href="http://travis-ci.org/Afmrak/stubby4node"><img src="https://secure.travis-ci.org/Afmrak/stubby4node.png?branch=master" alt="Build Status"></a></p>
+
+<h1>Requirements</h1>
+
+<ul>
+<li>
+<a href="http://nodejs.org/">node.js</a> (tested with v0.6.x and v0.8.x)</li>
+</ul><h2>Packaged</h2>
+
+<ul>
+<li><a href="http://coffeescript.org">coffee-script</a></li>
+<li>
+<a href="https://github.com/nodeca/js-yaml">JS-YAML</a> for loading yaml files</li>
+</ul><h2>Optional (for debugging/testing)</h2>
+
+<ul>
+<li><a href="https://github.com/dannycoates/node-inspector">node-inspector</a></li>
+<li><a href="https://github.com/mhevery/jasmine-node">jasmine-node</a></li>
+</ul><h1>Installation</h1>
+
+<h2>via source</h2>
+
+<pre><code>git clone git://github.com/Afmrak/stubby4node.git
+cd stubby4node
+cake build
+</code></pre>
+
+<h2>via npm</h2>
+
+<pre><code>npm install -g stubby
+</code></pre>
+
+<p>This will create the executable <code>stubby</code> in the root level of the project.</p>
+
+<h1>Starting the Server(s)</h1>
+
+<p>Some systems require you to <code>sudo</code> before running services on port certain ports (like 80)</p>
+
+<pre><code>[sudo] stubby
+</code></pre>
+
+<h1>Command-line switches</h1>
+
+<pre><code>stubby [-s &lt;port&gt;] [-a &lt;port&gt;] [-f &lt;file&gt;] [-h]\n
+-s, --stub [PORT]                    Port that stub portal should run on. Defaults to 8882
+-a, --admin [PORT]                   Port that admin portal should run on. Defaults to 8889
+-f, --file [FILE.{json|yml|yaml}]    Data file to pre-load endoints.
+-h, --help                           This help text.
+</code></pre>
+
+<h1>The Admin Portal</h1>
+
+<p>The admin portal is a RESTful(ish) endpoint running on <code>localhost:8889</code>.</p>
+
+<h2>Supplying Endpoints to Stub</h2>
+
+<p>Submit <code>POST</code> requests to <code>localhost:8889</code> or load a file (-f) with the following structure:</p>
+
+<ul>
+<li>
+<code>request</code>: describes the client's call to the server
+
+<ul>
+<li>
+<code>method</code>: GET/POST/PUT/DELETE/etc.</li>
+<li>
+<code>url</code>: the URI string. GET parameters should also be included inline here</li>
+<li>
+<code>headers</code>: a key/value map of headers the server should respond to</li>
+<li>
+<code>post</code>: a string matching the textual body of the response.</li>
+</ul>
+</li>
+<li>
+<code>response</code>: describes the server's response to the client
+
+<ul>
+<li>
+<code>headers</code>: a key/value map of headers the server should use in it's response</li>
+<li>
+<code>latency</code>: the time in milliseconds the server should wait before responding. Useful for testing timeouts and latency</li>
+<li>
+<code>body</code>: the textual body of the server's response to the client</li>
+<li>
+<code>status</code>: the numerical HTTP status code (200 for OK, 404 for NOT FOUND, etc.)</li>
+</ul>
+</li>
+</ul><h3>YAML (file only)</h3>
+
+<div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/path/to/something</span>
+      <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">POST</span>
+      <span class="l-Scalar-Plain">headers</span><span class="p-Indicator">:</span>
+         <span class="l-Scalar-Plain">authorization</span><span class="p-Indicator">:</span> <span class="s">"Basic</span><span class="nv"> </span><span class="s">usernamez:passwordinBase64"</span>
+      <span class="l-Scalar-Plain">post</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">this is some post data in textual format</span>
+   <span class="l-Scalar-Plain">response</span><span class="p-Indicator">:</span>
+      <span class="l-Scalar-Plain">headers</span><span class="p-Indicator">:</span>
+         <span class="l-Scalar-Plain">Content-Type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">application/json</span>
+      <span class="l-Scalar-Plain">latency</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">1000</span>
+      <span class="l-Scalar-Plain">status</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">200</span>
+      <span class="l-Scalar-Plain">body</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">You're request was successfully processed!</span>
+
+<span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/path/to/anotherThing?a=anything&amp;b=more</span>
+      <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">GET</span>
+      <span class="l-Scalar-Plain">headers</span><span class="p-Indicator">:</span>
+         <span class="l-Scalar-Plain">Content-Type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">application/json</span>
+      <span class="l-Scalar-Plain">post</span><span class="p-Indicator">:</span>
+   <span class="l-Scalar-Plain">response</span><span class="p-Indicator">:</span>
+      <span class="l-Scalar-Plain">headers</span><span class="p-Indicator">:</span>
+         <span class="l-Scalar-Plain">Content-Type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">application/json</span>
+         <span class="l-Scalar-Plain">Access-Control-Allow-Origin</span><span class="p-Indicator">:</span> <span class="s">"*"</span>
+      <span class="l-Scalar-Plain">status</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">204</span>
+      <span class="l-Scalar-Plain">body</span><span class="p-Indicator">:</span>
+
+<span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/path/to/thing</span>
+      <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">POST</span>
+      <span class="l-Scalar-Plain">headers</span><span class="p-Indicator">:</span>
+         <span class="l-Scalar-Plain">Content-Type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">application/json</span>
+      <span class="l-Scalar-Plain">post</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">this is some post data in textual format</span>
+   <span class="l-Scalar-Plain">response</span><span class="p-Indicator">:</span>
+      <span class="l-Scalar-Plain">headers</span><span class="p-Indicator">:</span>
+         <span class="l-Scalar-Plain">Content-Type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">application/json</span>
+      <span class="l-Scalar-Plain">status</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">304</span>
+      <span class="l-Scalar-Plain">body</span><span class="p-Indicator">:</span>
+</pre></div>
+
+<h3>JSON (file or POST/PUT)</h3>
+
+<div class="highlight"><pre><span class="p">[</span>
+  <span class="p">{</span>
+    <span class="nt">"request"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">"url"</span><span class="p">:</span> <span class="s2">"/path/to/something"</span><span class="p">,</span> 
+      <span class="nt">"post"</span><span class="p">:</span> <span class="s2">"this is some post data in textual format"</span><span class="p">,</span> 
+      <span class="nt">"headers"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"authorization"</span><span class="p">:</span> <span class="s2">"Basic usernamez:passwordinBase64"</span>
+      <span class="p">},</span>
+      <span class="nt">"method"</span><span class="p">:</span> <span class="s2">"POST"</span>
+    <span class="p">},</span> 
+    <span class="nt">"response"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">"status"</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> 
+      <span class="nt">"headers"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span>
+      <span class="p">},</span>
+      <span class="nt">"latency"</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+      <span class="nt">"body"</span><span class="p">:</span> <span class="s2">"You're request was successfully processed!"</span>
+    <span class="p">}</span>
+  <span class="p">},</span> 
+  <span class="p">{</span>
+    <span class="nt">"request"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">"url"</span><span class="p">:</span> <span class="s2">"/path/to/anotherThing?a=anything&amp;b=more"</span><span class="p">,</span> 
+      <span class="nt">"headers"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span>
+      <span class="p">},</span>
+      <span class="nt">"post"</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span> 
+      <span class="nt">"method"</span><span class="p">:</span> <span class="s2">"GET"</span>
+    <span class="p">},</span> 
+    <span class="nt">"response"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">"status"</span><span class="p">:</span> <span class="mi">204</span><span class="p">,</span> 
+      <span class="nt">"headers"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">,</span>
+        <span class="nt">"Access-Control-Allow-Origin"</span><span class="p">:</span> <span class="s2">"*"</span>
+      <span class="p">},</span> 
+      <span class="nt">"body"</span><span class="p">:</span> <span class="kc">null</span>
+    <span class="p">}</span>
+  <span class="p">},</span> 
+  <span class="p">{</span>
+    <span class="nt">"request"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">"url"</span><span class="p">:</span> <span class="s2">"/path/to/thing"</span><span class="p">,</span> 
+      <span class="nt">"headers"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span>
+      <span class="p">},</span>
+      <span class="nt">"post"</span><span class="p">:</span> <span class="s2">"this is some post data in textual format"</span><span class="p">,</span> 
+      <span class="nt">"method"</span><span class="p">:</span> <span class="s2">"POST"</span>
+    <span class="p">},</span> 
+    <span class="nt">"response"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">"status"</span><span class="p">:</span> <span class="mi">304</span><span class="p">,</span> 
+      <span class="nt">"headers"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span>
+      <span class="p">},</span> 
+      <span class="nt">"body"</span><span class="p">:</span> <span class="kc">null</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+
+<p>If you want to load more than one endpoint via file, use either a JSON array or YAML list (-) syntax. On success, the response will contain <code>Content-Location</code> in the header with the newly created resources' location</p>
+
+<h2>Getting the Current List of Stubbed Responses</h2>
+
+<p>Performing a <code>GET</code> request on <code>localhost:8889</code> will return a JSON array of all currently saved responses. It will reply with <code>204 : No Content</code> if there are none saved.</p>
+
+<p>Performing a <code>GET</code> request on <code>localhost:8889/&lt;id&gt;</code> will return the JSON object representing the response with the supplied id.</p>
+
+<h2>Change existing responses</h2>
+
+<p>Perform <code>PUT</code> requests in the same format as using <code>POST</code>, only this time supply the id in the path. For instance, to update the response with id 4 you would <code>PUT</code> to <code>localhost:8889/4</code>.</p>
+
+<h2>Deleting responses</h2>
+
+<p>Send a <code>DELETE</code> request to <code>localhost:8889/&lt;id&gt;</code></p>
+
+<h1>The Stub Portal</h1>
+
+<p>Requests sent to any url at <code>localhost</code> or <code>localhost:8882</code> will search through the available endpoints and, if a match is found, respond with that endpoint's <code>response</code> data</p>
+
+<h1>Running tests</h1>
+
+<p>If you don't have jasmine-node already, install it:</p>
+
+<pre><code>npm install -g jasmine-node
+</code></pre>
+
+<p>From the root directory run:</p>
+
+<pre><code>jasmine-node --coffee spec
+</code></pre>
+
+<h1>TODO</h1>
+
+<ul>
+<li>
+<code>PUT</code>ing multiple responses at a time.</li>
+<li>SOAP request/response compliance</li>
+<li>Dynamic port switching</li>
+<li>HTTP/SSL auth mocking</li>
+<li>Randomized responses based on supplied pattern (exploratory QA abuse)</li>
+</ul><h1>NOTES</h1>
+
+<ul>
+<li>
+<strong>Copyright</strong> 2012 Eric Mrak, Alexander Zagniotov, Isa Goksu</li>
+<li>
+<strong>License</strong> Apache v2.0</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/Afmrak">Afmrak</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
