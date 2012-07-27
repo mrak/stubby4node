@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/Afmrak/stubby4node.png?branch=master)](http://travis-ci.org/Afmrak/stubby4node)
+
 # Requirements
 
 * [node.js](http://nodejs.org/) (tested with v0.6.15-v0.8.2)
