@@ -2,12 +2,15 @@
 
 # Requirements
 
-* [node.js](http://nodejs.org/) (tested with v0.6.15-v0.8.2)
-* [CoffeeScript](http://coffeescript.org/)
+* [node.js](http://nodejs.org/) (tested with v0.6.x and v0.8.x)
 
-## More Optionals (for debugging/testing)
+## Packaged
 
+* [coffee-script](http://coffeescript.org)
 * [JS-YAML](https://github.com/nodeca/js-yaml) for loading yaml files
+
+## Optional (for debugging/testing)
+
 * [node-inspector](https://github.com/dannycoates/node-inspector)
 * [jasmine-node](https://github.com/mhevery/jasmine-node)
 
