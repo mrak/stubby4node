@@ -24,7 +24,7 @@
       }
    ],
    "scripts": {
-      "postinstall": "cake build",
+      "prepublish": "cake build",
       "start": "coffee ./stubby",
       "test": "cake test"
    },
