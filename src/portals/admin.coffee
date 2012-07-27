@@ -1,4 +1,4 @@
-Contract = require('../models/Contract').Contract
+Contract = require('../models/contract').Contract
 CLI = require('../cli').CLI
 
 exports.Admin = class Admin
