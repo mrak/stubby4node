@@ -26,9 +26,6 @@ describe 'Admin', ->
          end : jasmine.createSpy()
 
    describe 'urlValid', ->
-      it 'should fail', ->
-         expect(true).toBe false
-
       it 'should accept the root url', ->
          url = '/'
 
