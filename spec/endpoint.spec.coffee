@@ -27,12 +27,36 @@ describe 'Endpoint', ->
 
          expect(actual.response.status).toBe expected
 
-      it 'should default headers to empty object', ->
+      it 'should default response headers to empty object', ->
          expected = {}
 
          actual = sut.applyDefaults data
 
          expect(actual.response.headers).toEqual expected
+
+      it 'should default request headers to empty object', ->
+         expected = {}
+
+         actual = sut.applyDefaults data
+
+         expect(actual.request.headers).toEqual expected
+
+      it 'should lower case headers properties', ->
+         data.request.headers =
+            'Content-Type': 'application/json'
+         data.response.headers =
+            'Content-Type': 'application/json'
+
+         expected =
+            request:
+               'content-type': 'application/json'
+            response:
+               'content-type': 'application/json'
+
+         actual = sut.applyDefaults data
+
+         expect(actual.response.headers).toEqual expected.response
+         expect(actual.request.headers).toEqual expected.request
 
       it 'should default post to null', ->
          expected = null
@@ -184,49 +208,51 @@ describe 'Endpoint', ->
 
             expect(success).toHaveBeenCalledWith row.response
 
-         it 'should return response if all headers of request match', ->
-            row =
-               request:
+         describe 'headers', ->
+
+            it 'should return response if all headers of request match', ->
+               row =
+                  request:
+                     headers:
+                        'content-type': 'application/json'
+                  response: {}
+               data =
                   headers:
                      'content-type': 'application/json'
-               response: {}
-            data =
-               headers:
-                  'content-type': 'application/json'
 
-            sut.db = [row]
+               sut.db = [row]
 
-            sut.find data, success, missing
+               sut.find data, success, missing
 
-            expect(success).toHaveBeenCalledWith row.response
+               expect(success).toHaveBeenCalledWith row.response
 
-         it 'should NOT return response if all headers of request dont match', ->
-            row =
-               request:
+            it 'should NOT return response if all headers of request dont match', ->
+               row =
+                  request:
+                     headers:
+                        'content-type': 'application/json'
+                  response: {}
+               data =
                   headers:
-                     'content-type': 'application/json'
-               response: {}
-            data =
-               headers:
-                  'authentication': 'Basic gibberish:password'
+                     'authentication': 'Basic gibberish:password'
 
-            sut.db = [row]
+               sut.db = [row]
 
-            sut.find data, success, missing
+               sut.find data, success, missing
 
-            expect(success).not.toHaveBeenCalled()
+               expect(success).not.toHaveBeenCalled()
 
-         it 'should return response if no headers are on endpoint or response', ->
-            row =
-               request: {}
-               response: {}
-            data = {}
+            it 'should return response if no headers are on endpoint or response', ->
+               row =
+                  request: {}
+                  response: {}
+               data = {}
 
-            sut.db = [row]
+               sut.db = [row]
 
-            sut.find data, success, missing
+               sut.find data, success, missing
 
-            expect(success).toHaveBeenCalledWith row.response
+               expect(success).toHaveBeenCalledWith row.response
 
          it 'should call missing if operation does not find item', ->
             sut.find data, success, missing

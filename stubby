@@ -120,9 +120,16 @@ exports.Endpoint = class Endpoint
       @lastId = 0
       @create data, success
    applyDefaults : (data) ->
-      data.request.method = data.request.method ? 'GET'
-      data.request.post = data.request.post ? null
-      data.response.headers = data.response.headers ? {}
+      data.request.method ?= 'GET'
+      data.request.post ?= null
+      data.request.headers ?= {}
+      data.response.headers ?= {}
+      for prop, value of data.request.headers
+         delete data.request.headers[prop]
+         data.request.headers[prop.toLowerCase()] = value
+      for prop, value of data.response.headers
+         delete data.response.headers[prop]
+         data.response.headers[prop.toLowerCase()] = value
       data.response.status = parseInt(data.response.status) or 200
       data.response.body = JSON.stringify(data.response.body) if typeof data.response.body is 'object'
       return data

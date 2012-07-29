@@ -2,7 +2,7 @@
 fs = require 'fs'
 
 task 'test', 'Runs jasmine specs against the sources', ->
-   exec 'jasmine-node --coffee spec', (error, stdout, stderr) ->
+   exec 'jasmine-node --coffee --verbose spec', (error, stdout, stderr) ->
       console.log stdout
       console.error stderr
       if error then throw error
