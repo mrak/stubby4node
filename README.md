@@ -37,7 +37,7 @@ Some systems require you to `sudo` before running services on port certain ports
 # Command-line switches
 
 ```
-stubby [-s <port>] [-a <port>] [-f <file>] [-h]\n
+stubby [-s <port>] [-a <port>] [-f <file>] [-h]
 -s, --stub [PORT]                    Port that stub portal should run on. Defaults to 8882
 -a, --admin [PORT]                   Port that admin portal should run on. Defaults to 8889
 -f, --file [FILE.{json|yml|yaml}]    Data file to pre-load endoints.
@@ -192,6 +192,10 @@ If you don't have jasmine-node already, install it:
 From the root directory run:
 
     jasmine-node --coffee spec
+
+# See Also
+
+**[stubby4j](https://github.com/azagniotov/stubby4j):** A java implementation of stubby
 
 # TODO
 
