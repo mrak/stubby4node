@@ -23,14 +23,13 @@
          "email": "enmrak@gmail.com"
       }
    ],
-   "files": ["stubby"],
+   "files": ["src"],
    "scripts": {
-      "prepublish": "cake build",
-      "start": "coffee ./stubby",
-      "test": "cake test"
+      "start": "src/server.coffee",
+      "test": "jasmine-node --coffee spec"
    },
    "bin": {
-      "stubby": "./stubby"
+      "stubby": "src/server.coffee"
    },
    "repository": {
       "type": "git",

@@ -1,3 +1,5 @@
+#!/usr/bin/env coffee
+
 Admin = require('./portals/admin').Admin
 Stub = require('./portals/stub').Stub
 Endpoint = require('./models/endpoint').Endpoint
