@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.19beta
+
+* gracefully exits on error when starting stubby
+
 ## 0.1.17beta
 
 * removed node-inspector as a dependency
