@@ -1,7 +1,7 @@
 {
    "name": "stubby",
    "preferGlobal": "true",
-   "version": "0.1.19beta",
+   "version": "0.1.20beta",
    "author": {
       "name": "Eric Mrak",
       "email": "enmrak@gmail.com"
@@ -23,7 +23,7 @@
          "email": "enmrak@gmail.com"
       }
    ],
-   "files": ["src"],
+   "files": ["src", "package.json"],
    "scripts": {
       "start": "src/server.coffee",
       "test": "jasmine-node --coffee spec"

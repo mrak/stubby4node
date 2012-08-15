@@ -42,6 +42,7 @@ stubby [-s <port>] [-a <port>] [-f <file>] [-h]
 -a, --admin [PORT]                   Port that admin portal should run on. Defaults to 8889
 -f, --file [FILE.{json|yml|yaml}]    Data file to pre-load endoints.
 -h, --help                           This help text.
+-v, --version                        Print stubby's version.
 ```
 
 # The Admin Portal

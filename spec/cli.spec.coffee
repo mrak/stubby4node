@@ -6,6 +6,28 @@ describe 'CLI', ->
       spyOn process, 'exit'
       spyOn console, 'log'
 
+   describe 'version (-v)', ->
+      it 'should exit the process if the second paramete is true', ->
+         sut.version ['-v'], true
+
+         expect(process.exit).toHaveBeenCalled()
+
+      it 'should print out help text to console', ->
+         sut.version ['-v'], true
+
+         expect(console.log).toHaveBeenCalled()
+
+      it "shouldn't exit the process if second parameter is blank", ->
+         sut.version ['-v']
+
+         expect(process.exit).not.toHaveBeenCalled()
+
+      it "shouldn't print to the console or exit if -h isn't supplied", ->
+         sut.help []
+
+         expect(process.exit).not.toHaveBeenCalled()
+         expect(console.log).not.toHaveBeenCalled()
+
    describe 'help (-h)', ->
       it 'should exit the process if second parameter is true', ->
          sut.help ['-h'], true

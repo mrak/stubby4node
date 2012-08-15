@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.20beta
+
+* added -v --version command line option
+
 ## 0.1.19beta
 
 * gracefully exits on error when starting stubby

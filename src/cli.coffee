@@ -10,7 +10,14 @@ exports.CLI = CLI =
             -a, --admin [PORT]                   Port that admin portal should run on. Defaults to 8889
             -f, --file [FILE.{json|yml|yaml}]    Data file to pre-load endoints.
             -h, --help                           This help text.
+            -v, --version                        Prints stubby's version number.
          """
+         process.exit 0 if quit
+
+   version: (argv, quit = false) ->
+      if '--version' in argv or '-v' in argv
+         data = JSON.parse fs.readFileSync 'package.json', 'utf8'
+         console.log data.version
          process.exit 0 if quit
 
    getAdmin: (argv) ->
@@ -58,6 +65,7 @@ exports.CLI = CLI =
    getArgs: (argv) ->
       argv ?= process.argv
       @help argv, true
+      @version argv, true
 
       args =
          file: @getFile argv
