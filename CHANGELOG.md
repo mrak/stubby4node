@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.21beta
+
+* added -l flag for starting stubby at a particular address
+
 ## 0.1.20beta
 
 * added -v --version command line option

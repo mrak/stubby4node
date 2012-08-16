@@ -10,7 +10,7 @@ args = CLI.getArgs()
 endpoint = new Endpoint(args.file)
 
 onListening = (portal, port) ->
-   CLI.info "#{portal} portal running at localhost:#{port}"
+   CLI.info "#{portal} portal running at #{args.location}:#{port}"
 onError = (err, port) ->
    switch err.code
       when 'EACCES'
@@ -19,17 +19,22 @@ onError = (err, port) ->
       when 'EADDRINUSE'
          CLI.error "Port #{port} is already in use! Exiting..."
          process.exit()
+      when 'EADDRNOTAVAIL'
+         CLI.error "Host \"#{args.location}\" is not available! Exiting..."
+         process.exit()
+      else
+         CLI.error err.message
 
 stubServer = (new Stub(endpoint)).server
 stubServer = http.createServer(stubServer)
 stubServer.on 'listening', -> onListening 'Stub', args.stub
 stubServer.on 'error', (err) -> onError(err, args.stub)
-stubServer.listen args.stub
+stubServer.listen args.stub, args.location
 
 adminServer = (new Admin(endpoint)).server
 adminServer = http.createServer(adminServer)
 adminServer.on 'listening', -> onListening 'Admin', args.admin
 adminServer.on 'error', (err) -> onError(err, args.admin)
-adminServer.listen args.admin
+adminServer.listen args.admin, args.location
 
 console.log '\nLog:'

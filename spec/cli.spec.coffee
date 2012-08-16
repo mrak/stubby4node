@@ -6,6 +6,26 @@ describe 'CLI', ->
       spyOn process, 'exit'
       spyOn console, 'log'
 
+   describe 'getLocation', ->
+      it 'should return default if no flag provided', ->
+         expected = 'localhost'
+         actual = sut.getLocation []
+
+         expect(actual).toBe expected
+
+      it 'should return supplied value when provided', ->
+         expected = 'stubby.com'
+         actual = sut.getLocation ['-l', expected]
+
+         expect(actual).toBe expected
+
+      it 'should return supplied value when provided with full flag', ->
+         expected = 'stubby.com'
+         actual = sut.getLocation ['--location', expected]
+
+         expect(actual).toBe expected
+
+
    describe 'version (-v)', ->
       it 'should exit the process if the second paramete is true', ->
          sut.version ['-v'], true
@@ -97,6 +117,12 @@ describe 'CLI', ->
 
          expect(actual).toBe expected
 
+      it 'should return supplied value when provided with full flag', ->
+         expected = 80
+         actual = sut.getStub ['--stub', expected]
+
+         expect(actual).toBe expected
+
    describe 'getAdmin', ->
       it 'should return default if no flag provided', ->
          expected = 8889
@@ -110,15 +136,27 @@ describe 'CLI', ->
 
          expect(actual).toBe expected
 
+      it 'should return supplied value when provided with full flag', ->
+         expected = 81
+         actual = sut.getAdmin ['--admin', expected]
+
+         expect(actual).toBe expected
+
    describe 'getArgs', ->
       it 'should gather all arguments', ->
          expected = 
             file : 'a file'
             stub : 88
             admin : 90
+            location : 'stubby.com'
 
          spyOn(sut, 'getFile').andReturn expected.file
 
-         actual = sut.getArgs ['-s', expected.stub, '-a', expected.admin, '-f', 'dummy']
+         actual = sut.getArgs [
+            '-s', expected.stub,
+            '-a', expected.admin,
+            '-f', 'dummy',
+            '-l', expected.location
+         ]
 
          expect(actual).toEqual expected

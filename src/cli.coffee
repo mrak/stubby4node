@@ -5,10 +5,11 @@ exports.CLI = CLI =
 
       if '--help' in argv or '-h' in argv
          console.log """
-            stubby [-s <port>] [-a <port>] [-f <file>] [-h]\n
+            stubby [-s <port>] [-a <port>] [-f <file>] [-l <hostname>] [-h] [-v]\n
             -s, --stub [PORT]                    Port that stub portal should run on. Defaults to 8882
             -a, --admin [PORT]                   Port that admin portal should run on. Defaults to 8889
             -f, --file [FILE.{json|yml|yaml}]    Data file to pre-load endoints.
+            -l, --location [HOSTNAME]            Host at which to run stubby.
             -h, --help                           This help text.
             -v, --version                        Prints stubby's version number.
          """
@@ -28,6 +29,15 @@ exports.CLI = CLI =
       admin = parseInt(argv[adminOptionIndex]) ? admin if adminOptionIndex
 
       return admin
+
+   getLocation: (argv) ->
+      argv ?= process.argv
+      location = 'localhost'
+
+      locationOptionIndex = argv.indexOf('--location') + 1 or argv.indexOf('-l') + 1
+      location = argv[locationOptionIndex] ? locaiton if locationOptionIndex
+
+      return location
 
    getStub: (argv) ->
       argv ?= process.argv
@@ -71,6 +81,7 @@ exports.CLI = CLI =
          file: @getFile argv
          stub: @getStub argv
          admin: @getAdmin argv
+         location: @getLocation argv
 
    red: '\u001b[31m'
    green: '\u001b[32m'

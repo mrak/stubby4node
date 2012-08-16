@@ -1,7 +1,7 @@
 {
    "name": "stubby",
    "preferGlobal": "true",
-   "version": "0.1.20beta",
+   "version": "0.1.21beta",
    "author": {
       "name": "Eric Mrak",
       "email": "enmrak@gmail.com"
@@ -31,6 +31,7 @@
    "bin": {
       "stubby": "src/server.coffee"
    },
+   "main": "src/main.coffee",
    "repository": {
       "type": "git",
       "url": "git://github.com/Afmrak/stubby4node.git"
