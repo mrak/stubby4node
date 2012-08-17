@@ -7,11 +7,8 @@ CLI = require('./cli').CLI
 http = require 'http'
 https = require 'https'
 
-args = CLI.getArgs()
-endpoints = new Endpoint(args.data)
-
-onListening = (portal, port) ->
-   CLI.info "#{portal} portal running at #{args.location}:#{port}"
+onListening = (portal, port, protocol = 'http') ->
+   CLI.info "#{portal} portal running at #{protocol}://#{args.location}:#{port}"
 onError = (err, port) ->
    switch err.code
       when 'EACCES'
@@ -27,10 +24,14 @@ onError = (err, port) ->
          CLI.error "#{err.message}. Exiting..."
          process.exit()
 
+args = CLI.getArgs()
+endpoints = new Endpoint(args.data)
+
 stubServer = (new Stub(endpoints)).server
 adminServer = (new Admin(endpoints)).server
 
 options = false
+protocol = 'http'
 if args.key and args.cert
    options =
       key: args.key
@@ -41,15 +42,14 @@ else if args.pfx
 
 if not options
    stubServer = http.createServer(stubServer)
-   adminServer = http.createServer(adminServer)
 else
+   protocol = 'https'
    stubServer = https.createServer(options, stubServer)
-   adminServer = https.createServer(options, adminServer)
-
-stubServer.on 'listening', -> onListening 'Stub', args.stub
+stubServer.on 'listening', -> onListening 'Stub', args.stub, protocol
 stubServer.on 'error', (err) -> onError(err, args.stub)
-stubServer.listen args.stub, args.location
+stubServer.listen args.stub, args.location, protocol
 
+adminServer = http.createServer(adminServer)
 adminServer.on 'listening', -> onListening 'Admin', args.admin
 adminServer.on 'error', (err) -> onError(err, args.admin)
 adminServer.listen args.admin, args.location

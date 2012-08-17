@@ -1,10 +1,12 @@
 Contract = require('../models/contract').Contract
+Portal = require('./portal').Portal
 CLI = require('../cli').CLI
 
-exports.Admin = class Admin
+exports.Admin = class Admin extends Portal
    constructor : (endpoint) ->
       @Endpoint = endpoint
       @Contract = Contract
+      @name = '[admin]'
 
    urlPattern : /^\/([1-9][0-9]*)?$/
 
@@ -71,7 +73,7 @@ exports.Admin = class Admin
 
       if not @Contract data then return @send.badRequest response
 
-      success = (id) => @send.created response, request, id
+      success = (endpoint) => @send.created response, request, endpoint.id
 
       @Endpoint.create data, success
 
@@ -116,11 +118,7 @@ exports.Admin = class Admin
       return url.replace @urlPattern, '$1'
 
    server : (request, response) =>
-      date = new Date()
-      hours = "0#{date.getHours()}".slice -2
-      minutes = "0#{date.getMinutes()}".slice -2
-      seconds = "0#{date.getSeconds()}".slice -2
-      CLI.info "#{hours}:#{minutes}:#{seconds} -> #{request.method} #{request.headers.host}#{request.url}"
+      CLI.info @getLogLine request
 
       if @urlValid request.url
          switch request.method.toUpperCase()

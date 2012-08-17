@@ -111,7 +111,7 @@ describe 'Endpoint', ->
 
             sut.create data, success
 
-            expect(success).toHaveBeenCalledWith id
+            expect(success).toHaveBeenCalledWith id: id
 
       describe 'retrieve', ->
          id = "any id"

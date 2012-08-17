@@ -2,7 +2,7 @@ CLI = require('../cli').CLI
 
 exports.Endpoint = class Endpoint
    constructor : (data)->
-      success = -> CLI.notice 'Created an endpoint'
+      success = (endpoint) -> CLI.notice "Loaded: #{endpoint.request.method} #{endpoint.request.url}"
       @db = {}
       @lastId = 0
       @create data, success
@@ -30,7 +30,7 @@ exports.Endpoint = class Endpoint
          @applyDefaults item
          item.id = ++@lastId
          @db[item.id] = item
-         success item.id
+         success item
 
       if data instanceof Array
          data.forEach insert
