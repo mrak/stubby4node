@@ -5,9 +5,10 @@ Stub = require('./portals/stub').Stub
 Endpoint = require('./models/endpoint').Endpoint
 CLI = require('./cli').CLI
 http = require 'http'
+https = require 'https'
 
 args = CLI.getArgs()
-endpoint = new Endpoint(args.file)
+endpoints = new Endpoint(args.data)
 
 onListening = (portal, port) ->
    CLI.info "#{portal} portal running at #{args.location}:#{port}"
@@ -23,16 +24,32 @@ onError = (err, port) ->
          CLI.error "Host \"#{args.location}\" is not available! Exiting..."
          process.exit()
       else
-         CLI.error err.message
+         CLI.error "#{err.message}. Exiting..."
+         process.exit()
 
-stubServer = (new Stub(endpoint)).server
-stubServer = http.createServer(stubServer)
+stubServer = (new Stub(endpoints)).server
+adminServer = (new Admin(endpoints)).server
+
+options = false
+if args.key and args.cert
+   options =
+      key: args.key
+      cert: args.cert
+else if args.pfx
+   options =
+      pfx: args.pfx
+
+if not options
+   stubServer = http.createServer(stubServer)
+   adminServer = http.createServer(adminServer)
+else
+   stubServer = https.createServer(options, stubServer)
+   adminServer = https.createServer(options, adminServer)
+
 stubServer.on 'listening', -> onListening 'Stub', args.stub
 stubServer.on 'error', (err) -> onError(err, args.stub)
 stubServer.listen args.stub, args.location
 
-adminServer = (new Admin(endpoint)).server
-adminServer = http.createServer(adminServer)
 adminServer.on 'listening', -> onListening 'Admin', args.admin
 adminServer.on 'error', (err) -> onError(err, args.admin)
 adminServer.listen args.admin, args.location

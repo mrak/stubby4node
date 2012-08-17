@@ -5,13 +5,17 @@ exports.CLI = CLI =
 
       if '--help' in argv or '-h' in argv
          console.log """
-            stubby [-s <port>] [-a <port>] [-f <file>] [-l <hostname>] [-h] [-v]\n
+            stubby [-s <port>] [-a <port>] [-d <file>] [-l <hostname>] [-h] [-v] [-k <file>] [-c <file>] [-p <file>]\n
             -s, --stub [PORT]                    Port that stub portal should run on. Defaults to 8882
             -a, --admin [PORT]                   Port that admin portal should run on. Defaults to 8889
-            -f, --file [FILE.{json|yml|yaml}]    Data file to pre-load endoints.
+            -d, --data [FILE.{json|yml|yaml}]    Data file to pre-load endoints.
             -l, --location [HOSTNAME]            Host at which to run stubby.
             -h, --help                           This help text.
             -v, --version                        Prints stubby's version number.
+            -k, --key [FILE.pem]                 Private key file in PEM format for https. Requires --cert
+            -c, --cert [FILE.pem]                Certificate key file in PEM format for https. Requres --key
+            -p, --pfx [FILE.pfx]                 Key, certificate key and trusted certificates in pfx
+                                                 format. Mutually exclusive with --key,--cert
          """
          process.exit 0 if quit
 
@@ -48,11 +52,11 @@ exports.CLI = CLI =
 
       return stub
 
-   getFile: (argv) ->
+   getData: (argv) ->
       argv ?= process.argv
       file = []
 
-      fileOptionIndex = argv.indexOf('--file') + 1 or argv.indexOf('-f') + 1
+      fileOptionIndex = argv.indexOf('--data') + 1 or argv.indexOf('-d') + 1
       if fileOptionIndex
          filename = argv[fileOptionIndex]
          filedata = fs.readFileSync filename, 'utf8'
@@ -72,16 +76,45 @@ exports.CLI = CLI =
 
       return file
 
+   getKey: (argv) ->
+      @getFile argv, '-k', '--key', 'pem'
+
+   getCert: (argv) ->
+      @getFile argv, '-c', '--cert', 'pem'
+
+   getPfx: (argv) ->
+      @getFile argv, '-p', '--pfx', 'pfx'
+
+   getFile: (argv, flag, option, type) ->
+      argv ?= process.argv
+      pem = null
+
+      certOptionIndex = argv.indexOf(option) + 1 or argv.indexOf(flag) + 1
+      if certOptionIndex
+         filename = argv[certOptionIndex]
+         filedata = fs.readFileSync filename, 'utf8'
+         extension = filename.replace /^.*\.([a-zA-Z0-9]+)$/, '$1'
+         if extension isnt type
+            CLI.warn "[#{flag}, #{option}] only takes files of type .#{type}. Ignoring..."
+            return null
+         if filedata
+            pem = filedata
+
+      return pem?.trim() or null
+
    getArgs: (argv) ->
       argv ?= process.argv
       @help argv, true
       @version argv, true
 
       args =
-         file: @getFile argv
+         data: @getData argv
          stub: @getStub argv
          admin: @getAdmin argv
          location: @getLocation argv
+         key: @getKey argv
+         cert: @getCert argv
+         pfx: @getPfx argv
 
    red: '\u001b[31m'
    green: '\u001b[32m'
@@ -90,6 +123,8 @@ exports.CLI = CLI =
    purple: '\u001b[35m'
    reset: '\u001b[0m'
 
+   log: ->
+      console.log.apply arguments
    info: (msg) ->
       console.log "#{@blue}#{msg}#{@reset}"
    success: (msg) ->

@@ -25,7 +25,6 @@ describe 'CLI', ->
 
          expect(actual).toBe expected
 
-
    describe 'version (-v)', ->
       it 'should exit the process if the second paramete is true', ->
          sut.version ['-v'], true
@@ -70,7 +69,7 @@ describe 'CLI', ->
          expect(process.exit).not.toHaveBeenCalled()
          expect(console.log).not.toHaveBeenCalled()
 
-   describe 'getFile', ->
+   describe 'getData', ->
       expected = [
          request:
             url: '/testput'
@@ -95,12 +94,12 @@ describe 'CLI', ->
       ]
 
       it 'should be about to parse json file with array', ->
-         actual = sut.getFile ['-f', 'spec/data/cli.getFile.json']
+         actual = sut.getData ['-d', 'spec/data/cli.getData.json']
 
          expect(actual).toEqual expected
 
       it 'should be about to parse yaml file with array', ->
-         actual = sut.getFile ['-f', 'spec/data/cli.getFile.yaml']
+         actual = sut.getData ['-d', 'spec/data/cli.getData.yaml']
 
          expect(actual).toEqual expected
 
@@ -142,21 +141,70 @@ describe 'CLI', ->
 
          expect(actual).toBe expected
 
+   describe 'getKey', ->
+      expected = 'some generated key'
+
+      it 'should return null if no flag provided', ->
+         actual = sut.getKey []
+
+         expect(actual).toBeNull()
+
+      it 'should return contents of file when flag provided', ->
+         actual = sut.getKey ['-k', 'spec/data/cli.getKey.pem']
+
+         expect(actual).toBe expected
+
+   describe 'getCert', ->
+      expected = 'some generated certificate'
+
+      it 'should return null if no flag provided', ->
+         actual = sut.getCert []
+
+         expect(actual).toBeNull()
+
+      it 'should return contents of file when flag provided', ->
+         actual = sut.getCert ['-c', 'spec/data/cli.getCert.pem']
+
+         expect(actual).toBe expected
+
+   describe 'getPfx', ->
+      expected = 'some generated pfx'
+
+      it 'should return null if no flag provided', ->
+         actual = sut.getPfx []
+
+         expect(actual).toBeNull()
+
+      it 'should return contents of file when flag provided', ->
+         actual = sut.getPfx ['-p', 'spec/data/cli.getPfx.pfx']
+
+         expect(actual).toBe expected
+
+
    describe 'getArgs', ->
       it 'should gather all arguments', ->
          expected = 
-            file : 'a file'
+            data : 'a file'
             stub : 88
             admin : 90
             location : 'stubby.com'
+            key: 'a key'
+            cert: 'a certificate'
+            pfx: 'a pfx'
 
-         spyOn(sut, 'getFile').andReturn expected.file
+         spyOn(sut, 'getData').andReturn expected.data
+         spyOn(sut, 'getKey').andReturn expected.key
+         spyOn(sut, 'getCert').andReturn expected.cert
+         spyOn(sut, 'getPfx').andReturn expected.pfx
 
          actual = sut.getArgs [
             '-s', expected.stub,
             '-a', expected.admin,
-            '-f', 'dummy',
+            '-d', 'anything',
             '-l', expected.location
+            '-k', 'anything'
+            '-c', 'anything'
+            '-p', 'anything'
          ]
 
          expect(actual).toEqual expected

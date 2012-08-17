@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.22beta
+
+* added -k, --key and -c, --cert and -p, -pfx options for stating stubby as an https server
+* retired -f, --file option in lieu of -d, --data to prevent confusion between suppling files for data files versus ssl key/certificate files
+
+
 ## 0.1.21beta
 
 * added -l flag for starting stubby at a particular address
