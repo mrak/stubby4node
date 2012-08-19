@@ -54,4 +54,4 @@ adminServer.on 'listening', -> onListening 'Admin', args.admin
 adminServer.on 'error', (err) -> onError(err, args.admin)
 adminServer.listen args.admin, args.location
 
-console.log '\nLog:'
+CLI.log '\nLog:'

@@ -7,7 +7,7 @@ describe 'Admin', ->
    rNr = null
 
    beforeEach ->
-      spyOn console, 'log'
+      spyOn console, 'info'
       rNr =
          create   : jasmine.createSpy 'rNr.create'
          retrieve : jasmine.createSpy 'rNr.retrieve'
