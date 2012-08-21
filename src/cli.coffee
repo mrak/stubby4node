@@ -12,17 +12,33 @@ exports.CLI = CLI =
 
       if '--help' in argv or '-h' in argv
          @log """
-            stubby [-s <port>] [-a <port>] [-d <file>] [-l <hostname>] [-h] [-v] [-k <file>] [-c <file>] [-p <file>]\n
-            -s, --stub [PORT]                    Port that stub portal should run on. Defaults to 8882
-            -a, --admin [PORT]                   Port that admin portal should run on. Defaults to 8889
+            stubby [-s <port>] [-a <port>] [-d <file>] [-l <hostname>]
+                   [-h] [-v] [-k <file>] [-c <file>] [-p <file>]\n
+            -s, --stub [PORT]                    Port that stub portal should
+                                                 run on. Defaults to 8882.
+
+            -a, --admin [PORT]                   Port that admin portal should
+                                                 run on. Defaults to 8889.
+
             -d, --data [FILE.{json|yml|yaml}]    Data file to pre-load endoints.
+
             -l, --location [HOSTNAME]            Host at which to run stubby.
+
             -h, --help                           This help text.
+
             -v, --version                        Prints stubby's version number.
-            -k, --key [FILE.pem]                 Private key file in PEM format for https. Requires --cert
-            -c, --cert [FILE.pem]                Certificate key file in PEM format for https. Requres --key
-            -p, --pfx [FILE.pfx]                 Key, certificate key and trusted certificates in pfx
-                                                 format. Mutually exclusive with --key,--cert
+
+            -k, --key [FILE.pem]                 Private key file in PEM format
+                                                 for https. Requires --cert
+
+            -c, --cert [FILE.pem]                Certificate key file in PEM
+                                                 format for https.
+                                                 Requres --key.
+
+            -p, --pfx [FILE.pfx]                 Key, certificate key and
+                                                 trusted certificates in pfx
+                                                 format. Mutually exclusive with
+                                                 --key,--cert
          """
          process.exit 0 if quit
 
@@ -130,12 +146,12 @@ exports.CLI = CLI =
    purple: '\u001b[35m'
    reset: '\u001b[0m'
 
-   log: ->
+   log: (msg) ->
       if @mute then return
-      console.log.apply arguments
-   dump: ->
+      console.log msg
+   dump: (data) ->
       if @mute then return
-      console.dir.apply arguments
+      console.dir data
    info: (msg) ->
       if @mute then return
       console.info "#{@blue}#{msg}#{@reset}"
