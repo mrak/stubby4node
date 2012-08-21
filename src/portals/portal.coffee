@@ -1,4 +1,4 @@
-exports.Portal = class Portal
+module.exports.Portal = class Portal
    constructor: ->
       @name = 'portal'
 

@@ -1,6 +1,6 @@
 CLI = require('../cli').CLI
 
-exports.Endpoint = class Endpoint
+module.exports.Endpoint = class Endpoint
    constructor : (data)->
       success = (endpoint) -> CLI.notice "Loaded: #{endpoint.request.method} #{endpoint.request.url}"
       @db = {}

@@ -4,17 +4,17 @@ describe 'Admin', ->
    response = null
    request = null
    sut = null
-   rNr = null
+   endpoints = null
 
    beforeEach ->
       spyOn console, 'info'
-      rNr =
-         create   : jasmine.createSpy 'rNr.create'
-         retrieve : jasmine.createSpy 'rNr.retrieve'
-         update   : jasmine.createSpy 'rNr.update'
-         delete   : jasmine.createSpy 'rNr.delete'
-         gather   : jasmine.createSpy 'rNr.gather'
-      sut = new Admin(rNr)
+      endpoints =
+         create   : jasmine.createSpy 'endpoints.create'
+         retrieve : jasmine.createSpy 'endpoints.retrieve'
+         update   : jasmine.createSpy 'endpoints.update'
+         delete   : jasmine.createSpy 'endpoints.delete'
+         gather   : jasmine.createSpy 'endpoints.gather'
+      sut = new Admin(endpoints)
 
       request =
          url: '/'
@@ -196,7 +196,7 @@ describe 'Admin', ->
 
       beforeEach ->
          request.on = (event, callback) -> callback()
-         spyOn(sut, 'Contract').andReturn true
+         spyOn(sut, 'contract').andReturn true
 
       describe 'goPUT', ->
          it 'should send not supported if there is no id in the url', ->
@@ -213,24 +213,24 @@ describe 'Admin', ->
 
             sut.processPUT "any id", data, response
 
-            expect(rNr.update).toHaveBeenCalled()
+            expect(endpoints.update).toHaveBeenCalled()
 
          it 'should not update item if data isnt JSON parsable', ->
             data = "<H#rg"
 
             sut.processPUT "any id", data, response
 
-            expect(rNr.update).not.toHaveBeenCalled()
+            expect(endpoints.update).not.toHaveBeenCalled()
 
          it 'should return BAD REQUEST when contract is violated', ->
             data = '{"property":"value"}'
-            sut.Contract.andReturn false
+            sut.contract.andReturn false
             spyOn sut.send, 'badRequest'
 
             sut.processPUT "any id", data, response
 
             expect(sut.send.badRequest).toHaveBeenCalled()
-            expect(sut.Contract).toHaveBeenCalled()
+            expect(sut.contract).toHaveBeenCalled()
 
       describe 'goPOST', ->
          it 'should send not supported if there is an id in the url', ->
@@ -247,24 +247,24 @@ describe 'Admin', ->
 
             sut.processPOST data, response, request
 
-            expect(rNr.create).toHaveBeenCalled()
+            expect(endpoints.create).toHaveBeenCalled()
 
          it 'should not create item if data isnt JSON parsable', ->
             data = "<H#rg"
 
             sut.processPOST data, response, request
 
-            expect(rNr.create).not.toHaveBeenCalled()
+            expect(endpoints.create).not.toHaveBeenCalled()
 
          it 'should return BAD REQUEST when contract is violated', ->
             data = '{"property":"value"}'
-            sut.Contract.andReturn false
+            sut.contract.andReturn false
             spyOn sut.send, 'badRequest'
 
             sut.processPOST data, response, request
 
             expect(sut.send.badRequest).toHaveBeenCalled()
-            expect(sut.Contract).toHaveBeenCalled()
+            expect(sut.contract).toHaveBeenCalled()
 
       describe 'goDELETE', ->
          it 'should send not supported for the root url', ->
@@ -280,7 +280,7 @@ describe 'Admin', ->
 
             sut.goDELETE request, response
 
-            expect(rNr.delete).toHaveBeenCalled()
+            expect(endpoints.delete).toHaveBeenCalled()
 
       describe 'goGET', ->
          it 'should gather all for the root url', ->
@@ -288,11 +288,11 @@ describe 'Admin', ->
 
             sut.goGET request, response
 
-            expect(rNr.gather).toHaveBeenCalled()
+            expect(endpoints.gather).toHaveBeenCalled()
 
          it 'should retrieve item if id was gathered', ->
             spyOn(sut, 'getId').andReturn '123'
 
             sut.goGET request, response
 
-            expect(rNr.retrieve).toHaveBeenCalled()
+            expect(endpoints.retrieve).toHaveBeenCalled()

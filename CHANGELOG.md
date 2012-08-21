@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.23beta
+
+* fixed but with endpoints with undefined headers not being accepted
+
 ## 0.1.22beta
 
 * added -k, --key and -c, --cert and -p, -pfx options for stating stubby as an https server

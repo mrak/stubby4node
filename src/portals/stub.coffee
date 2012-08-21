@@ -1,7 +1,7 @@
 CLI = require('../cli').CLI
 Portal = require('./portal').Portal
 
-exports.Stub = class Stub extends Portal
+module.exports.Stub = class Stub extends Portal
    constructor : (rNr) ->
       @RnR = rNr
       @name = '[stub]'

@@ -1,11 +1,11 @@
-Contract = require('../models/contract').Contract
+contract = require('../models/contract')
 Portal = require('./portal').Portal
 CLI = require('../cli').CLI
 
-exports.Admin = class Admin extends Portal
+module.exports.Admin = class Admin extends Portal
    constructor : (endpoint) ->
       @Endpoint = endpoint
-      @Contract = Contract
+      @contract = contract
       @name = '[admin]'
 
    urlPattern : /^\/([1-9][0-9]*)?$/
@@ -58,7 +58,7 @@ exports.Admin = class Admin extends Portal
       catch e
          return @send.badRequest response
 
-      if not @Contract data then return @send.badRequest response
+      if not @contract data then return @send.badRequest response
 
       success = => @send.noContent response
       notFound = => @send.notFound response
@@ -71,7 +71,7 @@ exports.Admin = class Admin extends Portal
       catch e
          return @send.badRequest response
 
-      if not @Contract data then return @send.badRequest response
+      if not @contract data then return @send.badRequest response
 
       success = (endpoint) => @send.created response, request, endpoint.id
 
