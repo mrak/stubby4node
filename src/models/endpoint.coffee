@@ -1,4 +1,4 @@
-CLI = require('../cli').CLI
+CLI = require('../cli')
 
 module.exports.Endpoint = class Endpoint
    constructor : (data)->

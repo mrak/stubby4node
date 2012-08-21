@@ -1,4 +1,4 @@
-CLI = require('../cli').CLI
+CLI = require('../cli')
 Portal = require('./portal').Portal
 
 module.exports.Stub = class Stub extends Portal
