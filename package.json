@@ -26,7 +26,7 @@
    "files": ["src", "package.json"],
    "scripts": {
       "start": "src/server.coffee",
-      "test": "jasmine-node --coffee spec"
+      "test": "jasmine-node --coffee --forceexit spec"
    },
    "bin": {
       "stubby": "src/server.coffee"

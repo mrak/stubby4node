@@ -1,6 +1,6 @@
 contract = require('../models/contract')
 Portal = require('./portal').Portal
-CLI = require('../cli').CLI
+CLI = require '../cli'
 
 module.exports.Admin = class Admin extends Portal
    constructor : (endpoint) ->

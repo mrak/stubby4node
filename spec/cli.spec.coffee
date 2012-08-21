@@ -2,7 +2,7 @@ describe 'CLI', ->
    sut = null
 
    beforeEach ->
-      sut = require('../src/cli').CLI
+      sut = require('../src/cli')
       spyOn process, 'exit'
       spyOn console, 'log'
 

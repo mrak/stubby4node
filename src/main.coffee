@@ -1,8 +1,8 @@
 Admin = require('./portals/admin').Admin
 Stub = require('./portals/stub').Stub
-CLI = require('./cli').CLI
 Endpoint = require('./models/endpoint').Endpoint
-contract = require('./models/contract')
+contract = require './models/contract'
+CLI = require './cli'
 
 http = require 'http'
 
@@ -12,6 +12,9 @@ admin = http.createServer(new Admin(@endpoints).server)
 
 module.exports =
    start: (options, callback) ->
+      if typeof options is 'function'
+         callback = options
+         options = {}
       options ?= {}
       options.stub ?= CLI.defaults.stub
       options.admin ?= CLI.defaults.admin

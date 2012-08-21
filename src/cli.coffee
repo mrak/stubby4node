@@ -1,5 +1,6 @@
 fs = require 'fs'
-module.exports.CLI =
+
+module.exports =
    mute: false
 
    defaults:
