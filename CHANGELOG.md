@@ -2,7 +2,7 @@
 
 ## 0.1.23beta
 
-* fixed but with endpoints with undefined headers not being accepted
+* fixed but with endpoints with undefined headers not being accepted 
 
 ## 0.1.22beta
 
