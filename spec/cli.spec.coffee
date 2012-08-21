@@ -4,7 +4,7 @@ describe 'CLI', ->
    beforeEach ->
       sut = require('../src/cli')
       spyOn process, 'exit'
-      spyOn console, 'log'
+      spyOn sut, 'log'
 
    describe 'getLocation', ->
       it 'should return default if no flag provided', ->
@@ -34,7 +34,7 @@ describe 'CLI', ->
       it 'should print out help text to console', ->
          sut.version ['-v'], true
 
-         expect(console.log).toHaveBeenCalled()
+         expect(sut.log).toHaveBeenCalled()
 
       it "shouldn't exit the process if second parameter is blank", ->
          sut.version ['-v']
@@ -45,7 +45,7 @@ describe 'CLI', ->
          sut.help []
 
          expect(process.exit).not.toHaveBeenCalled()
-         expect(console.log).not.toHaveBeenCalled()
+         expect(sut.log).not.toHaveBeenCalled()
 
    describe 'help (-h)', ->
       it 'should exit the process if second parameter is true', ->
@@ -56,7 +56,7 @@ describe 'CLI', ->
       it 'should print out help text to console', ->
          sut.help ['-h'], true
 
-         expect(console.log).toHaveBeenCalled()
+         expect(sut.log).toHaveBeenCalled()
 
       it "shouldn't exit the process if second parameter is blank", ->
          sut.help ['-h']
@@ -67,7 +67,7 @@ describe 'CLI', ->
          sut.help []
 
          expect(process.exit).not.toHaveBeenCalled()
-         expect(console.log).not.toHaveBeenCalled()
+         expect(sut.log).not.toHaveBeenCalled()
 
    describe 'getData', ->
       expected = [
