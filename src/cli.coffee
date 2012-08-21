@@ -45,7 +45,7 @@ module.exports =
 
    version: (argv, quit = false) ->
       if '--version' in argv or '-v' in argv
-         data = JSON.parse fs.readFileSync 'package.json', 'utf8'
+         data = require '../package.json'
          @log data.version
          process.exit 0 if quit
 

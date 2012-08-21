@@ -3,7 +3,7 @@
 Admin = require('./portals/admin').Admin
 Stub = require('./portals/stub').Stub
 Endpoint = require('./models/endpoint').Endpoint
-CLI = require('./cli').CLI
+CLI = require('./cli')
 http = require 'http'
 https = require 'https'
 
