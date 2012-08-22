@@ -217,8 +217,7 @@ From the root directory run:
 
 * `PUT`ing multiple responses at a time.
 * SOAP request/response compliance
-* Dynamic port switching
-* HTTP/SSL auth mocking
+* Dynamic port switching (programmatic control in progress, i.e. require('stubby') within node apps)
 * Randomized responses based on supplied pattern (exploratory QA abuse)
 
 # NOTES

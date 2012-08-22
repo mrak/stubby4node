@@ -95,8 +95,11 @@ module.exports =
                      @dump e
                      file = []
                when 'yaml','yml'
-                  yaml = require 'js-yaml'
-                  file = yaml.load filedata
+                  try
+                     yaml = require 'js-yaml'
+                     file = yaml.load filedata
+                  catch e
+                     @warn "Module 'js-yaml' is required for parsing yaml data. No data loaded."
 
       return file
 
