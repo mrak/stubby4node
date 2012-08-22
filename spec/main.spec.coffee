@@ -6,6 +6,13 @@ describe 'main', ->
       sut = require '../src/main'
 
    describe 'start', ->
+      it 'should call stop', ->
+         spyOn sut, 'stop'
+
+         sut.start()
+
+         waitsFor (->sut.stop.callCount), 'stop to have been called', 10
+
       it 'should treat the callback as optional', ->
          callback = jasmine.createSpy 'callback'
          sut.start {}, callback

@@ -6,12 +6,15 @@ CLI = require './cli'
 
 http = require 'http'
 
+CLI.mute = true
 endpoints = new Endpoint()
 stub = http.createServer(new Stub(endpoints).server)
 admin = http.createServer(new Admin(endpoints).server)
 
 module.exports =
-   start: (options, callback) -> process.nextTick ->
+   start: (options, callback) -> process.nextTick =>
+      @stop()
+
       if typeof options is 'function'
          callback = options
 
@@ -31,8 +34,8 @@ module.exports =
       callback()
 
    stop: ->
-      stub.close()
-      admin.close()
+      if stub.address() then stub.close()
+      if admin.address() then admin.close()
 
    mute: (mute) -> CLI.mute = mute ? true
 
