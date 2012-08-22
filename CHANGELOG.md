@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.24
+
+* serval bugs fixed that were found while experimenting with a main module
+
 ## 0.1.23beta
 
 * fixed but with endpoints with undefined headers not being accepted 
