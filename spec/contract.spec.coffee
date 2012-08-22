@@ -26,6 +26,19 @@ describe 'contract', ->
 
       expect(result).toBeTruthy()
 
+   it 'should return true for an array of valid data', ->
+      data = [data, data]
+      result = sut data
+
+      expect(result).toBeTruthy()
+
+   it 'should return false for an array with an invalid datum', ->
+      invalid = {}
+      data = [data, invalid]
+      result = sut data
+
+      expect(result).toBeFalsy()
+
    describe 'request', ->
       it 'is required', ->
          data.request = null

@@ -8,31 +8,31 @@ describe 'main', ->
    describe 'start', ->
       it 'should treat the callback as optional', ->
          callback = jasmine.createSpy 'callback'
-         sut.start()
          sut.start {}, callback
 
-         expect(callback.callCount).toBe 1
+         waitsFor (-> callback.callCount is 1), 'callback to have been called', 10
 
       it 'should take one parameter as a function', ->
          callback = jasmine.createSpy 'callback'
          sut.start callback
-         expect(callback).toHaveBeenCalled()
+
+         waitsFor (-> callback.callCount is 1), 'callback to have been called', 10
 
       describe 'options', ->
          it 'should default stub port to CLI port default', ->
             options = {}
             sut.start options
 
-            expect(options.stub).toEqual CLI.defaults.stub
+            waitsFor (-> options.stub is CLI.defaults.stub), 'option stub to be set', 10
 
          it 'should default admin port to CLI port default', ->
             options = {}
             sut.start options
 
-            expect(options.admin).toEqual CLI.defaults.admin
+            waitsFor (-> options.admin is CLI.defaults.admin), 'option admin to be set', 10
 
          it 'should default location to CLI port default', ->
             options = {}
             sut.start options
 
-            expect(options.location).toEqual CLI.defaults.location
+            waitsFor (-> options.location is CLI.defaults.location), 'option location to be set', 10

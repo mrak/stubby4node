@@ -7,27 +7,28 @@ CLI = require './cli'
 http = require 'http'
 
 endpoints = new Endpoint()
-stub = http.createServer(new Stub(@endpoints).server)
-admin = http.createServer(new Admin(@endpoints).server)
+stub = http.createServer(new Stub(endpoints).server)
+admin = http.createServer(new Admin(endpoints).server)
 
 module.exports =
-   start: (options, callback) ->
+   start: (options, callback) -> process.nextTick ->
       if typeof options is 'function'
          callback = options
-         options = {}
+
+      callback ?= ->
       options ?= {}
       options.stub ?= CLI.defaults.stub
       options.admin ?= CLI.defaults.admin
       options.location ?= CLI.defaults.location
       options.data ?= []
-      CLI.mute = options.mute ? true
 
+      if not contract options.data then return callback "The supplied endpoint data couldn't be saved"
       endpoints.create options.data, ->
 
       stub.listen options.stub, options.location
       admin.listen options.admin, options.location
 
-      callback() if callback?
+      callback()
 
    stop: ->
       stub.close()
@@ -35,25 +36,28 @@ module.exports =
 
    mute: (mute) -> CLI.mute = mute ? true
 
-   add: (data, callback) ->
+   add: (data, callback) -> process.nextTick ->
+      callback ?= ->
       if not contract data then return callback "The supplied endpoint data couldn't be saved"
-      fn = -> endpoints.create data, callback
-      setTimeout fn, 1
-   get: (id, callback) ->
-      fn = null
+      endpoints.create data, callback
+
+   get: (id, callback) -> process.nextTick ->
+      callback ?= ->
       if typeof id is 'function'
-         fn = -> endpoints.gather id, id
+         endpoints.gather id, id
       else
-         fn = -> endpoints.retrieve id, callback, callback
-      setTimeout fn, 1
-   set: (id, data, callback) ->
+         endpoints.retrieve id, callback, callback
+
+   set: (id, data, callback) -> process.nextTick ->
+      callback ?= ->
       if not contract data then return callback "The supplied endpoint data couldn't be saved"
-      fn = -> endpoints.update id, data, callback, callback
-      setTimeout fn, 1
-   remove: (id, callback) ->
+      endpoints.update id, data, callback, callback
+
+   remove: (id, callback) -> process.nextTick ->
+      callback ?= ->
       if id?
-         fn = -> endpoints.delete id, callback, -> callback true
-         setTimeout fn, 1
+         endpoints.delete id, callback, -> callback true
       else
          delete endpoints.db
          endpoints.db = {}
+         callback()

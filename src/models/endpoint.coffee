@@ -26,7 +26,7 @@ module.exports.Endpoint = class Endpoint
       return data
 
    create : (data, success) ->
-      insert = (item)=>
+      insert = (item) =>
          @applyDefaults item
          item.id = ++@lastId
          @db[item.id] = item

@@ -1,4 +1,4 @@
-module.exports = (endpoint) ->
+module.exports = Contract = (endpoint) ->
    request =
       url : (url) ->
          if not url then return false
@@ -40,6 +40,11 @@ module.exports = (endpoint) ->
          endpoint = JSON.parse endpoint
       catch e
          return false
+
+   if endpoint instanceof Array
+      results = (Contract each for each in endpoint)
+      return false not in results
+
 
    if not endpoint.request or not endpoint.response then return false
 

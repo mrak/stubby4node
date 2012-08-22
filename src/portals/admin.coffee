@@ -1,4 +1,4 @@
-contract = require('../models/contract')
+contract = require '../models/contract'
 Portal = require('./portal').Portal
 CLI = require '../cli'
 
