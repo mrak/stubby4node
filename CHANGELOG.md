@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.25
+
+* bug fixes. optional dependency js-yaml is now *really* optional
+
 ## 0.1.24
 
 * serval bugs fixed that were found while experimenting with a main module
