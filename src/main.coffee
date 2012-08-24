@@ -3,8 +3,9 @@ Stub = require('./portals/stub').Stub
 Endpoint = require('./models/endpoint').Endpoint
 contract = require './models/contract'
 CLI = require './cli'
-
 http = require 'http'
+
+if global.TESTING then http = global.TESTING.http
 
 CLI.mute = true
 endpoints = new Endpoint()

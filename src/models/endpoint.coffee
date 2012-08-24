@@ -1,4 +1,5 @@
 CLI = require('../cli')
+ce = require 'cloneextend'
 
 module.exports.Endpoint = class Endpoint
    constructor : (data)->
@@ -29,8 +30,8 @@ module.exports.Endpoint = class Endpoint
       insert = (item) =>
          @applyDefaults item
          item.id = ++@lastId
-         @db[item.id] = item
-         success item
+         @db[item.id] = ce.clone item
+         success ce.clone item
 
       if data instanceof Array
          data.forEach insert
@@ -40,7 +41,7 @@ module.exports.Endpoint = class Endpoint
    retrieve : (id, success, missing) ->
       if not @db[id] then return missing()
 
-      success @db[id]
+      success ce.clone @db[id]
 
    update : (id, data, success, missing) ->
       if not @db[id] then return missing()
@@ -48,7 +49,7 @@ module.exports.Endpoint = class Endpoint
       endpoint = @applyDefaults data
       endpoint.id = id
 
-      @db[endpoint.id] = endpoint
+      @db[endpoint.id] = ce.clone endpoint
       success()
 
    delete : (id, success, missing) ->
@@ -63,7 +64,7 @@ module.exports.Endpoint = class Endpoint
       for id, endpoint of @db
          all.push endpoint
 
-      if all.length is 0 then none() else success all
+      if all.length is 0 then none() else success ce.clone all
 
    find : (data, success, notFound) ->
       for id, endpoint of @db

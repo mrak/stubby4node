@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.26
+
+* callbacks now give copies of endoints instead of refernces. This prevents unexpected changes to endpoints outside of stubby
+
 ## 0.1.25
 
 * bug fixes. optional dependency js-yaml is now *really* optional
