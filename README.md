@@ -62,7 +62,7 @@ stubby [-s <port>] [-a <port>] [-d <file>] [-l <hostname>]
 
 # The Admin Portal
 
-The admin portal is a RESTful(ish) endpoint running on `localhost:8889`.
+The admin portal is a RESTful(ish) endpoint running on `localhost:8889`. Or wherever you described through stubby's options.
 
 ## Supplying Endpoints to Stub
 
@@ -197,7 +197,67 @@ Send a `DELETE` request to `localhost:8889/<id>`
 
 # The Stub Portal
 
-Requests sent to any url at `localhost` or `localhost:8882` will search through the available endpoints and, if a match is found, respond with that endpoint's `response` data
+Requests sent to any url at `localhost:8882` (or wherever you told stubby to run) will search through the available endpoints and, if a match is found, respond with that endpoint's `response` data
+
+# Programmatic API
+
+You can also control stubby programmatically through any coffee/nodejs app. If you `require('stubby').Stubby` in your app you have access to the `Stubby` class. You can then start, stop, and modify endpoints belonging to instances of the `Stubby` class.
+
+## The Stubby module
+
+### start(options, [callback])
+
+* `options`: an object containing parameters with which to start this stubby. Parameters go along with the full-name flags used from the command line.
+	* `stub`: port number to run the stub portal
+	* `admin`: port number to run the admin portal
+	* `data`: JavaScript Object/Array containing endpoint data
+	* `location`: address/hostname at which to run stubby
+	* `key`: keyfile contents (in PEM format)
+	* `cert`: certificate file contents (in PEM format)
+	* `pfx`: pfx file contents (mutually exclusive with key/cert options)
+* `callback`: takes one parameter: the error message (if there is one), undefined otherwise
+
+### start([callback])
+Identical to previous signature, only all options are assumed to be defaults.
+
+### stop()
+closes the connections and ports being used by stubby's stub and admin portals
+
+### get([id,] callback)
+Simulates a GET request to the admin portal, with the callback receiving the resultant data.
+
+* `id`: the id of the endpoint to retrieve. If ommitted, an array of all registered endpoints is passed the callback.
+* `callback`: takes a single parameter containing the returned results. Undefined if no endpoints are found.
+
+### post(data, [callback])
+* `data`: an endpoint object to store in stubby
+* `callback`: if all goes well, gets executed with the created endpoint. If there is an error, gets called with the error message.
+
+### put(id, data, [callback])
+* `id`: id of the endpoint to update.
+* `data`: data with which to replace the endpoint.
+* `callback`: executed with no passed parameters if successful. Else, passed the error message.
+
+### delete([id])
+* `id`: id of the endpoint to destroy. If ommitted, all endoints are cleared from stubby.
+
+### Example (coffeescript)
+```coffeescript
+Stubby = require('stubby').Stubby
+
+stubby1 = new Stubby()
+stubby2 = new Stubby()
+
+stubby1.start
+	stub: 80
+	admin: 81
+	location: 'localhost'
+
+stubby2.start
+	stub: 80
+	admin: 81
+	location: 'example.com'
+```
 
 # Running tests
 
@@ -215,9 +275,8 @@ From the root directory run:
 
 # TODO
 
-* `PUT`ing multiple responses at a time.
+* Better callback handling with programmatic API
 * SOAP request/response compliance
-* Dynamic port switching (programmatic control in progress, i.e. require('stubby') within node apps)
 * Randomized responses based on supplied pattern (exploratory QA abuse)
 
 # NOTES
