@@ -1,18 +1,23 @@
 Admin = require('./portals/admin').Admin
 Stub = require('./portals/stub').Stub
-Endpoint = require('./models/endpoint').Endpoint
+Endpoints = require('./models/endpoints').Endpoints
 contract = require './models/contract'
+
 CLI = require './cli'
+CLI.mute = true
+
 http = require 'http'
+https = require 'https'
 
 if global.TESTING then http = global.TESTING.http
+if global.TESTING then https = global.TESTING.https
 
-CLI.mute = true
-endpoints = new Endpoint()
-stub = http.createServer(new Stub(endpoints).server)
-admin = http.createServer(new Admin(endpoints).server)
+module.exports.Stubby = class Stubby
+   constructor: ->
+      @endpoints = new Endpoints()
+      @stubPortal = null
+      @adminPortal = null
 
-module.exports =
    start: (options, callback) -> process.nextTick =>
       @stop()
 
@@ -25,43 +30,57 @@ module.exports =
       options.admin ?= CLI.defaults.admin
       options.location ?= CLI.defaults.location
       options.data ?= []
+      options.key ?= null
+      options.cert ?= null
 
       if not contract options.data then return callback "The supplied endpoint data couldn't be saved"
-      endpoints.create options.data, ->
+      @endpoints.create options.data, ->
 
-      stub.listen options.stub, options.location
-      admin.listen options.admin, options.location
+      if options.key? and options.cert
+         httpsOptions =
+            key: options.key
+            cert: options.cert
+         @stubPortal = https.createServer httpsOptions, new Stub(@endpoints).server
+      else if options.pfx
+         options =
+            pfx: options.pfx
+         @stubPortal = https.createServer httpsOptions, new Stub(@endpoints).server
+      else
+         @stubPortal = http.createServer(new Stub(@endpoints).server)
+
+      @admimPortal = http.createServer(new Admin(@endpoints).server)
+
+      @stubPortal.listen options.stub, options.location
+      @admimPortal.listen options.admin, options.location
 
       callback()
 
-   stop: ->
-      if stub.address() then stub.close()
-      if admin.address() then admin.close()
+   stop: =>
+      if @stubPortal?.address() then @stubPortal.close()
+      if @admimPortal?.address() then @admimPortal.close()
 
-   mute: (mute) -> CLI.mute = mute ? true
-
-   add: (data, callback) -> process.nextTick ->
+   post: (data, callback) -> process.nextTick =>
       callback ?= ->
       if not contract data then return callback "The supplied endpoint data couldn't be saved"
-      endpoints.create data, callback
+      @endpoints.create data, callback
 
-   get: (id, callback) -> process.nextTick ->
+   get: (id, callback) -> process.nextTick =>
       callback ?= ->
       if typeof id is 'function'
-         endpoints.gather id, id
+         @endpoints.gather id, id
       else
-         endpoints.retrieve id, callback, callback
+         @endpoints.retrieve id, callback, callback
 
-   set: (id, data, callback) -> process.nextTick ->
+   put: (id, data, callback) -> process.nextTick =>
       callback ?= ->
       if not contract data then return callback "The supplied endpoint data couldn't be saved"
-      endpoints.update id, data, callback, callback
+      @endpoints.update id, data, callback, callback
 
-   remove: (id, callback) -> process.nextTick ->
+   delete: (id, callback) -> process.nextTick =>
       callback ?= ->
       if id?
-         endpoints.delete id, callback, -> callback true
+         @endpoints.delete id, callback, -> callback true
       else
-         delete endpoints.db
-         endpoints.db = {}
+         delete @endpoints.db
+         @endpoints.db = {}
          callback()

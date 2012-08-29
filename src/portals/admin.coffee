@@ -3,8 +3,8 @@ Portal = require('./portal').Portal
 CLI = require '../cli'
 
 module.exports.Admin = class Admin extends Portal
-   constructor : (endpoint) ->
-      @Endpoint = endpoint
+   constructor : (endpoints) ->
+      @endpoints = endpoints
       @contract = contract
       @name = '[admin]'
 
@@ -39,7 +39,7 @@ module.exports.Admin = class Admin extends Portal
       success = => @send.noContent response
       notFound = => @send.notFound response
 
-      @Endpoint.delete id, success, notFound
+      @endpoints.delete id, success, notFound
 
    goGET : (request, response) =>
       id = @getId request.url
@@ -48,9 +48,9 @@ module.exports.Admin = class Admin extends Portal
       noContent = => @send.noContent response
 
       if id
-         @Endpoint.retrieve id, success, notFound
+         @endpoints.retrieve id, success, notFound
       else
-         @Endpoint.gather success, noContent
+         @endpoints.gather success, noContent
 
    processPUT : (id, data, response) =>
       try
@@ -63,7 +63,7 @@ module.exports.Admin = class Admin extends Portal
       success = => @send.noContent response
       notFound = => @send.notFound response
 
-      @Endpoint.update id, data, success, notFound
+      @endpoints.update id, data, success, notFound
 
    processPOST : (data, response, request) =>
       try
@@ -75,7 +75,7 @@ module.exports.Admin = class Admin extends Portal
 
       success = (endpoint) => @send.created response, request, endpoint.id
 
-      @Endpoint.create data, success
+      @endpoints.create data, success
 
    send :
       ok : (response, result) ->

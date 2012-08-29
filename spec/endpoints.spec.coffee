@@ -1,9 +1,9 @@
-Endpoint = require('../src/models/endpoint').Endpoint
+Endpoints = require('../src/models/endpoints').Endpoints
 sut = null
 
-describe 'Endpoint', ->
+describe 'Endpoints', ->
    beforeEach ->
-      sut = new Endpoint()
+      sut = new Endpoints()
 
    describe 'defaults', ->
       data = null

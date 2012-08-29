@@ -1,7 +1,7 @@
 CLI = require('../cli')
 ce = require 'cloneextend'
 
-module.exports.Endpoint = class Endpoint
+module.exports.Endpoints = class Endpoints
    constructor : (data)->
       success = (endpoint) -> CLI.notice "Loaded: #{endpoint.request.method} #{endpoint.request.url}"
       @db = {}

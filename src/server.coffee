@@ -2,7 +2,7 @@
 
 Admin = require('./portals/admin').Admin
 Stub = require('./portals/stub').Stub
-Endpoint = require('./models/endpoint').Endpoint
+Endpoints = require('./models/endpoints').Endpoints
 CLI = require('./cli')
 http = require 'http'
 https = require 'https'
@@ -25,7 +25,7 @@ onError = (err, port) ->
          process.exit()
 
 args = CLI.getArgs()
-endpoints = new Endpoint(args.data)
+endpoints = new Endpoints(args.data)
 
 stubServer = (new Stub(endpoints)).server
 adminServer = (new Admin(endpoints)).server
