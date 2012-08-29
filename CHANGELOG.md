@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.27
+
+* you can now make as many instances of stubby as you want by: require("stubby").Stubby and var stubby = new Stubby()
+
 ## 0.1.26
 
 * callbacks now give copies of endoints instead of refernces. This prevents unexpected changes to endpoints outside of stubby
