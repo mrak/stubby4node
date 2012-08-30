@@ -1,12 +1,14 @@
 CLI = require('../cli')
 ce = require 'cloneextend'
 
+NOT_FOUND = "Endpoint with the given id doesn't exist."
+
 module.exports.Endpoints = class Endpoints
    constructor : (data)->
-      success = (endpoint) -> CLI.notice "Loaded: #{endpoint.request.method} #{endpoint.request.url}"
+      callback = (err, endpoint) -> CLI.notice "Loaded: #{endpoint.request.method} #{endpoint.request.url}"
       @db = {}
       @lastId = 0
-      @create data, success
+      @create data, callback
 
    applyDefaults : (data) ->
       data.request.method ?= 'GET'
@@ -26,47 +28,47 @@ module.exports.Endpoints = class Endpoints
       data.response.body = JSON.stringify(data.response.body) if typeof data.response.body is 'object'
       return data
 
-   create : (data, success) ->
+   create : (data, callback) ->
       insert = (item) =>
          @applyDefaults item
          item.id = ++@lastId
          @db[item.id] = ce.clone item
-         success ce.clone item
+         callback null, ce.clone item
 
       if data instanceof Array
          data.forEach insert
       else if data
          insert data
 
-   retrieve : (id, success, missing) ->
-      if not @db[id] then return missing()
+   retrieve : (id, callback) ->
+      if not @db[id] then return callback NOT_FOUND
 
-      success ce.clone @db[id]
+      callback null,  ce.clone @db[id]
 
-   update : (id, data, success, missing) ->
-      if not @db[id] then return missing()
+   update : (id, data, callback) ->
+      if not @db[id] then return callback NOT_FOUND
 
       endpoint = @applyDefaults data
       endpoint.id = id
 
       @db[endpoint.id] = ce.clone endpoint
-      success()
+      callback()
 
-   delete : (id, success, missing) ->
-      if not @db[id] then return missing()
+   delete : (id, callback) ->
+      if not @db[id] then return callback NOT_FOUND
 
       delete @db[id]
-      success()
+      callback()
 
-   gather : (success, none) ->
+   gather : (callback) ->
       all = []
 
       for id, endpoint of @db
          all.push endpoint
 
-      if all.length is 0 then none() else success ce.clone all
+      callback ce.clone all
 
-   find : (data, success, notFound) ->
+   find : (data, callback) ->
       for id, endpoint of @db
          if endpoint.request.url isnt data.url then continue
          if endpoint.request.post isnt data.post then continue
@@ -79,8 +81,8 @@ module.exports.Endpoints = class Endpoints
          if not headersMatch then continue
 
          if parseInt endpoint.response.latency
-            return setTimeout (-> success endpoint.response), endpoint.response.latency
+            return setTimeout (-> callback null,  endpoint.response), endpoint.response.latency
          else
-            return success endpoint.response
+            return callback null, endpoint.response
 
-      notFound()
+      callback "Endpoint with given request doesn't exist."

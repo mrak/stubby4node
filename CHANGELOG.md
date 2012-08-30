@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.28
+
+* fixed callback parameters for stubby interface
+
 ## 0.1.27
 
 * you can now make as many instances of stubby as you want by: require("stubby").Stubby and var stubby = new Stubby()

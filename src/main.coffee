@@ -69,17 +69,17 @@ module.exports.Stubby = class Stubby
       if typeof id is 'function'
          @endpoints.gather id, id
       else
-         @endpoints.retrieve id, callback, callback
+         @endpoints.retrieve id, callback
 
    put: (id, data, callback) -> process.nextTick =>
       callback ?= ->
       if not contract data then return callback "The supplied endpoint data couldn't be saved"
-      @endpoints.update id, data, callback, callback
+      @endpoints.update id, data, callback
 
    delete: (id, callback) -> process.nextTick =>
       callback ?= ->
       if id?
-         @endpoints.delete id, callback, -> callback true
+         @endpoints.delete id, callback
       else
          delete @endpoints.db
          @endpoints.db = {}

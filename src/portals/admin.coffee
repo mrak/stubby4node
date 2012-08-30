@@ -36,21 +36,25 @@ module.exports.Admin = class Admin extends Portal
       id = @getId request.url
       if not id then return @send.notSupported response
 
-      success = => @send.noContent response
-      notFound = => @send.notFound response
+      callback = (err) =>
+         if err then return @send.notFound response
+         @send.noContent  response
 
-      @endpoints.delete id, success, notFound
+      @endpoints.delete id, callback
 
    goGET : (request, response) =>
       id = @getId request.url
-      success = (data) => @send.ok response, data
-      notFound = => @send.notFound response
-      noContent = => @send.noContent response
 
       if id
-         @endpoints.retrieve id, success, notFound
+         callback = (err, endpoint) =>
+            if err then return @send.notFound response
+            @send.ok response, endpoint
+         @endpoints.retrieve id, callback
       else
-         @endpoints.gather success, noContent
+         callback = (data) =>
+            if data.length is 0 then return @send.noContent response
+            @send.ok response, data
+         @endpoints.gather callback
 
    processPUT : (id, data, response) =>
       try
@@ -60,10 +64,11 @@ module.exports.Admin = class Admin extends Portal
 
       if not @contract data then return @send.badRequest response
 
-      success = => @send.noContent response
-      notFound = => @send.notFound response
+      callback = (err) =>
+         if err then return @send.notFound response
+         @send.noContent response
 
-      @endpoints.update id, data, success, notFound
+      @endpoints.update id, data, callback
 
    processPOST : (data, response, request) =>
       try
@@ -73,9 +78,9 @@ module.exports.Admin = class Admin extends Portal
 
       if not @contract data then return @send.badRequest response
 
-      success = (endpoint) => @send.created response, request, endpoint.id
+      callback = (err, endpoint) => @send.created response, request, endpoint.id
 
-      @endpoints.create data, success
+      @endpoints.create data, callback
 
    send :
       ok : (response, result) ->

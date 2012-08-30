@@ -75,24 +75,22 @@ describe 'Endpoints', ->
          expect(actual.response.body).toEqual expected
 
    describe 'operations', ->
-      success = null
-      error = null
-      missing = null
+      callback = null
+
       beforeEach ->
-         success = jasmine.createSpy 'success'
-         error   = jasmine.createSpy 'error'
-         missing = jasmine.createSpy 'missing'
+         callback = jasmine.createSpy 'callback'
 
       describe 'create', ->
          beforeEach ->
             spyOn(sut, 'applyDefaults').andReturn "a non-emtpy value"
+
          it 'should applyDefaults and run database call for each item given a list', ->
             data = [
                "item1"
                "item2"
             ]
 
-            sut.create data, success
+            sut.create data, callback
 
             expect(sut.db[1]).toBe data.item1
             expect(sut.db[2]).toBe data.item2
@@ -101,37 +99,37 @@ describe 'Endpoints', ->
          it 'should applyDefaults and run database call given one item', ->
             data = "item1"
 
-            sut.create data, success
+            sut.create data, callback
 
             expect(sut.applyDefaults.callCount).toEqual 1
 
-         it "should call success with id if database creates item", ->
+         it "should call callback with null, id if database creates item", ->
             id = 1 #sut.db empty, so starts at 1
             data = {}
 
-            sut.create data, success
+            sut.create data, callback
 
-            expect(success).toHaveBeenCalledWith id: id
+            expect(callback).toHaveBeenCalledWith null, id: id
 
       describe 'retrieve', ->
          id = "any id"
 
-         it 'should call success if operation returns a row', ->
+         it 'should call callback with null, row if operation returns a row', ->
             row =
                request: {}
                response: {}
             sut.db[id] = row
 
-            sut.retrieve id, success, missing
+            sut.retrieve id, callback
 
-            expect(success).toHaveBeenCalledWith row
+            expect(callback).toHaveBeenCalledWith null, row
 
-         it 'should call missing if operation does not find item', ->
+         it 'should call callback with error msg if operation does not find item', ->
             sut.db = []
 
-            sut.retrieve id, success, missing
+            sut.retrieve id, callback
 
-            expect(missing).toHaveBeenCalled()
+            expect(callback).toHaveBeenCalledWith "Endpoint with the given id doesn't exist."
 
       describe 'update', ->
          id = "any id"
@@ -142,71 +140,66 @@ describe 'Endpoints', ->
 
          it 'should applyDefaults to data', ->
             sut.db[id] = {}
-            missing = ->
-            sut.update id, data, success, missing
+            sut.update id, data, callback
 
             expect(sut.applyDefaults).toHaveBeenCalled()
 
-         it 'should call success when database updates', ->
+         it 'should call callback when database updates', ->
             sut.db[id] = {}
-            success = jasmine.createSpy()
 
-            sut.update id, data, success
+            sut.update id, data, callback
 
-            expect(success).toHaveBeenCalled()
+            expect(callback.mostRecentCall.args).toEqual []
 
-         it 'should call missing if operation does not find item', ->
+         it 'should call callback with error msg if operation does not find item', ->
 
-            sut.update id, data, success, missing
+            sut.update id, data, callback
 
-            expect(missing).toHaveBeenCalled()
+            expect(callback).toHaveBeenCalledWith "Endpoint with the given id doesn't exist."
 
       describe 'delete', ->
          id = "any id"
 
-         it 'should call success when database updates', ->
+         it 'should call callback when database updates', ->
             sut.db[id] = {}
-            success = jasmine.createSpy()
 
-            sut.delete id, success
+            sut.delete id, callback
 
-            expect(success).toHaveBeenCalled()
+            expect(callback.mostRecentCall.args).toEqual []
 
-         it 'should call missing if operation does not find item', ->
-            sut.delete id, success, missing
+         it 'should call callback with error message if operation does not find item', ->
+            sut.delete id, callback
 
-            expect(missing).toHaveBeenCalled()
+            expect(callback).toHaveBeenCalledWith "Endpoint with the given id doesn't exist."
 
       describe 'gather', ->
-         none = null
-
-         beforeEach ->
-            none = jasmine.createSpy 'none'
 
          it 'should call success if operation returns some rows', ->
+            data = [{},{}]
+            sut.db = data
 
-            sut.gather success, none
+            sut.gather callback
 
-            expect(success).toHaveBeenCalled
+            expect(callback.mostRecentCall.args).toEqual [data]
 
          it 'should call missing if operation does not find item', ->
             sut.db = []
 
-            sut.gather success, none
+            sut.gather callback
 
-            expect(none).toHaveBeenCalled()
+            expect(callback).toHaveBeenCalledWith []
 
       describe 'find', ->
          data = {}
 
-         it 'should call success if operation returns a row', ->
+         it 'should call callback with null, row if operation returns a row', ->
             row =
                request: {}
                response: {}
             sut.db = [row]
-            sut.find data, success, missing
+            sut.find data, callback
 
-            expect(success).toHaveBeenCalledWith row.response
+            expect(callback).toHaveBeenCalledWith null, row.response
 
          describe 'headers', ->
 
@@ -222,11 +215,11 @@ describe 'Endpoints', ->
 
                sut.db = [row]
 
-               sut.find data, success, missing
+               sut.find data, callback
 
-               expect(success).toHaveBeenCalledWith row.response
+               expect(callback).toHaveBeenCalledWith null, row.response
 
-            it 'should NOT return response if all headers of request dont match', ->
+            it 'should call callback with error if all headers of request dont match', ->
                row =
                   request:
                      headers:
@@ -238,9 +231,9 @@ describe 'Endpoints', ->
 
                sut.db = [row]
 
-               sut.find data, success, missing
+               sut.find data, callback
 
-               expect(success).not.toHaveBeenCalled()
+               expect(callback).toHaveBeenCalledWith "Endpoint with given request doesn't exist."
 
             it 'should return response if no headers are on endpoint or response', ->
                row =
@@ -250,22 +243,22 @@ describe 'Endpoints', ->
 
                sut.db = [row]
 
-               sut.find data, success, missing
+               sut.find data, callback
 
-               expect(success).toHaveBeenCalledWith row.response
+               expect(callback).toHaveBeenCalledWith null, row.response
 
-         it 'should call missing if operation does not find item', ->
-            sut.find data, success, missing
+         it 'should call callback with error if operation does not find item', ->
+            sut.find data, callback
 
-            expect(missing).toHaveBeenCalled()
+            expect(callback).toHaveBeenCalledWith "Endpoint with given request doesn't exist."
 
-         it 'should call success after timeout if data response has a latency', ->
+         it 'should call callback after timeout if data response has a latency', ->
             row =
                request: {}
                response:
                   latency: 1000
 
             sut.db = [row]
-            sut.find data, success, missing
-            expect(success).not.toHaveBeenCalled()
-            waitsFor (-> success.callCount is 1), 'Success call was never called', 1000
+            sut.find data, callback
+            expect(callback).not.toHaveBeenCalled()
+            waitsFor (-> callback.callCount is 1), 'Callback call was never called', 1000

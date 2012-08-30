@@ -208,13 +208,13 @@ You can also control stubby programmatically through any coffee/nodejs app. If y
 ### start(options, [callback])
 
 * `options`: an object containing parameters with which to start this stubby. Parameters go along with the full-name flags used from the command line.
-	* `stub`: port number to run the stub portal
-	* `admin`: port number to run the admin portal
-	* `data`: JavaScript Object/Array containing endpoint data
-	* `location`: address/hostname at which to run stubby
-	* `key`: keyfile contents (in PEM format)
-	* `cert`: certificate file contents (in PEM format)
-	* `pfx`: pfx file contents (mutually exclusive with key/cert options)
+   * `stub`: port number to run the stub portal
+   * `admin`: port number to run the admin portal
+   * `data`: JavaScript Object/Array containing endpoint data
+   * `location`: address/hostname at which to run stubby
+   * `key`: keyfile contents (in PEM format)
+   * `cert`: certificate file contents (in PEM format)
+   * `pfx`: pfx file contents (mutually exclusive with key/cert options)
 * `callback`: takes one parameter: the error message (if there is one), undefined otherwise
 
 ### start([callback])
@@ -223,23 +223,30 @@ Identical to previous signature, only all options are assumed to be defaults.
 ### stop()
 closes the connections and ports being used by stubby's stub and admin portals
 
-### get([id,] callback)
+### get(id, callback)
 Simulates a GET request to the admin portal, with the callback receiving the resultant data.
 
 * `id`: the id of the endpoint to retrieve. If ommitted, an array of all registered endpoints is passed the callback.
-* `callback`: takes a single parameter containing the returned results. Undefined if no endpoints are found.
+* `callback(err, endpoint)`: `err` is defined if no endpoint exists with the given id. Else, `endpoint` is populated.
+
+### get(callback)
+Simulates a GET request to the admin portal, with the callback receiving the resultant data.
+
+* `id`: the id of the endpoint to retrieve. If ommitted, an array of all registered endpoints is passed the callback.
+* `callback(endpoints)`: takes a single parameter containing an array of returned results. Empty if no endpoints are registered
 
 ### post(data, [callback])
 * `data`: an endpoint object to store in stubby
-* `callback`: if all goes well, gets executed with the created endpoint. If there is an error, gets called with the error message.
+* `callback(err, endpoint)`: if all goes well, gets executed with the created endpoint. If there is an error, gets called with the error message.
 
 ### put(id, data, [callback])
 * `id`: id of the endpoint to update.
 * `data`: data with which to replace the endpoint.
-* `callback`: executed with no passed parameters if successful. Else, passed the error message.
+* `callback(err)`: executed with no passed parameters if successful. Else, passed the error message.
 
-### delete([id])
+### delete([id], callback)
 * `id`: id of the endpoint to destroy. If ommitted, all endoints are cleared from stubby.
+* `callback()`: called after the endpoint has been removed
 
 ### Example (coffeescript)
 ```coffeescript
@@ -249,14 +256,14 @@ stubby1 = new Stubby()
 stubby2 = new Stubby()
 
 stubby1.start
-	stub: 80
-	admin: 81
-	location: 'localhost'
+   stub: 80
+   admin: 81
+   location: 'localhost'
 
 stubby2.start
-	stub: 80
-	admin: 81
-	location: 'example.com'
+   stub: 80
+   admin: 81
+   location: 'example.com'
 ```
 
 # Running tests

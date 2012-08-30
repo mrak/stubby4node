@@ -2,6 +2,11 @@ module.exports.Portal = class Portal
    constructor: ->
       @name = 'portal'
 
+   fault: (request, response) =>
+      response.writeHead 500, {}
+      CLI.error "#{@getLogLine request} unexpectedly generated a server error"
+      response.end()
+
    getLogLine: (request) ->
       date = new Date()
       hours = "0#{date.getHours()}".slice -2
