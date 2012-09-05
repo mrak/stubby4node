@@ -4,7 +4,7 @@ Portal = require('./portal').Portal
 module.exports.Stub = class Stub extends Portal
    constructor : (endpoints) ->
       @Endpoints = endpoints
-      @name = '[stub]'
+      @name = '[stubs]'
 
    server : (request, response) =>
       data = null
@@ -13,6 +13,7 @@ module.exports.Stub = class Stub extends Portal
          data += chunk
 
       request.on 'end', =>
+         CLI.success @getLogLine request
          criteria =
             url : request.url
             method : request.method
@@ -27,9 +28,16 @@ module.exports.Stub = class Stub extends Portal
                if typeof rNr.body is 'object' then rNr.body = JSON.stringify rNr.body
                response.write rNr.body if rNr.body?
                response.end()
-               CLI.success @getLogLine request
+               switch
+                  when rNr.status >= 500
+                     CLI.error @getResponseLogLine rNr.status, request.url
+                  when rNr.status >= 400
+                     CLI.warn @getResponseLogLine rNr.status, request.url
+                  else
+                     CLI.success @getResponseLogLine rNr.status, request.url
 
          try
             @Endpoints.find criteria, callback
          catch e
+            console.dir e
             @fault request, response

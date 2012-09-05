@@ -96,6 +96,10 @@ module.exports.Admin = class Admin extends Portal
          response.writeHead 204, {}
          response.end()
 
+      badRequest : (response) ->
+         response.writeHead 400, {'Content-Type' : 'text/plain'}
+         response.end()
+
       notSupported : (response) ->
          response.writeHead 405, {}
          response.end()
@@ -104,16 +108,12 @@ module.exports.Admin = class Admin extends Portal
          response.writeHead 404, {'Content-Type' : 'text/plain'}
          response.end()
 
-      serverError : (response) ->
-         response.writeHead 500, {'Content-Type' : 'text/plain'}
-         response.end()
-
       saveError : (response) ->
          response.writeHead 422, {'Content-Type' : 'text/plain'}
          response.end()
 
-      badRequest : (response) ->
-         response.writeHead 400, {'Content-Type' : 'text/plain'}
+      serverError : (response) ->
+         response.writeHead 500, {'Content-Type' : 'text/plain'}
          response.end()
 
    urlValid : (url) ->
