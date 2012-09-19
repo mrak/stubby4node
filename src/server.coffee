@@ -8,7 +8,7 @@ http = require 'http'
 https = require 'https'
 
 onListening = (portal, port, protocol = 'http') ->
-   CLI.info "#{portal} portal running at #{protocol}://#{args.location}:#{port}"
+   CLI.dark "#{portal} portal running at #{protocol}://#{args.location}:#{port}"
 onError = (err, port) ->
    switch err.code
       when 'EACCES'

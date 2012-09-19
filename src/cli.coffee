@@ -143,16 +143,22 @@ module.exports =
          cert: @getCert argv
          pfx: @getPfx argv
 
-   red: '\u001b[31m'
-   green: '\u001b[32m'
-   yellow: '\u001b[33m'
-   blue: '\u001b[34m'
-   purple: '\u001b[35m'
-   reset: '\u001b[0m'
+   bold: '\x1B[1m'
+   black: '\x1B[30m'
+   blue: '\x1B[34m'
+   cyan: '\x1B[36m'
+   green: '\x1B[32m'
+   purple: '\x1B[35m'
+   red: '\x1B[31m'
+   yellow: '\x1B[33m'
+   reset: '\x1B[0m'
 
    log: (msg) ->
       if @mute then return
       console.log msg
+   dark: (msg) ->
+      if @mute then return
+      console.log "#{@bold}#{@black}#{msg}#{@reset}"
    dump: (data) ->
       if @mute then return
       console.dir data
@@ -168,6 +174,9 @@ module.exports =
    warn: (msg) ->
       if @mute then return
       console.warn "#{@yellow}#{msg}#{@reset}"
+   say: (msg) ->
+      if @mute then return
+      console.log "#{@cyan}#{msg}#{@reset}"
    notice: (msg) ->
       if @mute then return
       console.log "#{@purple}#{msg}#{@reset}"
