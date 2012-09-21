@@ -4,30 +4,40 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>stubby4node by Afmrak</title>
-
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
     <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
   </head>
   <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/Afmrak/stubby4node">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/Afmrak/stubby4node/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/Afmrak/stubby4node/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
     <div class="wrapper">
-      <header>
-        <h1>stubby4node</h1>
-        <p>A configurable server for stubbing external systems during development. Uses Node.js and written in Coffeescript</p>
 
-        <p class="view"><a href="https://github.com/Afmrak/stubby4node">View the Project on GitHub <small>Afmrak/stubby4node</small></a></p>
-
-
-        <ul>
-          <li><a href="https://github.com/Afmrak/stubby4node/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/Afmrak/stubby4node/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/Afmrak/stubby4node">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
       <section>
+        <div id="title">
+          <h1>stubby4node</h1>
+          <p>A configurable server for stubbing external systems during development. Uses Node.js and written in Coffeescript</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/Afmrak">Afmrak</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
+
         <p><a href="http://travis-ci.org/Afmrak/stubby4node"><img src="https://secure.travis-ci.org/Afmrak/stubby4node.png?branch=master" alt="Build Status"></a></p>
 
 <h1>Requirements</h1>
@@ -71,16 +81,32 @@ cake build
 
 <h1>Command-line switches</h1>
 
-<pre><code>stubby [-s &lt;port&gt;] [-a &lt;port&gt;] [-f &lt;file&gt;] [-h]\n
--s, --stub [PORT]                    Port that stub portal should run on. Defaults to 8882
--a, --admin [PORT]                   Port that admin portal should run on. Defaults to 8889
--f, --file [FILE.{json|yml|yaml}]    Data file to pre-load endoints.
+<pre><code>stubby [-s &lt;port&gt;] [-a &lt;port&gt;] [-d &lt;file&gt;] [-l &lt;hostname&gt;]
+       [-h] [-v] [-k &lt;file&gt;] [-c &lt;file&gt;] [-p &lt;file&gt;]
+
+-s, --stub [PORT]                    Port that stub portal should run on. Defaults to 8882.
+
+-a, --admin [PORT]                   Port that admin portal should run on. Defaults to 8889.
+
+-d, --data [FILE.{json|yml|yaml}]    Data file to pre-load endoints.
+
+-l, --location [HOSTNAME]            Host at which to run stubby.
+
 -h, --help                           This help text.
+
+-v, --version                        Prints stubby's version number.
+
+-k, --key [FILE.pem]                 Private key file in PEM format for https. Requires --cert
+
+-c, --cert [FILE.pem]                Certificate key file in PEM format for https. Requres --key.
+
+-p, --pfx [FILE.pfx]                 Key, certificate key and trusted certificates in pfx
+                                     format. Mutually exclusive with --key,--cert
 </code></pre>
 
 <h1>The Admin Portal</h1>
 
-<p>The admin portal is a RESTful(ish) endpoint running on <code>localhost:8889</code>.</p>
+<p>The admin portal is a RESTful(ish) endpoint running on <code>localhost:8889</code>. Or wherever you described through stubby's options.</p>
 
 <h2>Supplying Endpoints to Stub</h2>
 
@@ -233,7 +259,105 @@ cake build
 
 <h1>The Stub Portal</h1>
 
-<p>Requests sent to any url at <code>localhost</code> or <code>localhost:8882</code> will search through the available endpoints and, if a match is found, respond with that endpoint's <code>response</code> data</p>
+<p>Requests sent to any url at <code>localhost:8882</code> (or wherever you told stubby to run) will search through the available endpoints and, if a match is found, respond with that endpoint's <code>response</code> data</p>
+
+<h1>Programmatic API</h1>
+
+<p>You can also control stubby programmatically through any coffee/nodejs app. If you <code>require('stubby').Stubby</code> in your app you have access to the <code>Stubby</code> class. You can then start, stop, and modify endpoints belonging to instances of the <code>Stubby</code> class.</p>
+
+<h2>The Stubby module</h2>
+
+<h3>start(options, [callback])</h3>
+
+<ul>
+<li>
+<code>options</code>: an object containing parameters with which to start this stubby. Parameters go along with the full-name flags used from the command line.
+
+<ul>
+<li>
+<code>stub</code>: port number to run the stub portal</li>
+<li>
+<code>admin</code>: port number to run the admin portal</li>
+<li>
+<code>data</code>: JavaScript Object/Array containing endpoint data</li>
+<li>
+<code>location</code>: address/hostname at which to run stubby</li>
+<li>
+<code>key</code>: keyfile contents (in PEM format)</li>
+<li>
+<code>cert</code>: certificate file contents (in PEM format)</li>
+<li>
+<code>pfx</code>: pfx file contents (mutually exclusive with key/cert options)</li>
+</ul>
+</li>
+<li>
+<code>callback</code>: takes one parameter: the error message (if there is one), undefined otherwise</li>
+</ul><h3>start([callback])</h3>
+
+<p>Identical to previous signature, only all options are assumed to be defaults.</p>
+
+<h3>stop()</h3>
+
+<p>closes the connections and ports being used by stubby's stub and admin portals</p>
+
+<h3>get(id, callback)</h3>
+
+<p>Simulates a GET request to the admin portal, with the callback receiving the resultant data.</p>
+
+<ul>
+<li>
+<code>id</code>: the id of the endpoint to retrieve. If ommitted, an array of all registered endpoints is passed the callback.</li>
+<li>
+<code>callback(err, endpoint)</code>: <code>err</code> is defined if no endpoint exists with the given id. Else, <code>endpoint</code> is populated.</li>
+</ul><h3>get(callback)</h3>
+
+<p>Simulates a GET request to the admin portal, with the callback receiving the resultant data.</p>
+
+<ul>
+<li>
+<code>id</code>: the id of the endpoint to retrieve. If ommitted, an array of all registered endpoints is passed the callback.</li>
+<li>
+<code>callback(endpoints)</code>: takes a single parameter containing an array of returned results. Empty if no endpoints are registered</li>
+</ul><h3>post(data, [callback])</h3>
+
+<ul>
+<li>
+<code>data</code>: an endpoint object to store in stubby</li>
+<li>
+<code>callback(err, endpoint)</code>: if all goes well, gets executed with the created endpoint. If there is an error, gets called with the error message.</li>
+</ul><h3>put(id, data, [callback])</h3>
+
+<ul>
+<li>
+<code>id</code>: id of the endpoint to update.</li>
+<li>
+<code>data</code>: data with which to replace the endpoint.</li>
+<li>
+<code>callback(err)</code>: executed with no passed parameters if successful. Else, passed the error message.</li>
+</ul><h3>delete([id], callback)</h3>
+
+<ul>
+<li>
+<code>id</code>: id of the endpoint to destroy. If ommitted, all endoints are cleared from stubby.</li>
+<li>
+<code>callback()</code>: called after the endpoint has been removed</li>
+</ul><h3>Example (coffeescript)</h3>
+
+<div class="highlight"><pre><span class="nv">Stubby = </span><span class="nx">require</span><span class="p">(</span><span class="s">'stubby'</span><span class="p">).</span><span class="nx">Stubby</span>
+
+<span class="nv">stubby1 = </span><span class="k">new</span> <span class="nx">Stubby</span><span class="p">()</span>
+<span class="nv">stubby2 = </span><span class="k">new</span> <span class="nx">Stubby</span><span class="p">()</span>
+
+<span class="nx">stubby1</span><span class="p">.</span><span class="nx">start</span>
+   <span class="nv">stub: </span><span class="mi">80</span>
+   <span class="nv">admin: </span><span class="mi">81</span>
+   <span class="nv">location: </span><span class="s">'localhost'</span>
+
+<span class="nx">stubby2</span><span class="p">.</span><span class="nx">start</span>
+   <span class="nv">stub: </span><span class="mi">80</span>
+   <span class="nv">admin: </span><span class="mi">81</span>
+   <span class="nv">location: </span><span class="s">'example.com'</span>
+</pre></div>
 
 <h1>Running tests</h1>
 
@@ -247,14 +371,15 @@ cake build
 <pre><code>jasmine-node --coffee spec
 </code></pre>
 
+<h1>See Also</h1>
+
+<p><strong><a href="https://github.com/azagniotov/stubby4j">stubby4j</a>:</strong> A java implementation of stubby</p>
+
 <h1>TODO</h1>
 
 <ul>
-<li>
-<code>PUT</code>ing multiple responses at a time.</li>
+<li>Better callback handling with programmatic API</li>
 <li>SOAP request/response compliance</li>
-<li>Dynamic port switching</li>
-<li>HTTP/SSL auth mocking</li>
 <li>Randomized responses based on supplied pattern (exploratory QA abuse)</li>
 </ul><h1>NOTES</h1>
 
@@ -265,12 +390,9 @@ cake build
 <strong>License</strong> Apache v2.0</li>
 </ul>
       </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/Afmrak">Afmrak</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
+
     </div>
-    <script src="javascripts/scale.fix.js"></script>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
   </body>
 </html>
