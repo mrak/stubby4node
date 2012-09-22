@@ -1,9 +1,11 @@
 contract = require '../models/contract'
 Portal = require('./portal').Portal
 CLI = require '../cli'
+http = require 'http'
 
 module.exports.Admin = class Admin extends Portal
-   constructor : (endpoints) ->
+   constructor : (endpoints, muted = false) ->
+      CLI.mute  = muted
       @endpoints = endpoints
       @contract = contract
       @name = '[admin]'
@@ -13,7 +15,7 @@ module.exports.Admin = class Admin extends Portal
    goPUT : (request, response) =>
       id = @getId request.url
       if not id
-         @send.notSupported response
+         @notSupported response
          return
 
       data = ''
@@ -24,7 +26,7 @@ module.exports.Admin = class Admin extends Portal
 
    goPOST : (request, response) ->
       id = @getId request.url
-      if id then return @send.notSupported response
+      if id then return @notSupported response
 
       data = ''
       request.on 'data', (chunk) ->
@@ -34,11 +36,11 @@ module.exports.Admin = class Admin extends Portal
 
    goDELETE : (request, response) =>
       id = @getId request.url
-      if not id then return @send.notSupported response
+      if not id then return @notSupported response
 
       callback = (err) =>
-         if err then return @send.notFound response
-         @send.noContent  response
+         if err then return @notFound response
+         @noContent  response
 
       @endpoints.delete id, callback
 
@@ -47,26 +49,27 @@ module.exports.Admin = class Admin extends Portal
 
       if id
          callback = (err, endpoint) =>
-            if err then return @send.notFound response
-            @send.ok response, endpoint
+            if err then return @notFound response
+            @ok response, endpoint
          @endpoints.retrieve id, callback
       else
          callback = (data) =>
-            if data.length is 0 then return @send.noContent response
-            @send.ok response, data
+            if data.length is 0 then return @noContent response
+            @ok response, data
          @endpoints.gather callback
 
    processPUT : (id, data, response) =>
       try
          data = JSON.parse data
       catch e
-         return @send.badRequest response
+         return @badRequest response
 
-      if not @contract data then return @send.badRequest response
+      errors = @contract data
+      if errors then return @badRequest response, errors
 
       callback = (err) =>
-         if err then return @send.notFound response
-         @send.noContent response
+         if err then return @notFound response
+         @noContent response
 
       @endpoints.update id, data, callback
 
@@ -74,47 +77,70 @@ module.exports.Admin = class Admin extends Portal
       try
          data = JSON.parse data
       catch e
-         return @send.badRequest response
+         return @badRequest response
 
-      if not @contract data then return @send.badRequest response
+      errors = @contract data
+      if errors then return @badRequest response, errors
 
-      callback = (err, endpoint) => @send.created response, request, endpoint.id
+      callback = (err, endpoint) => @created response, request, endpoint.id
 
       @endpoints.create data, callback
 
-   send :
-      ok : (response, result) ->
-         response.writeHead 200, {'Content-Type' : 'application/json'}
-         response.write JSON.stringify result
-         response.end()
+   ok : (response, result) =>
+      response.writeHead 200, {'Content-Type' : 'application/json'}
+      response.write JSON.stringify result
+      response.end()
+      @logResponse 200
 
-      created : (response, request, id) ->
-         response.writeHead 201, {'Content-Location' : "#{request.headers.host}/#{id}"}
-         response.end()
+   created : (response, request, id) =>
+      response.writeHead 201, {'Content-Location' : "#{request.headers.host}/#{id}"}
+      response.end()
+      @logResponse 201
 
-      noContent : (response) ->
-         response.writeHead 204, {}
-         response.end()
+   noContent : (response) =>
+      response.writeHead 204, {}
+      response.end()
+      @logResponse 204
 
-      badRequest : (response) ->
-         response.writeHead 400, {'Content-Type' : 'text/plain'}
-         response.end()
+   badRequest : (response, errors) =>
+      response.writeHead 400, {'Content-Type' : 'application/json'}
+      response.write JSON.stringify errors
+      response.end()
+      @logResponse 400
 
-      notSupported : (response) ->
-         response.writeHead 405, {}
-         response.end()
+   notSupported : (response) =>
+      response.writeHead 405, {}
+      response.end()
+      @logResponse 405
 
-      notFound : (response) ->
-         response.writeHead 404, {'Content-Type' : 'text/plain'}
-         response.end()
+   notFound : (response) =>
+      response.writeHead 404, {'Content-Type' : 'text/plain'}
+      response.end()
+      @logResponse 404
 
-      saveError : (response) ->
-         response.writeHead 422, {'Content-Type' : 'text/plain'}
-         response.end()
+   saveError : (response) =>
+      response.writeHead 422, {'Content-Type' : 'text/plain'}
+      response.end()
+      @logResponse 422
 
-      serverError : (response) ->
-         response.writeHead 500, {'Content-Type' : 'text/plain'}
-         response.end()
+   serverError : (response) =>
+      response.writeHead 500, {'Content-Type' : 'text/plain'}
+      response.end()
+      @logResponse 500
+
+   logResponse : (status) ->
+      fn = 'log'
+      switch
+         when 600 > status >= 400
+            fn = 'error'
+         when status >= 300
+            fn = 'warn'
+         when status >= 200
+            fn = 'success'
+         when status >= 100
+            fn = 'info'
+      CLI[fn] @getResponseLogLine status, " #{http.STATUS_CODES[status]}"
+
 
    urlValid : (url) ->
       return url.match(@urlPattern)?
@@ -123,7 +149,7 @@ module.exports.Admin = class Admin extends Portal
       return url.replace @urlPattern, '$1'
 
    server : (request, response) =>
-      CLI.info @getLogLine request
+      CLI.say @getLogLine request
 
       if @urlValid request.url
          switch request.method.toUpperCase()
@@ -131,6 +157,6 @@ module.exports.Admin = class Admin extends Portal
             when 'POST'   then @goPOST request, response
             when 'DELETE' then @goDELETE request, response
             when 'GET'    then @goGET request, response
-            else @send.notSupported response
+            else @notSupported response
       else
-         @send.notFound response
+         @notFound response

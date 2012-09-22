@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.30
+
+* admin portal console logging for responses
+* reworked API contract failures for admin portal. Upon BAD REQUEST server returns an array of errors describing the endpoint validations that were violated.
+
+## 0.1.29
+
+* logging messages fixes for stub portal
+
 ## 0.1.28
 
 * fixed callback parameters for stubby interface

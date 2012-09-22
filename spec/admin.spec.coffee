@@ -14,7 +14,7 @@ describe 'Admin', ->
          update   : jasmine.createSpy 'endpoints.update'
          delete   : jasmine.createSpy 'endpoints.delete'
          gather   : jasmine.createSpy 'endpoints.gather'
-      sut = new Admin(endpoints)
+      sut = new Admin(endpoints, true)
 
       request =
          url: '/'
@@ -78,44 +78,44 @@ describe 'Admin', ->
          expect(actual).toBeFalsy()
 
 
-   describe 'send.notSupported', ->
+   describe 'notSupported', ->
       it 'should write header with "405 Not Supported" code and end response', ->
-         sut.send.notSupported response
+         sut.notSupported response
 
          expect(response.writeHead.mostRecentCall.args[0]).toBe 405
          expect(response.end).toHaveBeenCalled()
 
-   describe 'send.notFound', ->
+   describe 'notFound', ->
       it 'should write header with "404 Not Found" code and end response', ->
-         sut.send.notFound response
+         sut.notFound response
 
          expect(response.writeHead.mostRecentCall.args[0]).toBe 404
          expect(response.end).toHaveBeenCalled()
 
-   describe 'send.serverError', ->
+   describe 'serverError', ->
       it 'should write header with "500 Server Error" code and end response', ->
-         sut.send.serverError response
+         sut.serverError response
 
          expect(response.writeHead.mostRecentCall.args[0]).toBe 500
          expect(response.end).toHaveBeenCalled()
 
-   describe 'send.saveError', ->
+   describe 'saveError', ->
       it 'should write header with "422 Uprocessable Entity" code and end response', ->
-         sut.send.saveError response
+         sut.saveError response
 
          expect(response.writeHead.mostRecentCall.args[0]).toBe 422
          expect(response.end).toHaveBeenCalled()
 
-   describe 'send.noContent', ->
+   describe 'noContent', ->
       it 'should write header with "204 No Content" code and end response', ->
-         sut.send.noContent response
+         sut.noContent response
 
          expect(response.writeHead.mostRecentCall.args[0]).toBe 204
          expect(response.end).toHaveBeenCalled()
 
-   describe 'send.ok', ->
+   describe 'ok', ->
       it 'should write header with "200 OK" code and end response', ->
-         sut.send.ok response
+         sut.ok response
 
          expect(response.writeHead.mostRecentCall.args[0]).toBe 200
          expect(response.end).toHaveBeenCalled()
@@ -123,11 +123,11 @@ describe 'Admin', ->
       it 'should write JSON content if supplied', ->
          content = {}
 
-         sut.send.ok response, content
+         sut.ok response, content
 
          expect(response.write).toHaveBeenCalled()
 
-   describe 'send.created', ->
+   describe 'created', ->
       id = null
 
       beforeEach ->
@@ -135,25 +135,25 @@ describe 'Admin', ->
          id = '42'
 
       it 'should write header with "201 Content Created" code and end response', ->
-         sut.send.created response, request, id
+         sut.created response, request, id
 
          expect(response.writeHead.mostRecentCall.args[0]).toBe 201
          expect(response.end).toHaveBeenCalled()
 
       it 'should write header with Content-Location set', ->
          expected = {'Content-Location':"#{request.headers.host}/#{id}"}
-         sut.send.created response, request, id
+         sut.created response, request, id
 
          expect(response.writeHead.mostRecentCall.args[1]).toEqual expected
 
    describe 'server', ->
-      it 'should call send.notFound if url not valid', ->
+      it 'should call notFound if url not valid', ->
          spyOn(sut, 'urlValid').andReturn false
-         spyOn sut.send, 'notFound'
+         spyOn sut, 'notFound'
 
          sut.server request, response
 
-         expect(sut.send.notFound).toHaveBeenCalled()
+         expect(sut.notFound).toHaveBeenCalled()
 
       it 'should call goPOST if method is POST', ->
          spyOn(sut, 'urlValid').andReturn true
@@ -196,16 +196,16 @@ describe 'Admin', ->
 
       beforeEach ->
          request.on = (event, callback) -> callback()
-         spyOn(sut, 'contract').andReturn true
+         spyOn(sut, 'contract').andReturn null
 
       describe 'goPUT', ->
          it 'should send not supported if there is no id in the url', ->
             spyOn(sut, 'getId').andReturn ''
-            spyOn sut.send, 'notSupported'
+            spyOn sut, 'notSupported'
 
             sut.goPUT request, response
 
-            expect(sut.send.notSupported).toHaveBeenCalled()
+            expect(sut.notSupported).toHaveBeenCalled()
 
       describe 'processPUT', ->
          it 'should update item if data is JSON parsable', ->
@@ -224,22 +224,22 @@ describe 'Admin', ->
 
          it 'should return BAD REQUEST when contract is violated', ->
             data = '{"property":"value"}'
-            sut.contract.andReturn false
-            spyOn sut.send, 'badRequest'
+            sut.contract.andReturn []
+            spyOn sut, 'badRequest'
 
             sut.processPUT "any id", data, response
 
-            expect(sut.send.badRequest).toHaveBeenCalled()
+            expect(sut.badRequest).toHaveBeenCalled()
             expect(sut.contract).toHaveBeenCalled()
 
       describe 'goPOST', ->
          it 'should send not supported if there is an id in the url', ->
             spyOn(sut, 'getId').andReturn '123'
-            spyOn sut.send, 'notSupported'
+            spyOn sut, 'notSupported'
 
             sut.goPOST request, response
 
-            expect(sut.send.notSupported).toHaveBeenCalled()
+            expect(sut.notSupported).toHaveBeenCalled()
 
       describe 'processPOST', ->
          it 'should create item if data is JSON parsable', ->
@@ -258,22 +258,22 @@ describe 'Admin', ->
 
          it 'should return BAD REQUEST when contract is violated', ->
             data = '{"property":"value"}'
-            sut.contract.andReturn false
-            spyOn sut.send, 'badRequest'
+            sut.contract.andReturn []
+            spyOn sut, 'badRequest'
 
             sut.processPOST data, response, request
 
-            expect(sut.send.badRequest).toHaveBeenCalled()
+            expect(sut.badRequest).toHaveBeenCalled()
             expect(sut.contract).toHaveBeenCalled()
 
       describe 'goDELETE', ->
          it 'should send not supported for the root url', ->
             spyOn(sut, 'getId').andReturn ''
-            spyOn sut.send, 'notSupported'
+            spyOn sut, 'notSupported'
 
             sut.goDELETE request, response
 
-            expect(sut.send.notSupported).toHaveBeenCalled()
+            expect(sut.notSupported).toHaveBeenCalled()
 
          it 'should delete item if id was gathered', ->
             spyOn(sut, 'getId').andReturn '123'

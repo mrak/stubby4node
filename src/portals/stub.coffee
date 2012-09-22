@@ -21,24 +21,23 @@ module.exports.Stub = class Stub extends Portal
          callback = (err, rNr) =>
             if err
                response.writeHead 404, {}
-               response.end()
                CLI.error "#{@getResponseLogLine 404, request.url} is not a registered endpoint"
             else
                response.writeHead rNr.status, rNr.headers
                if typeof rNr.body is 'object' then rNr.body = JSON.stringify rNr.body
                response.write rNr.body if rNr.body?
-               response.end()
+               fn = 'log'
                switch
-                  when rNr.status >= 400
-                     CLI.error @getResponseLogLine rNr.status, request.url
+                  when 600 > rNr.status >= 400
+                     fn = 'error'
                   when rNr.status >= 300
-                     CLI.warn @getResponseLogLine rNr.status, request.url
+                     fn = 'warn'
                   when rNr.status >= 200
-                     CLI.success @getResponseLogLine rNr.status, request.url
+                     fn = 'success'
                   when rNr.status >= 100
-                     CLI.info @getResponseLogLine rNr.status, request.url
-                  else
-                     CLI.log @getResponseLogLine rNr.status, request.url
+                     fn = 'info'
+               CLI[fn] @getResponseLogLine rNr.status, request.url
+            response.end()
 
          try
             @Endpoints.find criteria, callback

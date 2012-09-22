@@ -16,158 +16,198 @@ describe 'contract', ->
                username : 'Afmrak'
                password : 'stubby'
          response :
-            headers : 
+            headers :
                property : 'value'
             status : 204
             body : 'success!'
 
-   it 'should return true for valid data', ->
+   it 'should return no errors for valid data', ->
       result = sut data
 
-      expect(result).toBeTruthy()
+      expect(result).toBeNull()
 
-   it 'should return true for an array of valid data', ->
+   it 'should return no errors for an array of valid data', ->
       data = [data, data]
       result = sut data
 
-      expect(result).toBeTruthy()
+      expect(result).toBeNull()
 
-   it 'should return false for an array with an invalid datum', ->
+   it 'should return an array of errors when multiple problems are found', ->
+      expected = [[
+         "'response.status' must be integer-like."
+      ],[
+         "'request.url' is required."
+         "'request.method' must be one of GET,PUT,POST,HEAD,TRACE,DELETE,CONNECT,OPTIONS."
+         "'response.headers', if supplied, must be an object."
+      ]]
+
+      data.response.status = "a string"
+      data2 =
+         request:
+            method: "INVALID"
+         response:
+            headers: []
+
+      results = sut [data, data2]
+      expect(results).toEqual expected
+
+   it 'should return array of errors for an array with an invalid datum', ->
       invalid = {}
       data = [data, invalid]
       result = sut data
 
-      expect(result).toBeFalsy()
+      expect(result.length).toBe 1
 
    describe 'request', ->
-      it 'is required', ->
+      it 'should return error when missing', ->
+         expected = ["'request' object is required."]
          data.request = null
-         result = sut data
-         expect(result).toBeFalsy()
+         actual = sut data
+         expect(actual).toEqual expected
 
          data.request = undefined
-         result = sut data
-         expect(result).toBeFalsy()
+         actual = sut data
+         expect(actual).toEqual expected
 
       describe 'headers', ->
-         it 'can be absent', ->
+         it 'should have no errors when absent', ->
             data.request.headers = null
             result = sut data
-            expect(result).toBeTruthy()
+            expect(result).toBeNull()
 
             data.request.headers = undefined
             result = sut data
-            expect(result).toBeTruthy()
+            expect(result).toBeNull()
 
          it 'cannot be an array', ->
+            expected = ["'request.headers', if supplied, must be an object."]
+
             data.request.headers = ['one', 'two']
-            result = sut data
-            expect(result).toBeFalsy()
+            actual = sut data
+
+            expect(actual).toEqual expected
 
          it 'cannot be a string', ->
+            expected = ["'request.headers', if supplied, must be an object."]
+
             data.request.headers = 'one'
-            result = sut data
-            expect(result).toBeFalsy()
+            actual = sut data
+
+            expect(actual).toEqual expected
 
       describe 'url', ->
-         it 'should return false for a missing url', ->
+         it 'should return error for a missing url', ->
+            expected = ["'request.url' is required."]
             data.request.url = null
             result = sut data
-            expect(result).toBeFalsy()
+
+            expect(result).toEqual expected
 
             data.request.url = undefined
             result = sut data
-            expect(result).toBeFalsy()
+            expect(result).toEqual expected
 
       describe 'method', ->
-         it 'should allow a missing method (defaults to GET)', ->
+         it 'should have no errors for a missing method (defaults to GET)', ->
             data.request.method = null
             result = sut data
-            expect(result).toBeTruthy()
+            expect(result).toBeNull()
 
             data.request.method = undefined
             result = sut data
-            expect(result).toBeTruthy()
+            expect(result).toBeNull()
 
-         it 'should fail if method isnt HTTP 1.1', ->
+         it 'should return error if method isnt HTTP 1.1', ->
+            expected = ["'request.method' must be one of GET,PUT,POST,HEAD,TRACE,DELETE,CONNECT,OPTIONS."]
+
             data.request.method = 'QUEST'
             result = sut data
-            expect(result).toBeFalsy()
 
-      it 'should allow a missing post field', ->
+            expect(result).toEqual expected
+
+      it 'should return no errors for a missing post field', ->
          data.request.post = null
          result = sut data
-         expect(result).toBeTruthy()
+         expect(result).toBeNull()
 
          data.request.post = undefined
          result = sut data
-         expect(result).toBeTruthy()
+         expect(result).toBeNull()
 
    describe 'response', ->
-      it 'is required', ->
+      it 'should return an error if missing', ->
+         expected = ["'response' object is required."]
          data.response = null
          result = sut data
-         expect(result).toBeFalsy()
+         expect(result).toEqual expected
 
          data.response = undefined
          result = sut data
-         expect(result).toBeFalsy()
+         expect(result).toEqual expected
 
       describe 'headers', ->
-         it 'can be absent', ->
+         it 'should return no errors when absent', ->
             data.response.headers = null
             result = sut data
-            expect(result).toBeTruthy()
+            expect(result).toBeNull()
 
             data.response.headers = undefined
             result = sut data
-            expect(result).toBeTruthy()
+            expect(result).toBeNull()
 
          it 'cannot be an array', ->
+            expected = ["'response.headers', if supplied, must be an object."]
+
             data.response.headers = ['one', 'two']
-            result = sut data
-            expect(result).toBeFalsy()
+            actual = sut data
+
+            expect(actual).toEqual expected
 
          it 'cannot be a string', ->
+            expected = ["'response.headers', if supplied, must be an object."]
+
             data.response.headers = 'one'
-            result = sut data
-            expect(result).toBeFalsy()
+            actual = sut data
+
+            expect(actual).toEqual expected
 
       describe 'status', ->
-         it 'is not required', ->
+         it 'should return no erros when absent', ->
             data.response.status = null
             result = sut data
-            expect(result).toBeTruthy()
+            expect(result).toBeNull()
 
             data.response.status = undefined
             result = sut data
-            expect(result).toBeTruthy()
+            expect(result).toBeNull()
 
-         it 'can be a number', ->
+         it 'should return no errors when it is a number', ->
             data.response.status = 400
             result = sut data
-            expect(result).toBeTruthy()
+            expect(result).toBeNull()
 
-         it 'can be a string of a number', ->
+         it 'should return no errors when it is a string of a number', ->
             data.response.status = "400"
             result = sut data
-            expect(result).toBeTruthy()
+            expect(result).toBeNull()
 
-         it 'can be a string that is not a number', ->
+         it 'cannot be a string that is not a number', ->
+            expected = ["'response.status' must be integer-like."]
             data.response.status = "string"
-            result = sut data
-            expect(result).toBeFalsy()
+            actual = sut data
+            expect(actual).toEqual expected
 
          it 'cannot be an object', ->
+            expected = ["'response.status' must be integer-like."]
             data.response.status = {'property':'value'}
-            result = sut data
-            expect(result).toBeFalsy()
+            actual = sut data
+            expect(actual).toEqual expected
 
-      it 'should allow empty body', ->
+      it 'should return no errors for an empty body', ->
          data.response.body = null
          result = sut data
-         expect(result).toBeTruthy()
+         expect(result).toBeNull()
 
          data.response.body = undefined
          result = sut data
-         expect(result).toBeTruthy()
+         expect(result).toBeNull()
