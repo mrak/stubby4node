@@ -140,8 +140,8 @@ describe 'Admin', ->
          expect(response.writeHead.mostRecentCall.args[0]).toBe 201
          expect(response.end).toHaveBeenCalled()
 
-      it 'should write header with Content-Location set', ->
-         expected = {'Content-Location':"#{request.headers.host}/#{id}"}
+      it 'should write header with Location set', ->
+         expected = {'Location':"#{request.headers.host}/#{id}"}
          sut.created response, request, id
 
          expect(response.writeHead.mostRecentCall.args[1]).toEqual expected

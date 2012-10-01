@@ -93,7 +93,7 @@ module.exports.Admin = class Admin extends Portal
       @logResponse 200
 
    created : (response, request, id) =>
-      response.writeHead 201, {'Content-Location' : "#{request.headers.host}/#{id}"}
+      response.writeHead 201, {'Location' : "#{request.headers.host}/#{id}"}
       response.end()
       @logResponse 201
 

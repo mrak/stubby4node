@@ -179,7 +179,7 @@ Submit `POST` requests to `localhost:8889` or load a file (-f) with the followin
 ]
 ```
 
-If you want to load more than one endpoint via file, use either a JSON array or YAML list (-) syntax. On success, the response will contain `Content-Location` in the header with the newly created resources' location
+If you want to load more than one endpoint via file, use either a JSON array or YAML list (-) syntax. On success, the response will contain `Location` in the header with the newly created resources' location
 
 ## Getting the Current List of Stubbed Responses
 
