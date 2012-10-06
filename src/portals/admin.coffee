@@ -90,57 +90,43 @@ module.exports.Admin = class Admin extends Portal
       response.writeHead 200, {'Content-Type' : 'application/json'}
       response.write JSON.stringify result if result?
       response.end()
-      @logResponse 200
+      @responded 200
 
    created : (response, request, id) =>
       response.writeHead 201, {'Location' : "#{request.headers.host}/#{id}"}
       response.end()
-      @logResponse 201
+      @responded 201
 
    noContent : (response) =>
       response.statusCode = 204
       response.end()
-      @logResponse 204
+      @responded 204
 
    badRequest : (response, errors) =>
       response.writeHead 400, {'Content-Type' : 'application/json'}
       response.write JSON.stringify errors
       response.end()
-      @logResponse 400
+      @responded 400
 
    notSupported : (response) =>
       response.statusCode = 405
       response.end()
-      @logResponse 405
+      @responded 405
 
    notFound : (response) =>
       response.writeHead 404, {'Content-Type' : 'text/plain'}
       response.end()
-      @logResponse 404
+      @responded 404
 
    saveError : (response) =>
       response.writeHead 422, {'Content-Type' : 'text/plain'}
       response.end()
-      @logResponse 422
+      @responded 422
 
    serverError : (response) =>
       response.writeHead 500, {'Content-Type' : 'text/plain'}
       response.end()
-      @logResponse 500
-
-   logResponse : (status) ->
-      fn = 'log'
-      switch
-         when 600 > status >= 400
-            fn = 'error'
-         when status >= 300
-            fn = 'warn'
-         when status >= 200
-            fn = 'ok'
-         when status >= 100
-            fn = 'info'
-      CLI[fn] @getResponseLogLine status, " #{http.STATUS_CODES[status]}"
-
+      @responded 500
 
    urlValid : (url) ->
       return url.match(@urlPattern)?
@@ -149,7 +135,7 @@ module.exports.Admin = class Admin extends Portal
       return url.replace @urlPattern, '$1'
 
    server : (request, response) =>
-      CLI.incoming @getLogLine request
+      @received request
       response.setHeader 'Server', "stubby/#{CLI.version()} node/#{process.version} (#{process.platform} #{process.arch})"
 
       if @urlValid request.url

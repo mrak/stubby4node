@@ -29,21 +29,21 @@ endpoints = new Endpoints(args.data)
 stubServer = (new Stub(endpoints)).server
 adminServer = (new Admin(endpoints)).server
 
-options = false
+httpsOptions = false
 protocol = 'http'
 if args.key and args.cert
-   options =
+   httpsOptions =
       key: args.key
       cert: args.cert
 else if args.pfx
-   options =
+   httpsOptions =
       pfx: args.pfx
 
-if not options
+unless httpsOptions
    stubServer = http.createServer(stubServer)
 else
    protocol = 'https'
-   stubServer = https.createServer(options, stubServer)
+   stubServer = https.createServer(httpsOptions, stubServer)
 stubServer.on 'listening', -> onListening 'Stub', args.stub, protocol
 stubServer.on 'error', (err) -> onError(err, args.stub)
 stubServer.listen args.stub, args.location, protocol
@@ -53,8 +53,4 @@ adminServer.on 'listening', -> onListening 'Admin', args.admin
 adminServer.on 'error', (err) -> onError(err, args.admin)
 adminServer.listen args.admin, args.location
 
-CLI.log '''
-
-   Quit: ctrl-c
-
-   Log:'''
+CLI.info '\nQuit: ctrl-c\n'

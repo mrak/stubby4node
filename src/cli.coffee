@@ -85,23 +85,25 @@ module.exports =
    admin: (passed) -> return passed
    data: (filename) ->
       extension = filename.replace /^.*\.([a-zA-Z0-9]+)$/, '$1'
-      filedata = (fs.readFileSync filename, 'utf8').trim()
+      filedata = []
+      parser = ->
 
-      return [] unless filedata
+      try
+         filedata = (fs.readFileSync filename, 'utf8').trim()
+      catch e
+         @warn "File '#{filename}' could not be found. Ignoring..."
+         return []
 
       if extension is 'json'
-         try
-            return JSON.parse filedata
-         catch e
-            @error "Couldn't load #{filename} due to syntax errors:"
-
+         parser = JSON.parse
       if extension in ['yaml','yml']
-         try
-            return yaml.load filedata
-         catch e
-            @warn "Module 'js-yaml' is required for parsing yaml data. No data loaded."
+         parser = yaml.load
 
-      return []
+      try
+         return parser filedata
+      catch e
+         @warn "Couldn't parse '#{filename}' due to syntax errors: Ignoring..."
+         return []
 
    key: (file) -> @getFile file, 'pem'
 

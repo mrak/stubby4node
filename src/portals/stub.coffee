@@ -13,34 +13,27 @@ module.exports.Stub = class Stub extends Portal
          data += chunk
 
       request.on 'end', =>
-         CLI.incoming @getLogLine request
+         @received request
          criteria =
             url : request.url
             method : request.method
             post : data
-         callback = (err, rNr) =>
+         callback = (err, endpointResponse) =>
             if err
                response.writeHead 404, {}
-               CLI.error "#{@getResponseLogLine 404, request.url} is not a registered endpoint"
+               @responded 404, request.url, 'is not a registered endpoint'
             else
-               response.writeHead rNr.status, rNr.headers
-               if typeof rNr.body is 'object' then rNr.body = JSON.stringify rNr.body
-               response.write rNr.body if rNr.body?
-               fn = 'log'
-               switch
-                  when 600 > rNr.status >= 400
-                     fn = 'error'
-                  when rNr.status >= 300
-                     fn = 'warn'
-                  when rNr.status >= 200
-                     fn = 'ok'
-                  when rNr.status >= 100
-                     fn = 'info'
-               CLI[fn] @getResponseLogLine rNr.status, request.url
+               response.writeHead endpointResponse.status, endpointResponse.headers
+               if typeof endpointResponse.body is 'object' 
+                  endpointResponse.body = JSON.stringify endpointResponse.body
+               response.write endpointResponse.body if endpointResponse.body?
+               @responded endpointResponse.status, request.url
             response.end()
 
          try
             @Endpoints.find criteria, callback
          catch e
             console.dir e
-            @fault request, response
+            response.statusCode =  500
+            @responded 500, request.url, "unexpectedly generated a server error"
+            response.end()
