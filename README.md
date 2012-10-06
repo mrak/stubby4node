@@ -64,9 +64,9 @@ stubby [-s <port>] [-a <port>] [-d <file>] [-l <hostname>]
 
 The admin portal is a RESTful(ish) endpoint running on `localhost:8889`. Or wherever you described through stubby's options.
 
-## Supplying Endpoints to Stub
+## Supplying Endpoints to Stubby
 
-Submit `POST` requests to `localhost:8889` or load a file (-f) with the following structure:
+Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the following structure for each endpoint:
 
 * `request`: describes the client's call to the server
    * `method`: GET/POST/PUT/DELETE/etc.
@@ -181,13 +181,13 @@ Submit `POST` requests to `localhost:8889` or load a file (-f) with the followin
 
 If you want to load more than one endpoint via file, use either a JSON array or YAML list (-) syntax. On success, the response will contain `Location` in the header with the newly created resources' location
 
-## Getting the Current List of Stubbed Responses
+## Getting the Current List of Stubbed Endpoints
 
 Performing a `GET` request on `localhost:8889` will return a JSON array of all currently saved responses. It will reply with `204 : No Content` if there are none saved.
 
 Performing a `GET` request on `localhost:8889/<id>` will return the JSON object representing the response with the supplied id.
 
-## Change existing responses
+## Changing existing responses
 
 Perform `PUT` requests in the same format as using `POST`, only this time supply the id in the path. For instance, to update the response with id 4 you would `PUT` to `localhost:8889/4`.
 
@@ -201,9 +201,24 @@ Requests sent to any url at `localhost:8882` (or wherever you told stubby to run
 
 # Programmatic API
 
-You can also control stubby programmatically through any coffee/nodejs app. If you `require('stubby').Stubby` in your app you have access to the `Stubby` class. You can then start, stop, and modify endpoints belonging to instances of the `Stubby` class.
-
 ## The Stubby module
+
+Add `stubby` as a module within your project's directory:
+
+```
+    npm install stubby
+```
+
+Then within your project files you can do something like:
+
+```javascript
+    var Stubby = require('stubby').Stubby;
+    var mockExternalService = new Stubby();
+
+    mockService.start();
+```
+
+What can I do with it, you ask? Read on!
 
 ### start(options, [callback])
 
@@ -261,12 +276,12 @@ stubby1.start
    location: 'localhost'
 
 stubby2.start
-   stub: 80
-   admin: 81
-   location: 'example.com'
+   stub: 82
+   admin: 83
+   location: '127.0.0.2'
 ```
 
-# Running tests
+# Running Tests
 
 If you don't have jasmine-node already, install it:
 
@@ -275,6 +290,10 @@ If you don't have jasmine-node already, install it:
 From the root directory run:
 
     jasmine-node --coffee spec
+
+If you want to see more informative output:
+
+    jasmine-node --verbose --coffee spec
 
 # See Also
 
@@ -285,6 +304,7 @@ From the root directory run:
 * Better callback handling with programmatic API
 * SOAP request/response compliance
 * Randomized responses based on supplied pattern (exploratory QA abuse)
+* On-the-fly changes of endpoint properties, such as changing an endpoint's url without resubmitting the endpoint's entire JSON string to the admin portal.
 
 # NOTES
 
