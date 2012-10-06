@@ -21,6 +21,7 @@ describe 'Admin', ->
          method : 'POST'
          headers : {}
       response =
+         setHeader : jasmine.createSpy()
          writeHead : jasmine.createSpy()
          write : jasmine.createSpy()
          end : jasmine.createSpy()
@@ -79,10 +80,10 @@ describe 'Admin', ->
 
 
    describe 'notSupported', ->
-      it 'should write header with "405 Not Supported" code and end response', ->
+      it 'should status code with "405 Not Supported" code and end response', ->
          sut.notSupported response
 
-         expect(response.writeHead.mostRecentCall.args[0]).toBe 405
+         expect(response.statusCode).toBe 405
          expect(response.end).toHaveBeenCalled()
 
    describe 'notFound', ->
@@ -110,7 +111,7 @@ describe 'Admin', ->
       it 'should write header with "204 No Content" code and end response', ->
          sut.noContent response
 
-         expect(response.writeHead.mostRecentCall.args[0]).toBe 204
+         expect(response.statusCode).toBe 204
          expect(response.end).toHaveBeenCalled()
 
    describe 'ok', ->
@@ -126,6 +127,18 @@ describe 'Admin', ->
          sut.ok response, content
 
          expect(response.write).toHaveBeenCalled()
+
+      it 'should write nothing if content is null', ->
+         content = null
+
+         sut.ok response, content
+
+         expect(response.write).not.toHaveBeenCalled()
+
+      it 'should write nothing if content is undefined', ->
+         sut.ok response
+
+         expect(response.write).not.toHaveBeenCalled()
 
    describe 'created', ->
       id = null

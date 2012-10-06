@@ -88,7 +88,7 @@ module.exports.Admin = class Admin extends Portal
 
    ok : (response, result) =>
       response.writeHead 200, {'Content-Type' : 'application/json'}
-      response.write JSON.stringify result
+      response.write JSON.stringify result if result?
       response.end()
       @logResponse 200
 
@@ -98,7 +98,7 @@ module.exports.Admin = class Admin extends Portal
       @logResponse 201
 
    noContent : (response) =>
-      response.writeHead 204, {}
+      response.statusCode = 204
       response.end()
       @logResponse 204
 
@@ -109,7 +109,7 @@ module.exports.Admin = class Admin extends Portal
       @logResponse 400
 
    notSupported : (response) =>
-      response.writeHead 405, {}
+      response.statusCode = 405
       response.end()
       @logResponse 405
 
@@ -150,6 +150,7 @@ module.exports.Admin = class Admin extends Portal
 
    server : (request, response) =>
       CLI.incoming @getLogLine request
+      response.setHeader 'Server', "stubby/#{CLI.version()} node/#{process.version} (#{process.platform} #{process.arch})"
 
       if @urlValid request.url
          switch request.method.toUpperCase()
