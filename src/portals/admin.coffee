@@ -136,7 +136,7 @@ module.exports.Admin = class Admin extends Portal
          when status >= 300
             fn = 'warn'
          when status >= 200
-            fn = 'success'
+            fn = 'ok'
          when status >= 100
             fn = 'info'
       CLI[fn] @getResponseLogLine status, " #{http.STATUS_CODES[status]}"
@@ -149,7 +149,7 @@ module.exports.Admin = class Admin extends Portal
       return url.replace @urlPattern, '$1'
 
    server : (request, response) =>
-      CLI.say @getLogLine request
+      CLI.incoming @getLogLine request
 
       if @urlValid request.url
          switch request.method.toUpperCase()

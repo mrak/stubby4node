@@ -6,70 +6,103 @@ describe 'CLI', ->
       spyOn process, 'exit'
       spyOn sut, 'log'
 
-   describe 'getLocation', ->
-      it 'should return default if no flag provided', ->
-         expected = 'localhost'
-         actual = sut.getLocation []
+   describe 'version', ->
+      it 'should return the version of stubby in package.json', ->
+         expected = require('../package.json').version
+
+         actual = sut.version()
 
          expect(actual).toBe expected
 
-      it 'should return supplied value when provided', ->
-         expected = 'stubby.com'
-         actual = sut.getLocation ['-l', expected]
+   describe 'help', ->
+      it 'should return help text', ->
+         text = sut.help()
 
-         expect(actual).toBe expected
+         expect(typeof text).toBe 'string'
+         expect(text.length).not.toBe 0
 
-      it 'should return supplied value when provided with full flag', ->
-         expected = 'stubby.com'
-         actual = sut.getLocation ['--location', expected]
+   describe 'getArgs', ->
+      describe '-a, --admin', ->
+         it 'should return default if no flag provided', ->
+            expected = 8889
+            actual = sut.getArgs []
 
-         expect(actual).toBe expected
+            expect(actual.admin).toBe expected
 
-   describe 'version (-v)', ->
-      it 'should exit the process if the second paramete is true', ->
-         sut.version ['-v'], true
+         it 'should return supplied value when provided', ->
+            expected = 81
+            actual = sut.getArgs ['-a', expected]
 
-         expect(process.exit).toHaveBeenCalled()
+            expect(actual.admin).toBe expected
 
-      it 'should print out help text to console', ->
-         sut.version ['-v'], true
+         it 'should return supplied value when provided with full flag', ->
+            expected = 81
+            actual = sut.getArgs ['--admin', expected]
 
-         expect(sut.log).toHaveBeenCalled()
+            expect(actual.admin).toBe expected
 
-      it "shouldn't exit the process if second parameter is blank", ->
-         sut.version ['-v']
+      describe '-s, --stub', ->
+         it 'should return default if no flag provided', ->
+            expected = 8882
+            actual = sut.getArgs []
 
-         expect(process.exit).not.toHaveBeenCalled()
+            expect(actual.stub).toBe expected
 
-      it "shouldn't print to the console or exit if -h isn't supplied", ->
-         sut.help []
+         it 'should return supplied value when provided', ->
+            expected = 80
+            actual = sut.getArgs ['-s', expected]
 
-         expect(process.exit).not.toHaveBeenCalled()
-         expect(sut.log).not.toHaveBeenCalled()
+            expect(actual.stub).toBe expected
 
-   describe 'help (-h)', ->
-      it 'should exit the process if second parameter is true', ->
-         sut.help ['-h'], true
+         it 'should return supplied value when provided with full flag', ->
+            expected = 80
+            actual = sut.getArgs ['--stub', expected]
 
-         expect(process.exit).toHaveBeenCalled()
+            expect(actual.stub).toBe expected
 
-      it 'should print out help text to console', ->
-         sut.help ['-h'], true
+      describe '-l, --location', ->
+         it 'should return default if no flag provided', ->
+            expected = 'localhost'
+            actual = sut.getArgs []
 
-         expect(sut.log).toHaveBeenCalled()
+            expect(actual.location).toBe expected
 
-      it "shouldn't exit the process if second parameter is blank", ->
-         sut.help ['-h']
+         it 'should return supplied value when provided', ->
+            expected = 'stubby.com'
+            actual = sut.getArgs ['-l', expected]
 
-         expect(process.exit).not.toHaveBeenCalled()
+            expect(actual.location).toBe expected
 
-      it "shouldn't print to the console or exit if -h isn't supplied", ->
-         sut.help []
+         it 'should return supplied value when provided with full flag', ->
+            expected = 'stubby.com'
+            actual = sut.getArgs ['--location', expected]
 
-         expect(process.exit).not.toHaveBeenCalled()
-         expect(sut.log).not.toHaveBeenCalled()
+            expect(actual.location).toBe expected
+      describe '-v, --version', ->
+         it 'should exit the process', ->
+            sut.getArgs(['--version'])
+            expect(process.exit).toHaveBeenCalled()
 
-   describe 'getData', ->
+         it 'should print out version info', ->
+            version = require('../package.json').version
+
+            sut.getArgs(['-v'])
+
+            expect(sut.log).toHaveBeenCalledWith version
+
+      describe '-h, --help', ->
+         it 'should exit the process', ->
+            sut.getArgs(['--help'])
+            expect(process.exit).toHaveBeenCalled()
+
+         it 'should print out help text', ->
+            help = sut.help()
+
+            sut.getArgs(['-h'])
+
+            expect(sut.log).toHaveBeenCalledWith help
+
+   describe 'data', ->
       expected = [
          request:
             url: '/testput'
@@ -94,89 +127,34 @@ describe 'CLI', ->
       ]
 
       it 'should be about to parse json file with array', ->
-         actual = sut.getData ['-d', 'spec/data/cli.getData.json']
+         actual = sut.getArgs ['-d', 'spec/data/cli.getData.json']
 
-         expect(actual).toEqual expected
+         expect(actual.data).toEqual expected
 
       it 'should be about to parse yaml file with array', ->
-         actual = sut.getData ['-d', 'spec/data/cli.getData.yaml']
+         actual = sut.getArgs ['-d', 'spec/data/cli.getData.yaml']
 
-         expect(actual).toEqual expected
+         expect(actual.data).toEqual expected
 
-   describe 'getStub', ->
-      it 'should return default if no flag provided', ->
-         expected = 8882
-         actual = sut.getStub []
-
-         expect(actual).toBe expected
-
-      it 'should return supplied value when provided', ->
-         expected = 80
-         actual = sut.getStub ['-s', expected]
+   describe 'key', ->
+      it 'should return contents of file', ->
+         expected = 'some generated key'
+         actual = sut.key 'spec/data/cli.getKey.pem'
 
          expect(actual).toBe expected
 
-      it 'should return supplied value when provided with full flag', ->
-         expected = 80
-         actual = sut.getStub ['--stub', expected]
-
-         expect(actual).toBe expected
-
-   describe 'getAdmin', ->
-      it 'should return default if no flag provided', ->
-         expected = 8889
-         actual = sut.getAdmin []
-
-         expect(actual).toBe expected
-
-      it 'should return supplied value when provided', ->
-         expected = 81
-         actual = sut.getAdmin ['-a', expected]
-
-         expect(actual).toBe expected
-
-      it 'should return supplied value when provided with full flag', ->
-         expected = 81
-         actual = sut.getAdmin ['--admin', expected]
-
-         expect(actual).toBe expected
-
-   describe 'getKey', ->
-      expected = 'some generated key'
-
-      it 'should return null if no flag provided', ->
-         actual = sut.getKey []
-
-         expect(actual).toBeNull()
-
-      it 'should return contents of file when flag provided', ->
-         actual = sut.getKey ['-k', 'spec/data/cli.getKey.pem']
-
-         expect(actual).toBe expected
-
-   describe 'getCert', ->
+   describe 'cert', ->
       expected = 'some generated certificate'
 
-      it 'should return null if no flag provided', ->
-         actual = sut.getCert []
-
-         expect(actual).toBeNull()
-
-      it 'should return contents of file when flag provided', ->
-         actual = sut.getCert ['-c', 'spec/data/cli.getCert.pem']
+      it 'should return contents of file', ->
+         actual = sut.cert 'spec/data/cli.getCert.pem'
 
          expect(actual).toBe expected
 
-   describe 'getPfx', ->
-      expected = 'some generated pfx'
-
-      it 'should return null if no flag provided', ->
-         actual = sut.getPfx []
-
-         expect(actual).toBeNull()
-
-      it 'should return contents of file when flag provided', ->
-         actual = sut.getPfx ['-p', 'spec/data/cli.getPfx.pfx']
+   describe 'pfx', ->
+      it 'should return contents of file', ->
+         expected = 'some generated pfx'
+         actual = sut.pfx 'spec/data/cli.getPfx.pfx'
 
          expect(actual).toBe expected
 
@@ -192,15 +170,15 @@ describe 'CLI', ->
             cert: 'a certificate'
             pfx: 'a pfx'
 
-         spyOn(sut, 'getData').andReturn expected.data
-         spyOn(sut, 'getKey').andReturn expected.key
-         spyOn(sut, 'getCert').andReturn expected.cert
-         spyOn(sut, 'getPfx').andReturn expected.pfx
+         spyOn(sut, 'data').andReturn expected.data
+         spyOn(sut, 'key').andReturn expected.key
+         spyOn(sut, 'cert').andReturn expected.cert
+         spyOn(sut, 'pfx').andReturn expected.pfx
 
          actual = sut.getArgs [
-            '-s', expected.stub,
-            '-a', expected.admin,
-            '-d', 'anything',
+            '-s', expected.stub
+            '-a', expected.admin
+            '-d', 'anything'
             '-l', expected.location
             '-k', 'anything'
             '-c', 'anything'

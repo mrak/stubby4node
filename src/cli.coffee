@@ -1,18 +1,55 @@
 fs = require 'fs'
+yaml = require 'js-yaml'
 
 module.exports =
    mute: false
+
+   options: [{
+      name: 'version'
+      flag: 'v'
+      exit: true
+   },{
+      name: 'help'
+      flag: 'h'
+      exit: true
+   },{
+      name: 'location'
+      flag: 'l'
+   },{
+      name: 'data'
+      flag: 'd'
+      processed: true
+   },{
+      name: 'stub'
+      flag: 's'
+   },{
+      name: 'admin'
+      flag: 'a'
+   },{
+      name: 'key'
+      flag: 'k'
+      processed: true
+   },{
+      name: 'cert'
+      flag: 'c'
+      processed: true
+   },{
+      name: 'pfx'
+      flag: 'p'
+      processed: true
+   }]
 
    defaults:
       stub: 8882
       admin: 8889
       location: 'localhost'
+      data: null
+      key: null
+      cert: null
+      pfx: null
 
-   help: (argv, quit = false) ->
-      argv ?= process.argv
-
-      if '--help' in argv or '-h' in argv
-         @log """
+   help: ->
+         """
             stubby [-s <port>] [-a <port>] [-d <file>] [-l <hostname>]
                    [-h] [-v] [-k <file>] [-c <file>] [-p <file>]\n
             -s, --stub [PORT]                    Port that stub portal should
@@ -41,107 +78,74 @@ module.exports =
                                                  format. Mutually exclusive with
                                                  --key,--cert
          """
-         process.exit 0 if quit
 
-   version: (argv, quit = false) ->
-      if '--version' in argv or '-v' in argv
-         data = require '../package.json'
-         @log data.version
-         process.exit 0 if quit
+   version: -> (require '../package.json').version
+   location: (passed) -> return passed
+   stub: (passed) -> return passed
+   admin: (passed) -> return passed
+   data: (filename) ->
+      extension = filename.replace /^.*\.([a-zA-Z0-9]+)$/, '$1'
+      filedata = (fs.readFileSync filename, 'utf8').trim()
 
-   getAdmin: (argv) ->
-      argv ?= process.argv
-      admin = @defaults.admin
+      return [] unless filedata
 
-      adminOptionIndex = argv.indexOf('--admin') + 1 or argv.indexOf('-a') + 1
-      admin = parseInt(argv[adminOptionIndex]) ? admin if adminOptionIndex
+      if extension is 'json'
+         try
+            return JSON.parse filedata
+         catch e
+            @error "Couldn't load #{filename} due to syntax errors:"
 
-      return admin
+      if extension in ['yaml','yml']
+         try
+            return yaml.load filedata
+         catch e
+            @warn "Module 'js-yaml' is required for parsing yaml data. No data loaded."
 
-   getLocation: (argv) ->
-      argv ?= process.argv
-      location = @defaults.location
+      return []
 
-      locationOptionIndex = argv.indexOf('--location') + 1 or argv.indexOf('-l') + 1
-      location = argv[locationOptionIndex] ? locaiton if locationOptionIndex
+   key: (file) -> @getFile file, 'pem'
 
-      return location
+   cert: (file) -> @getFile file, 'pem'
 
-   getStub: (argv) ->
-      argv ?= process.argv
-      stub = @defaults.stub
+   pfx: (file) -> @getFile file, 'pfx'
 
-      stubOptionIndex = argv.indexOf('--stub') + 1 or argv.indexOf('-s') + 1
-      stub = parseInt(argv[stubOptionIndex]) ? stub if stubOptionIndex
+   getFile: (filename, type) ->
+      filedata = fs.readFileSync filename, 'utf8'
+      extension = filename.replace /^.*\.([a-zA-Z0-9]+)$/, '$1'
 
-      return stub
+      return null unless filedata
 
-   getData: (argv) ->
-      argv ?= process.argv
-      file = []
+      if extension isnt type
+         CLI.warn "[#{flag}, #{option}] only takes files of type .#{type}. Ignoring..."
+         return null
 
-      fileOptionIndex = argv.indexOf('--data') + 1 or argv.indexOf('-d') + 1
-      if fileOptionIndex
-         filename = argv[fileOptionIndex]
-         filedata = fs.readFileSync filename, 'utf8'
-         extension = filename.replace /^.*\.([a-zA-Z0-9]+)$/, '$1'
-         if filedata
-            switch extension
-               when 'json'
-                  try
-                     file = JSON.parse filedata
-                  catch e
-                     @error "Couldn't load #{filename} due to syntax errors:"
-                     @dump e
-                     file = []
-               when 'yaml','yml'
-                  try
-                     yaml = require 'js-yaml'
-                     file = yaml.load filedata
-                  catch e
-                     @warn "Module 'js-yaml' is required for parsing yaml data. No data loaded."
+      return filedata.trim()
 
-      return file
+   getArgs: (argv = process.argv) ->
+      args = {}
 
-   getKey: (argv) ->
-      @getFile argv, '-k', '--key', 'pem'
+      for option in @options
+         do (option) =>
+            if "-#{option.flag}" not in argv\
+            and "--#{option.name}" not in argv
+               if @defaults[option.name]?
+                  args[option.name] = @defaults[option.name]
+               return
 
-   getCert: (argv) ->
-      @getFile argv, '-c', '--cert', 'pem'
+            if option.exit
+               @log @[option.name]()
+               process.exit 0
 
-   getPfx: (argv) ->
-      @getFile argv, '-p', '--pfx', 'pfx'
+            argIndex = argv.indexOf("-#{option.flag}") + 1\
+                     or argv.indexOf("--#{option.name}") + 1
+            arg = argv[argIndex] ? @defaults[option.name]
 
-   getFile: (argv, flag, option, type) ->
-      argv ?= process.argv
-      pem = null
+            if option.processed
+               arg = @[option.name](arg)
 
-      certOptionIndex = argv.indexOf(option) + 1 or argv.indexOf(flag) + 1
-      if certOptionIndex
-         filename = argv[certOptionIndex]
-         filedata = fs.readFileSync filename, 'utf8'
-         extension = filename.replace /^.*\.([a-zA-Z0-9]+)$/, '$1'
-         if extension isnt type
-            CLI.warn "[#{flag}, #{option}] only takes files of type .#{type}. Ignoring..."
-            return null
-         if filedata
-            pem = filedata
+            args[option.name] = arg
 
-      return pem?.trim() or null
-
-   getArgs: (argv) ->
-      argv ?= process.argv
-      @help argv, true
-      @version argv, true
-
-      args =
-         data: @getData argv
-         stub: @getStub argv
-         admin: @getAdmin argv
-         location: @getLocation argv
-         key: @getKey argv
-         cert: @getCert argv
-         pfx: @getPfx argv
+      return args
 
    bold: '\x1B[1m'
    black: '\x1B[30m'
@@ -156,7 +160,7 @@ module.exports =
    log: (msg) ->
       if @mute then return
       console.log msg
-   dark: (msg) ->
+   status: (msg) ->
       if @mute then return
       console.log "#{@bold}#{@black}#{msg}#{@reset}"
    dump: (data) ->
@@ -165,7 +169,7 @@ module.exports =
    info: (msg) ->
       if @mute then return
       console.info "#{@blue}#{msg}#{@reset}"
-   success: (msg) ->
+   ok: (msg) ->
       if @mute then return
       console.log "#{@green}#{msg}#{@reset}"
    error: (msg) ->
@@ -174,7 +178,7 @@ module.exports =
    warn: (msg) ->
       if @mute then return
       console.warn "#{@yellow}#{msg}#{@reset}"
-   say: (msg) ->
+   incoming: (msg) ->
       if @mute then return
       console.log "#{@cyan}#{msg}#{@reset}"
    notice: (msg) ->

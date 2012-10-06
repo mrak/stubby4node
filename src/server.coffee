@@ -8,21 +8,20 @@ http = require 'http'
 https = require 'https'
 
 onListening = (portal, port, protocol = 'http') ->
-   CLI.dark "#{portal} portal running at #{protocol}://#{args.location}:#{port}"
+   CLI.status "#{portal} portal running at #{protocol}://#{args.location}:#{port}"
 onError = (err, port) ->
+   msg = "#{err.message}. Exiting..."
+
    switch err.code
       when 'EACCES'
-         CLI.error "Permission denied for use of port #{port}. Exiting..."
-         process.exit()
+         msg = "Permission denied for use of port #{port}. Exiting..."
       when 'EADDRINUSE'
-         CLI.error "Port #{port} is already in use! Exiting..."
-         process.exit()
+         msg = "Port #{port} is already in use! Exiting..."
       when 'EADDRNOTAVAIL'
-         CLI.error "Host \"#{args.location}\" is not available! Exiting..."
-         process.exit()
-      else
-         CLI.error "#{err.message}. Exiting..."
-         process.exit()
+         msg = "Host \"#{args.location}\" is not available! Exiting..."
+
+   CLI.error msg
+   process.exit()
 
 args = CLI.getArgs()
 endpoints = new Endpoints(args.data)

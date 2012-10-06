@@ -13,7 +13,7 @@ module.exports.Stub = class Stub extends Portal
          data += chunk
 
       request.on 'end', =>
-         CLI.say @getLogLine request
+         CLI.incoming @getLogLine request
          criteria =
             url : request.url
             method : request.method
@@ -33,7 +33,7 @@ module.exports.Stub = class Stub extends Portal
                   when rNr.status >= 300
                      fn = 'warn'
                   when rNr.status >= 200
-                     fn = 'success'
+                     fn = 'ok'
                   when rNr.status >= 100
                      fn = 'info'
                CLI[fn] @getResponseLogLine rNr.status, request.url
