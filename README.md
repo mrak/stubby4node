@@ -6,11 +6,11 @@
 
 ## Packaged
 
-* [coffee-script](http://coffeescript.org)
 * [JS-YAML](https://github.com/nodeca/js-yaml) for loading yaml files
 
-## Optional (for debugging/testing)
+## Optional (for development)
 
+* [coffee-script](http://coffeescript.org)
 * [node-inspector](https://github.com/dannycoates/node-inspector)
 * [jasmine-node](https://github.com/mhevery/jasmine-node)
 
@@ -18,15 +18,18 @@
 
 ## via source
 
+You need to have `coffee-script` installed on your system.
+
     git clone git://github.com/Afmrak/stubby4node.git
     cd stubby4node
-    cake build
+    coffee -o lib -c src
+    export PATH=$PATH:./bin/stubby
 
 ## via npm
 
     npm install -g stubby
 
-This will create the executable `stubby` in the root level of the project.
+This will install `stubby` as a command in your `PATH`.
 
 # Starting the Server(s)
 
@@ -283,7 +286,7 @@ stubby2.start
 
 # Running Tests
 
-If you don't have jasmine-node already, install it:
+If you don't have `jasmine-node` already, install it:
 
     npm install -g jasmine-node
 
@@ -305,6 +308,7 @@ If you want to see more informative output:
 * SOAP request/response compliance
 * Randomized responses based on supplied pattern (exploratory QA abuse)
 * On-the-fly changes of endpoint properties, such as changing an endpoint's url without resubmitting the endpoint's entire JSON string to the admin portal.
+* Minify js in `npm` module?
 
 # NOTES
 

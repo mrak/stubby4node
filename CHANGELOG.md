@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.31
+
+* removed coffee-script as a dependency
+* errors and warnings for missing or unparsable data files have been improved
+* re-write of code operating the command-line interface
+
 ## 0.1.30
 
 * admin portal console logging for responses

@@ -66,28 +66,38 @@ module.exports =
       pfx: null
 
    help: ->
-      stubbyline = 'stubby'
-      optionLines = ''
-      spacing = '                            '
+      columns = process.stdout.columns
+      stubbyline = []
+      optionLines = []
+      spacer = '                            '
 
       for option in @options
-         do (option) ->
+         do (option) =>
             param = if option.param? then " #{option.param}" else ''
-            cliline = " [-#{option.flag}#{param}]"
-
-            lengthSoFar = (stubbyline.replace(/\n/g,'').length % 80) or 80
-            if (lengthSoFar + cliline.length) > 80
-               cliline = "\n       #{cliline.substr(1)}"
-
-            stubbyline += cliline
+            stubbyline.push "[-#{option.flag}#{param}]"
 
             optionLine = "-#{option.flag}, --#{option.name}#{param}"
-            optionLine += spacing.substr optionLine.length
-            optionLine += option.description
+            optionLine += spacer.substr optionLine.length
+            optionLine += @wrapIt spacer, option.description.split ' '
+            optionLines.push optionLine
 
-            optionLines += "\n#{optionLine}"
+      "stubby #{@wrapIt '       ', stubbyline}\n\n#{optionLines.join '\n'}"
 
-      "#{stubbyline}\n#{optionLines}"
+   wrapIt: (spacer, tokens, columns = process.stdout.columns) ->
+      if spacer.length + tokens.join(' ').length <= columns
+         return tokens.join(' ')
+
+      wrapped = ''
+
+      for token in tokens
+         do (token) ->
+            lengthSoFar = (spacer.length + (wrapped.replace(/\n/g,'').length) % columns) or columns
+            if (lengthSoFar + token.length) > columns
+               wrapped += "\n#{spacer}#{token}"
+            else
+               wrapped += " #{token}"
+
+      return wrapped.trim()
 
    version: -> (require '../package.json').version
    location: (passed) -> return passed
@@ -116,9 +126,7 @@ module.exports =
          return []
 
    key: (file) -> @getFile file, 'pem'
-
    cert: (file) -> @getFile file, 'pem'
-
    pfx: (file) -> @getFile file, 'pfx'
 
    getFile: (filename, type) ->
@@ -138,26 +146,32 @@ module.exports =
 
       for option in @options
          do (option) =>
-            if "-#{option.flag}" not in argv\
-            and "--#{option.name}" not in argv
-               if @defaults[option.name]?
-                  args[option.name] = @defaults[option.name]
-               return
+            @printAndExitIfNeeded option
 
-            if option.exit
-               @log @[option.name]()
-               process.exit 0
+            if @isOmitted option, argv
+               return args[option.name] = @defaults[option.name]
 
-            argIndex = argv.indexOf("-#{option.flag}") + 1\
-                     or argv.indexOf("--#{option.name}") + 1
-            arg = argv[argIndex] ? @defaults[option.name]
-
-            if option.processed
-               arg = @[option.name](arg)
-
-            args[option.name] = arg
+            args[option.name] = @passedValue option, argv
 
       return args
+
+   passedValue: (option, argv) ->
+      argIndex = argv.indexOf("-#{option.flag}") + 1\
+               or argv.indexOf("--#{option.name}") + 1
+      arg = argv[argIndex] ? @defaults[option.name]
+      if option.processed
+         arg = @[option.name](arg)
+      return arg
+
+   isOmitted: (option, argv) ->
+      return "-#{option.flag}" not in argv\
+             and "--#{option.name}" not in argv
+
+   printAndExitIfNeeded: (option) ->
+      if option.exit
+         @log @[option.name]()
+         process.exit 0
+
 
    bold: '\x1B[1m'
    black: '\x1B[30m'

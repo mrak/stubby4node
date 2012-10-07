@@ -1,7 +1,7 @@
 {
    "name": "stubby",
-   "preferGlobal": "true",
-   "version": "0.1.30",
+   "preferGlobal": true,
+   "version": "0.1.31",
    "author": {
       "name": "Eric Mrak",
       "email": "enmrak@gmail.com"
@@ -23,27 +23,24 @@
          "email": "enmrak@gmail.com"
       }
    ],
-   "files": ["src", "package.json"],
+   "files": ["lib", "package.json", "bin"],
    "scripts": {
-      "start": "src/server.coffee",
+      "prepublish": "coffee -o lib -c src",
+      "start": "lib/server.js",
       "test": "jasmine-node --coffee --forceexit spec"
    },
    "bin": {
-      "stubby": "src/server.coffee"
+      "stubby": "bin/stubby.js"
    },
-   "main": "src/main.coffee",
+   "main": "lib/main.js",
    "repository": {
       "type": "git",
       "url": "git://github.com/Afmrak/stubby4node.git"
    },
    "dependencies": {
-      "coffee-script": ">=1.3.3",
+      "js-yaml": ">=1.0.1",
       "cloneextend": ">=0.0.3"
    },
-   "optionalDependencies": {
-      "js-yaml": ">=1.0.1"
-   },
-   "preferGlobal": true,
    "license": "Apache",
    "engine": {
       "node": ">=0.6.x"
