@@ -4,40 +4,30 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>stubby4node by Afmrak</title>
+
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/Afmrak/stubby4node">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/Afmrak/stubby4node/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/Afmrak/stubby4node/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
-
     <div class="wrapper">
+      <header>
+        <h1>stubby4node</h1>
+        <p>A configurable server for stubbing external systems during development. Uses Node.js and written in Coffeescript</p>
 
+        <p class="view"><a href="https://github.com/Afmrak/stubby4node">View the Project on GitHub <small>Afmrak/stubby4node</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/Afmrak/stubby4node/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/Afmrak/stubby4node/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/Afmrak/stubby4node">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
       <section>
-        <div id="title">
-          <h1>stubby4node</h1>
-          <p>A configurable server for stubbing external systems during development. Uses Node.js and written in Coffeescript</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/Afmrak">Afmrak</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
-        </div>
-
         <p><a href="http://travis-ci.org/Afmrak/stubby4node"><img src="https://secure.travis-ci.org/Afmrak/stubby4node.png?branch=master" alt="Build Status"></a></p>
 
 <h1>Requirements</h1>
@@ -48,21 +38,25 @@
 </ul><h2>Packaged</h2>
 
 <ul>
-<li><a href="http://coffeescript.org">coffee-script</a></li>
 <li>
 <a href="https://github.com/nodeca/js-yaml">JS-YAML</a> for loading yaml files</li>
-</ul><h2>Optional (for debugging/testing)</h2>
+<li><a href="https://github.com/shimondoodkin/nodejs-clone-extend">cloneextend</a></li>
+</ul><h2>Optional (for development)</h2>
 
 <ul>
+<li><a href="http://coffeescript.org">coffee-script</a></li>
 <li><a href="https://github.com/dannycoates/node-inspector">node-inspector</a></li>
 <li><a href="https://github.com/mhevery/jasmine-node">jasmine-node</a></li>
 </ul><h1>Installation</h1>
 
 <h2>via source</h2>
 
+<p>You need to have <code>coffee-script</code> installed on your system.</p>
+
 <pre><code>git clone git://github.com/Afmrak/stubby4node.git
 cd stubby4node
-cake build
+coffee -o lib -c src
+export PATH=$PATH:./bin/stubby
 </code></pre>
 
 <h2>via npm</h2>
@@ -70,7 +64,7 @@ cake build
 <pre><code>npm install -g stubby
 </code></pre>
 
-<p>This will create the executable <code>stubby</code> in the root level of the project.</p>
+<p>This will install <code>stubby</code> as a command in your <code>PATH</code>.</p>
 
 <h1>Starting the Server(s)</h1>
 
@@ -81,36 +75,32 @@ cake build
 
 <h1>Command-line switches</h1>
 
-<pre><code>stubby [-s &lt;port&gt;] [-a &lt;port&gt;] [-d &lt;file&gt;] [-l &lt;hostname&gt;]
-       [-h] [-v] [-k &lt;file&gt;] [-c &lt;file&gt;] [-p &lt;file&gt;]
+<pre><code>stubby [-a &lt;port&gt;] [-c &lt;file&gt;] [-d &lt;file&gt;] [-h] [-k &lt;file&gt;]
+       [-l &lt;hostname&gt;] [-s &lt;port&gt;] [-p &lt;file&gt;] [-v]
 
--s, --stub [PORT]                    Port that stub portal should run on. Defaults to 8882.
+-a, --admin &lt;port&gt;          Port for admin portal. Defaults to
+                            8889.
+-c, --cert &lt;file&gt;           Certificate file. Use with --key.
+-d, --data &lt;file&gt;           Data file to pre-load endoints. YAML
+                            or JSON format.
+-h, --help                  This help text.
+-k, --key &lt;file&gt;            Private key file. Use with --cert.
+-l, --location &lt;hostname&gt;   Hostname at which to bind stubby.
+-s, --stub &lt;port&gt;           Port for stub portal. Defaults to
+                            8882.
+-p, --pfx &lt;file&gt;            PFX file. Ignored if used with
+                            --key/--cert
+-v, --version               Prints stubby's version number.
 
--a, --admin [PORT]                   Port that admin portal should run on. Defaults to 8889.
-
--d, --data [FILE.{json|yml|yaml}]    Data file to pre-load endoints.
-
--l, --location [HOSTNAME]            Host at which to run stubby.
-
--h, --help                           This help text.
-
--v, --version                        Prints stubby's version number.
-
--k, --key [FILE.pem]                 Private key file in PEM format for https. Requires --cert
-
--c, --cert [FILE.pem]                Certificate key file in PEM format for https. Requres --key.
-
--p, --pfx [FILE.pfx]                 Key, certificate key and trusted certificates in pfx
-                                     format. Mutually exclusive with --key,--cert
 </code></pre>
 
 <h1>The Admin Portal</h1>
 
 <p>The admin portal is a RESTful(ish) endpoint running on <code>localhost:8889</code>. Or wherever you described through stubby's options.</p>
 
-<h2>Supplying Endpoints to Stub</h2>
+<h2>Supplying Endpoints to Stubby</h2>
 
-<p>Submit <code>POST</code> requests to <code>localhost:8889</code> or load a file (-f) with the following structure:</p>
+<p>Submit <code>POST</code> requests to <code>localhost:8889</code> or load a data-file (-d) with the following structure for each endpoint:</p>
 
 <ul>
 <li>
@@ -241,15 +231,15 @@ cake build
 <span class="p">]</span>
 </pre></div>
 
-<p>If you want to load more than one endpoint via file, use either a JSON array or YAML list (-) syntax. On success, the response will contain <code>Content-Location</code> in the header with the newly created resources' location</p>
+<p>If you want to load more than one endpoint via file, use either a JSON array or YAML list (-) syntax. On success, the response will contain <code>Location</code> in the header with the newly created resources' location</p>
 
-<h2>Getting the Current List of Stubbed Responses</h2>
+<h2>Getting the Current List of Stubbed Endpoints</h2>
 
 <p>Performing a <code>GET</code> request on <code>localhost:8889</code> will return a JSON array of all currently saved responses. It will reply with <code>204 : No Content</code> if there are none saved.</p>
 
 <p>Performing a <code>GET</code> request on <code>localhost:8889/&lt;id&gt;</code> will return the JSON object representing the response with the supplied id.</p>
 
-<h2>Change existing responses</h2>
+<h2>Changing existing responses</h2>
 
 <p>Perform <code>PUT</code> requests in the same format as using <code>POST</code>, only this time supply the id in the path. For instance, to update the response with id 4 you would <code>PUT</code> to <code>localhost:8889/4</code>.</p>
 
@@ -263,9 +253,22 @@ cake build
 
 <h1>Programmatic API</h1>
 
-<p>You can also control stubby programmatically through any coffee/nodejs app. If you <code>require('stubby').Stubby</code> in your app you have access to the <code>Stubby</code> class. You can then start, stop, and modify endpoints belonging to instances of the <code>Stubby</code> class.</p>
-
 <h2>The Stubby module</h2>
+
+<p>Add <code>stubby</code> as a module within your project's directory:</p>
+
+<pre><code>    npm install stubby
+</code></pre>
+
+<p>Then within your project files you can do something like:</p>
+
+<div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">Stubby</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'stubby'</span><span class="p">).</span><span class="nx">Stubby</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">mockExternalService</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Stubby</span><span class="p">();</span>
+
+    <span class="nx">mockService</span><span class="p">.</span><span class="nx">start</span><span class="p">();</span>
+</pre></div>
+
+<p>What can I do with it, you ask? Read on!</p>
 
 <h3>start(options, [callback])</h3>
 
@@ -354,14 +357,14 @@ cake build
    <span class="nv">location: </span><span class="s">'localhost'</span>
 
 <span class="nx">stubby2</span><span class="p">.</span><span class="nx">start</span>
-   <span class="nv">stub: </span><span class="mi">80</span>
-   <span class="nv">admin: </span><span class="mi">81</span>
-   <span class="nv">location: </span><span class="s">'example.com'</span>
+   <span class="nv">stub: </span><span class="mi">82</span>
+   <span class="nv">admin: </span><span class="mi">83</span>
+   <span class="nv">location: </span><span class="s">'127.0.0.2'</span>
 </pre></div>
 
-<h1>Running tests</h1>
+<h1>Running Tests</h1>
 
-<p>If you don't have jasmine-node already, install it:</p>
+<p>If you don't have <code>jasmine-node</code> already, install it:</p>
 
 <pre><code>npm install -g jasmine-node
 </code></pre>
@@ -369,6 +372,11 @@ cake build
 <p>From the root directory run:</p>
 
 <pre><code>jasmine-node --coffee spec
+</code></pre>
+
+<p>If you want to see more informative output:</p>
+
+<pre><code>jasmine-node --verbose --coffee spec
 </code></pre>
 
 <h1>See Also</h1>
@@ -381,6 +389,8 @@ cake build
 <li>Better callback handling with programmatic API</li>
 <li>SOAP request/response compliance</li>
 <li>Randomized responses based on supplied pattern (exploratory QA abuse)</li>
+<li>On-the-fly changes of endpoint properties, such as changing an endpoint's url without resubmitting the endpoint's entire JSON string to the admin portal.</li>
+<li>Minify js in <code>npm</code> module?</li>
 </ul><h1>NOTES</h1>
 
 <ul>
@@ -390,9 +400,12 @@ cake build
 <strong>License</strong> Apache v2.0</li>
 </ul>
       </section>
-
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/Afmrak">Afmrak</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    <script src="javascripts/scale.fix.js"></script>
     
   </body>
 </html>
