@@ -146,10 +146,11 @@ module.exports =
 
       for option in @options
          do (option) =>
-            @printAndExitIfNeeded option
 
             if @isOmitted option, argv
                return args[option.name] = @defaults[option.name]
+
+            @printAndExitIfNeeded option
 
             args[option.name] = @passedValue option, argv
 
