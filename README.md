@@ -7,6 +7,7 @@
 ## Packaged
 
 * [JS-YAML](https://github.com/nodeca/js-yaml) for loading yaml files
+* [cloneextend](https://github.com/shimondoodkin/nodejs-clone-extend)
 
 ## Optional (for development)
 
@@ -40,27 +41,22 @@ Some systems require you to `sudo` before running services on port certain ports
 # Command-line switches
 
 ```
-stubby [-s <port>] [-a <port>] [-d <file>] [-l <hostname>]
-       [-h] [-v] [-k <file>] [-c <file>] [-p <file>]
+stubby [-a <port>] [-c <file>] [-d <file>] [-h] [-k <file>]
+       [-l <hostname>] [-s <port>] [-p <file>] [-v]
 
--s, --stub [PORT]                    Port that stub portal should run on. Defaults to 8882.
-
--a, --admin [PORT]                   Port that admin portal should run on. Defaults to 8889.
-
--d, --data [FILE.{json|yml|yaml}]    Data file to pre-load endoints.
-
--l, --location [HOSTNAME]            Host at which to run stubby.
-
--h, --help                           This help text.
-
--v, --version                        Prints stubby's version number.
-
--k, --key [FILE.pem]                 Private key file in PEM format for https. Requires --cert
-
--c, --cert [FILE.pem]                Certificate key file in PEM format for https. Requres --key.
-
--p, --pfx [FILE.pfx]                 Key, certificate key and trusted certificates in pfx
-                                     format. Mutually exclusive with --key,--cert
+-a, --admin <port>          Port for admin portal. Defaults to
+                            8889.
+-c, --cert <file>           Certificate file. Use with --key.
+-d, --data <file>           Data file to pre-load endoints. YAML
+                            or JSON format.
+-h, --help                  This help text.
+-k, --key <file>            Private key file. Use with --cert.
+-l, --location <hostname>   Hostname at which to bind stubby.
+-s, --stub <port>           Port for stub portal. Defaults to
+                            8882.
+-p, --pfx <file>            PFX file. Ignored if used with
+                            --key/--cert
+-v, --version               Prints stubby's version number.
 ```
 
 # The Admin Portal
