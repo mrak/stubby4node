@@ -1,4 +1,2 @@
 #!/usr/bin/env node
-
-var stubby = require('../lib/server');
-stubby.run();
+require('../lib/server');

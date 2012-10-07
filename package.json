@@ -30,7 +30,7 @@
       "test": "jasmine-node --coffee --forceexit spec"
    },
    "bin": {
-      "stubby": "bin/stubby.js"
+      "stubby": "bin/stubby"
    },
    "main": "lib/main.js",
    "repository": {
