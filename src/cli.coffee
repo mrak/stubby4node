@@ -5,40 +5,56 @@ require('./colorsafe')(console)
 module.exports =
    mute: false
 
-   options: [{
-      name: 'version'
-      flag: 'v'
-      exit: true
-   },{
-      name: 'help'
-      flag: 'h'
-      exit: true
-   },{
-      name: 'location'
-      flag: 'l'
-   },{
+   options: [
+      name: 'admin'
+      param: '<port>'
+      flag: 'a'
+      description: 'Port for admin portal. Defaults to 8889.'
+   ,
+      name: 'cert'
+      param: '<file>'
+      flag: 'c'
+      processed: true
+      description: 'Certificate file. Use with --key.'
+   ,
       name: 'data'
       flag: 'd'
       processed: true
-   },{
-      name: 'stub'
-      flag: 's'
-   },{
-      name: 'admin'
-      flag: 'a'
-   },{
+      param: '<file>'
+      description: 'Data file to pre-load endoints. YAML or JSON format.'
+   ,
+      name: 'help'
+      flag: 'h'
+      exit: true
+      description: 'This help text.'
+   ,
       name: 'key'
+      param: '<file>'
       flag: 'k'
       processed: true
-   },{
-      name: 'cert'
-      flag: 'c'
-      processed: true
-   },{
+      description: 'Private key file. Use with --cert.'
+   ,
+      name: 'location'
+      flag: 'l'
+      param: '<hostname>'
+      description: 'Hostname at which to bind stubby.'
+   ,
+      name: 'stub'
+      param: '<port>'
+      flag: 's'
+      description: 'Port for stub portal. Defaults to 8882.'
+   ,
       name: 'pfx'
       flag: 'p'
+      param: '<file>'
       processed: true
-   }]
+      description: 'PFX file. Ignored if used with --key/--cert'
+   ,
+      name: 'version'
+      flag: 'v'
+      exit: true
+      description: "Prints stubby's version number."
+   ]
 
    defaults:
       stub: 8882
@@ -50,22 +66,28 @@ module.exports =
       pfx: null
 
    help: ->
-         """
-            stubby [-s <port>] [-a <port>] [-d <file>] [-l <hostname>]
-                   [-h] [-v] [-k <file>] [-c <file>] [-p <file>]\n
-            -s, --stub [PORT]                    Port for stub portal (8882)
-            -a, --admin [PORT]                   Port for admin portal (8889)
-            -d, --data [FILE.{json|yml|yaml}]    Data file to pre-load endoints.
-            -l, --location [HOSTNAME]            Host at which to run stubby.
-            -h, --help                           This help text.
-            -v, --version                        Prints stubby's version number.
-            -k, --key [FILE.pem]                 Private key file. With --cert.
-            -c, --cert [FILE.pem]                Certificate key. With --key.
-            -p, --pfx [FILE.pfx]                 Key, certificate key and
-                                                 trusted certificates in pfx
-                                                 format. Mutually exclusive with
-                                                 --key,--cert
-         """
+      stubbyline = 'stubby'
+      optionLines = ''
+      spacing = '                            '
+
+      for option in @options
+         do (option) ->
+            param = if option.param? then " #{option.param}" else ''
+            cliline = " [-#{option.flag}#{param}]"
+
+            lengthSoFar = (stubbyline.replace(/\n/g,'').length % 80) or 80
+            if (lengthSoFar + cliline.length) > 80
+               cliline = "\n       #{cliline.substr(1)}"
+
+            stubbyline += cliline
+
+            optionLine = "-#{option.flag}, --#{option.name}#{param}"
+            optionLine += spacing.substr optionLine.length
+            optionLine += option.description
+
+            optionLines += "\n#{optionLine}"
+
+      "#{stubbyline}\n#{optionLines}"
 
    version: -> (require '../package.json').version
    location: (passed) -> return passed
