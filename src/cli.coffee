@@ -1,5 +1,6 @@
 fs = require 'fs'
 yaml = require 'js-yaml'
+require('./colorsafe')(console)
 
 module.exports =
    mute: false
@@ -52,27 +53,14 @@ module.exports =
          """
             stubby [-s <port>] [-a <port>] [-d <file>] [-l <hostname>]
                    [-h] [-v] [-k <file>] [-c <file>] [-p <file>]\n
-            -s, --stub [PORT]                    Port that stub portal should
-                                                 run on. Defaults to 8882.
-
-            -a, --admin [PORT]                   Port that admin portal should
-                                                 run on. Defaults to 8889.
-
+            -s, --stub [PORT]                    Port for stub portal (8882)
+            -a, --admin [PORT]                   Port for admin portal (8889)
             -d, --data [FILE.{json|yml|yaml}]    Data file to pre-load endoints.
-
             -l, --location [HOSTNAME]            Host at which to run stubby.
-
             -h, --help                           This help text.
-
             -v, --version                        Prints stubby's version number.
-
-            -k, --key [FILE.pem]                 Private key file in PEM format
-                                                 for https. Requires --cert
-
-            -c, --cert [FILE.pem]                Certificate key file in PEM
-                                                 format for https.
-                                                 Requres --key.
-
+            -k, --key [FILE.pem]                 Private key file. With --cert.
+            -c, --cert [FILE.pem]                Certificate key. With --key.
             -p, --pfx [FILE.pfx]                 Key, certificate key and
                                                  trusted certificates in pfx
                                                  format. Mutually exclusive with
@@ -186,3 +174,8 @@ module.exports =
    notice: (msg) ->
       if @mute then return
       console.log "#{@purple}#{msg}#{@reset}"
+   trace: ->
+      if @mute then return
+      console.log @red
+      console.trace()
+      console.log @reset
