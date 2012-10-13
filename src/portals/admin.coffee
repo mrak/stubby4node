@@ -1,11 +1,9 @@
 contract = require '../models/contract'
 Portal = require('./portal').Portal
-CLI = require '../cli'
 http = require 'http'
 
 module.exports.Admin = class Admin extends Portal
-   constructor : (endpoints, muted = false) ->
-      CLI.mute  = muted
+   constructor : (endpoints) ->
       @endpoints = endpoints
       @contract = contract
       @name = '[admin]'
@@ -135,8 +133,7 @@ module.exports.Admin = class Admin extends Portal
       return url.replace @urlPattern, '$1'
 
    server : (request, response) =>
-      @received request
-      response.setHeader 'Server', "stubby/#{CLI.version()} node/#{process.version} (#{process.platform} #{process.arch})"
+      @received request, response
 
       if @urlValid request.url
          switch request.method.toUpperCase()

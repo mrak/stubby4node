@@ -1,5 +1,5 @@
 sut = null
-CLI = require '../src/cli'
+CLI = require '../src/console/cli'
 global.TESTING = {}
 server = null
 options = null

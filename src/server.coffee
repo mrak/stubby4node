@@ -1,12 +1,13 @@
 Admin = require('./portals/admin').Admin
 Stub = require('./portals/stub').Stub
 Endpoints = require('./models/endpoints').Endpoints
-CLI = require('./cli')
+CLI = require './console/cli'
+out = require './console/out'
 http = require 'http'
 https = require 'https'
 
 onListening = (portal, port, protocol = 'http') ->
-   CLI.status "#{portal} portal running at #{protocol}://#{args.location}:#{port}"
+   out.status "#{portal} portal running at #{protocol}://#{args.location}:#{port}"
 onError = (err, port) ->
    msg = "#{err.message}. Exiting..."
 
@@ -18,11 +19,13 @@ onError = (err, port) ->
       when 'EADDRNOTAVAIL'
          msg = "Host \"#{args.location}\" is not available! Exiting..."
 
-   CLI.error msg
+   out.error msg
    process.exit()
 
 args = CLI.getArgs()
-endpoints = new Endpoints(args.data)
+
+onEndpointLoaded = (err, endpoint) -> out.notice "Loaded: #{endpoint.request.method} #{endpoint.request.url}"
+endpoints = new Endpoints(args.data, onEndpointLoaded)
 
 stubServer = (new Stub(endpoints)).server
 adminServer = (new Admin(endpoints)).server
@@ -51,4 +54,4 @@ adminServer.on 'listening', -> onListening 'Admin', args.admin
 adminServer.on 'error', (err) -> onError(err, args.admin)
 adminServer.listen args.admin, args.location
 
-CLI.info '\nQuit: ctrl-c\n'
+out.info '\nQuit: ctrl-c\n'

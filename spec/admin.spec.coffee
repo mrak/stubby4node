@@ -1,4 +1,5 @@
 Admin = require('../src/portals/admin').Admin
+require('../src/console/out').mute = true
 
 describe 'Admin', ->
    response = null

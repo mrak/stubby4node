@@ -1,16 +1,19 @@
-CLI = require '../cli'
+CLI = require '../console/cli'
+out = require '../console/out'
 http = require 'http'
 
 module.exports.Portal = class Portal
    constructor: ->
       @name = 'portal'
 
-   received: (request) ->
+   received: (request, response) ->
       date = new Date()
       hours = "0#{date.getHours()}".slice -2
       minutes = "0#{date.getMinutes()}".slice -2
       seconds = "0#{date.getSeconds()}".slice -2
-      CLI.incoming "#{hours}:#{minutes}:#{seconds} -> #{request.method} #{@name}#{request.url}"
+
+      out.incoming "#{hours}:#{minutes}:#{seconds} -> #{request.method} #{@name}#{request.url}"
+      response.setHeader 'Server', "stubby/#{CLI.version()} node/#{process.version} (#{process.platform} #{process.arch})"
 
    responded: (status, url = '', message = http.STATUS_CODES[status]) ->
       date = new Date()
@@ -29,5 +32,5 @@ module.exports.Portal = class Portal
          when status >= 100
             fn = 'info'
 
-      CLI[fn] "#{hours}:#{minutes}:#{seconds} <- #{status} #{@name}#{url} #{message}"
+      out[fn] "#{hours}:#{minutes}:#{seconds} <- #{status} #{@name}#{url} #{message}"
 

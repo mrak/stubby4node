@@ -1,5 +1,9 @@
 # Changelog
 
+##
+
+* stubby can now be muted
+
 ## 0.1.31
 
 * removed coffee-script as a dependency

@@ -1,10 +1,12 @@
 describe 'CLI', ->
    sut = null
+   out = null
 
    beforeEach ->
-      sut = require('../src/cli')
+      sut = require('../src/console/cli')
+      out = require '../src/console/out'
       spyOn process, 'exit'
-      spyOn sut, 'log'
+      spyOn out, 'log'
 
    describe 'version', ->
       it 'should return the version of stubby in package.json', ->
@@ -13,6 +15,12 @@ describe 'CLI', ->
          actual = sut.version()
 
          expect(actual).toBe expected
+
+   describe 'mute', ->
+      it 'should set out to mute', ->
+         sut.mute()
+
+         expect(out.mute).toBe true
 
    describe 'help', ->
       it 'should return help text', ->
@@ -88,7 +96,7 @@ describe 'CLI', ->
 
             sut.getArgs(['-v'])
 
-            expect(sut.log).toHaveBeenCalledWith version
+            expect(out.log).toHaveBeenCalledWith version
 
       describe '-h, --help', ->
          it 'should exit the process', ->
@@ -100,7 +108,7 @@ describe 'CLI', ->
 
             sut.getArgs(['-h'])
 
-            expect(sut.log).toHaveBeenCalledWith help
+            expect(out.log).toHaveBeenCalledWith help
 
    describe 'data', ->
       expected = [

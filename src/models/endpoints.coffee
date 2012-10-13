@@ -1,11 +1,9 @@
-CLI = require('../cli')
 ce = require 'cloneextend'
 
 NOT_FOUND = "Endpoint with the given id doesn't exist."
 
 module.exports.Endpoints = class Endpoints
-   constructor : (data)->
-      callback = (err, endpoint) -> CLI.notice "Loaded: #{endpoint.request.method} #{endpoint.request.url}"
+   constructor : (data, callback = ->) ->
       @db = {}
       @lastId = 0
       @create data, callback

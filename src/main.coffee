@@ -3,8 +3,8 @@ Stub = require('./portals/stub').Stub
 Endpoints = require('./models/endpoints').Endpoints
 contract = require './models/contract'
 
-CLI = require './cli'
-CLI.mute = true
+CLI = require './console/cli'
+(require './console/out').mute = true
 
 http = require 'http'
 https = require 'https'
