@@ -1,6 +1,10 @@
 # Changelog
 
-##
+## 0.1.33 (pending)
+
+* renamed "stub" option to "stubs"
+
+## 0.1.32
 
 * stubby can now be muted
 

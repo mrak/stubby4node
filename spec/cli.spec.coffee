@@ -49,24 +49,24 @@ describe 'CLI', ->
 
             expect(actual.admin).toBe expected
 
-      describe '-s, --stub', ->
+      describe '-s, --stubs', ->
          it 'should return default if no flag provided', ->
             expected = 8882
             actual = sut.getArgs []
 
-            expect(actual.stub).toBe expected
+            expect(actual.stubs).toBe expected
 
          it 'should return supplied value when provided', ->
             expected = 80
             actual = sut.getArgs ['-s', expected]
 
-            expect(actual.stub).toBe expected
+            expect(actual.stubs).toBe expected
 
          it 'should return supplied value when provided with full flag', ->
             expected = 80
-            actual = sut.getArgs ['--stub', expected]
+            actual = sut.getArgs ['--stubs', expected]
 
-            expect(actual.stub).toBe expected
+            expect(actual.stubs).toBe expected
 
       describe '-l, --location', ->
          it 'should return default if no flag provided', ->
@@ -171,7 +171,7 @@ describe 'CLI', ->
       it 'should gather all arguments', ->
          expected = 
             data : 'a file'
-            stub : 88
+            stubs : 88
             admin : 90
             location : 'stubby.com'
             key: 'a key'
@@ -184,7 +184,7 @@ describe 'CLI', ->
          spyOn(sut, 'pfx').andReturn expected.pfx
 
          actual = sut.getArgs [
-            '-s', expected.stub
+            '-s', expected.stubs
             '-a', expected.admin
             '-d', 'anything'
             '-l', expected.location

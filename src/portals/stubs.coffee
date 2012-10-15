@@ -1,6 +1,6 @@
 Portal = require('./portal').Portal
 
-module.exports.Stub = class Stub extends Portal
+module.exports.Stubs = class Stubs extends Portal
    constructor : (endpoints) ->
       @Endpoints = endpoints
       @name = '[stubs]'
@@ -12,7 +12,7 @@ module.exports.Stub = class Stub extends Portal
          data += chunk
 
       request.on 'end', =>
-         @received request
+         @received request, response
          criteria =
             url : request.url
             method : request.method

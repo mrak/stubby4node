@@ -1,5 +1,5 @@
 Admin = require('./portals/admin').Admin
-Stub = require('./portals/stub').Stub
+Stubs = require('./portals/stubs').Stubs
 Endpoints = require('./models/endpoints').Endpoints
 contract = require './models/contract'
 
@@ -15,7 +15,7 @@ if global.TESTING then https = global.TESTING.https
 module.exports.Stubby = class Stubby
    constructor: ->
       @endpoints = new Endpoints()
-      @stubPortal = null
+      @stubsPortal = null
       @adminPortal = null
 
    start: (options, callback) -> process.nextTick =>
@@ -26,7 +26,7 @@ module.exports.Stubby = class Stubby
 
       callback ?= ->
       options ?= {}
-      options.stub ?= CLI.defaults.stub
+      options.stubs ?= CLI.defaults.stubs
       options.admin ?= CLI.defaults.admin
       options.location ?= CLI.defaults.location
       options.data ?= []
@@ -40,23 +40,23 @@ module.exports.Stubby = class Stubby
          httpsOptions =
             key: options.key
             cert: options.cert
-         @stubPortal = https.createServer httpsOptions, new Stub(@endpoints).server
+         @stubsPortal = https.createServer httpsOptions, new Stubs(@endpoints).server
       else if options.pfx
          options =
             pfx: options.pfx
-         @stubPortal = https.createServer httpsOptions, new Stub(@endpoints).server
+         @stubsPortal = https.createServer httpsOptions, new Stubs(@endpoints).server
       else
-         @stubPortal = http.createServer(new Stub(@endpoints).server)
+         @stubsPortal = http.createServer(new Stubs(@endpoints).server)
 
       @admimPortal = http.createServer(new Admin(@endpoints).server)
 
-      @stubPortal.listen options.stub, options.location
+      @stubsPortal.listen options.stubs, options.location
       @admimPortal.listen options.admin, options.location
 
       callback()
 
    stop: =>
-      if @stubPortal?.address() then @stubPortal.close()
+      if @stubsPortal?.address() then @stubsPortal.close()
       if @admimPortal?.address() then @admimPortal.close()
 
    post: (data, callback) -> process.nextTick =>

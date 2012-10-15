@@ -1,5 +1,5 @@
 Admin = require('./portals/admin').Admin
-Stub = require('./portals/stub').Stub
+Stubs = require('./portals/stubs').Stubs
 Endpoints = require('./models/endpoints').Endpoints
 CLI = require './console/cli'
 out = require './console/out'
@@ -27,7 +27,7 @@ args = CLI.getArgs()
 onEndpointLoaded = (err, endpoint) -> out.notice "Loaded: #{endpoint.request.method} #{endpoint.request.url}"
 endpoints = new Endpoints(args.data, onEndpointLoaded)
 
-stubServer = (new Stub(endpoints)).server
+stubServer = (new Stubs(endpoints)).server
 adminServer = (new Admin(endpoints)).server
 
 httpsOptions = false
@@ -45,9 +45,9 @@ unless httpsOptions
 else
    protocol = 'https'
    stubServer = https.createServer(httpsOptions, stubServer)
-stubServer.on 'listening', -> onListening 'Stub', args.stub, protocol
-stubServer.on 'error', (err) -> onError(err, args.stub)
-stubServer.listen args.stub, args.location, protocol
+stubServer.on 'listening', -> onListening 'Stubs', args.stubs, protocol
+stubServer.on 'error', (err) -> onError(err, args.stubs)
+stubServer.listen args.stubs, args.location, protocol
 
 adminServer = http.createServer(adminServer)
 adminServer.on 'listening', -> onListening 'Admin', args.admin

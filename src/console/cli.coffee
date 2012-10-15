@@ -43,10 +43,10 @@ module.exports =
       processed: true
       description: 'Prevent stubby from printing to the console.'
    ,
-      name: 'stub'
+      name: 'stubs'
       param: 'port'
       flag: 's'
-      description: 'Port for stub portal. Defaults to 8882.'
+      description: 'Port for stubs portal. Defaults to 8882.'
    ,
       name: 'pfx'
       flag: 'p'
@@ -61,7 +61,7 @@ module.exports =
    ]
 
    defaults:
-      stub: 8882
+      stubs: 8882
       admin: 8889
       location: 'localhost'
       data: null

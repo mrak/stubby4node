@@ -52,7 +52,7 @@ stubby [-a <port>] [-c <file>] [-d <file>] [-h] [-k <file>]
 -h, --help                  This help text.
 -k, --key <file>            Private key file. Use with --cert.
 -l, --location <hostname>   Hostname at which to bind stubby.
--s, --stub <port>           Port for stub portal. Defaults to
+-s, --stubs <port>           Port for stubs portal. Defaults to
                             8882.
 -p, --pfx <file>            PFX file. Ignored if used with
                             --key/--cert
@@ -194,7 +194,7 @@ Perform `PUT` requests in the same format as using `POST`, only this time supply
 
 Send a `DELETE` request to `localhost:8889/<id>`
 
-# The Stub Portal
+# The Stubs Portal
 
 Requests sent to any url at `localhost:8882` (or wherever you told stubby to run) will search through the available endpoints and, if a match is found, respond with that endpoint's `response` data
 
@@ -222,7 +222,7 @@ What can I do with it, you ask? Read on!
 ### start(options, [callback])
 
 * `options`: an object containing parameters with which to start this stubby. Parameters go along with the full-name flags used from the command line.
-   * `stub`: port number to run the stub portal
+   * `stubs`: port number to run the stubs portal
    * `admin`: port number to run the admin portal
    * `data`: JavaScript Object/Array containing endpoint data
    * `location`: address/hostname at which to run stubby
@@ -235,7 +235,7 @@ What can I do with it, you ask? Read on!
 Identical to previous signature, only all options are assumed to be defaults.
 
 ### stop()
-closes the connections and ports being used by stubby's stub and admin portals
+closes the connections and ports being used by stubby's stubs and admin portals
 
 ### get(id, callback)
 Simulates a GET request to the admin portal, with the callback receiving the resultant data.
@@ -270,12 +270,12 @@ stubby1 = new Stubby()
 stubby2 = new Stubby()
 
 stubby1.start
-   stub: 80
+   stubs: 80
    admin: 81
    location: 'localhost'
 
 stubby2.start
-   stub: 82
+   stubs: 82
    admin: 83
    location: '127.0.0.2'
 ```
