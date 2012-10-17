@@ -6,6 +6,8 @@ out = require './console/out'
 http = require 'http'
 https = require 'https'
 
+args = CLI.getArgs()
+
 onListening = (portal, port, protocol = 'http') ->
    out.status "#{portal} portal running at #{protocol}://#{args.location}:#{port}"
 onError = (err, port) ->
@@ -21,8 +23,6 @@ onError = (err, port) ->
 
    out.error msg
    process.exit()
-
-args = CLI.getArgs()
 
 onEndpointLoaded = (err, endpoint) -> out.notice "Loaded: #{endpoint.request.method} #{endpoint.request.url}"
 endpoints = new Endpoints(args.data, onEndpointLoaded)

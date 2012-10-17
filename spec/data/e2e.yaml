@@ -1,0 +1,74 @@
+-  request:
+      url: /basic/get
+   response: {}
+
+-  request:
+      url: /basic/put
+      method: PUT
+   response: {}
+
+-  request:
+      url: /basic/post
+      method: POST
+   response: {}
+
+-  request:
+      url: /basic/delete
+      method: DELETE
+   response: {}
+
+
+
+-  request:
+      url: /get/body
+      method: GET
+   response:
+      body: "plain text"
+
+-  request:
+      url: /get/json
+      method: GET
+   response:
+      headers:
+         content-type: application/json
+      body: >
+         {"property":"value"}
+
+-  request:
+      url: /get/204
+      method: GET
+   response:
+      status: 204
+
+-  request:
+      url: /get/420
+      method: GET
+   response:
+      status: 420
+
+
+
+-  request:
+      url: /post/auth
+      method: POST
+      post: some=data
+      headers:
+         authorization: c3R1YmJ5OnBhc3N3b3Jk
+   response:
+      status: 201
+      headers:
+         location: /some/endpoint/id
+      body: "resource has been created"
+
+-  request:
+      url: /put/updates
+      method: PUT
+   response:
+      status: 200
+      body: "updated"
+
+-  request:
+      url: /delete/it
+      method: DELETE
+   response:
+      status: 204

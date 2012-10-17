@@ -9,9 +9,6 @@ CLI = require './console/cli'
 http = require 'http'
 https = require 'https'
 
-if global.TESTING then http = global.TESTING.http
-if global.TESTING then https = global.TESTING.https
-
 module.exports.Stubby = class Stubby
    constructor: ->
       @endpoints = new Endpoints()
@@ -33,7 +30,7 @@ module.exports.Stubby = class Stubby
       options.key ?= null
       options.cert ?= null
 
-      if not contract options.data then return callback "The supplied endpoint data couldn't be saved"
+      if errors = contract options.data then return callback errors
       @endpoints.create options.data, ->
 
       if options.key? and options.cert
@@ -55,12 +52,12 @@ module.exports.Stubby = class Stubby
 
       callback()
 
-   stop: =>
-      if @stubsPortal?.address() then @stubsPortal.close()
-      if @admimPortal?.address() then @admimPortal.close()
+   stop: (callback = ->) =>
+      firstCallback = =>
+         if @stubsPortal?.address() then @stubsPortal.close(callback)
+      if @admimPortal?.address() then @admimPortal.close(firstCallback)
 
-   post: (data, callback) -> process.nextTick =>
-      callback ?= ->
+   post: (data, callback = ->) -> process.nextTick =>
       if not contract data then return callback "The supplied endpoint data couldn't be saved"
       @endpoints.create data, callback
 

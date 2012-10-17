@@ -1,27 +1,22 @@
 sut = null
 CLI = require '../src/console/cli'
-global.TESTING = {}
-server = null
 options = null
 
 describe 'main', ->
    beforeEach ->
-      server =
-         listen: ->
-         close: ->
-         address: ->
-
-      global.TESTING.http =
-         createServer: -> server
-      global.TESTING.https =
-         createServer: -> server
       sut = new (require('../src/main').Stubby)()
+
+   afterEach ->
+      stopped = false
+      sut.stop -> stopped = true
+      waitsFor (-> stopped), 'stubby to stop', 10
 
    describe 'start', ->
       beforeEach ->
          options = {}
 
-      describe 'options', ->
+
+      describe 'callback', ->
          it 'should treat the callback as optional', ->
             callback = jasmine.createSpy 'callback'
             sut.start {}, callback
@@ -36,31 +31,37 @@ describe 'main', ->
 
       describe 'options', ->
          it 'should default stub port to CLI port default', ->
-            sut.start options
+            go = false
+            sut.start options, -> go = true
 
-            waitsFor (-> options.stub is CLI.defaults.stub), 'option stub to be set', 1
+            waitsFor (-> go and options.stubs is CLI.defaults.stubs), 'option stub to be set', 1
 
          it 'should default admin port to CLI port default', ->
-            sut.start options
+            go = false
+            sut.start options, -> go = true
 
-            waitsFor (-> options.admin is CLI.defaults.admin), 'option admin to be set', 1
+            waitsFor (-> go and options.admin is CLI.defaults.admin), 'option admin to be set', 1
 
          it 'should default location to CLI default', ->
-            sut.start options
+            go = false
+            sut.start options, -> go = true
 
-            waitsFor (-> options.location is CLI.defaults.location), 'option location to be set', 1
+            waitsFor (-> go and options.location is CLI.defaults.location), 'option location to be set', 1
 
          it 'should default data to empty array', ->
-            sut.start options
+            go = false
+            sut.start options, -> go = true
 
-            waitsFor (-> options.data isnt undefined), "option.data to be set to empty array #{options.data}", 1
+            waitsFor (-> go and options.data isnt undefined), "option.data to be set to empty array #{options.data}", 1
 
          it 'should default key to null', ->
-            sut.start options
+            go = false
+            sut.start options, -> go = true
 
-            waitsFor (-> options.key is null), 'option.key to be null', 1
+            waitsFor (-> go and options.key is null), 'option.key to be null', 1
 
          it 'should default cert to null', ->
-            sut.start options
+            go = false
+            sut.start options, -> go = true
 
-            waitsFor (-> options.cert is null), 'option.cert to be null', 1
+            waitsFor (-> go and options.cert is null), 'option.cert to be null', 1

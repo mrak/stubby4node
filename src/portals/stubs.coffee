@@ -32,7 +32,6 @@ module.exports.Stubs = class Stubs extends Portal
          try
             @Endpoints.find criteria, callback
          catch e
-            console.dir e
             response.statusCode =  500
             @responded 500, request.url, "unexpectedly generated a server error"
             response.end()
