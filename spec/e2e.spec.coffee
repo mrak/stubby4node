@@ -119,3 +119,13 @@ describe 'End 2 End Test Suite', ->
 
             createRequest context
             waitsFor ( -> context.passed ), 'request to finish', 1000
+      describe 'put', ->
+         it 'should wait if a 2000ms latency is specified', ->
+            context.url = '/put/latency'
+            context.method = 'put'
+            context.body = 'updated'
+
+            createRequest context
+            waits 1000
+            expect(context.passed).toBe false
+            waitsFor ( -> context.passed ), 'latency-ridden request to finish', 3000

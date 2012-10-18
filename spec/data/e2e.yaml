@@ -55,14 +55,9 @@
       body: "resource has been created"
 
 -  request:
-      url: /put/updates
+      url: /put/latency
       method: PUT
    response:
       status: 200
+      latency: 2000
       body: "updated"
-
--  request:
-      url: /delete/it
-      method: DELETE
-   response:
-      status: 204
