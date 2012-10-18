@@ -17,6 +17,7 @@ module.exports.Stubs = class Stubs extends Portal
             url : request.url
             method : request.method
             post : data
+            headers : request.headers
          callback = (err, endpointResponse) =>
             if err
                response.writeHead 404, {}

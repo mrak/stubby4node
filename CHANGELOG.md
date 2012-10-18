@@ -2,6 +2,7 @@
 
 ## 0.1.33 (pending)
 
+* fixed severe issue where request headers were not being matched by the stubs portal
 * renamed "stub" option to "stubs"
 
 ## 0.1.32

@@ -73,10 +73,10 @@ module.exports.Endpoints = class Endpoints
          if endpoint.request.method isnt data.method then continue
 
          headersMatch = true
-         if endpoint.request.headers? and data.headers?
+         if endpoint.request.headers?
             for key, value of endpoint.request.headers
                if endpoint.request.headers[key] isnt data.headers[key] then headersMatch = false
-         if not headersMatch then continue
+         continue unless headersMatch
 
          if parseInt endpoint.response.latency
             return setTimeout (-> callback null,  endpoint.response), endpoint.response.latency
