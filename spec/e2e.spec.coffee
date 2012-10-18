@@ -145,7 +145,7 @@ describe 'End 2 End Test Suite', ->
          createRequest context
          waitsFor ( -> context.passed ), 'request to finish', 1000
 
-      it 'should be able to edit an endpoint through PUT', ->
+      xit 'should be able to edit an endpoint through PUT', ->
          id = 2
          endpoint = ce.clone endpointData[id-1]
          context.url = "/#{id}"
