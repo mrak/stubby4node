@@ -31,7 +31,7 @@ createRequest = (context) ->
    request.write context.post if context.post?
    request.end()
 
-describe 'End 2 End Test Suite', ->
+xdescribe 'End 2 End Test Suite', ->
    sut = null
    context = null
 
