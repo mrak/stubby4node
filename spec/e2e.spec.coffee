@@ -2,6 +2,7 @@ Stubby = require('../src/main').Stubby
 fs = require 'fs'
 http = require 'http'
 yaml = require 'js-yaml'
+ce = require 'cloneextend'
 endpointData = yaml.load (fs.readFileSync 'spec/data/e2e.yaml', 'utf8').trim()
 
 createRequest = (context) ->
@@ -9,8 +10,7 @@ createRequest = (context) ->
    context.body ?= ''
    context.headers ?= {}
    options =
-      host: 'localhost'
-      port: '8882'
+      port: context.port
       method: context.method
       path: context.url
       headers: context.requestHeaders
@@ -49,6 +49,9 @@ describe 'End 2 End Test Suite', ->
       waitsFor (-> stopped), 'stubby to stop', 10
 
    describe 'Stubs', ->
+      beforeEach ->
+         context.port = 8882
+
       describe 'basics', ->
         it 'should return a basic GET endpoint', ->
             context.url = '/basic/get'
@@ -129,3 +132,38 @@ describe 'End 2 End Test Suite', ->
             waits 1000
             expect(context.passed).toBe false
             waitsFor ( -> context.passed ), 'latency-ridden request to finish', 3000
+   describe 'Admin', ->
+      beforeEach ->
+         context.port = 8889
+
+      it 'should be able to retreive an endpoint through GET', ->
+         id = 3
+         context.url = "/#{id}"
+         context.method = 'get'
+         context.body = JSON.stringify endpointData[id-1]
+
+         createRequest context
+         waitsFor ( -> context.passed ), 'request to finish', 1000
+
+      it 'should be able to edit an endpoint through PUT', ->
+         id = 2
+         endpoint = ce.clone endpointData[id-1]
+         context.url = "/#{id}"
+
+         endpoint.url = '/munchkin'
+         context.method = 'put'
+         context.post = JSON.stringify endpoint
+         context.status = 204
+
+         createRequest context
+         waitsFor ( -> context.passed ), 'put to finish', 1000
+
+         endpoint.id = "2"
+         context.passed = false
+         context.method = 'get'
+         context.body = JSON.stringify endpoint
+         context.status = 200
+
+         createRequest context
+         waitsFor ( -> context.passed ), 'get to finish', 1000
+
