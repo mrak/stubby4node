@@ -19,6 +19,10 @@ createRequest = (context) ->
          context.body = data.trim()
          context.status = response.statusCode
          context.headers = response.headers
+
+         if response.headers.location?
+            context.location = response.headers.location
+
          context.finished = true
 
    request.write context.post if context.post?
@@ -43,7 +47,7 @@ describe 'End 2 End Admin Test Suite', ->
       sut.stop -> stopped = true
       waitsFor (-> stopped), 'stubby to stop', 1
 
-   it 'should be able to retreive an endpoint through GET', ->
+   xit 'should be able to retreive an endpoint through GET', ->
       id = 3
       endpoint = ce.clone endpointData[id-1]
       endpoint.id = id
@@ -62,7 +66,7 @@ describe 'End 2 End Admin Test Suite', ->
 
       waitsFor waitFn, 'returned endpoint to be correct', 1000
 
-   it 'should be able to edit an endpoint through PUT', ->
+   xit 'should be able to edit an endpoint through PUT', ->
       id = 2
       endpoint = ce.clone endpointData[id-1]
       context.url = "/#{id}"
@@ -86,3 +90,36 @@ describe 'End 2 End Admin Test Suite', ->
          return returned.url is endpoint.url
 
       waitsFor waitFn, 'get request to finish', 1000
+   it 'should be about to create an endpoint through POST', ->
+      runs ->
+         @endpoint = 
+            request:
+               url: '/posted/endpoint'
+            response:
+               status: 200
+         context.url = '/'
+         context.method = 'post'
+         context.post = JSON.stringify @endpoint
+
+         createRequest context
+
+         waitFn = ->
+            return false unless context.finished
+            return true
+         waitsFor waitFn, 'post request to finish', 1000
+
+      runs ->
+         id = context.location.replace /localhost:8889\/([0-9]+)/, '$1'
+         context =
+            finished: false
+            url: "/#{id}"
+            method: 'get'
+
+         createRequest context
+
+         waitFn = ->
+            return false unless context.finished
+            returned = JSON.parse context.body
+            return returned.request.url is @endpoint.request.url
+
+         waitsFor waitFn, 'get request to return', 1000
