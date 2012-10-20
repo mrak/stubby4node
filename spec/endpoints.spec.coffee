@@ -16,28 +16,28 @@ describe 'Endpoints', ->
       it 'should default method to GET', ->
          expected = 'GET'
 
-         actual = sut.applyDefaults data
+         actual = sut.purify data
 
          expect(actual.request.method).toBe expected
 
       it 'should default status to 200', ->
          expected = 200
 
-         actual = sut.applyDefaults data
+         actual = sut.purify data
 
          expect(actual.response.status).toBe expected
 
       it 'should default response headers to empty object', ->
          expected = {}
 
-         actual = sut.applyDefaults data
+         actual = sut.purify data
 
          expect(actual.response.headers).toEqual expected
 
       it 'should default request headers to empty object', ->
          expected = {}
 
-         actual = sut.applyDefaults data
+         actual = sut.purify data
 
          expect(actual.request.headers).toEqual expected
 
@@ -53,7 +53,7 @@ describe 'Endpoints', ->
             response:
                'content-type': 'application/json'
 
-         actual = sut.applyDefaults data
+         actual = sut.purify data
 
          expect(actual.response.headers).toEqual expected.response
          expect(actual.request.headers).toEqual expected.request
@@ -63,7 +63,7 @@ describe 'Endpoints', ->
          data.response.body =
             property: "value"
 
-         actual = sut.applyDefaults data
+         actual = sut.purify data
 
          expect(actual.response.body).toEqual expected
 
@@ -75,9 +75,9 @@ describe 'Endpoints', ->
 
       describe 'create', ->
          beforeEach ->
-            spyOn(sut, 'applyDefaults').andReturn {}
+            spyOn(sut, 'purify').andReturn {}
 
-         it 'should applyDefaults and run database call for each item given a list', ->
+         it 'should purify and run database call for each item given a list', ->
             data = [
                "item1"
                "item2"
@@ -85,17 +85,17 @@ describe 'Endpoints', ->
 
             sut.create data, callback
 
-            expect(sut.applyDefaults).toHaveBeenCalledWith data[0]
-            expect(sut.applyDefaults).toHaveBeenCalledWith data[1]
-            expect(sut.applyDefaults.callCount).toEqual data.length
+            expect(sut.purify).toHaveBeenCalledWith data[0]
+            expect(sut.purify).toHaveBeenCalledWith data[1]
+            expect(sut.purify.callCount).toEqual data.length
 
-         it 'should applyDefaults and run database call given one item', ->
+         it 'should purify and run database call given one item', ->
             data = "item1"
 
             sut.create data, callback
 
-            expect(sut.applyDefaults).toHaveBeenCalledWith data
-            expect(sut.applyDefaults.callCount).toEqual 1
+            expect(sut.purify).toHaveBeenCalledWith data
+            expect(sut.purify.callCount).toEqual 1
 
          it "should call callback with null, id if database creates item", ->
             id = 1 #sut.db empty, so starts at 1
@@ -130,13 +130,13 @@ describe 'Endpoints', ->
          data = "some data"
 
          beforeEach ->
-            spyOn(sut, 'applyDefaults').andReturn "something"
+            spyOn(sut, 'purify').andReturn "something"
 
-         it 'should applyDefaults to data', ->
+         it 'should purify to data', ->
             sut.db[id] = {}
             sut.update id, data, callback
 
-            expect(sut.applyDefaults).toHaveBeenCalled()
+            expect(sut.purify).toHaveBeenCalled()
 
          it 'should call callback when database updates', ->
             sut.db[id] = {}
@@ -195,6 +195,70 @@ describe 'Endpoints', ->
 
             expect(callback).toHaveBeenCalledWith null, row.response
 
+         it 'should call callback with error if operation does not find item', ->
+            sut.find data, callback
+
+            expect(callback).toHaveBeenCalledWith "Endpoint with given request doesn't exist."
+
+         it 'should call callback after timeout if data response has a latency', ->
+            row =
+               request: {}
+               response:
+                  latency: 1000
+
+            sut.db = [row]
+            sut.find data, callback
+            expect(callback).not.toHaveBeenCalled()
+            waitsFor (-> callback.callCount is 1), 'Callback call was never called', 1000
+
+         describe 'body versus file', ->
+            it 'should return response with body as content if file is not supplied', ->
+               expected = 'the body!'
+               row =
+                  request:
+                     url: '/testing'
+                  response:
+                     body: expected
+               data =
+                  url: '/testing'
+
+               sut.db = [row]
+               sut.find data, callback
+
+               expect(callback.mostRecentCall.args[1].body).toBe expected
+
+            it 'should return response with body as content if file is supplied but cannot be found', ->
+               expected = 'the body!'
+               row =
+                  request:
+                     url: '/testing'
+                  response:
+                     body: expected
+                     file: 'spec/data/endpoints-nonexistant.file'
+               data =
+                  url: '/testing'
+
+               sut.db = [row]
+               sut.find data, callback
+
+               expect(callback.mostRecentCall.args[1].body).toBe expected
+
+            it 'should return response with file as content if file is supplied and exists', ->
+               expected = 'file contents!'
+               row =
+                  request:
+                     url: '/testing'
+                  response:
+                     body: 'body contents!'
+                     file: 'spec/data/endpoints.file'
+               data =
+                  url: '/testing'
+
+               sut.db = [row]
+               sut.find data, callback
+
+               expect(callback.mostRecentCall.args[1].body.trim()).toBe expected
+
          describe 'headers', ->
 
             it 'should return response if all headers of request match', ->
@@ -241,18 +305,3 @@ describe 'Endpoints', ->
 
                expect(callback).toHaveBeenCalledWith null, row.response
 
-         it 'should call callback with error if operation does not find item', ->
-            sut.find data, callback
-
-            expect(callback).toHaveBeenCalledWith "Endpoint with given request doesn't exist."
-
-         it 'should call callback after timeout if data response has a latency', ->
-            row =
-               request: {}
-               response:
-                  latency: 1000
-
-            sut.db = [row]
-            sut.find data, callback
-            expect(callback).not.toHaveBeenCalled()
-            waitsFor (-> callback.callCount is 1), 'Callback call was never called', 1000

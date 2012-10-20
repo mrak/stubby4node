@@ -205,12 +205,6 @@ describe 'contract', ->
             expect(actual).toEqual expected
 
       describe 'latency', ->
-         it 'should return an error when a string cannot be parsed as a number', ->
-            expected = ["'response.latency' must be integer-like."]
-            data.response.latency = "fred"
-            actual = sut data
-            expect(actual).toEqual expected
-
          it 'should return no errors when it is a number', ->
             data.response.latency = 4000
             result = sut data
@@ -220,6 +214,12 @@ describe 'contract', ->
             data.response.latency = "4000"
             result = sut data
             expect(result).toBeNull()
+
+         it 'should return an error when a string cannot be parsed as a number', ->
+            expected = ["'response.latency' must be integer-like."]
+            data.response.latency = "fred"
+            actual = sut data
+            expect(actual).toEqual expected
 
       it 'should return no errors for an empty body', ->
          delete data.response.body

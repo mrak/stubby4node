@@ -80,6 +80,7 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
 * `response`: describes the server's response to the client
    * `headers`: a key/value map of headers the server should use in it's response
    * `latency`: the time in milliseconds the server should wait before responding. Useful for testing timeouts and latency
+   * `file`: if specified, returns the contents of the given file as the response body. If the file cannot be found at request time, `body` is used instead
    * `body`: the textual body of the server's response to the client
    * `status`: the numerical HTTP status code (200 for OK, 404 for NOT FOUND, etc.)
 
@@ -109,7 +110,7 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
          Content-Type: application/json
          Access-Control-Allow-Origin: "*"
       status: 204
-      body:
+      file: path/to/page.html
 
 -  request:
       url: /path/to/thing
@@ -121,7 +122,6 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
       headers:
          Content-Type: application/json
       status: 304
-      body:
 ```
 
 ### JSON (file or POST/PUT)
@@ -160,7 +160,7 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*"
       }, 
-      "body": null
+      "file": "path/to/page.html"
     }
   }, 
   {
@@ -176,8 +176,7 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
       "status": 304, 
       "headers": {
         "Content-Type": "application/json"
-      }, 
-      "body": null
+      } 
     }
   }
 ]

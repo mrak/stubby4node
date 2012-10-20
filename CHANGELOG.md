@@ -1,9 +1,10 @@
 # Changelog
 
-## 0.1.33 (pending)
+## 0.1.33
 
 * fixed severe issue where request headers were not being matched by the stubs portal
 * renamed "stub" option to "stubs"
+* __NEW__: request.file can be used to specify a file whose contents will be used as the response body. If the file cannot be found, it falls back to whatever was specified in response.body
 
 ## 0.1.32
 

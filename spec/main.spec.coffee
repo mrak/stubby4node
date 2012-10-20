@@ -4,7 +4,7 @@ options = null
 
 afterFn = ->
 
-xdescribe 'main', ->
+describe 'main', ->
    beforeEach ->
       sut = new (require('../src/main').Stubby)()
 
