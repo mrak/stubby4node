@@ -58,13 +58,6 @@ describe 'Endpoints', ->
          expect(actual.response.headers).toEqual expected.response
          expect(actual.request.headers).toEqual expected.request
 
-      it 'should default post to null', ->
-         expected = null
-
-         actual = sut.applyDefaults data
-
-         expect(actual.request.post).toEqual expected
-
       it 'should stringify object body in response', ->
          expected = '{"property":"value"}'
          data.response.body =
@@ -82,7 +75,7 @@ describe 'Endpoints', ->
 
       describe 'create', ->
          beforeEach ->
-            spyOn(sut, 'applyDefaults').andReturn "a non-emtpy value"
+            spyOn(sut, 'applyDefaults').andReturn {}
 
          it 'should applyDefaults and run database call for each item given a list', ->
             data = [
@@ -92,8 +85,8 @@ describe 'Endpoints', ->
 
             sut.create data, callback
 
-            expect(sut.db[1]).toBe data.item1
-            expect(sut.db[2]).toBe data.item2
+            expect(sut.applyDefaults).toHaveBeenCalledWith data[0]
+            expect(sut.applyDefaults).toHaveBeenCalledWith data[1]
             expect(sut.applyDefaults.callCount).toEqual data.length
 
          it 'should applyDefaults and run database call given one item', ->
@@ -101,6 +94,7 @@ describe 'Endpoints', ->
 
             sut.create data, callback
 
+            expect(sut.applyDefaults).toHaveBeenCalledWith data
             expect(sut.applyDefaults.callCount).toEqual 1
 
          it "should call callback with null, id if database creates item", ->

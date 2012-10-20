@@ -20,6 +20,7 @@ describe 'contract', ->
                property : 'value'
             status : 204
             body : 'success!'
+            latency: 5000
 
    it 'should return no errors for valid data', ->
       result = sut data
@@ -203,8 +204,25 @@ describe 'contract', ->
             actual = sut data
             expect(actual).toEqual expected
 
+      describe 'latency', ->
+         it 'should return an error when a string cannot be parsed as a number', ->
+            expected = ["'response.latency' must be integer-like."]
+            data.response.latency = "fred"
+            actual = sut data
+            expect(actual).toEqual expected
+
+         it 'should return no errors when it is a number', ->
+            data.response.latency = 4000
+            result = sut data
+            expect(result).toBeNull()
+
+         it 'should return no errors when it a string representation of a number', ->
+            data.response.latency = "4000"
+            result = sut data
+            expect(result).toBeNull()
+
       it 'should return no errors for an empty body', ->
-         data.response.body = null
+         delete data.response.body
          result = sut data
          expect(result).toBeNull()
 

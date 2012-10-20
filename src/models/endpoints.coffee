@@ -9,26 +9,31 @@ module.exports.Endpoints = class Endpoints
       @create data, callback
 
    applyDefaults : (data) ->
-      data.request.method ?= 'GET'
-      data.request.post ?= null
-      data.request.headers ?= {}
-      data.response.headers ?= {}
+      item =
+         request:
+            url: data.request.url
+            method: data.request.method ? 'GET'
+            headers: data.request.headers ? {}
+         response:
+            headers: data.response.headers ? {}
+            status: parseInt(data.response.status) or 200
 
-      for prop, value of data.request.headers
-         delete data.request.headers[prop]
-         data.request.headers[prop.toLowerCase()] = value
+      item.request.post = data.request.post if data.request.post?
+      item.response.body = JSON.stringify data.response.body if data.response.body?
+      item.response.latency = data.response.latency if data.response.latency?
 
-      for prop, value of data.response.headers
-         delete data.response.headers[prop]
-         data.response.headers[prop.toLowerCase()] = value
+      for prop, value of item.request.headers
+         delete item.request.headers[prop]
+         item.request.headers[prop.toLowerCase()] = value
 
-      data.response.status = parseInt(data.response.status) or 200
-      data.response.body = JSON.stringify(data.response.body) if typeof data.response.body is 'object'
-      return data
+      for prop, value of item.response.headers
+         delete item.response.headers[prop]
+         item.response.headers[prop.toLowerCase()] = value
+      return item
 
    create : (data, callback) ->
       insert = (item) =>
-         @applyDefaults item
+         item = @applyDefaults item
          item.id = ++@lastId
          @db[item.id] = ce.clone item
          callback null, ce.clone item
@@ -68,11 +73,12 @@ module.exports.Endpoints = class Endpoints
 
    find : (data, callback) ->
       for id, endpoint of @db
-         if endpoint.request.url isnt data.url then continue
-         if endpoint.request.post isnt data.post then continue
-         if endpoint.request.method isnt data.method then continue
+         continue if endpoint.request.url isnt data.url
+         continue if endpoint.request.method isnt data.method
+         continue if endpoint.request.post? and endpoint.request.post isnt data.post
 
          headersMatch = true
+
          if endpoint.request.headers?
             for key, value of endpoint.request.headers
                if endpoint.request.headers[key] isnt data.headers[key] then headersMatch = false

@@ -23,6 +23,8 @@ module.exports = Contract = (endpoint) ->
             type: "'response.headers', if supplied, must be an object."
          status:
             type: "'response.status' must be integer-like."
+         latency:
+            type: "'response.latency' must be integer-like."
 
    request =
       url : (url) ->
@@ -49,7 +51,10 @@ module.exports = Contract = (endpoint) ->
             return messages.response.headers.type
          null
       body : -> null
-      latency : -> null
+      latency : (latency) ->
+         if not latency then return null
+         if not parseInt latency then return messages.response.latency.type
+         null
 
    if typeof endpoint is 'string'
       try
