@@ -34,8 +34,13 @@
 
 <ul>
 <li>
-<a href="http://nodejs.org/">node.js</a> (tested with v0.6.x and v0.8.x)</li>
-</ul><h2>Packaged</h2>
+<a href="http://nodejs.org/">node.js</a> (tested with v0.8.x)</li>
+</ul><p>Please note that stubby4node has not been tested on any Windows platform.
+As a result, color-console output may look horrendous.</p>
+
+<p>Development is on Mac OS X Mountain Lion.</p>
+
+<h2>Packaged</h2>
 
 <ul>
 <li>
@@ -86,12 +91,11 @@ export PATH=$PATH:./bin/stubby
 -h, --help                  This help text.
 -k, --key &lt;file&gt;            Private key file. Use with --cert.
 -l, --location &lt;hostname&gt;   Hostname at which to bind stubby.
--s, --stub &lt;port&gt;           Port for stub portal. Defaults to
+-s, --stubs &lt;port&gt;           Port for stubs portal. Defaults to
                             8882.
 -p, --pfx &lt;file&gt;            PFX file. Ignored if used with
                             --key/--cert
 -v, --version               Prints stubby's version number.
-
 </code></pre>
 
 <h1>The Admin Portal</h1>
@@ -126,6 +130,8 @@ export PATH=$PATH:./bin/stubby
 <li>
 <code>latency</code>: the time in milliseconds the server should wait before responding. Useful for testing timeouts and latency</li>
 <li>
+<code>file</code>: if specified, returns the contents of the given file as the response body. If the file cannot be found at request time, <code>body</code> is used instead</li>
+<li>
 <code>body</code>: the textual body of the server's response to the client</li>
 <li>
 <code>status</code>: the numerical HTTP status code (200 for OK, 404 for NOT FOUND, etc.)</li>
@@ -157,7 +163,7 @@ export PATH=$PATH:./bin/stubby
          <span class="l-Scalar-Plain">Content-Type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">application/json</span>
          <span class="l-Scalar-Plain">Access-Control-Allow-Origin</span><span class="p-Indicator">:</span> <span class="s">"*"</span>
       <span class="l-Scalar-Plain">status</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">204</span>
-      <span class="l-Scalar-Plain">body</span><span class="p-Indicator">:</span>
+      <span class="l-Scalar-Plain">file</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">path/to/page.html</span>
 
 <span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/path/to/thing</span>
@@ -169,7 +175,6 @@ export PATH=$PATH:./bin/stubby
       <span class="l-Scalar-Plain">headers</span><span class="p-Indicator">:</span>
          <span class="l-Scalar-Plain">Content-Type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">application/json</span>
       <span class="l-Scalar-Plain">status</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">304</span>
-      <span class="l-Scalar-Plain">body</span><span class="p-Indicator">:</span>
 </pre></div>
 
 <h3>JSON (file or POST/PUT)</h3>
@@ -208,7 +213,7 @@ export PATH=$PATH:./bin/stubby
         <span class="nt">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">,</span>
         <span class="nt">"Access-Control-Allow-Origin"</span><span class="p">:</span> <span class="s2">"*"</span>
       <span class="p">},</span> 
-      <span class="nt">"body"</span><span class="p">:</span> <span class="kc">null</span>
+      <span class="nt">"file"</span><span class="p">:</span> <span class="s2">"path/to/page.html"</span>
     <span class="p">}</span>
   <span class="p">},</span> 
   <span class="p">{</span>
@@ -224,8 +229,7 @@ export PATH=$PATH:./bin/stubby
       <span class="nt">"status"</span><span class="p">:</span> <span class="mi">304</span><span class="p">,</span> 
       <span class="nt">"headers"</span><span class="p">:</span> <span class="p">{</span>
         <span class="nt">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span>
-      <span class="p">},</span> 
-      <span class="nt">"body"</span><span class="p">:</span> <span class="kc">null</span>
+      <span class="p">}</span> 
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">]</span>
@@ -247,7 +251,7 @@ export PATH=$PATH:./bin/stubby
 
 <p>Send a <code>DELETE</code> request to <code>localhost:8889/&lt;id&gt;</code></p>
 
-<h1>The Stub Portal</h1>
+<h1>The Stubs Portal</h1>
 
 <p>Requests sent to any url at <code>localhost:8882</code> (or wherever you told stubby to run) will search through the available endpoints and, if a match is found, respond with that endpoint's <code>response</code> data</p>
 
@@ -278,7 +282,7 @@ export PATH=$PATH:./bin/stubby
 
 <ul>
 <li>
-<code>stub</code>: port number to run the stub portal</li>
+<code>stubs</code>: port number to run the stubs portal</li>
 <li>
 <code>admin</code>: port number to run the admin portal</li>
 <li>
@@ -301,7 +305,7 @@ export PATH=$PATH:./bin/stubby
 
 <h3>stop()</h3>
 
-<p>closes the connections and ports being used by stubby's stub and admin portals</p>
+<p>closes the connections and ports being used by stubby's stubs and admin portals</p>
 
 <h3>get(id, callback)</h3>
 
@@ -352,12 +356,12 @@ export PATH=$PATH:./bin/stubby
 <span class="nv">stubby2 = </span><span class="k">new</span> <span class="nx">Stubby</span><span class="p">()</span>
 
 <span class="nx">stubby1</span><span class="p">.</span><span class="nx">start</span>
-   <span class="nv">stub: </span><span class="mi">80</span>
+   <span class="nv">stubs: </span><span class="mi">80</span>
    <span class="nv">admin: </span><span class="mi">81</span>
    <span class="nv">location: </span><span class="s">'localhost'</span>
 
 <span class="nx">stubby2</span><span class="p">.</span><span class="nx">start</span>
-   <span class="nv">stub: </span><span class="mi">82</span>
+   <span class="nv">stubs: </span><span class="mi">82</span>
    <span class="nv">admin: </span><span class="mi">83</span>
    <span class="nv">location: </span><span class="s">'127.0.0.2'</span>
 </pre></div>
