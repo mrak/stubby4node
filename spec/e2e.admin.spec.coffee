@@ -47,7 +47,7 @@ describe 'End 2 End Admin Test Suite', ->
       sut.stop -> stopped = true
       waitsFor (-> stopped), 'stubby to stop', 1
 
-   xit 'should be able to retreive an endpoint through GET', ->
+   it 'should be able to retreive an endpoint through GET', ->
       id = 3
       endpoint = ce.clone endpointData[id-1]
       endpoint.id = id
@@ -66,46 +66,51 @@ describe 'End 2 End Admin Test Suite', ->
 
       waitsFor waitFn, 'returned endpoint to be correct', 1000
 
-   xit 'should be able to edit an endpoint through PUT', ->
+   it 'should be able to edit an endpoint through PUT', ->
       id = 2
       endpoint = ce.clone endpointData[id-1]
-      context.url = "/#{id}"
 
-      endpoint.request.url = '/munchkin'
-      context.method = 'put'
-      context.post = JSON.stringify endpoint
-
-      createRequest context
-      waitsFor (-> context.finished), 'put request to finish', 1000
-
-      endpoint.id = id
-      context.finished = false
-      context.method = 'get'
-
-      createRequest context
-
-      waitFn = ->
-         return false unless context.finished
-         returned = JSON.parse context.body
-         return returned.url is endpoint.url
-
-      waitsFor waitFn, 'get request to finish', 1000
-   it 'should be about to create an endpoint through POST', ->
       runs ->
-         @endpoint = 
-            request:
-               url: '/posted/endpoint'
-            response:
-               status: 200
-         context.url = '/'
-         context.method = 'post'
-         context.post = JSON.stringify @endpoint
+         context.url = "/#{id}"
+
+         endpoint.request.url = '/munchkin'
+         context.method = 'put'
+         context.post = JSON.stringify endpoint
+
+         createRequest context
+         waitsFor (-> context.finished), 'put request to finish', 1000
+
+      runs ->
+         endpoint.id = id
+         context.finished = false
+         context.method = 'get'
 
          createRequest context
 
          waitFn = ->
             return false unless context.finished
-            return true
+            returned = JSON.parse context.body
+            return returned.request.url is endpoint.request.url
+
+         waitsFor waitFn, 'get request to finish', 1000
+
+   it 'should be about to create an endpoint through POST', ->
+      endpoint = 
+         request:
+            url: '/posted/endpoint'
+         response:
+            status: 200
+
+      runs ->
+         context.url = '/'
+         context.method = 'post'
+         context.post = JSON.stringify endpoint
+
+         createRequest context
+
+         waitFn = ->
+            return false unless context.finished
+            return context.status is 201
          waitsFor waitFn, 'post request to finish', 1000
 
       runs ->
@@ -120,6 +125,32 @@ describe 'End 2 End Admin Test Suite', ->
          waitFn = ->
             return false unless context.finished
             returned = JSON.parse context.body
-            return returned.request.url is @endpoint.request.url
+            return returned.request.url is endpoint.request.url
+
+         waitsFor waitFn, 'get request to return', 1000
+
+   it 'should be about to delete an endpoint through DELETE', ->
+      runs ->
+         context.url = '/2'
+         context.method = 'delete'
+
+         createRequest context
+
+         waitFn = ->
+            return false unless context.finished
+            return context.status is 204
+         waitsFor waitFn, 'delete request to finish', 1000
+
+      runs ->
+         context =
+            finished: false
+            url: "/2"
+            method: 'get'
+
+         createRequest context
+
+         waitFn = ->
+            return false unless context.finished
+            return context.status is 404
 
          waitsFor waitFn, 'get request to return', 1000
