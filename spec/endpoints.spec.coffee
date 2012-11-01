@@ -305,3 +305,49 @@ describe 'Endpoints', ->
 
                expect(callback).toHaveBeenCalledWith null, row.response
 
+         describe 'query', ->
+
+            it 'should return response if all query of request match', ->
+               row =
+                  request:
+                     query:
+                        'first': 'value1'
+                  response: {}
+               data =
+                  query:
+                     'first': 'value1'
+
+               sut.db = [row]
+
+               sut.find data, callback
+
+               expect(callback).toHaveBeenCalledWith null, row.response
+
+            it 'should call callback with error if all query of request dont match', ->
+               row =
+                  request:
+                     query:
+                        'first': 'value1'
+                  response: {}
+               data =
+                  query:
+                     'unknown': 'good question'
+
+               sut.db = [row]
+
+               sut.find data, callback
+
+               expect(callback).toHaveBeenCalledWith "Endpoint with given request doesn't exist."
+
+            it 'should return response if no query are on endpoint or response', ->
+               row =
+                  request: {}
+                  response: {}
+               data = {}
+
+               sut.db = [row]
+
+               sut.find data, callback
+
+               expect(callback).toHaveBeenCalledWith null, row.response
+

@@ -40,6 +40,15 @@
    response:
       status: 420
 
+-  request:
+      url: /get/query
+      method: GET
+      query:
+         first: 'value1'
+         second: 'value2'
+   response:
+      status: 200
+
 
 
 -  request:

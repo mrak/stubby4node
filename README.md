@@ -75,12 +75,13 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
 * `request`: describes the client's call to the server
    * `method`: GET/POST/PUT/DELETE/etc.
    * `url`: the URI string. GET parameters should also be included inline here
+   * `query`: a key/value map of query string parameters included with the request
    * `headers`: a key/value map of headers the server should respond to
    * `post`: a string matching the textual body of the response.
 * `response`: describes the server's response to the client
    * `headers`: a key/value map of headers the server should use in it's response
    * `latency`: the time in milliseconds the server should wait before responding. Useful for testing timeouts and latency
-   * `file`: if specified, returns the contents of the given file as the response body. If the file cannot be found at request time, `body` is used instead
+   * `file`: if specified, returns the contents of the given file as the response body. If the file cannot be found at request time, **body** is used instead
    * `body`: the textual body of the server's response to the client
    * `status`: the numerical HTTP status code (200 for OK, 404 for NOT FOUND, etc.)
 
@@ -100,7 +101,10 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
       body: You're request was successfully processed!
 
 -  request:
-      url: /path/to/anotherThing?a=anything&b=more
+      url: /path/to/anotherThing
+      query:
+         a: anything
+         b: more
       method: GET
       headers:
          Content-Type: application/json
@@ -147,7 +151,11 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
   }, 
   {
     "request": {
-      "url": "/path/to/anotherThing?a=anything&b=more", 
+      "url": "/path/to/anotherThing", 
+      "query": {
+         "a": "anything",
+         "b": "more"
+      },
       "headers": {
         "Content-Type": "application/json"
       },

@@ -87,13 +87,8 @@ module.exports.Endpoints = class Endpoints
          continue if endpoint.request.method isnt data.method
          continue if endpoint.request.post? and endpoint.request.post isnt data.post
 
-         headersMatch = true
-
-         if endpoint.request.headers?
-            for key, value of endpoint.request.headers
-               if endpoint.request.headers[key] isnt data.headers[key] then headersMatch = false
-
-         continue unless headersMatch
+         continue unless compareHashMaps endpoint.request.headers, data.headers
+         continue unless compareHashMaps endpoint.request.query, data.query
 
          if endpoint.response.file?
             try endpoint.response.body = fs.readFileSync endpoint.response.file, 'utf8'
@@ -104,3 +99,10 @@ module.exports.Endpoints = class Endpoints
             return callback null, endpoint.response
 
       callback "Endpoint with given request doesn't exist."
+
+compareHashMaps = (truth = {}, unknown = {}) ->
+   match = true
+   for key, value of truth
+      if truth[key] isnt unknown[key] then match = false
+   return match
+

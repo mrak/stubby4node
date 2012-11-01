@@ -14,6 +14,8 @@ module.exports = Contract = (endpoint) ->
       request:
          missing: "'request' object is required."
          url: "'request.url' is required."
+         query:
+            type: "'request.query', if supplied, must be an object."
          method: "'request.method' must be one of #{httpMethods}."
          headers:
             type: "'request.headers', if supplied, must be an object."
@@ -39,6 +41,11 @@ module.exports = Contract = (endpoint) ->
          if not method then return null
          return if method in httpMethods then null else messages.request.method
       post : (post) -> null
+      query : (query) ->
+         if not query then return null
+         if query instanceof Array or typeof query isnt 'object'
+            return messages.request.query.type
+         null
 
    response =
       status : (status) ->

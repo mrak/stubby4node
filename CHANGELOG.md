@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.34
+
+* added "query" parameter for "request" objects to allow comparison by variable instead of static querystring
+
 ## 0.1.33
 
 * fixed severe issue where request headers were not being matched by the stubs portal

@@ -1,6 +1,7 @@
 Stubby = require('../src/main').Stubby
 fs = require 'fs'
 http = require 'http'
+qs = require 'querystring'
 yaml = require 'js-yaml'
 ce = require 'cloneextend'
 endpointData = yaml.load (fs.readFileSync 'spec/data/e2e.yaml', 'utf8').trim()
@@ -14,6 +15,9 @@ createRequest = (context) ->
       method: context.method
       path: context.url
       headers: context.requestHeaders
+
+   if context.query?
+      options.path += "?#{qs.stringify context.query}"
 
    request = http.request options, (response) ->
       data = ''
@@ -104,6 +108,17 @@ describe 'End 2 End Stubs Test Suite', ->
             context.url = '/get/420'
             context.method = 'get'
             context.status = 420
+
+            req = createRequest context
+            waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
+
+      it 'should be able to handle query params', ->
+            context.url = '/get/query'
+            context.query =
+               first: 'value1'
+               second: 'value2'
+            context.method = 'get'
+            context.status = 200
 
             req = createRequest context
             waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000

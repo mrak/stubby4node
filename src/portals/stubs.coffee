@@ -1,4 +1,5 @@
 Portal = require('./portal').Portal
+qs = require 'querystring'
 
 module.exports.Stubs = class Stubs extends Portal
    constructor : (endpoints) ->
@@ -14,17 +15,19 @@ module.exports.Stubs = class Stubs extends Portal
       request.on 'end', =>
          @received request, response
          criteria =
-            url : request.url
+            url : extractUrl request.url
             method : request.method
             post : data
             headers : request.headers
+            query : extractQuery request.url
+
          callback = (err, endpointResponse) =>
             if err
                response.writeHead 404, {}
                @responded 404, request.url, 'is not a registered endpoint'
             else
                response.writeHead endpointResponse.status, endpointResponse.headers
-               if typeof endpointResponse.body is 'object' 
+               if typeof endpointResponse.body is 'object'
                   endpointResponse.body = JSON.stringify endpointResponse.body
                response.write endpointResponse.body if endpointResponse.body?
                @responded endpointResponse.status, request.url
@@ -36,3 +39,9 @@ module.exports.Stubs = class Stubs extends Portal
             response.statusCode =  500
             @responded 500, request.url, "unexpectedly generated a server error"
             response.end()
+
+
+extractUrl = (url) ->
+   return url.replace /(.*)\?.*/, '$1'
+extractQuery = (url) ->
+   return qs.parse(url.replace /^.*\?(.*)$/, '$1')

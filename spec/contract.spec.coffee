@@ -9,6 +9,9 @@ describe 'contract', ->
          request :
             url : "something"
             method : 'POST'
+            query :
+               first: 'value1'
+               second: 'value2'
             post : 'form data'
             headers :
                property : 'value'
@@ -69,6 +72,32 @@ describe 'contract', ->
          data.request = undefined
          actual = sut data
          expect(actual).toEqual expected
+
+      describe 'query', ->
+         it 'should have no errors when absent', ->
+            data.request.query = null
+            result = sut data
+            expect(result).toBeNull()
+
+            data.request.query = undefined
+            result = sut data
+            expect(result).toBeNull()
+
+         it 'cannot be an array', ->
+            expected = ["'request.query', if supplied, must be an object."]
+
+            data.request.query = ['one', 'two']
+            actual = sut data
+
+            expect(actual).toEqual expected
+
+         it 'cannot be a string', ->
+            expected = ["'request.query', if supplied, must be an object."]
+
+            data.request.query = 'one'
+            actual = sut data
+
+            expect(actual).toEqual expected
 
       describe 'headers', ->
          it 'should have no errors when absent', ->
