@@ -1,5 +1,22 @@
 [![Build Status](https://secure.travis-ci.org/Afmrak/stubby4node.png?branch=master)](http://travis-ci.org/Afmrak/stubby4node)
 
+# Installation
+
+## via npm
+
+    npm install -g stubby
+
+This will install `stubby` as a command in your `PATH`. Leave off the `-g` flag if you'd like to use stubby as an embedded module in your project.
+
+## via source
+
+You need to have `coffee-script` installed on your system.
+
+    git clone git://github.com/Afmrak/stubby4node.git
+    cd stubby4node
+    coffee -o lib -c src
+    export PATH=$PATH:./bin/stubby
+
 # Requirements
 
 * [node.js](http://nodejs.org/) (tested with v0.8.x)
@@ -19,23 +36,6 @@ Development is on Mac OS X Mountain Lion.
 * [coffee-script](http://coffeescript.org)
 * [node-inspector](https://github.com/dannycoates/node-inspector)
 * [jasmine-node](https://github.com/mhevery/jasmine-node)
-
-# Installation
-
-## via source
-
-You need to have `coffee-script` installed on your system.
-
-    git clone git://github.com/Afmrak/stubby4node.git
-    cd stubby4node
-    coffee -o lib -c src
-    export PATH=$PATH:./bin/stubby
-
-## via npm
-
-    npm install -g stubby
-
-This will install `stubby` as a command in your `PATH`.
 
 # Starting the Server(s)
 
@@ -210,6 +210,35 @@ Send a `DELETE` request to `localhost:8889/<id>`
 
 Requests sent to any url at `localhost:8882` (or wherever you told stubby to run) will search through the available endpoints and, if a match is found, respond with that endpoint's `response` data
 
+## How endpoints are matched
+
+For a given endpoint, stubby only cares about matching the properties of the request that have been defined in the YAML. The exception to this rule is `method`; if it is omitted it is defaulted to `GET`.
+
+For instance, the following will match any `POST` request to the root url:
+
+```yaml
+-  request:
+      url: /
+      method: POST
+   response: {}
+```
+
+The request could have any headers and any post body it wants. It will match the above.
+
+Pseudocode:
+
+```
+for each <endpoint> of stored endpoints {
+
+   for each <property> of <endpoint> {
+      if <endpoint>.<property> != <incoming request>.<property>
+         next endpoint
+   }
+
+   return <endpoint>
+}
+```
+
 # Programmatic API
 
 ## The Stubby module
@@ -312,6 +341,10 @@ If you want to see more informative output:
 
 # TODO
 
+* `form` object under `request` for easy form-submission value matching
+* `file` path under `request` object for containing POST body data
+* status page
+* always-on http/https
 * Better callback handling with programmatic API
 * SOAP request/response compliance
 * Randomized responses based on supplied pattern (exploratory QA abuse)
