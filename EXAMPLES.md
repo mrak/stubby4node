@@ -9,6 +9,8 @@
     * `query`: Any query paramters are acceptable.
     * `method`: Accepts `GET` requests.
     * `headers`: Accepts any headers.
+    * `post`: Post values are ignored.
+    * `file`: Falls back to `post`'s value.
 * `response`: Required. Endpoint fails to load.
     * `status`: Responds with `200`.
     * `latency`: Zero latency is used.

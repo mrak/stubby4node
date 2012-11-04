@@ -21,7 +21,9 @@ module.exports.Endpoints = class Endpoints
 
       #optionals
       @purifyBody item, data
+      item.request.file = data.request.file if data.request.file?
       item.request.post = data.request.post if data.request.post?
+
       item.response.latency = data.response.latency if data.response.latency?
       item.response.file = data.response.file if data.response.file?
 
@@ -85,6 +87,9 @@ module.exports.Endpoints = class Endpoints
       for id, endpoint of @db
          continue if endpoint.request.url isnt data.url
          continue if endpoint.request.method isnt data.method
+
+         if endpoint.request.file?
+            try endpoint.request.post = (fs.readFileSync endpoint.request.file, 'utf8').trim()
          continue if endpoint.request.post? and endpoint.request.post isnt data.post
 
          continue unless compareHashMaps endpoint.request.headers, data.headers

@@ -211,7 +211,58 @@ describe 'Endpoints', ->
             expect(callback).not.toHaveBeenCalled()
             waitsFor (-> callback.callCount is 1), 'Callback call was never called', 1000
 
-         describe 'body versus file', ->
+         describe 'request post versus file', ->
+            it 'should match response with post if file is not supplied', ->
+               expected = {expected: "object"}
+               row =
+                  request:
+                     url: '/testing'
+                     post: 'the post!'
+                  response: expected
+               data =
+                  url: '/testing'
+                  post: 'the post!'
+
+               sut.db = [row]
+               sut.find data, callback
+
+               expect(callback.mostRecentCall.args[1]).toBe expected
+
+            it 'should match response with post file is supplied but cannot be found', ->
+               expected = {expected: "object"}
+               row =
+                  request:
+                     url: '/testing'
+                     file: 'spec/data/endpoints-nonexistant.file'
+                     post: 'post data!'
+                  response: expected
+               data =
+                  url: '/testing'
+                  post: 'post data!'
+
+               sut.db = [row]
+               sut.find data, callback
+
+               expect(callback.mostRecentCall.args[1]).toBe expected
+
+            it 'should match response with file if file is supplied and exists', ->
+               expected = {expected: "object"}
+               row =
+                  request:
+                     url: '/testing'
+                     file: 'spec/data/endpoints.file'
+                     post: 'post data!'
+                  response: expected
+               data =
+                  url: '/testing'
+                  post: 'file contents!'
+
+               sut.db = [row]
+               sut.find data, callback
+
+               expect(callback.mostRecentCall.args[1]).toBe expected
+
+         describe 'response body versus file', ->
             it 'should return response with body as content if file is not supplied', ->
                expected = 'the body!'
                row =

@@ -78,6 +78,7 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
    * `query`: a key/value map of query string parameters included with the request
    * `headers`: a key/value map of headers the server should respond to
    * `post`: a string matching the textual body of the response.
+   * `file`: if specified, returns the contents of the given file as the request post. If the file cannot be found at request time, **post** is used instead
 * `response`: describes the server's response to the client
    * `headers`: a key/value map of headers the server should use in it's response
    * `latency`: the time in milliseconds the server should wait before responding. Useful for testing timeouts and latency
@@ -341,8 +342,7 @@ If you want to see more informative output:
 
 # TODO
 
-* `form` object under `request` for easy form-submission value matching
-* `file` path under `request` object for containing POST body data
+* `post` parameter as a hashmap under `request` for easy form-submission value matching
 * status page
 * always-on http/https
 * Better callback handling with programmatic API

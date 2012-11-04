@@ -149,3 +149,38 @@ describe 'End 2 End Stubs Test Suite', ->
          expect(context.passed).toBe false
          waitsFor ( -> context.passed ), 'latency-ridden request to finish', 3000
 
+   describe 'file use', ->
+      describe 'response', ->
+         it 'should handle fallback to body if specified response file cannot be found', ->
+            context.url = '/file/body/missingfile'
+            context.body = 'body contents!'
+
+            createRequest context
+            waitsFor ( -> context.passed ), 'body-fallback request to finish', 1000
+
+         it 'should handle file response when file can be found', ->
+            context.url = '/file/body'
+            context.body = 'file contents!'
+
+            createRequest context
+            waitsFor ( -> context.passed ), 'body-fallback request to finish', 1000
+
+      describe 'request', ->
+         it 'should handle fallback to post if specified request file cannot be found', ->
+            context.url = '/file/post/missingfile'
+            context.method = 'post'
+            context.post = 'post contents!'
+            context.status = 200
+
+            createRequest context
+            waitsFor ( -> context.passed ), 'post-fallback request to finish', 1000
+
+         it 'should handle file request when file can be found', ->
+            context.url = '/file/post'
+            context.method = 'post'
+            context.post = 'file contents!'
+            context.status = 200
+
+            createRequest context
+            waitsFor ( -> context.passed ), 'post-fallback request to finish', 1000
+

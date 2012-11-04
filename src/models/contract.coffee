@@ -40,7 +40,6 @@ module.exports = Contract = (endpoint) ->
       method : (method) ->
          if not method then return null
          return if method in httpMethods then null else messages.request.method
-      post : (post) -> null
       query : (query) ->
          if not query then return null
          if query instanceof Array or typeof query isnt 'object'
@@ -57,7 +56,6 @@ module.exports = Contract = (endpoint) ->
          if headers instanceof Array or typeof headers isnt 'object'
             return messages.response.headers.type
          null
-      body : -> null
       latency : (latency) ->
          if not latency then return null
          if not parseInt latency then return messages.response.latency.type

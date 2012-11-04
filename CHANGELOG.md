@@ -1,14 +1,18 @@
 # Changelog
 
+## 0.1.35
+
+* added `file` parameter to `request` object. When matching a request, if it has `file` specified it will load it's contents from the filesystem as the `post` value. If the `file` cannot be found, it falls back to `post`.
+
 ## 0.1.34
 
-* added "query" parameter for "request" objects to allow comparison by variable instead of static querystring
+* added `query` parameter for `request` objects to allow comparison by variable instead of static querystring
 
 ## 0.1.33
 
 * fixed severe issue where request headers were not being matched by the stubs portal
 * renamed "stub" option to "stubs"
-* __NEW__: request.file can be used to specify a file whose contents will be used as the response body. If the file cannot be found, it falls back to whatever was specified in response.body
+* __NEW__: `request.file` can be used to specify a file whose contents will be used as the response body. If the file cannot be found, it falls back to whatever was specified in `response.body`
 
 ## 0.1.32
 
