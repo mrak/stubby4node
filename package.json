@@ -23,7 +23,7 @@
          "email": "enmrak@gmail.com"
       }
    ],
-   "files": ["lib", "package.json", "bin"],
+   "files": ["lib", "package.json", "bin", "ssl"],
    "scripts": {
       "prepublish": "coffee -o lib -c src",
       "start": "lib/server.js",

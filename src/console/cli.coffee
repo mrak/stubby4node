@@ -43,16 +43,21 @@ module.exports =
       processed: true
       description: 'Prevent stubby from printing to the console.'
    ,
-      name: 'stubs'
-      param: 'port'
-      flag: 's'
-      description: 'Port for stubs portal. Defaults to 8882.'
-   ,
       name: 'pfx'
       flag: 'p'
       param: 'file'
       processed: true
       description: 'PFX file. Ignored if used with --key/--cert'
+   ,
+      name: 'stubs'
+      param: 'port'
+      flag: 's'
+      description: 'Port for stubs portal. Defaults to 8882.'
+   ,
+      name: 'tls'
+      param: 'port'
+      flag: 't'
+      description: 'Port for https stubs portal. Defaults to 7443.'
    ,
       name: 'version'
       flag: 'v'
@@ -63,10 +68,11 @@ module.exports =
    defaults:
       stubs: 8882
       admin: 8889
+      tls: 7443
       location: 'localhost'
       data: null
-      key: null
-      cert: null
+      key: fs.readFileSync "#{process.cwd()}/tls/key.pem", 'utf8'
+      cert: fs.readFileSync "#{process.cwd()}/tls/cert.pem", 'utf8'
       pfx: null
 
    help: ->

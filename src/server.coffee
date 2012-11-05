@@ -28,10 +28,12 @@ onEndpointLoaded = (err, endpoint) -> out.notice "Loaded: #{endpoint.request.met
 endpoints = new Endpoints(args.data, onEndpointLoaded)
 
 stubServer = (new Stubs(endpoints)).server
-adminServer = (new Admin(endpoints)).server
+stubServer = http.createServer(stubServer)
+stubServer.on 'listening', -> onListening 'Stubs', args.stubs, 'http'
+stubServer.on 'error', (err) -> onError(err, args.stubs)
+stubServer.listen args.stubs, args.location
 
-httpsOptions = false
-protocol = 'http'
+httpsOptions = {}
 if args.key and args.cert
    httpsOptions =
       key: args.key
@@ -40,15 +42,13 @@ else if args.pfx
    httpsOptions =
       pfx: args.pfx
 
-unless httpsOptions
-   stubServer = http.createServer(stubServer)
-else
-   protocol = 'https'
-   stubServer = https.createServer(httpsOptions, stubServer)
-stubServer.on 'listening', -> onListening 'Stubs', args.stubs, protocol
-stubServer.on 'error', (err) -> onError(err, args.stubs)
-stubServer.listen args.stubs, args.location, protocol
+tlsServer = (new Stubs(endpoints)).server
+tlsServer = https.createServer(httpsOptions, tlsServer)
+tlsServer.on 'listening', -> onListening 'Stubs', args.tls, 'https'
+tlsServer.on 'error', (err) -> onError(err, args.tls)
+tlsServer.listen args.tls, args.location
 
+adminServer = (new Admin(endpoints)).server
 adminServer = http.createServer(adminServer)
 adminServer.on 'listening', -> onListening 'Admin', args.admin
 adminServer.on 'error', (err) -> onError(err, args.admin)

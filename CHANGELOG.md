@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.36 (in progress)
+
+* running stubs portal at both http and https by default
+* addition of `-t, --tls` option to specifying https port for stubs portal
+
 ## 0.1.35
 
 * added `file` parameter to `request` object. When matching a request, if it has `file` specified it will load it's contents from the filesystem as the `post` value. If the `file` cannot be found, it falls back to `post`.

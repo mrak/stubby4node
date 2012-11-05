@@ -68,6 +68,25 @@ describe 'CLI', ->
 
             expect(actual.stubs).toBe expected
 
+      describe '-t, --tls', ->
+         it 'should return default if no flag provided', ->
+            expected = 7443
+            actual = sut.getArgs []
+
+            expect(actual.tls).toBe expected
+
+         it 'should return supplied value when provided', ->
+            expected = 443
+            actual = sut.getArgs ['-t', expected]
+
+            expect(actual.tls).toBe expected
+
+         it 'should return supplied value when provided with full flag', ->
+            expected = 443
+            actual = sut.getArgs ['--tls', expected]
+
+            expect(actual.tls).toBe expected
+
       describe '-l, --location', ->
          it 'should return default if no flag provided', ->
             expected = 'localhost'
@@ -166,7 +185,6 @@ describe 'CLI', ->
 
          expect(actual).toBe expected
 
-
    describe 'getArgs', ->
       it 'should gather all arguments', ->
          expected = 
@@ -177,6 +195,7 @@ describe 'CLI', ->
             key: 'a key'
             cert: 'a certificate'
             pfx: 'a pfx'
+            tls: 443
 
          spyOn(sut, 'data').andReturn expected.data
          spyOn(sut, 'key').andReturn expected.key
@@ -186,11 +205,12 @@ describe 'CLI', ->
          actual = sut.getArgs [
             '-s', expected.stubs
             '-a', expected.admin
-            '-d', 'anything'
+            '-d', 'mocked'
             '-l', expected.location
-            '-k', 'anything'
-            '-c', 'anything'
-            '-p', 'anything'
+            '-k', 'mocked'
+            '-c', 'mocked'
+            '-p', 'mocked'
+            '-t', expected.tls
          ]
 
          expect(actual).toEqual expected
