@@ -16,7 +16,7 @@
       "http",
       "rest"
    ],
-   "homepage": "http://afmrak.github.com/stubby4node/",
+   "homepage": "http://stub.by/4node",
    "contributors": [
       {
          "name": "Eric Mrak",
@@ -35,7 +35,7 @@
    "main": "lib/main.js",
    "repository": {
       "type": "git",
-      "url": "git://github.com/Afmrak/stubby4node.git"
+      "url": "http://github.com/mrak/stubby4node.git"
    },
    "dependencies": {
       "js-yaml": ">=1.0.1",
