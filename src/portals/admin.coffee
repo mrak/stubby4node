@@ -10,6 +10,12 @@ module.exports.Admin = class Admin extends Portal
 
    urlPattern : /^\/([1-9][0-9]*)?$/
 
+   goPong: (response) =>
+      response.writeHead 200, {'Content-Type' : 'text/plain'}
+      response.write 'pong'
+      response.end()
+      @responded 200
+
    goPUT : (request, response) =>
       id = @getId request.url
       if not id
@@ -135,7 +141,9 @@ module.exports.Admin = class Admin extends Portal
    server : (request, response) =>
       @received request, response
 
-      if @urlValid request.url
+      if request.url is '/ping' then @goPong response
+
+      else if @urlValid request.url
          switch request.method.toUpperCase()
             when 'PUT'    then @goPUT request, response
             when 'POST'   then @goPOST request, response

@@ -47,6 +47,17 @@ describe 'End 2 End Admin Test Suite', ->
       sut.stop -> stopped = true
       waitsFor (-> stopped), 'stubby to stop', 1
 
+   it 'should react to /ping', ->
+      context.url = '/ping'
+
+      createRequest context
+
+      waitFn = ->
+         return false unless context.finished
+         return context.body is 'pong'
+
+      waitsFor waitFn, 'ping endpoint to be correct', 1000
+
    it 'should be able to retreive an endpoint through GET', ->
       id = 3
       endpoint = ce.clone endpointData[id-1]
