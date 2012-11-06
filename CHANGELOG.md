@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.36 (in progress)
+## 0.1.36
 
 * running stubs portal at both http and https by default
 * addition of `-t, --tls` option to specifying https port for stubs portal
