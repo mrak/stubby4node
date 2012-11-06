@@ -71,8 +71,8 @@ module.exports =
       tls: 7443
       location: 'localhost'
       data: null
-      key: fs.readFileSync "#{process.cwd()}/tls/key.pem", 'utf8'
-      cert: fs.readFileSync "#{process.cwd()}/tls/cert.pem", 'utf8'
+      key: fs.readFileSync "#{__dirname}/../../tls/key.pem", 'utf8'
+      cert: fs.readFileSync "#{__dirname}/../../tls/cert.pem", 'utf8'
       pfx: null
 
    help: ->
