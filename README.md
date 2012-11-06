@@ -342,9 +342,9 @@ If you want to see more informative output:
 
 # TODO
 
-* `post` parameter as a hashmap under `request` for easy form-submission value matching
+* auto-reload data when configuration file changes
 * status page
-* always-on http/https
+* `post` parameter as a hashmap under `request` for easy form-submission value matching
 * Better callback handling with programmatic API
 * SOAP request/response compliance
 * Randomized responses based on supplied pattern (exploratory QA abuse)
