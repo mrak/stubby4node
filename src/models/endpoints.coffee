@@ -105,9 +105,8 @@ module.exports.Endpoints = class Endpoints
 
       callback "Endpoint with given request doesn't exist."
 
-compareHashMaps = (truth = {}, unknown = {}) ->
-   match = true
-   for key, value of truth
-      if truth[key] isnt unknown[key] then match = false
-   return match
+compareHashMaps = (configured = {}, incoming = {}) ->
+   for key, value of configured
+      if configured[key] isnt incoming[key] then return false
+   return true
 
