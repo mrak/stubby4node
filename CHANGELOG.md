@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.37
+
+* added /ping endpoint to admin portal
+
 ## 0.1.36
 
 * running stubs portal at both http and https by default
