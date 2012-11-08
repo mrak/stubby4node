@@ -138,6 +138,12 @@ describe 'contract', ->
             expect(result).toEqual expected
 
       describe 'method', ->
+         it 'should accept an array of methods', ->
+            data.request.method = ['put', 'post', 'get']
+
+            result = sut data
+            expect(result).toBeNull()
+
          it 'should accept lowercase methods', ->
             data.request.method = 'put'
 

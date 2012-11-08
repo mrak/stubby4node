@@ -38,7 +38,16 @@ module.exports = Contract = (endpoint) ->
          null
       method : (method) ->
          if not method then return null
-         return if method.toUpperCase() in httpMethods then null else messages.request.method
+
+         unless method instanceof Array
+            return if method.toUpperCase() in httpMethods then null else messages.request.method
+
+         for each in method
+            do (each) ->
+               unless each.toUpperCase() in httpMethods then return messages.request.method
+
+         null
+
       query : (query) ->
          if not query then return null
          if query instanceof Array or typeof query isnt 'object'

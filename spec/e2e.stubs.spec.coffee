@@ -84,6 +84,44 @@ describe 'End 2 End Stubs Test Suite', ->
          req = createRequest context
          waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
 
+      it 'should return a response for an endpoint with multiple methods', ->
+         runs ->
+            context.url = '/basic/all'
+            context.method = 'delete'
+
+            req = createRequest context
+
+            waitsFor ( -> req.finished and context.passed ), 'all endpoint delete to finish', 1000
+
+         runs ->
+            context =
+               finished: false
+               url: "/basic/all"
+               method: 'get'
+
+            req = createRequest context
+
+            waitsFor ( -> req.finished and context.passed ), 'all endpoint get to finish', 1000
+
+         runs ->
+            context =
+               finished: false
+               url: "/basic/all"
+               method: 'put'
+
+            req = createRequest context
+
+            waitsFor ( -> req.finished and context.passed ), 'all endpoint put to finish', 1000
+
+         runs ->
+            context =
+               finished: false
+               url: "/basic/all"
+               method: 'post'
+
+            req = createRequest context
+
+            waitsFor ( -> req.finished and context.passed ), 'all endpoint post to finish', 1000
 
    describe 'GET', ->
       it 'should return a body from a GET endpoint', ->

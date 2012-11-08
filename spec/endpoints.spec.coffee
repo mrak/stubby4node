@@ -310,6 +310,20 @@ describe 'Endpoints', ->
                expect(callback.mostRecentCall.args[1].body.trim()).toBe expected
 
          describe 'method', ->
+            it 'should return response even if cases match', ->
+               row =
+                  request:
+                     method: 'POST'
+                  response: {}
+               data =
+                  method: 'POST'
+
+               sut.db = [row]
+
+               sut.find data, callback
+
+               expect(callback).toHaveBeenCalledWith null, row.response
+
             it 'should return response even if cases do not match', ->
                row =
                   request:
@@ -323,6 +337,35 @@ describe 'Endpoints', ->
                sut.find data, callback
 
                expect(callback).toHaveBeenCalledWith null, row.response
+
+            it 'should return response if method matches any of the defined', ->
+               row =
+                  request:
+                     method: ['post', 'put']
+                  response: {}
+               data =
+                  method: 'POST'
+
+               sut.db = [row]
+
+               sut.find data, callback
+
+               expect(callback).toHaveBeenCalledWith null, row.response
+
+            it 'should call callback with error if none of the methods match', ->
+               row =
+                  request:
+                     method: ['post', 'put']
+                  response: {}
+               data =
+                  method: 'GET'
+
+               sut.db = [row]
+
+               sut.find data, callback
+
+               expect(callback).toHaveBeenCalledWith "Endpoint with given request doesn't exist."
+
 
          describe 'headers', ->
 

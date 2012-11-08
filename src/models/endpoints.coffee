@@ -87,25 +87,34 @@ module.exports.Endpoints = class Endpoints
 
    find : (data, callback) ->
       for id, endpoint of @db
+         setFallbacks(endpoint)
+
          continue if endpoint.request.url isnt data.url
-         continue if endpoint.request.method?.toUpperCase() isnt data.method
-
-         if endpoint.request.file?
-            try endpoint.request.post = (fs.readFileSync endpoint.request.file, 'utf8').trim()
-         continue if endpoint.request.post? and endpoint.request.post isnt data.post
-
          continue unless compareHashMaps endpoint.request.headers, data.headers
          continue unless compareHashMaps endpoint.request.query, data.query
+         continue if endpoint.request.post? and endpoint.request.post isnt data.post
 
-         if endpoint.response.file?
-            try endpoint.response.body = fs.readFileSync endpoint.response.file, 'utf8'
-
-         if parseInt endpoint.response.latency
-            return setTimeout (-> callback null,  endpoint.response), endpoint.response.latency
+         if endpoint.request.method instanceof Array
+            continue unless data.method in endpoint.request.method.map (it) -> it.toUpperCase()
          else
-            return callback null, endpoint.response
+            continue if endpoint.request.method?.toUpperCase() isnt data.method
+
+         return found endpoint, callback
 
       callback "Endpoint with given request doesn't exist."
+
+found = (endpoint, callback) ->
+   if parseInt endpoint.response.latency
+      return setTimeout (-> callback null,  endpoint.response), endpoint.response.latency
+   else
+      return callback null, endpoint.response
+
+setFallbacks = (endpoint) ->
+   if endpoint.request.file?
+      try endpoint.request.post = (fs.readFileSync endpoint.request.file, 'utf8').trim()
+
+   if endpoint.response.file?
+      try endpoint.response.body = fs.readFileSync endpoint.response.file, 'utf8'
 
 compareHashMaps = (configured = {}, incoming = {}) ->
    for key, value of configured

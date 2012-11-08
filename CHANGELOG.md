@@ -4,6 +4,14 @@
 
 * made method definitions (`PUT`, `POST`, etc.) case insensitive. You could use `post`, `get`, etc. instead.
 * made `response` object completely **optional**. Defaults to `200` status with an empty `body`.
+* you can now specify an array of acceptible `method`s in your YAML:
+
+```yaml
+-  request:
+      url: /anything
+      method: [get, head]
+```
+
 
 ## 0.1.37
 
