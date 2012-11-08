@@ -20,7 +20,6 @@ module.exports = Contract = (endpoint) ->
          headers:
             type: "'request.headers', if supplied, must be an object."
       response:
-         missing: "'response' object is required."
          headers:
             type: "'response.headers', if supplied, must be an object."
          status:
@@ -39,7 +38,7 @@ module.exports = Contract = (endpoint) ->
          null
       method : (method) ->
          if not method then return null
-         return if method in httpMethods then null else messages.request.method
+         return if method.toUpperCase() in httpMethods then null else messages.request.method
       query : (query) ->
          if not query then return null
          if query instanceof Array or typeof query isnt 'object'
@@ -80,9 +79,8 @@ module.exports = Contract = (endpoint) ->
    else
       for property of request
          errors.push request[property] endpoint.request[property]
-   unless endpoint.response
-      errors.push messages.response.missing
-   else
+
+   if endpoint.response
       for property of response
          errors.push response[property] endpoint.response[property]
 

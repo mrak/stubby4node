@@ -57,86 +57,86 @@ describe 'End 2 End Stubs Test Suite', ->
 
    describe 'basics', ->
       it 'should return a basic GET endpoint', ->
-            context.url = '/basic/get'
-            context.method = 'get'
+         context.url = '/basic/get'
+         context.method = 'get'
 
-            req = createRequest context
-            waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
+         req = createRequest context
+         waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
 
       it 'should return a basic PUT endpoint', ->
-            context.url = '/basic/put'
-            context.method = 'put'
+         context.url = '/basic/put'
+         context.method = 'put'
 
-            req = createRequest context
-            waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
+         req = createRequest context
+         waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
 
       it 'should return a basic POST endpoint', ->
-            context.url = '/basic/post'
-            context.method = 'post'
+         context.url = '/basic/post'
+         context.method = 'post'
 
-            req = createRequest context
-            waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
+         req = createRequest context
+         waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
 
       it 'should return a basic DELETE endpoint', ->
-            context.url = '/basic/delete'
-            context.method = 'delete'
+         context.url = '/basic/delete'
+         context.method = 'delete'
 
-            req = createRequest context
-            waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
+         req = createRequest context
+         waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
 
 
    describe 'GET', ->
       it 'should return a body from a GET endpoint', ->
-            context.url = '/get/body'
-            context.method = 'get'
-            context.body = 'plain text'
+         context.url = '/get/body'
+         context.method = 'get'
+         context.body = 'plain text'
 
-            req = createRequest context
-            waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
+         req = createRequest context
+         waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
 
       it 'should return a body from a json GET endpoint', ->
-            context.url = '/get/json'
-            context.method = 'get'
-            context.body = '{"property":"value"}'
-            context.headers =
-               'content-type': 'application/json'
+         context.url = '/get/json'
+         context.method = 'get'
+         context.body = '{"property":"value"}'
+         context.headers =
+            'content-type': 'application/json'
 
-            req = createRequest context
-            waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
+         req = createRequest context
+         waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
 
       it 'should return a 420 GET endpoint', ->
-            context.url = '/get/420'
-            context.method = 'get'
-            context.status = 420
+         context.url = '/get/420'
+         context.method = 'get'
+         context.status = 420
 
-            req = createRequest context
-            waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
+         req = createRequest context
+         waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
 
       it 'should be able to handle query params', ->
-            context.url = '/get/query'
-            context.query =
-               first: 'value1'
-               second: 'value2'
-            context.method = 'get'
-            context.status = 200
+         context.url = '/get/query'
+         context.query =
+            first: 'value1'
+            second: 'value2'
+         context.method = 'get'
+         context.status = 200
 
-            req = createRequest context
-            waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
+         req = createRequest context
+         waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
 
    describe 'post', ->
       it 'should be able to handle authorized posts', ->
-            context.url = '/post/auth'
-            context.method = 'post'
-            context.status = 201
-            context.post = 'some=data'
-            context.requestHeaders =
-               authorization: "Basic c3R1YmJ5OnBhc3N3b3Jk"
-            context.headers =
-               location: '/some/endpoint/id'
-            context.body = 'resource has been created'
+         context.url = '/post/auth'
+         context.method = 'post'
+         context.status = 201
+         context.post = 'some=data'
+         context.requestHeaders =
+            authorization: "Basic c3R1YmJ5OnBhc3N3b3Jk"
+         context.headers =
+            location: '/some/endpoint/id'
+         context.body = 'resource has been created'
 
-            req = createRequest context
-            waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
+         req = createRequest context
+         waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
 
    describe 'put', ->
       it 'should wait if a 2000ms latency is specified', ->

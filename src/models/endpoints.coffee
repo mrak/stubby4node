@@ -10,6 +10,8 @@ module.exports.Endpoints = class Endpoints
       @create data, callback
 
    purify : (data) ->
+      data.response ?= {}
+
       item =
          request:
             url: data.request.url
@@ -86,7 +88,7 @@ module.exports.Endpoints = class Endpoints
    find : (data, callback) ->
       for id, endpoint of @db
          continue if endpoint.request.url isnt data.url
-         continue if endpoint.request.method isnt data.method
+         continue if endpoint.request.method?.toUpperCase() isnt data.method
 
          if endpoint.request.file?
             try endpoint.request.post = (fs.readFileSync endpoint.request.file, 'utf8').trim()

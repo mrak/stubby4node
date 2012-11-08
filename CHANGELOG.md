@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.38
+
+* made method definitions (`PUT`, `POST`, etc.) case insensitive. You could use `post`, `get`, etc. instead.
+* made `response` object completely **optional**. Defaults to `200` status with an empty `body`.
+
 ## 0.1.37
 
 * added /ping endpoint to admin portal

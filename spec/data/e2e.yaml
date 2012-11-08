@@ -1,21 +1,17 @@
 -  request:
       url: /basic/get
-   response: {}
 
 -  request:
       url: /basic/put
       method: PUT
-   response: {}
 
 -  request:
       url: /basic/post
-      method: POST
-   response: {}
+      method: post
 
 -  request:
       url: /basic/delete
       method: DELETE
-   response: {}
 
 
 

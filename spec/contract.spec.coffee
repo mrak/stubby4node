@@ -138,6 +138,12 @@ describe 'contract', ->
             expect(result).toEqual expected
 
       describe 'method', ->
+         it 'should accept lowercase methods', ->
+            data.request.method = 'put'
+
+            result = sut data
+            expect(result).toBeNull()
+
          it 'should have no errors for a missing method (defaults to GET)', ->
             data.request.method = null
             result = sut data
@@ -165,15 +171,14 @@ describe 'contract', ->
          expect(result).toBeNull()
 
    describe 'response', ->
-      it 'should return an error if missing', ->
-         expected = ["'response' object is required."]
+      it 'should be optional', ->
          data.response = null
          result = sut data
-         expect(result).toEqual expected
+         expect(result).toBeNull()
 
          data.response = undefined
          result = sut data
-         expect(result).toEqual expected
+         expect(result).toBeNull()
 
       describe 'headers', ->
          it 'should return no errors when absent', ->

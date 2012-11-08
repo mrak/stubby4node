@@ -11,7 +11,6 @@ describe 'Endpoints', ->
       beforeEach ->
          data =
             request : {}
-            response : {}
 
       it 'should default method to GET', ->
          expected = 'GET'
@@ -42,10 +41,10 @@ describe 'Endpoints', ->
          expect(actual.request.headers).toEqual expected
 
       it 'should lower case headers properties', ->
-         data.request.headers =
-            'Content-Type': 'application/json'
-         data.response.headers =
-            'Content-Type': 'application/json'
+         data.request =
+            headers: 'Content-Type': 'application/json'
+         data.response =
+            headers: 'Content-Type': 'application/json'
 
          expected =
             request:
@@ -60,8 +59,8 @@ describe 'Endpoints', ->
 
       it 'should stringify object body in response', ->
          expected = '{"property":"value"}'
-         data.response.body =
-            property: "value"
+         data.response =
+            body: property: "value"
 
          actual = sut.purify data
 
@@ -309,6 +308,21 @@ describe 'Endpoints', ->
                sut.find data, callback
 
                expect(callback.mostRecentCall.args[1].body.trim()).toBe expected
+
+         describe 'method', ->
+            it 'should return response even if cases do not match', ->
+               row =
+                  request:
+                     method: 'post'
+                  response: {}
+               data =
+                  method: 'POST'
+
+               sut.db = [row]
+
+               sut.find data, callback
+
+               expect(callback).toHaveBeenCalledWith null, row.response
 
          describe 'headers', ->
 
