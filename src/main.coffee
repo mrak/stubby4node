@@ -1,61 +1,98 @@
 Admin = require('./portals/admin').Admin
 Stubs = require('./portals/stubs').Stubs
 Endpoints = require('./models/endpoints').Endpoints
-contract = require './models/contract'
-
 CLI = require './console/cli'
-(require './console/out').mute = true
-
+out = require './console/out'
 http = require 'http'
 https = require 'https'
+contract = require './models/contract'
+
+onListening = (portal, port, protocol = 'http', location) ->
+   out.status "#{portal} portal running at #{protocol}://#{location}:#{port}"
+onError = (err, port, location) ->
+   msg = "#{err.message}. Exiting..."
+
+   switch err.code
+      when 'EACCES'
+         msg = "Permission denied for use of port #{port}. Exiting..."
+      when 'EADDRINUSE'
+         msg = "Port #{port} is already in use! Exiting..."
+      when 'EADDRNOTAVAIL'
+         msg = "Host \"#{options.location}\" is not available! Exiting..."
+
+   out.error msg
+   process.exit()
+
+onEndpointLoaded = (err, endpoint) -> out.notice "Loaded: #{endpoint.request.method} #{endpoint.request.url}"
 
 module.exports.Stubby = class Stubby
    constructor: ->
       @endpoints = new Endpoints()
       @stubsPortal = null
+      @tlsPortal = null
       @adminPortal = null
 
-   start: (options, callback) -> process.nextTick =>
-      @stop()
-
+   start: (options = {}, callback = ->) -> @stop =>
       if typeof options is 'function'
          callback = options
+         options = {}
 
-      callback ?= ->
-      options ?= {}
-      options.stubs ?= CLI.defaults.stubs
-      options.admin ?= CLI.defaults.admin
-      options.location ?= CLI.defaults.location
-      options.data ?= []
-      options.key ?= null
-      options.cert ?= null
+      options.mute ?= true
+
+      for key, value of CLI.defaults
+         options[key] ?= value
+
+      out.mute = options.mute
 
       if errors = contract options.data then return callback errors
-      @endpoints.create options.data, ->
+      @endpoints.create options.data, onEndpointLoaded
 
-      if options.key? and options.cert
+      httpsOptions = {}
+      if options.key and options.cert
          httpsOptions =
             key: options.key
             cert: options.cert
-         @stubsPortal = https.createServer httpsOptions, new Stubs(@endpoints).server
       else if options.pfx
-         options =
+         httpsOptions =
             pfx: options.pfx
-         @stubsPortal = https.createServer httpsOptions, new Stubs(@endpoints).server
-      else
-         @stubsPortal = http.createServer(new Stubs(@endpoints).server)
 
-      @admimPortal = http.createServer(new Admin(@endpoints).server)
+      @tlsPortal = https.createServer httpsOptions, new Stubs(@endpoints).server
+      @tlsPortal.on 'listening', -> onListening 'Stubs', options.tls, 'https', options.location
+      @tlsPortal.on 'error', (err) -> onError(err, options.tls, options.location)
+      @tlsPortal.listen options.tls, options.location
 
+      @stubsPortal = http.createServer(new Stubs(@endpoints).server)
+      @stubsPortal.on 'listening', -> onListening 'Stubs', options.stubs, 'http', options.location
+      @stubsPortal.on 'error', (err) -> onError(err, options.stubs, options.location)
       @stubsPortal.listen options.stubs, options.location
-      @admimPortal.listen options.admin, options.location
+
+      @adminPortal = http.createServer(new Admin(@endpoints).server)
+      @adminPortal.on 'listening', -> onListening 'Admin', options.admin, 'http', options.location
+      @adminPortal.on 'error', (err) -> onError(err, options.admin, options.location)
+      @adminPortal.listen options.admin, options.location
+
+      out.info '\nQuit: ctrl-c\n'
 
       callback()
 
-   stop: (callback = ->) =>
-      firstCallback = =>
-         if @stubsPortal?.address() then @stubsPortal.close(callback)
-      if @admimPortal?.address() then @admimPortal.close(firstCallback)
+   stop: (callback = ->) => process.nextTick =>
+      closeStubs = =>
+         if @stubsPortal?.address()
+            @stubsPortal.close(callback)
+         else
+            callback()
+
+      closeTls = =>
+         if @tlsPortal?.address()
+            @tlsPortal.close(closeStubs)
+         else
+            closeStubs()
+
+      if @adminPortal?.address()
+         @adminPortal.close(closeTls)
+      else
+         closeTls()
+
 
    post: (data, callback = ->) -> process.nextTick =>
       if not contract data then return callback "The supplied endpoint data couldn't be saved"

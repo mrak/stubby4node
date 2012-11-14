@@ -6,7 +6,7 @@ out = require './out'
 timeout = 3000
 timeoutId = null
 
-module.exports = class Watcher =
+module.exports = class Watcher
    constructor: (endpoints, filename) ->
       @endpoints = endpoints
       @filename = filename

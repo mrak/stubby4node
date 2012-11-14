@@ -1,7 +1,7 @@
 {
    "name": "stubby",
    "preferGlobal": true,
-   "version": "0.1.38",
+   "version": "0.1.39",
    "author": {
       "name": "Eric Mrak",
       "email": "enmrak@gmail.com"
@@ -14,6 +14,8 @@
       "service",
       "endpoint",
       "http",
+      "https",
+      "api",
       "rest"
    ],
    "homepage": "http://stub.by/4node",
@@ -26,7 +28,7 @@
    "files": ["lib", "package.json", "bin", "tls"],
    "scripts": {
       "prepublish": "coffee -o lib -c src",
-      "start": "lib/server.js",
+      "start": "bin/stubby",
       "test": "jasmine-node --coffee --forceexit spec"
    },
    "bin": {

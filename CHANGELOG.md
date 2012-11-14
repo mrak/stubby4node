@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.39
+
+* main `stubby` module now correctly accepts all options availabel via the command line in it's first argument.
+
 ## 0.1.38
 
 * made method definitions (`PUT`, `POST`, etc.) case insensitive. You could use `post`, `get`, etc. instead.

@@ -16,11 +16,17 @@ describe 'CLI', ->
 
          expect(actual).toBe expected
 
-   describe 'mute', ->
-      it 'should set out to mute', ->
-         sut.mute()
+   describe 'watch', ->
+      it 'should return data filename if supplied', ->
+         argv = []
+         spyOn sut, 'pullPassedValue'
 
-         expect(out.mute).toBe true
+         sut.watch('anything', argv)
+
+         expect(sut.pullPassedValue).toHaveBeenCalledWith
+            name: 'data'
+            flag: 'd'
+            , argv
 
    describe 'help', ->
       it 'should return help text', ->
@@ -187,6 +193,7 @@ describe 'CLI', ->
 
    describe 'getArgs', ->
       it 'should gather all arguments', ->
+         filename = 'file.txt'
          expected = 
             data : 'a file'
             stubs : 88
@@ -196,6 +203,8 @@ describe 'CLI', ->
             cert: 'a certificate'
             pfx: 'a pfx'
             tls: 443
+            mute: true
+            watch: filename
 
          spyOn(sut, 'data').andReturn expected.data
          spyOn(sut, 'key').andReturn expected.key
@@ -205,12 +214,14 @@ describe 'CLI', ->
          actual = sut.getArgs [
             '-s', expected.stubs
             '-a', expected.admin
-            '-d', 'mocked'
+            '-d', filename
             '-l', expected.location
             '-k', 'mocked'
             '-c', 'mocked'
             '-p', 'mocked'
             '-t', expected.tls
+            '-m'
+            '-w'
          ]
 
          expect(actual).toEqual expected

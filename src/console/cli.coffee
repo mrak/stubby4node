@@ -40,7 +40,7 @@ module.exports =
    ,
       name: 'mute'
       flag: 'm'
-      processed: true
+      unary: true
       description: 'Prevent stubby from printing to the console.'
    ,
       name: 'pfx'
@@ -63,6 +63,12 @@ module.exports =
       flag: 'v'
       exit: true
       description: "Prints stubby's version number."
+   ,
+      name: 'watch'
+      flag: 'w'
+      unary: true
+      processed: true
+      description: "Auto-reload data file when edits are made."
    ]
 
    defaults:
@@ -70,7 +76,8 @@ module.exports =
       admin: 8889
       tls: 7443
       location: 'localhost'
-      data: null
+      data: []
+      mute: false
       key: fs.readFileSync "#{__dirname}/../../tls/key.pem", 'utf8'
       cert: fs.readFileSync "#{__dirname}/../../tls/cert.pem", 'utf8'
       pfx: null
@@ -94,8 +101,12 @@ module.exports =
 
 
    version: -> (require '../../package.json').version
-   mute: ->
-      out.mute = true
+
+   watch: (nothing, argv) -> @pullPassedValue
+      name: 'data'
+      flag: 'd'
+      , argv
+
    data: (filename) ->
       extension = filename.replace /^.*\.([a-zA-Z0-9]+)$/, '$1'
       filedata = []
@@ -151,11 +162,15 @@ module.exports =
       return args
 
    pullPassedValue: (option, argv) ->
-      argIndex = argv.indexOf("-#{option.flag}") + 1\
-               or argv.indexOf("--#{option.name}") + 1
-      arg = argv[argIndex] ? @defaults[option.name]
+      arg = true
+
+      unless option.unary
+         argIndex = argv.indexOf("-#{option.flag}") + 1\
+                  or argv.indexOf("--#{option.name}") + 1
+         arg = argv[argIndex] ? arg
+
       if option.processed
-         arg = @[option.name](arg)
+         arg = @[option.name](arg, argv)
       return arg
 
    optionOmitted: (option, argv) ->

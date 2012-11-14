@@ -1,2 +1,7 @@
 #!/usr/bin/env node
-require('../lib/server');
+
+var CLI = require('../lib/console/cli');
+var stubby = new (require('../lib/main').Stubby);
+var options = CLI.getArgs();
+
+stubby.start(options);
