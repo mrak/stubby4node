@@ -2,6 +2,7 @@ fs = require 'fs'
 crypto = require 'crypto'
 contract = require '../models/contract'
 out = require './out'
+yaml = require 'js-yaml'
 
 timeout = 3000
 timeoutId = null
@@ -10,6 +11,10 @@ module.exports = class Watcher
    constructor: (endpoints, filename) ->
       @endpoints = endpoints
       @filename = filename
+      @parser = yaml.load
+
+      extension = filename.replace /^.*\.([a-zA-Z0-9]+)$/, '$1'
+      if extension is 'json' then @parser = JSON.parse
 
       shasum = crypto.createHash 'sha1'
       shasum.update fs.readFileSync @filename, 'utf8'
@@ -28,14 +33,20 @@ module.exports = class Watcher
       sha = shasum.digest 'hex'
 
       if sha isnt @sha
-         errors = contract data
-         if errors
-            out.error errors
-         else
-            endpoints.db = []
-            endpoints.create data, (->)
-            out.notice "Reloading #{filename}..."
-            @sha = sha
+         try
+            data = @parser data
+            errors = contract data
+            if errors
+               out.error errors
+            else
+               @endpoints.db = []
+               @endpoints.create data, (->)
+               out.notice "'#{@filename}' was changed. It has been reloaded."
+         catch e
+            out.warn "Couldn't parse '#{@filename}' due to syntax errors:"
+            out.log e.message
+
+      @sha = sha
+
 
       timeoutId = setTimeout @refresh, timeout
-

@@ -1,6 +1,7 @@
 Admin = require('./portals/admin').Admin
 Stubs = require('./portals/stubs').Stubs
 Endpoints = require('./models/endpoints').Endpoints
+Watcher = require('./console/watch')
 CLI = require './console/cli'
 out = require './console/out'
 http = require 'http'
@@ -71,11 +72,16 @@ module.exports.Stubby = class Stubby
       @adminPortal.on 'error', (err) -> onError(err, options.admin, options.location)
       @adminPortal.listen options.admin, options.location
 
+      if options.watch
+         @watcher = new Watcher @endpoints, options.watch
+
       out.info '\nQuit: ctrl-c\n'
 
       callback()
 
    stop: (callback = ->) => process.nextTick =>
+      if @watcher? then @watcher.deactivate()
+
       closeStubs = =>
          if @stubsPortal?.address()
             @stubsPortal.close(callback)

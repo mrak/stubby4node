@@ -3,6 +3,8 @@
 ## 0.1.39
 
 * main `stubby` module now correctly accepts all options availabel via the command line in it's first argument.
+* added `-w, --watch` flag. Monitors the supplied `-d, --data` file for changes and reloads the file if necessary.
+* for the `require('stubby')` module, a filename is passed as `options.watch` for the `start(options, callback)` function.
 
 ## 0.1.38
 
