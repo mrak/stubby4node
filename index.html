@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>stubby4node by Afmrak</title>
+    <title>stubby4node by mrak</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
@@ -18,17 +18,36 @@
         <h1>stubby4node</h1>
         <p>A configurable server for stubbing external systems during development. Uses Node.js and written in Coffeescript</p>
 
-        <p class="view"><a href="https://github.com/Afmrak/stubby4node">View the Project on GitHub <small>Afmrak/stubby4node</small></a></p>
+        <p class="view"><a href="https://github.com/mrak/stubby4node">View the Project on GitHub <small>mrak/stubby4node</small></a></p>
 
 
         <ul>
-          <li><a href="https://github.com/Afmrak/stubby4node/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/Afmrak/stubby4node/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/Afmrak/stubby4node">View On <strong>GitHub</strong></a></li>
+          <li><a href="https://github.com/mrak/stubby4node/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/mrak/stubby4node/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/mrak/stubby4node">View On <strong>GitHub</strong></a></li>
         </ul>
       </header>
       <section>
         <p><a href="http://travis-ci.org/Afmrak/stubby4node"><img src="https://secure.travis-ci.org/Afmrak/stubby4node.png?branch=master" alt="Build Status"></a></p>
+
+<h1>Installation</h1>
+
+<h2>via npm</h2>
+
+<pre><code>npm install -g stubby
+</code></pre>
+
+<p>This will install <code>stubby</code> as a command in your <code>PATH</code>. Leave off the <code>-g</code> flag if you'd like to use stubby as an embedded module in your project.</p>
+
+<h2>via source</h2>
+
+<p>You need to have <code>coffee-script</code> installed on your system.</p>
+
+<pre><code>git clone git://github.com/Afmrak/stubby4node.git
+cd stubby4node
+coffee -o lib -c src
+export PATH=$PATH:./bin/stubby
+</code></pre>
 
 <h1>Requirements</h1>
 
@@ -52,26 +71,7 @@ As a result, color-console output may look horrendous.</p>
 <li><a href="http://coffeescript.org">coffee-script</a></li>
 <li><a href="https://github.com/dannycoates/node-inspector">node-inspector</a></li>
 <li><a href="https://github.com/mhevery/jasmine-node">jasmine-node</a></li>
-</ul><h1>Installation</h1>
-
-<h2>via source</h2>
-
-<p>You need to have <code>coffee-script</code> installed on your system.</p>
-
-<pre><code>git clone git://github.com/Afmrak/stubby4node.git
-cd stubby4node
-coffee -o lib -c src
-export PATH=$PATH:./bin/stubby
-</code></pre>
-
-<h2>via npm</h2>
-
-<pre><code>npm install -g stubby
-</code></pre>
-
-<p>This will install <code>stubby</code> as a command in your <code>PATH</code>.</p>
-
-<h1>Starting the Server(s)</h1>
+</ul><h1>Starting the Server(s)</h1>
 
 <p>Some systems require you to <code>sudo</code> before running services on port certain ports (like 80)</p>
 
@@ -116,9 +116,13 @@ export PATH=$PATH:./bin/stubby
 <li>
 <code>url</code>: the URI string. GET parameters should also be included inline here</li>
 <li>
+<code>query</code>: a key/value map of query string parameters included with the request</li>
+<li>
 <code>headers</code>: a key/value map of headers the server should respond to</li>
 <li>
 <code>post</code>: a string matching the textual body of the response.</li>
+<li>
+<code>file</code>: if specified, returns the contents of the given file as the request post. If the file cannot be found at request time, <strong>post</strong> is used instead</li>
 </ul>
 </li>
 <li>
@@ -130,7 +134,7 @@ export PATH=$PATH:./bin/stubby
 <li>
 <code>latency</code>: the time in milliseconds the server should wait before responding. Useful for testing timeouts and latency</li>
 <li>
-<code>file</code>: if specified, returns the contents of the given file as the response body. If the file cannot be found at request time, <code>body</code> is used instead</li>
+<code>file</code>: if specified, returns the contents of the given file as the response body. If the file cannot be found at request time, <strong>body</strong> is used instead</li>
 <li>
 <code>body</code>: the textual body of the server's response to the client</li>
 <li>
@@ -153,7 +157,10 @@ export PATH=$PATH:./bin/stubby
       <span class="l-Scalar-Plain">body</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">You're request was successfully processed!</span>
 
 <span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
-      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/path/to/anotherThing?a=anything&amp;b=more</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/path/to/anotherThing</span>
+      <span class="l-Scalar-Plain">query</span><span class="p-Indicator">:</span>
+         <span class="l-Scalar-Plain">a</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">anything</span>
+         <span class="l-Scalar-Plain">b</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">more</span>
       <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">GET</span>
       <span class="l-Scalar-Plain">headers</span><span class="p-Indicator">:</span>
          <span class="l-Scalar-Plain">Content-Type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">application/json</span>
@@ -200,7 +207,11 @@ export PATH=$PATH:./bin/stubby
   <span class="p">},</span> 
   <span class="p">{</span>
     <span class="nt">"request"</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">"url"</span><span class="p">:</span> <span class="s2">"/path/to/anotherThing?a=anything&amp;b=more"</span><span class="p">,</span> 
+      <span class="nt">"url"</span><span class="p">:</span> <span class="s2">"/path/to/anotherThing"</span><span class="p">,</span> 
+      <span class="nt">"query"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"a"</span><span class="p">:</span> <span class="s2">"anything"</span><span class="p">,</span>
+         <span class="nt">"b"</span><span class="p">:</span> <span class="s2">"more"</span>
+      <span class="p">},</span>
       <span class="nt">"headers"</span><span class="p">:</span> <span class="p">{</span>
         <span class="nt">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span>
       <span class="p">},</span>
@@ -254,6 +265,33 @@ export PATH=$PATH:./bin/stubby
 <h1>The Stubs Portal</h1>
 
 <p>Requests sent to any url at <code>localhost:8882</code> (or wherever you told stubby to run) will search through the available endpoints and, if a match is found, respond with that endpoint's <code>response</code> data</p>
+
+<h2>How endpoints are matched</h2>
+
+<p>For a given endpoint, stubby only cares about matching the properties of the request that have been defined in the YAML. The exception to this rule is <code>method</code>; if it is omitted it is defaulted to <code>GET</code>.</p>
+
+<p>For instance, the following will match any <code>POST</code> request to the root url:</p>
+
+<div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/</span>
+      <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">POST</span>
+   <span class="l-Scalar-Plain">response</span><span class="p-Indicator">:</span> <span class="p-Indicator">{}</span>
+</pre></div>
+
+<p>The request could have any headers and any post body it wants. It will match the above.</p>
+
+<p>Pseudocode:</p>
+
+<pre><code>for each &lt;endpoint&gt; of stored endpoints {
+
+   for each &lt;property&gt; of &lt;endpoint&gt; {
+      if &lt;endpoint&gt;.&lt;property&gt; != &lt;incoming request&gt;.&lt;property&gt;
+         next endpoint
+   }
+
+   return &lt;endpoint&gt;
+}
+</code></pre>
 
 <h1>Programmatic API</h1>
 
@@ -390,6 +428,10 @@ export PATH=$PATH:./bin/stubby
 <h1>TODO</h1>
 
 <ul>
+<li>auto-reload data when configuration file changes</li>
+<li>status page</li>
+<li>
+<code>post</code> parameter as a hashmap under <code>request</code> for easy form-submission value matching</li>
 <li>Better callback handling with programmatic API</li>
 <li>SOAP request/response compliance</li>
 <li>Randomized responses based on supplied pattern (exploratory QA abuse)</li>
@@ -405,7 +447,7 @@ export PATH=$PATH:./bin/stubby
 </ul>
       </section>
       <footer>
-        <p>This project is maintained by <a href="https://github.com/Afmrak">Afmrak</a></p>
+        <p>This project is maintained by <a href="https://github.com/mrak">mrak</a></p>
         <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
       </footer>
     </div>
