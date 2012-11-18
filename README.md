@@ -15,7 +15,7 @@ You need to have `coffee-script` installed on your system.
     git clone git://github.com/Afmrak/stubby4node.git
     cd stubby4node
     coffee -o lib -c src
-    export PATH=$PATH:./bin/stubby
+    export PATH=$PATH:<pwd>/bin/stubby
 
 # Requirements
 
@@ -46,22 +46,21 @@ Some systems require you to `sudo` before running services on port certain ports
 # Command-line switches
 
 ```
-stubby [-a <port>] [-c <file>] [-d <file>] [-h] [-k <file>]
-       [-l <hostname>] [-s <port>] [-p <file>] [-v]
+stubby [-a <port>] [-c <file>] [-d <file>] [-h] [-k <file>] [-l <hostname>] [-m] [-p <file>]
+       [-s <port>] [-t <port>] [-v] [-w]
 
--a, --admin <port>          Port for admin portal. Defaults to
-                            8889.
+-a, --admin <port>          Port for admin portal. Defaults to 8889.
 -c, --cert <file>           Certificate file. Use with --key.
--d, --data <file>           Data file to pre-load endoints. YAML
-                            or JSON format.
+-d, --data <file>           Data file to pre-load endoints. YAML or JSON format.
 -h, --help                  This help text.
 -k, --key <file>            Private key file. Use with --cert.
 -l, --location <hostname>   Hostname at which to bind stubby.
--s, --stubs <port>           Port for stubs portal. Defaults to
-                            8882.
--p, --pfx <file>            PFX file. Ignored if used with
-                            --key/--cert
+-m, --mute                  Prevent stubby from printing to the console.
+-p, --pfx <file>            PFX file. Ignored if used with --key/--cert
+-s, --stubs <port>          Port for stubs portal. Defaults to 8882.
+-t, --tls <port>            Port for https stubs portal. Defaults to 7443.
 -v, --version               Prints stubby's version number.
+-w, --watch                 Auto-reload data file when edits are made.
 ```
 
 # The Admin Portal
@@ -199,11 +198,11 @@ Performing a `GET` request on `localhost:8889` will return a JSON array of all c
 
 Performing a `GET` request on `localhost:8889/<id>` will return the JSON object representing the response with the supplied id.
 
-## Changing existing responses
+## Changing Existing Endpoints
 
 Perform `PUT` requests in the same format as using `POST`, only this time supply the id in the path. For instance, to update the response with id 4 you would `PUT` to `localhost:8889/4`.
 
-## Deleting responses
+## Deleting Endpoints
 
 Send a `DELETE` request to `localhost:8889/<id>`
 
@@ -211,7 +210,7 @@ Send a `DELETE` request to `localhost:8889/<id>`
 
 Requests sent to any url at `localhost:8882` (or wherever you told stubby to run) will search through the available endpoints and, if a match is found, respond with that endpoint's `response` data
 
-## How endpoints are matched
+## How Endpoints Are Matched
 
 For a given endpoint, stubby only cares about matching the properties of the request that have been defined in the YAML. The exception to this rule is `method`; if it is omitted it is defaulted to `GET`.
 
@@ -266,18 +265,21 @@ What can I do with it, you ask? Read on!
 * `options`: an object containing parameters with which to start this stubby. Parameters go along with the full-name flags used from the command line.
    * `stubs`: port number to run the stubs portal
    * `admin`: port number to run the admin portal
+   * `tls`: port number to run the stubs portal over https
    * `data`: JavaScript Object/Array containing endpoint data
    * `location`: address/hostname at which to run stubby
    * `key`: keyfile contents (in PEM format)
    * `cert`: certificate file contents (in PEM format)
    * `pfx`: pfx file contents (mutually exclusive with key/cert options)
+   * `watch`: filename to monitor and load as stubby's data when changes occur
+   * `mute`: defaults to `true`. Pass in `false` to have console output (if available)
 * `callback`: takes one parameter: the error message (if there is one), undefined otherwise
 
 ### start([callback])
 Identical to previous signature, only all options are assumed to be defaults.
 
-### stop()
-closes the connections and ports being used by stubby's stubs and admin portals
+### stop([callback])
+closes the connections and ports being used by stubby's stubs and admin portals. Executes `callback` afterward.
 
 ### get(id, callback)
 Simulates a GET request to the admin portal, with the callback receiving the resultant data.
@@ -315,6 +317,13 @@ stubby1.start
    stubs: 80
    admin: 81
    location: 'localhost'
+   data: [
+      request:
+         url: "/anywhere"
+   ,
+      request:
+         url: "/but/here"
+   ]
 
 stubby2.start
    stubs: 82
@@ -342,13 +351,13 @@ If you want to see more informative output:
 
 # TODO
 
-* auto-reload data when configuration file changes
-* status page
+* status page (`/ping` already available under admin portal)
 * `post` parameter as a hashmap under `request` for easy form-submission value matching
-* Better callback handling with programmatic API
+
+# Wishful Thinkings
+
 * SOAP request/response compliance
 * Randomized responses based on supplied pattern (exploratory QA abuse)
-* On-the-fly changes of endpoint properties, such as changing an endpoint's url without resubmitting the endpoint's entire JSON string to the admin portal.
 * Minify js in `npm` module?
 
 # NOTES
