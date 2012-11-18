@@ -31,13 +31,13 @@ describe 'CLI', ->
             expect(actual.admin).toBe expected
 
          it 'should return supplied value when provided', ->
-            expected = 81
+            expected = "81"
             actual = sut.getArgs ['-a', expected]
 
             expect(actual.admin).toBe expected
 
          it 'should return supplied value when provided with full flag', ->
-            expected = 81
+            expected = "81"
             actual = sut.getArgs ['--admin', expected]
 
             expect(actual.admin).toBe expected
@@ -50,13 +50,13 @@ describe 'CLI', ->
             expect(actual.stubs).toBe expected
 
          it 'should return supplied value when provided', ->
-            expected = 80
+            expected = "80"
             actual = sut.getArgs ['-s', expected]
 
             expect(actual.stubs).toBe expected
 
          it 'should return supplied value when provided with full flag', ->
-            expected = 80
+            expected = "80"
             actual = sut.getArgs ['--stubs', expected]
 
             expect(actual.stubs).toBe expected
@@ -69,13 +69,13 @@ describe 'CLI', ->
             expect(actual.tls).toBe expected
 
          it 'should return supplied value when provided', ->
-            expected = 443
+            expected = "443"
             actual = sut.getArgs ['-t', expected]
 
             expect(actual.tls).toBe expected
 
          it 'should return supplied value when provided with full flag', ->
-            expected = 443
+            expected = "443"
             actual = sut.getArgs ['--tls', expected]
 
             expect(actual.tls).toBe expected
@@ -183,13 +183,13 @@ describe 'CLI', ->
          filename = 'file.txt'
          expected = 
             data : 'a file'
-            stubs : 88
-            admin : 90
+            stubs : "88"
+            admin : "90"
             location : 'stubby.com'
             key: 'a key'
             cert: 'a certificate'
             pfx: 'a pfx'
-            tls: 443
+            tls: "443"
             mute: true
             watch: filename
 
