@@ -1,4 +1,4 @@
-require '../prototype/string'
+times = require '../prototype/times'
 
 module.exports =
    spacing: (length = 0) ->
