@@ -22,6 +22,7 @@ onError = (err, port, location) ->
          msg = "Host \"#{options.location}\" is not available! Exiting..."
 
    out.error msg
+   console.dir err
    process.exit()
 
 onEndpointLoaded = (err, endpoint) -> out.notice "Loaded: #{endpoint.request.method} #{endpoint.request.url}"
@@ -40,7 +41,9 @@ module.exports.Stubby = class Stubby
 
       options.mute ?= true
 
-      for key, value of CLI.defaults
+      defaults = CLI.getArgs []
+
+      for key, value of defaults
          options[key] ?= value
 
       out.mute = options.mute

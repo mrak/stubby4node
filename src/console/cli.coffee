@@ -1,62 +1,64 @@
 fs = require 'fs'
 yaml = require 'js-yaml'
-pp = require './prettyprint'
 out = require './out'
+args = require './args'
 
 module.exports =
    options: [
       name: 'admin'
-      param: 'port'
       flag: 'a'
+      param: 'port'
+      default: 8889
       description: 'Port for admin portal. Defaults to 8889.'
    ,
       name: 'cert'
-      param: 'file'
       flag: 'c'
-      processed: true
+      param: 'file'
+      default: "#{__dirname}/../../tls/cert.pem"
       description: 'Certificate file. Use with --key.'
    ,
       name: 'data'
       flag: 'd'
-      processed: true
       param: 'file'
       description: 'Data file to pre-load endoints. YAML or JSON format.'
    ,
       name: 'help'
       flag: 'h'
       exit: true
+      default: false
       description: 'This help text.'
    ,
       name: 'key'
-      param: 'file'
       flag: 'k'
-      processed: true
+      param: 'file'
+      default: "#{__dirname}/../../tls/key.pem"
       description: 'Private key file. Use with --cert.'
    ,
       name: 'location'
       flag: 'l'
       param: 'hostname'
+      default: 'localhost'
       description: 'Hostname at which to bind stubby.'
    ,
       name: 'mute'
       flag: 'm'
-      unary: true
       description: 'Prevent stubby from printing to the console.'
    ,
       name: 'pfx'
       flag: 'p'
       param: 'file'
-      processed: true
       description: 'PFX file. Ignored if used with --key/--cert'
    ,
       name: 'stubs'
-      param: 'port'
       flag: 's'
+      param: 'port'
+      default: 8882
       description: 'Port for stubs portal. Defaults to 8882.'
    ,
       name: 'tls'
-      param: 'port'
       flag: 't'
+      param: 'port'
+      default: 7443
       description: 'Port for https stubs portal. Defaults to 7443.'
    ,
       name: 'version'
@@ -66,48 +68,26 @@ module.exports =
    ,
       name: 'watch'
       flag: 'w'
-      unary: true
-      processed: true
       description: "Auto-reload data file when edits are made."
    ]
 
-   defaults:
-      stubs: 8882
-      admin: 8889
-      tls: 7443
-      location: 'localhost'
-      data: []
-      mute: false
-      key: fs.readFileSync "#{__dirname}/../../tls/key.pem", 'utf8'
-      cert: fs.readFileSync "#{__dirname}/../../tls/cert.pem", 'utf8'
-      pfx: null
+   help: (go = false) ->
+      return unless go
 
-   help: ->
-      stubbyParams = []
-      helpLines = []
-      gutter = 28
+      out.log args.helpText @options, 'stubby'
 
-      for option in @options
-         do (option) =>
-            param = if option.param? then " <#{option.param}>" else ''
-            stubbyParams.push "[-#{option.flag}#{param}]"
-
-            helpLine = "-#{option.flag}, --#{option.name}#{param}"
-            helpLine += pp.spacing(gutter - helpLine.length)
-            helpLine += pp.wrap option.description.split(' '), gutter
-            helpLines.push helpLine
-
-      "stubby #{pp.wrap stubbyParams, 7}\n\n#{helpLines.join '\n'}"
+      process.exit()
 
 
-   version: -> (require '../../package.json').version
+   version: (go = false)->
+      return unless go
 
-   watch: (nothing, argv) -> @pullPassedValue
-      name: 'data'
-      flag: 'd'
-      , argv
+      out.log (require '../../package.json').version
+      process.exit()
 
    data: (filename) ->
+      return [] if filename is null
+
       extension = filename.replace /^.*\.([a-zA-Z0-9]+)$/, '$1'
       filedata = []
       parser = ->
@@ -135,6 +115,8 @@ module.exports =
    pfx: (file) -> @readFile file, 'pfx'
 
    readFile: (filename, type) ->
+      return null if filename is null
+
       filedata = fs.readFileSync filename, 'utf8'
       extension = filename.replace /^.*\.([a-zA-Z0-9]+)$/, '$1'
 
@@ -147,37 +129,12 @@ module.exports =
       return filedata.trim()
 
    getArgs: (argv = process.argv) ->
-      args = {}
+      params = args.parse @options, argv
+      params.watch = params.data
 
       for option in @options
          do (option) =>
+            if @[option.name]?
+               params[option.name] = @[option.name] params[option.name]
 
-            if @optionOmitted option, argv
-               return args[option.name] = @defaults[option.name]
-
-            @printAndExitIfNeeded option
-
-            args[option.name] = @pullPassedValue option, argv
-
-      return args
-
-   pullPassedValue: (option, argv) ->
-      arg = true
-
-      unless option.unary
-         argIndex = argv.indexOf("-#{option.flag}") + 1\
-                  or argv.indexOf("--#{option.name}") + 1
-         arg = argv[argIndex] ? arg
-
-      if option.processed
-         arg = @[option.name](arg, argv)
-      return arg
-
-   optionOmitted: (option, argv) ->
-      return "-#{option.flag}" not in argv\
-             and "--#{option.name}" not in argv
-
-   printAndExitIfNeeded: (option) ->
-      if option.exit
-         out.log @[option.name]()
-         process.exit 0
+      return params

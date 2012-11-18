@@ -29,7 +29,7 @@ createRequest = (context) ->
    request.end()
    return request
 
-xdescribe 'End 2 End Admin Test Suite', ->
+describe 'End 2 End Admin Test Suite', ->
    sut = null
    context = null
 

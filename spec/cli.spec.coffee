@@ -12,28 +12,15 @@ describe 'CLI', ->
       it 'should return the version of stubby in package.json', ->
          expected = require('../package.json').version
 
-         actual = sut.version()
+         sut.version true
 
-         expect(actual).toBe expected
-
-   describe 'watch', ->
-      it 'should return data filename if supplied', ->
-         argv = []
-         spyOn sut, 'pullPassedValue'
-
-         sut.watch('anything', argv)
-
-         expect(sut.pullPassedValue).toHaveBeenCalledWith
-            name: 'data'
-            flag: 'd'
-            , argv
+         expect(out.log).toHaveBeenCalledWith expected
 
    describe 'help', ->
       it 'should return help text', ->
-         text = sut.help()
+         sut.help true
 
-         expect(typeof text).toBe 'string'
-         expect(text.length).not.toBe 0
+         expect(out.log).toHaveBeenCalled()
 
    describe 'getArgs', ->
       describe '-a, --admin', ->
@@ -133,7 +120,7 @@ describe 'CLI', ->
 
             sut.getArgs(['-h'])
 
-            expect(out.log).toHaveBeenCalledWith help
+            expect(out.log).toHaveBeenCalled()
 
    describe 'data', ->
       expected = [
