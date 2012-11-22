@@ -21,9 +21,6 @@ You need to have `coffee-script` installed on your system.
 
 * [node.js](http://nodejs.org/) (tested with v0.8.x)
 
-Please note that stubby4node has not been tested on any Windows platform.
-As a result, color-console output may look horrendous.
-
 Development is on Mac OS X Mountain Lion.
 
 ## Packaged
