@@ -1,5 +1,38 @@
 [![Build Status](https://secure.travis-ci.org/Afmrak/stubby4node.png?branch=master)](http://travis-ci.org/Afmrak/stubby4node)
 
+* [Installation](#installation)
+    * [via npm](#via-npm)
+    * [via source](#via-source)
+* [Requirements](#requirements)
+    * [Packaged](#packaged)
+    * [Optional (for development)](#optional-for-development)
+* [Starting the Server(s)](#starting-the-servers)
+* [Command-line Switches](#command-line-switches)
+* [The Admin Portal](#the-admin-portal)
+    * [Supplying Endpoints to Stubby](#supplying-endpoints-to-stubby)
+        * [YAML (file only)](#yaml-file-only)
+        * [JSON (file or POST/PUT)](#json-file-or-postput)
+    * [Getting the Current List of Stubbed Endpoints](#getting-the-current-list-of-stubbed-endpoints)
+    * [Changing Existing Endpoints](#changing-existing-endpoints)
+    * [Deleting Endpoints](#deleting-endpoints)
+* [The Stubs Portal](#the-stubs-portal)
+    * [How Endpoints Are Matched](#how-endpoints-are-matched)
+* [Programmatic API](#programmatic-api)
+    * [The Stubby Module](#the-stubby-module)
+        * [start(options, [callback])](#startoptions-callback)
+        * [stop([callback])](#stopcallback)
+        * [get(id, callback)](#getid-callback)
+        * [get(callback)](#getcallback)
+        * [post(data, [callback])](#postdata-callback)
+        * [put(id, data, [callback])](#putid-data-callback)
+        * [delete([id], callback)](#deleteid-callback)
+        * [Example (coffeescript)](#example-coffeescript)
+* [Running Tests](#running-tests)
+* [See Also](#see-also)
+* [TODO](#todo)
+* [Wishful Thinkings](#wishful-thinkings)
+* [NOTES](#notes)
+
 # Installation
 
 ## via npm
@@ -40,7 +73,7 @@ Some systems require you to `sudo` before running services on port certain ports
 
     [sudo] stubby
 
-# Command-line switches
+# Command-line Switches
 
 ```
 stubby [-a <port>] [-c <file>] [-d <file>] [-h] [-k <file>] [-l <hostname>] [-m] [-p <file>]
