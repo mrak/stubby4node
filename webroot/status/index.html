@@ -85,6 +85,21 @@
                   <td>{{status}}</td>
                </tr>
                {{/if}}
+               {{#if headers}}
+               <tr>
+                  <th>headers</th>
+                  <td>
+                     <ul>
+                        {{#enumerate headers}}
+                        <li>
+                           <dt>{{key}}</dt>
+                           <dd>{{value}}</dd>
+                        </li>
+                        {{/enumerate}}
+                     </ul>
+                  </td>
+               </tr>
+               {{/if}}
                {{#if body}}
                <tr>
                   <th>body</th>
