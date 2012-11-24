@@ -13,6 +13,7 @@
         * [YAML (file only)](#yaml-file-only)
         * [JSON (file or POST/PUT)](#json-file-or-postput)
     * [Getting the Current List of Stubbed Endpoints](#getting-the-current-list-of-stubbed-endpoints)
+       * [The Status Page](#the-status-page)
     * [Changing Existing Endpoints](#changing-existing-endpoints)
     * [Deleting Endpoints](#deleting-endpoints)
 * [The Stubs Portal](#the-stubs-portal)
@@ -227,6 +228,10 @@ If you want to load more than one endpoint via file, use either a JSON array or 
 Performing a `GET` request on `localhost:8889` will return a JSON array of all currently saved responses. It will reply with `204 : No Content` if there are none saved.
 
 Performing a `GET` request on `localhost:8889/<id>` will return the JSON object representing the response with the supplied id.
+
+### The Status Page
+
+You can also view the currently configured endpoints by going to `localhost:8889/status`
 
 ## Changing Existing Endpoints
 
