@@ -16,12 +16,12 @@ module.exports.Endpoints = class Endpoints
          request:
             url: data.request.url
             method: data.request.method ? 'GET'
-            headers: data.request.headers ? {}
+            headers: data.request.headers
+            query: data.request.query
          response:
-            headers: data.response.headers ? {}
+            headers: data.response.headers
             status: parseInt(data.response.status) or 200
 
-      #optionals
       @purifyBody item, data
       item.request.file = data.request.file if data.request.file?
       item.request.post = data.request.post if data.request.post?

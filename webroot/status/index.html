@@ -5,9 +5,108 @@
       <title>Stubby Status</title>
 
       <link rel="stylesheet" href="status/css/styles.css">
+      <script type="text/javascript" src="status/js/handlebars.js"></script>
       <script type="text/javascript" src="status/js/scripts.js"></script>
    </head>
    <body>
+      <ul id="endpoints"></ul>
+      <script type="text/x-handlebars-template" id="endpoint-template">
+         <li>
+            <table>
+               <caption><a href="{{adminUrl}}">Endpoint {{id}}</a></caption>
+               <tr>
+                  <th class="section" colspan="2">request</th>
+               </tr>
+               {{#with request}}
+               <tr>
+                  <th>url</th>
+                  <td>{{url}}</td>
+               </tr>
+               {{#if method}}
+               <tr>
+                  <th>method</th>
+                  <td>{{method}}</td>
+               </tr>
+               {{/if}}
+               {{#if query}}
+               <tr>
+                  <th>query</th>
+                  <td>{{queryParams this}}</td>
+               </tr>
+               <tr>
+                  <th></th>
+                  <td>
+                     <ul>
+                        {{#enumerate query}}
+                        <li>
+                           <dt>{{key}}</dt>
+                           <dd>{{value}}</dd>
+                        </li>
+                        {{/enumerate}}
+                     </ul>
+                  </td>
+               </tr>
+               {{/if}}
+               {{#if headers}}
+               <tr>
+                  <th>headers</th>
+                  <td>
+                     <ul>
+                        {{#enumerate headers}}
+                        <li>
+                           <dt>{{key}}</dt>
+                           <dd>{{value}}</dd>
+                        </li>
+                        {{/enumerate}}
+                     </ul>
+                  </td>
+               </tr>
+               {{/if}}
+               {{#if post}}
+               <tr>
+                  <th>post</th>
+                  <td>{{post}}</td>
+               </tr>
+               {{/if}}
+               {{#if file}}
+               <tr>
+                  <th>file</th>
+                  <td>{{file}}</td>
+               </tr>
+               {{/if}}
+               {{/with}}
+               <tr>
+                  <th class="section" colspan="2">response</th>
+               </tr>
+               {{#with response}}
+               {{#if status}}
+               <tr>
+                  <th>status</th>
+                  <td>{{status}}</td>
+               </tr>
+               {{/if}}
+               {{#if body}}
+               <tr>
+                  <th>body</th>
+                  <td>{{body}}</td>
+               </tr>
+               {{/if}}
+               {{#if file}}
+               <tr>
+                  <th>file</th>
+                  <td>{{file}}</td>
+               </tr>
+               {{/if}}
+               {{#if latency}}
+               <tr>
+                  <th>latency</th>
+                  <td>{{latency}}</td>
+               </tr>
+               {{/if}}
+               {{/with}}
+            </table>
+         </li>
+      </script>
       <script type="text/javascript">
          stubby.status()
       </script>

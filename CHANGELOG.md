@@ -3,6 +3,8 @@
 ## 0.1.40
 
 * bugfixes related to command line parsing
+* fixed bug where query params were not being saved
+* added `status` endpoint on admin portal.
 
 ## 0.1.39
 

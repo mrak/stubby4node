@@ -12,6 +12,29 @@ describe 'Endpoints', ->
          data =
             request : {}
 
+      it 'should at least copy over valid data', ->
+         endpoint =
+            request:
+               url: '/'
+               method: 'post'
+               query:
+                  variable: 'value'
+               headers:
+                  header: 'string'
+               post: 'data'
+               file: 'file.txt'
+            response:
+               latency: 3000
+               body: 'contents'
+               file: 'another.file'
+               status: 420
+               headers:
+                  'access-control-allow-origin': '*'
+
+         actual = sut.purify endpoint
+
+         expect(actual).toEqual endpoint
+
       it 'should default method to GET', ->
          expected = 'GET'
 
@@ -26,19 +49,15 @@ describe 'Endpoints', ->
 
          expect(actual.response.status).toBe expected
 
-      it 'should default response headers to empty object', ->
-         expected = {}
-
+      it 'should not default response headers', ->
          actual = sut.purify data
 
-         expect(actual.response.headers).toEqual expected
+         expect(actual.response.headers).not.toBeDefined()
 
-      it 'should default request headers to empty object', ->
-         expected = {}
-
+      it 'should not default request headers', ->
          actual = sut.purify data
 
-         expect(actual.request.headers).toEqual expected
+         expect(actual.request.headers).not.toBeDefined()
 
       it 'should lower case headers properties', ->
          data.request =

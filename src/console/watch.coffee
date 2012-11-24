@@ -6,6 +6,7 @@ yaml = require 'js-yaml'
 
 timeout = 3000
 timeoutId = null
+watching = false
 
 module.exports = class Watcher
    constructor: (endpoints, filename) ->
@@ -22,8 +23,15 @@ module.exports = class Watcher
 
       @activate()
 
-   deactivate: -> clearTimeout timeoutId
-   activate: -> timeoutId = setTimeout @refresh, timeout
+   deactivate: ->
+      watching = false
+      clearTimeout timeoutId
+
+   activate: ->
+      return if watching
+
+      watching = true
+      timeoutId = setTimeout @refresh, timeout
 
    refresh: =>
       shasum = crypto.createHash 'sha1'

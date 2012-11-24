@@ -1,0 +1,84 @@
+* {
+   margin: 0;
+   padding: 0;
+}
+
+body {
+   background: #333333;
+   color: #DDDDDD;
+   font-family: "Helvetica", "Arial", "sans serif"
+}
+
+a {
+   text-decoration: none;
+   font-weight: bold;
+   color: #6EBEFF;
+}
+
+a:hover {
+   text-decoration: underline;
+   color: green;
+}
+
+li { list-style: none; }
+
+#endpoints {
+   width: 960px;
+   margin: auto;
+}
+
+#endpoints > li {
+   margin: 25px 0;
+   border-radius: 6px;
+   overflow: hidden;
+}
+
+table {
+   border: 1px solid lightgray;
+   width: 100%;
+   border-collapse: collapse;
+}
+
+dd, dt {
+   display: inline;
+}
+
+dt::after {
+   content: ":";
+}
+
+caption {
+   text-align: left;
+   padding: 10px;
+   background: black;
+}
+
+th, td {
+   border: 1px solid black;
+   padding: 10px;
+}
+
+td {
+   font-family: monospace;
+}
+
+th{
+   border-top: 1px solid #333333;
+   vertical-align: top;
+   background: black;
+   color: #FCC971;
+   width: 100px;
+   text-align: right;
+}
+
+th.section {
+   text-align: center;
+}
+
+.query-params li {
+   margin: 0;
+}
+
+.query-params td, .query-params th {
+   padding: 0;
+}
