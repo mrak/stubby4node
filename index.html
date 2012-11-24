@@ -30,7 +30,75 @@
       <section>
         <p><a href="http://travis-ci.org/Afmrak/stubby4node"><img src="https://secure.travis-ci.org/Afmrak/stubby4node.png?branch=master" alt="Build Status"></a></p>
 
-<h1>Installation</h1>
+<ul>
+<li>
+<a href="#installation">Installation</a>
+
+<ul>
+<li><a href="#via-npm">via npm</a></li>
+<li><a href="#via-source">via source</a></li>
+</ul>
+</li>
+<li>
+<a href="#requirements">Requirements</a>
+
+<ul>
+<li><a href="#packaged">Packaged</a></li>
+<li><a href="#optional-for-development">Optional (for development)</a></li>
+</ul>
+</li>
+<li><a href="#starting-the-servers">Starting the Server(s)</a></li>
+<li><a href="#command-line-switches">Command-line Switches</a></li>
+<li>
+<a href="#the-admin-portal">The Admin Portal</a>
+
+<ul>
+<li>
+<a href="#supplying-endpoints-to-stubby">Supplying Endpoints to Stubby</a>
+
+<ul>
+<li><a href="#yaml-file-only">YAML (file only)</a></li>
+<li><a href="#json-file-or-postput">JSON (file or POST/PUT)</a></li>
+</ul>
+</li>
+<li><a href="#getting-the-current-list-of-stubbed-endpoints">Getting the Current List of Stubbed Endpoints</a></li>
+<li><a href="#changing-existing-endpoints">Changing Existing Endpoints</a></li>
+<li><a href="#deleting-endpoints">Deleting Endpoints</a></li>
+</ul>
+</li>
+<li>
+<a href="#the-stubs-portal">The Stubs Portal</a>
+
+<ul>
+<li><a href="#how-endpoints-are-matched">How Endpoints Are Matched</a></li>
+</ul>
+</li>
+<li>
+<a href="#programmatic-api">Programmatic API</a>
+
+<ul>
+<li>
+<a href="#the-stubby-module">The Stubby Module</a>
+
+<ul>
+<li><a href="#startoptions-callback">start(options, [callback])</a></li>
+<li><a href="#stopcallback">stop([callback])</a></li>
+<li><a href="#getid-callback">get(id, callback)</a></li>
+<li><a href="#getcallback">get(callback)</a></li>
+<li><a href="#postdata-callback">post(data, [callback])</a></li>
+<li><a href="#putid-data-callback">put(id, data, [callback])</a></li>
+<li><a href="#deleteid-callback">delete([id], callback)</a></li>
+<li><a href="#example-coffeescript">Example (coffeescript)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#running-tests">Running Tests</a></li>
+<li><a href="#see-also">See Also</a></li>
+<li><a href="#todo">TODO</a></li>
+<li><a href="#wishful-thinkings">Wishful Thinkings</a></li>
+<li><a href="#notes">NOTES</a></li>
+</ul><h1>Installation</h1>
 
 <h2>via npm</h2>
 
@@ -46,7 +114,7 @@
 <pre><code>git clone git://github.com/Afmrak/stubby4node.git
 cd stubby4node
 coffee -o lib -c src
-export PATH=$PATH:./bin/stubby
+export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 </code></pre>
 
 <h1>Requirements</h1>
@@ -54,10 +122,7 @@ export PATH=$PATH:./bin/stubby
 <ul>
 <li>
 <a href="http://nodejs.org/">node.js</a> (tested with v0.8.x)</li>
-</ul><p>Please note that stubby4node has not been tested on any Windows platform.
-As a result, color-console output may look horrendous.</p>
-
-<p>Development is on Mac OS X Mountain Lion.</p>
+</ul><p>Development is on Mac OS X Mountain Lion.</p>
 
 <h2>Packaged</h2>
 
@@ -78,24 +143,23 @@ As a result, color-console output may look horrendous.</p>
 <pre><code>[sudo] stubby
 </code></pre>
 
-<h1>Command-line switches</h1>
+<h1>Command-line Switches</h1>
 
-<pre><code>stubby [-a &lt;port&gt;] [-c &lt;file&gt;] [-d &lt;file&gt;] [-h] [-k &lt;file&gt;]
-       [-l &lt;hostname&gt;] [-s &lt;port&gt;] [-p &lt;file&gt;] [-v]
+<pre><code>stubby [-a &lt;port&gt;] [-c &lt;file&gt;] [-d &lt;file&gt;] [-h] [-k &lt;file&gt;] [-l &lt;hostname&gt;] [-m] [-p &lt;file&gt;]
+       [-s &lt;port&gt;] [-t &lt;port&gt;] [-v] [-w]
 
--a, --admin &lt;port&gt;          Port for admin portal. Defaults to
-                            8889.
+-a, --admin &lt;port&gt;          Port for admin portal. Defaults to 8889.
 -c, --cert &lt;file&gt;           Certificate file. Use with --key.
--d, --data &lt;file&gt;           Data file to pre-load endoints. YAML
-                            or JSON format.
+-d, --data &lt;file&gt;           Data file to pre-load endoints. YAML or JSON format.
 -h, --help                  This help text.
 -k, --key &lt;file&gt;            Private key file. Use with --cert.
 -l, --location &lt;hostname&gt;   Hostname at which to bind stubby.
--s, --stubs &lt;port&gt;           Port for stubs portal. Defaults to
-                            8882.
--p, --pfx &lt;file&gt;            PFX file. Ignored if used with
-                            --key/--cert
+-m, --mute                  Prevent stubby from printing to the console.
+-p, --pfx &lt;file&gt;            PFX file. Ignored if used with --key/--cert
+-s, --stubs &lt;port&gt;          Port for stubs portal. Defaults to 8882.
+-t, --tls &lt;port&gt;            Port for https stubs portal. Defaults to 7443.
 -v, --version               Prints stubby's version number.
+-w, --watch                 Auto-reload data file when edits are made.
 </code></pre>
 
 <h1>The Admin Portal</h1>
@@ -254,11 +318,11 @@ As a result, color-console output may look horrendous.</p>
 
 <p>Performing a <code>GET</code> request on <code>localhost:8889/&lt;id&gt;</code> will return the JSON object representing the response with the supplied id.</p>
 
-<h2>Changing existing responses</h2>
+<h2>Changing Existing Endpoints</h2>
 
 <p>Perform <code>PUT</code> requests in the same format as using <code>POST</code>, only this time supply the id in the path. For instance, to update the response with id 4 you would <code>PUT</code> to <code>localhost:8889/4</code>.</p>
 
-<h2>Deleting responses</h2>
+<h2>Deleting Endpoints</h2>
 
 <p>Send a <code>DELETE</code> request to <code>localhost:8889/&lt;id&gt;</code></p>
 
@@ -266,7 +330,7 @@ As a result, color-console output may look horrendous.</p>
 
 <p>Requests sent to any url at <code>localhost:8882</code> (or wherever you told stubby to run) will search through the available endpoints and, if a match is found, respond with that endpoint's <code>response</code> data</p>
 
-<h2>How endpoints are matched</h2>
+<h2>How Endpoints Are Matched</h2>
 
 <p>For a given endpoint, stubby only cares about matching the properties of the request that have been defined in the YAML. The exception to this rule is <code>method</code>; if it is omitted it is defaulted to <code>GET</code>.</p>
 
@@ -324,6 +388,8 @@ As a result, color-console output may look horrendous.</p>
 <li>
 <code>admin</code>: port number to run the admin portal</li>
 <li>
+<code>tls</code>: port number to run the stubs portal over https</li>
+<li>
 <code>data</code>: JavaScript Object/Array containing endpoint data</li>
 <li>
 <code>location</code>: address/hostname at which to run stubby</li>
@@ -333,6 +399,10 @@ As a result, color-console output may look horrendous.</p>
 <code>cert</code>: certificate file contents (in PEM format)</li>
 <li>
 <code>pfx</code>: pfx file contents (mutually exclusive with key/cert options)</li>
+<li>
+<code>watch</code>: filename to monitor and load as stubby's data when changes occur</li>
+<li>
+<code>mute</code>: defaults to <code>true</code>. Pass in <code>false</code> to have console output (if available)</li>
 </ul>
 </li>
 <li>
@@ -341,9 +411,9 @@ As a result, color-console output may look horrendous.</p>
 
 <p>Identical to previous signature, only all options are assumed to be defaults.</p>
 
-<h3>stop()</h3>
+<h3>stop([callback])</h3>
 
-<p>closes the connections and ports being used by stubby's stubs and admin portals</p>
+<p>closes the connections and ports being used by stubby's stubs and admin portals. Executes <code>callback</code> afterward.</p>
 
 <h3>get(id, callback)</h3>
 
@@ -397,6 +467,13 @@ As a result, color-console output may look horrendous.</p>
    <span class="nv">stubs: </span><span class="mi">80</span>
    <span class="nv">admin: </span><span class="mi">81</span>
    <span class="nv">location: </span><span class="s">'localhost'</span>
+   <span class="nv">data: </span><span class="p">[</span>
+      <span class="nv">request:</span>
+         <span class="nv">url: </span><span class="s">"/anywhere"</span>
+   <span class="p">,</span>
+      <span class="nv">request:</span>
+         <span class="nv">url: </span><span class="s">"/but/here"</span>
+   <span class="p">]</span>
 
 <span class="nx">stubby2</span><span class="p">.</span><span class="nx">start</span>
    <span class="nv">stubs: </span><span class="mi">82</span>
@@ -428,14 +505,14 @@ As a result, color-console output may look horrendous.</p>
 <h1>TODO</h1>
 
 <ul>
-<li>auto-reload data when configuration file changes</li>
-<li>status page</li>
+<li>status page (<code>/ping</code> already available under admin portal)</li>
 <li>
 <code>post</code> parameter as a hashmap under <code>request</code> for easy form-submission value matching</li>
-<li>Better callback handling with programmatic API</li>
+</ul><h1>Wishful Thinkings</h1>
+
+<ul>
 <li>SOAP request/response compliance</li>
 <li>Randomized responses based on supplied pattern (exploratory QA abuse)</li>
-<li>On-the-fly changes of endpoint properties, such as changing an endpoint's url without resubmitting the endpoint's entire JSON string to the admin portal.</li>
 <li>Minify js in <code>npm</code> module?</li>
 </ul><h1>NOTES</h1>
 
