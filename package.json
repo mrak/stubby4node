@@ -41,6 +41,7 @@
    },
    "dependencies": {
       "js-yaml": ">=1.0.1",
+      "node-static":">=0.6.4",
       "cloneextend": ">=0.0.3"
    },
    "license": "Apache",

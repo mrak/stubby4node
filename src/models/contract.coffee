@@ -4,6 +4,7 @@ module.exports = Contract = (endpoint) ->
       'PUT'
       'POST'
       'HEAD'
+      'PATCH'
       'TRACE'
       'DELETE'
       'CONNECT'

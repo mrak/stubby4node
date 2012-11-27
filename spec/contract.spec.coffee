@@ -41,7 +41,7 @@ describe 'contract', ->
          "'response.status' must be integer-like."
       ],[
          "'request.url' is required."
-         "'request.method' must be one of GET,PUT,POST,HEAD,TRACE,DELETE,CONNECT,OPTIONS."
+         "'request.method' must be one of GET,PUT,POST,HEAD,PATCH,TRACE,DELETE,CONNECT,OPTIONS."
          "'response.headers', if supplied, must be an object."
       ]]
 
@@ -160,7 +160,7 @@ describe 'contract', ->
             expect(result).toBeNull()
 
          it 'should return error if method isnt HTTP 1.1', ->
-            expected = ["'request.method' must be one of GET,PUT,POST,HEAD,TRACE,DELETE,CONNECT,OPTIONS."]
+            expected = ["'request.method' must be one of GET,PUT,POST,HEAD,PATCH,TRACE,DELETE,CONNECT,OPTIONS."]
 
             data.request.method = 'QUEST'
             result = sut data
