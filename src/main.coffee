@@ -76,6 +76,7 @@ module.exports.Stubby = class Stubby
       @adminPortal.listen options.admin, options.location
 
       if options.watch
+         debugger
          @watcher = new Watcher @endpoints, options.watch
 
       out.info '\nQuit: ctrl-c\n'

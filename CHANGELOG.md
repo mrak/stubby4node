@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.41
+
+* added `PATCH` to acceptable HTTP verbs.
+* bugfix where `--watch` flag was always active.
+
 ## 0.1.40
 
 * bugfixes related to command line parsing

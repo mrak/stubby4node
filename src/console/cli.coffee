@@ -130,7 +130,7 @@ module.exports =
 
    getArgs: (argv = process.argv) ->
       params = args.parse @options, argv
-      params.watch = params.data
+      if params.watch then params.watch = params.data
 
       for option in @options
          do (option) =>
