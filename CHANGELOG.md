@@ -4,6 +4,7 @@
 
 * added `PATCH` to acceptable HTTP verbs.
 * bugfix where `--watch` flag was always active.
+* added `man` page support
 
 ## 0.1.40
 
