@@ -6,31 +6,18 @@ stubby \- a small web server for stubbing external systems during development.
 
 .SH SYNOPSIS
 
-
 .B stubby
 [
-.B \-mw
-]
-[
-.B \-a
-.I port
-]
-[
-.B \-s
-.I port
-]
-[[
-.B \-c
-.I certificate
-+
-.B \-k
-.I key
-]
+.B \-w
 |
+.B \-\-watch
+]
 [
-.B \-p
-.I pfx
-]]
+.B \-d
+|
+.B \-\-data
+.I file
+]
 .br
        [
 .B \-v
@@ -43,3 +30,40 @@ stubby \- a small web server for stubbing external systems during development.
 |
 .B \-\-help
 ]
+
+.SH DESCRIPTION
+stubby can be invoved either programmatically or through the command line.
+Each invocation starts a new instance, given that the supplied port numbers do not overlap.
+Three servers are set up: One for reacting to and supplied the configured request and response, respectively.
+A second one identical to the first except that it operates over https.
+And finally, a third "admin" portal that allows viewing configured data and changing it through RESTful api calls.
+
+.SH OPTIONS
+\-a, \-\-admin <port>         Port for admin portal. Defaults to 8889.
+
+\-c, \-\-cert <file>          Certificate file. Use with \-\-key.
+
+\-d, \-\-data <file>          Data file to pre-load endpoints. YAML or JSON format.
+
+\-h, \-\-help                 This help text.
+
+\-k, \-\-key <file>           Private key file. Use with \-\-cert.
+
+\-l, \-\-location <hostname>  Hostname at which to bind stubby.
+
+\-m, \-\-mute                 Prevent stubby from printing to the console.
+
+\-p, \-\-pfx <file>           PFX file. Ignored if used with \-\-key/\-\-cert.
+
+\-s, \-\-stubs <port>         Port for stubs portal. Defaults to 8882.
+
+\-t, \-\-tls <port>           Port for https stubs portal. Defaults to 7443.
+
+\-v, \-\-version              Prints stubby's version number.
+
+\-w, \-\-watch                Auto-reload data file when edits are made.
+
+.SH RESOURCES AND DOCUMENTATION
+website: http://stub.by
+
+github:  http://github.com/mrak/stubby4node
