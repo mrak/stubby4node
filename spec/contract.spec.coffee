@@ -244,6 +244,18 @@ describe 'contract', ->
             actual = sut data
             expect(actual).toEqual expected
 
+         it 'should return erros when less than 100', ->
+            expected = ["'response.status' must be >= 100."]
+            data.response.status = 99
+            actual = sut data
+            expect(actual).toEqual expected
+
+         it 'should return erros when greater than or equal to 500', ->
+            expected = ["'response.status' must be < 600."]
+            data.response.status = 666
+            actual = sut data
+            expect(actual).toEqual expected
+
       describe 'latency', ->
          it 'should return no errors when it is a number', ->
             data.response.latency = 4000

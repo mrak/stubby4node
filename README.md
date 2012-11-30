@@ -593,7 +593,6 @@ If you want to see more informative output:
 
 # TODO
 
-* URI-encode `query` variables
 * Auto-Base64 encode `username:password` if `authorization` is given as a request header.
 * `post` parameter as a hashmap under `request` for easy form-submission value matching
 

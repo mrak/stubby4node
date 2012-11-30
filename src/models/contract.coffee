@@ -25,6 +25,8 @@ module.exports = Contract = (endpoint) ->
             type: "'response.headers', if supplied, must be an object."
          status:
             type: "'response.status' must be integer-like."
+            small: "'response.status' must be >= 100."
+            large: "'response.status' must be < 600."
          latency:
             type: "'response.latency' must be integer-like."
 
@@ -58,7 +60,10 @@ module.exports = Contract = (endpoint) ->
    response =
       status : (status) ->
          if not status then return null
-         if not parseInt status then return messages.response.status.type
+         parsed = parseInt status
+         if not parsed then return messages.response.status.type
+         if parsed < 100 then return messages.response.status.small
+         if parsed >= 600 then return messages.response.status.large
          null
       headers : (headers) ->
          if not headers then return null
