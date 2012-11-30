@@ -44,8 +44,8 @@
       url: /get/query
       method: GET
       query:
-         first: 'value1'
-         second: 'value2'
+         first: value1 with spaces!
+         second: value2
    response:
       status: 200
 

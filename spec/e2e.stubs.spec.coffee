@@ -153,7 +153,7 @@ describe 'End 2 End Stubs Test Suite', ->
       it 'should be able to handle query params', ->
          context.url = '/get/query'
          context.query =
-            first: 'value1'
+            first: 'value1 with spaces!'
             second: 'value2'
          context.method = 'get'
          context.status = 200

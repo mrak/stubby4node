@@ -84,7 +84,7 @@ Here is a fully-populated, unrealistic endpoint:
       url: /your/awesome/endpoint
       method: POST
       query:
-         exclamation: post%20requests%20can%20have%20query%20strings%21
+         exclamation: post requests can have query strings!
       headers:
          content-type: application/xml
       post: >
@@ -175,7 +175,7 @@ This is the simplest you can get:
 -  request:
       url: /with/parameters
       query:
-         search: search+terms
+         search: search terms
          filter: month
 ```
 
