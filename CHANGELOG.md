@@ -4,6 +4,7 @@
 
 * `request.headers.authorization` can now take values such as `username:password` which will automatically be converted to `Basic dXNlcm5hbWU6cGFzc3dvcmQ=`.
 * parameterized flags can now be combined with non-parameterized flags. Example: `-dw data.yaml` is equivalent to `--watch --data data.yaml`.
+* switched from handlebars to underscore for client-side templating
 
 ## 0.1.41
 
