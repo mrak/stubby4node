@@ -176,6 +176,20 @@ describe 'End 2 End Stubs Test Suite', ->
          req = createRequest context
          waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
 
+      it 'should be able to handle authorized posts where the yaml wasnt pre-encoded', ->
+         context.url = '/post/auth/pair'
+         context.method = 'post'
+         context.status = 201
+         context.post = 'some=data'
+         context.requestHeaders =
+            authorization: "Basic c3R1YmJ5OnBhc3N3b3JkWjBy"
+         context.headers =
+            location: '/some/endpoint/id'
+         context.body = 'resource has been created'
+
+         req = createRequest context
+         waitsFor ( -> req.finished and context.passed ), 'request to finish', 1000
+
    describe 'put', ->
       it 'should wait if a 2000ms latency is specified', ->
          context.url = '/put/latency'

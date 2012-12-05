@@ -33,10 +33,20 @@ module.exports.Endpoints = class Endpoints
          delete item.request.headers[prop]
          item.request.headers[prop.toLowerCase()] = value
 
+      @purifyAuthorization item
+
       for prop, value of item.response.headers
          delete item.response.headers[prop]
          item.response.headers[prop.toLowerCase()] = value
+
       return item
+
+   purifyAuthorization: (item) ->
+      auth = item.request.headers?.authorization ? ''
+
+      return unless auth.match /:/
+
+      item.request.headers.authorization = 'Basic ' + new Buffer(auth).toString 'base64'
 
    purifyBody : (item, data) ->
       if data.response.body?

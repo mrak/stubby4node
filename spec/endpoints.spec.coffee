@@ -76,6 +76,24 @@ describe 'Endpoints', ->
          expect(actual.response.headers).toEqual expected.response
          expect(actual.request.headers).toEqual expected.request
 
+      it 'should base64 encode authorization headers if not encoded', ->
+         expected = 'Basic dXNlcm5hbWU6cGFzc3dvcmQ='
+         data.request.headers =
+            authorization: 'username:password'
+
+         actual = sut.purify data
+
+         expect(actual.request.headers.authorization).toBe expected
+
+      it 'should not encode authorization headers if encoded', ->
+         expected = 'Basic dXNlcm5hbWU6cGFzc3dvc='
+         data.request.headers =
+            authorization: 'Basic dXNlcm5hbWU6cGFzc3dvc='
+
+         actual = sut.purify data
+
+         expect(actual.request.headers.authorization).toBe expected
+
       it 'should stringify object body in response', ->
          expected = '{"property":"value"}'
          data.response =

@@ -1,36 +1,38 @@
 pp = require './prettyprint'
 
 UNARY_FLAGS = /^-[a-zA-Z]+$/
-ANY_FLAG = /^-.*$/
+ANY_FLAG = /^-.+$/
 
 findOption = (option, argv) ->
    argIndex = -1
    if option.flag?
-      argIndex = argv.indexOf("-#{option.flag}")
+      argIndex = indexOfFlag option, argv
 
    if argIndex is -1 and option.name?
       argIndex = argv.indexOf("--#{option.name}")
 
    return argIndex
 
+indexOfFlag = (option, argv) ->
+   flags = (flag for flag in argv when flag.match UNARY_FLAGS)
+   index = -1
+
+   for flag in flags
+      do (flag) ->
+         if option.flag in flag
+            index = argv.indexOf(flag)
+
+   return index
+
+
 optionSkipped = (index, argv) ->
    argv[index + 1].match ANY_FLAG
 
 unaryCheck = (option, argv) ->
    return true if option.name? and "--#{option.name}" in argv
+   return false unless option.flag?
 
-   if option.flag?
-      flags = (flag for flag in argv when flag.match UNARY_FLAGS)
-
-      found = false
-
-      for flag in flags
-         do (flag) ->
-            if option.flag in flag then found = true
-
-      return found
-
-   return false
+   return indexOfFlag(option, argv) isnt -1
 
 pullPassedValue = (option, argv) ->
    return unaryCheck option, argv unless option.param?

@@ -108,6 +108,20 @@ describe 'args', ->
 
             expect(result.flag).toBe expected
 
+         it 'should parse a flag with parameters combined with a flag without parameters', ->
+            options = [
+               name: 'one'
+               flag: 'o'
+               param: 'named'
+            ,
+               name: 'two'
+               flag: 't'
+            ]
+
+            result = sut.parse options, ['-ot', 'one']
+
+            expect(result.one).toBe 'one'
+            expect(result.two).toBe true
 
       describe 'names', ->
          it 'should parse a name without parameters', ->

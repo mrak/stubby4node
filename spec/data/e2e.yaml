@@ -64,6 +64,18 @@
       body: "resource has been created"
 
 -  request:
+      url: /post/auth/pair
+      method: POST
+      post: some=data
+      headers:
+         authorization: stubby:passwordZ0r
+   response:
+      status: 201
+      headers:
+         location: /some/endpoint/id
+      body: "resource has been created"
+
+-  request:
       url: /put/latency
       method: PUT
    response:

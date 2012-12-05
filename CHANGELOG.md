@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.42
+
+* `request.headers.authorization` can now take values such as `username:password` which will automatically be converted to `Basic dXNlcm5hbWU6cGFzc3dvcmQ=`.
+* parameterized flags can now be combined with non-parameterized flags. Example: `-dw data.yaml` is equivalent to `--watch --data data.yaml`.
+
 ## 0.1.41
 
 * added `PATCH` to acceptable HTTP verbs.
