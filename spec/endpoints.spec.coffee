@@ -5,104 +5,6 @@ describe 'Endpoints', ->
    beforeEach ->
       sut = new Endpoints()
 
-   describe 'defaults', ->
-      data = null
-
-      beforeEach ->
-         data =
-            request : {}
-
-      it 'should at least copy over valid data', ->
-         endpoint =
-            request:
-               url: '/'
-               method: 'post'
-               query:
-                  variable: 'value'
-               headers:
-                  header: 'string'
-               post: 'data'
-               file: 'file.txt'
-            response:
-               latency: 3000
-               body: 'contents'
-               file: 'another.file'
-               status: 420
-               headers:
-                  'access-control-allow-origin': '*'
-
-         actual = sut.purify endpoint
-
-         expect(actual).toEqual endpoint
-
-      it 'should default method to GET', ->
-         expected = 'GET'
-
-         actual = sut.purify data
-
-         expect(actual.request.method).toBe expected
-
-      it 'should default status to 200', ->
-         expected = 200
-
-         actual = sut.purify data
-
-         expect(actual.response.status).toBe expected
-
-      it 'should not default response headers', ->
-         actual = sut.purify data
-
-         expect(actual.response.headers).not.toBeDefined()
-
-      it 'should not default request headers', ->
-         actual = sut.purify data
-
-         expect(actual.request.headers).not.toBeDefined()
-
-      it 'should lower case headers properties', ->
-         data.request =
-            headers: 'Content-Type': 'application/json'
-         data.response =
-            headers: 'Content-Type': 'application/json'
-
-         expected =
-            request:
-               'content-type': 'application/json'
-            response:
-               'content-type': 'application/json'
-
-         actual = sut.purify data
-
-         expect(actual.response.headers).toEqual expected.response
-         expect(actual.request.headers).toEqual expected.request
-
-      it 'should base64 encode authorization headers if not encoded', ->
-         expected = 'Basic dXNlcm5hbWU6cGFzc3dvcmQ='
-         data.request.headers =
-            authorization: 'username:password'
-
-         actual = sut.purify data
-
-         expect(actual.request.headers.authorization).toBe expected
-
-      it 'should not encode authorization headers if encoded', ->
-         expected = 'Basic dXNlcm5hbWU6cGFzc3dvc='
-         data.request.headers =
-            authorization: 'Basic dXNlcm5hbWU6cGFzc3dvc='
-
-         actual = sut.purify data
-
-         expect(actual.request.headers.authorization).toBe expected
-
-      it 'should stringify object body in response', ->
-         expected = '{"property":"value"}'
-         data.response =
-            body: property: "value"
-
-         actual = sut.purify data
-
-         expect(actual.response.body).toEqual expected
-
    describe 'operations', ->
       callback = null
 
@@ -110,36 +12,35 @@ describe 'Endpoints', ->
          callback = jasmine.createSpy 'callback'
 
       describe 'create', ->
+         data = null
+
          beforeEach ->
-            spyOn(sut, 'purify').andReturn {}
+            data =
+               request:
+                  url: ''
 
-         it 'should purify and run database call for each item given a list', ->
-            data = [
-               "item1"
-               "item2"
-            ]
-
+         it 'should assign id to entered endpoint', ->
             sut.create data, callback
 
-            expect(sut.purify).toHaveBeenCalledWith data[0]
-            expect(sut.purify).toHaveBeenCalledWith data[1]
-            expect(sut.purify.callCount).toEqual data.length
+            expect(sut.db[1]).toBeDefined()
+            expect(sut.db[2]).not.toBeDefined()
 
-         it 'should purify and run database call given one item', ->
-            data = "item1"
-
+         it 'should call callback', ->
             sut.create data, callback
 
-            expect(sut.purify).toHaveBeenCalledWith data
-            expect(sut.purify.callCount).toEqual 1
+            expect(callback.callCount).toBe 1
 
-         it "should call callback with null, id if database creates item", ->
-            id = 1 #sut.db empty, so starts at 1
-            data = {}
+         it 'should assign ids to entered endpoints', ->
+            sut.create [data, data], callback
 
-            sut.create data, callback
+            expect(sut.db[1]).toBeDefined()
+            expect(sut.db[2]).toBeDefined()
+            expect(sut.db[3]).not.toBeDefined()
 
-            expect(callback).toHaveBeenCalledWith null, id: id
+         it 'should call callback for each supplied endpoint', ->
+            sut.create [data, data], callback
+
+            expect(callback.callCount).toBe 2
 
       describe 'retrieve', ->
          id = "any id"
@@ -163,16 +64,9 @@ describe 'Endpoints', ->
 
       describe 'update', ->
          id = "any id"
-         data = "some data"
-
-         beforeEach ->
-            spyOn(sut, 'purify').andReturn "something"
-
-         it 'should purify to data', ->
-            sut.db[id] = {}
-            sut.update id, data, callback
-
-            expect(sut.purify).toHaveBeenCalled()
+         data =
+            request:
+               url: ''
 
          it 'should call callback when database updates', ->
             sut.db[id] = {}
