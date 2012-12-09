@@ -16,14 +16,9 @@ createRequest = (context) ->
       response.on 'data', (chunk) ->
          data += chunk
       response.on 'end', ->
-         context.body = data.trim()
-         context.status = response.statusCode
-         context.headers = response.headers
-
-         if response.headers.location?
-            context.location = response.headers.location
-
-         context.finished = true
+         response.data = data
+         context.response = response
+         context.done = true
 
    request.write context.post if context.post?
    request.end()
@@ -32,50 +27,51 @@ createRequest = (context) ->
 describe 'End 2 End Admin Test Suite', ->
    sut = null
    context = null
+   stopStubby = ->
+      stopped = false
+      sut.stop -> stopped = true
+      waitsFor (-> stopped), 'stubby to stop', 1
 
    beforeEach ->
+      if sut? then stopStubby()
       sut = new Stubby()
       context =
-         finished: false
+         done: false
 
       go = false
       sut.start data:endpointData, -> go = true
       waitsFor ( -> go ), 'stubby to start', 1000
 
-   afterEach ->
-      stopped = false
-      sut.stop -> stopped = true
-      waitsFor (-> stopped), 'stubby to stop', 1
+   afterEach stopStubby
 
    it 'should react to /ping', ->
-      context.url = '/ping'
+      runs ->
+         context.url = '/ping'
 
-      createRequest context
+         createRequest context
 
-      waitFn = ->
-         return false unless context.finished
-         return context.body is 'pong'
+         waitsFor ( -> context.done), 'request to finish', 1000
 
-      waitsFor waitFn, 'ping endpoint to be correct', 1000
+      runs ->
+         expect(context.response.data).toBe 'pong'
 
    it 'should be able to retreive an endpoint through GET', ->
       id = 3
       endpoint = ce.clone endpointData[id-1]
-      endpoint.id = id
+      runs ->
+         endpoint.id = id
 
-      context.url = "/#{id}"
-      context.method = 'get'
+         context.url = "/#{id}"
+         context.method = 'get'
 
-      createRequest context
+         createRequest context
 
-      waitFn = ->
-         return false unless context.finished
-         returned = JSON.parse context.body
+         waitsFor ( -> context.done), 'request to finish', 1000
+
+      runs ->
+         returned = JSON.parse context.response.data
          for prop, value of endpoint.request
-            if value isnt returned.request[prop] then return false
-         return true
-
-      waitsFor waitFn, 'returned endpoint to be correct', 1000
+            expect(value).toBe returned.request[prop]
 
    it 'should be able to edit an endpoint through PUT', ->
       id = 2
@@ -89,24 +85,23 @@ describe 'End 2 End Admin Test Suite', ->
          context.post = JSON.stringify endpoint
 
          createRequest context
-         waitsFor (-> context.finished), 'put request to finish', 1000
+         waitsFor (-> context.done), 'put request to finish', 1000
 
       runs ->
          endpoint.id = id
-         context.finished = false
+         context.done = false
          context.method = 'get'
 
          createRequest context
 
-         waitFn = ->
-            return false unless context.finished
-            returned = JSON.parse context.body
-            return returned.request.url is endpoint.request.url
+         waitsFor (-> context.done), 'get request to finish', 1000
 
-         waitsFor waitFn, 'get request to finish', 1000
+      runs ->
+         returned = JSON.parse context.response.data
+         expect(returned.request.url).toBe endpoint.request.url
 
    it 'should be about to create an endpoint through POST', ->
-      endpoint = 
+      endpoint =
          request:
             url: '/posted/endpoint'
          response:
@@ -119,26 +114,25 @@ describe 'End 2 End Admin Test Suite', ->
 
          createRequest context
 
-         waitFn = ->
-            return false unless context.finished
-            return context.status is 201
-         waitsFor waitFn, 'post request to finish', 1000
+         waitsFor ( -> context.done), 'post request to finish', 1000
 
       runs ->
-         id = context.location.replace /localhost:8889\/([0-9]+)/, '$1'
+         expect(context.response.statusCode).toBe 201
+
+      runs ->
+         id = context.response.headers.location.replace /localhost:8889\/([0-9]+)/, '$1'
          context =
-            finished: false
+            done: false
             url: "/#{id}"
             method: 'get'
 
          createRequest context
 
-         waitFn = ->
-            return false unless context.finished
-            returned = JSON.parse context.body
-            return returned.request.url is endpoint.request.url
+         waitsFor ( -> context.done), 'get request to finish', 1000
 
-         waitsFor waitFn, 'get request to return', 1000
+      runs ->
+         returned = JSON.parse context.response.data
+         expect(returned.request.url).toBe endpoint.request.url
 
    it 'should be about to delete an endpoint through DELETE', ->
       runs ->
@@ -147,21 +141,20 @@ describe 'End 2 End Admin Test Suite', ->
 
          createRequest context
 
-         waitFn = ->
-            return false unless context.finished
-            return context.status is 204
-         waitsFor waitFn, 'delete request to finish', 1000
+         waitsFor ( -> context.done), 'delete request to finish', 1000
+
+      runs ->
+         expect(context.response.statusCode).toBe 204
 
       runs ->
          context =
-            finished: false
+            done: false
             url: "/2"
             method: 'get'
 
          createRequest context
 
-         waitFn = ->
-            return false unless context.finished
-            return context.status is 404
+         waitsFor ( -> context.done), 'get request to finish', 1000
 
-         waitsFor waitFn, 'get request to return', 1000
+      runs ->
+         expect(context.response.statusCode).toBe 404

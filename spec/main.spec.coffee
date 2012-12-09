@@ -6,13 +6,16 @@ options = null
 afterFn = ->
 
 describe 'main', ->
-   beforeEach ->
-      sut = new (require('../src/main').Stubby)()
-
-   afterEach ->
+   stopStubby = ->
       stopped = false
       sut.stop -> stopped = true
       waitsFor (-> stopped), 'stubby to stop', 1
+
+   beforeEach ->
+      if sut? then stopStubby()
+      sut = new (require('../src/main').Stubby)()
+
+   afterEach stopStubby
 
    describe 'start', ->
       beforeEach ->
