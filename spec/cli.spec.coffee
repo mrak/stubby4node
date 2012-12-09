@@ -192,6 +192,7 @@ describe 'CLI', ->
             tls: "443"
             mute: true
             watch: filename
+            datadir: process.cwd()
 
          spyOn(sut, 'data').andReturn expected.data
          spyOn(sut, 'key').andReturn expected.key

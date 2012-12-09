@@ -1,4 +1,5 @@
 Endpoints = require('../src/models/endpoints').Endpoints
+Endpoint = require('../src/models/endpoint')
 sut = null
 
 describe 'Endpoints', ->
@@ -114,12 +115,11 @@ describe 'Endpoints', ->
             expect(callback).toHaveBeenCalledWith []
 
       describe 'find', ->
-         data = {}
+         data =
+            method: 'GET'
 
          it 'should call callback with null, row if operation returns a row', ->
-            row =
-               request: {}
-               response: {}
+            row = new Endpoint()
             sut.db = [row]
             sut.find data, callback
 
@@ -131,7 +131,7 @@ describe 'Endpoints', ->
             expect(callback).toHaveBeenCalledWith "Endpoint with given request doesn't exist."
 
          it 'should call callback after timeout if data response has a latency', ->
-            row =
+            row = new Endpoint
                request: {}
                response:
                   latency: 1000
@@ -143,65 +143,72 @@ describe 'Endpoints', ->
 
          describe 'request post versus file', ->
             it 'should match response with post if file is not supplied', ->
-               expected = {expected: "object"}
-               row =
+               expected = { status: 200 }
+               row = new Endpoint
                   request:
                      url: '/testing'
                      post: 'the post!'
+                     method: 'post'
                   response: expected
                data =
+                  method: 'POST'
                   url: '/testing'
                   post: 'the post!'
 
                sut.db = [row]
                sut.find data, callback
 
-               expect(callback.mostRecentCall.args[1]).toBe expected
+               expect(callback.mostRecentCall.args[1]).toEqual expected
 
             it 'should match response with post file is supplied but cannot be found', ->
-               expected = {expected: "object"}
-               row =
+               expected = { status : 200 }
+               row = new Endpoint
                   request:
                      url: '/testing'
                      file: 'spec/data/endpoints-nonexistant.file'
                      post: 'post data!'
+                     method: 'post'
                   response: expected
                data =
+                  method: 'POST'
                   url: '/testing'
                   post: 'post data!'
 
                sut.db = [row]
                sut.find data, callback
 
-               expect(callback.mostRecentCall.args[1]).toBe expected
+               expect(callback.mostRecentCall.args[1]).toEqual expected
 
             it 'should match response with file if file is supplied and exists', ->
-               expected = {expected: "object"}
-               row =
+               expected = { status : 200 }
+               row = new Endpoint
                   request:
                      url: '/testing'
                      file: 'spec/data/endpoints.file'
                      post: 'post data!'
+                     method: 'post'
                   response: expected
                data =
                   url: '/testing'
                   post: 'file contents!'
+                  method: 'POST'
 
                sut.db = [row]
                sut.find data, callback
 
-               expect(callback.mostRecentCall.args[1]).toBe expected
+               expect(callback.mostRecentCall.args[1]).toEqual expected
 
          describe 'response body versus file', ->
             it 'should return response with body as content if file is not supplied', ->
                expected = 'the body!'
-               row =
+               row = new Endpoint
                   request:
                      url: '/testing'
                   response:
                      body: expected
                data =
                   url: '/testing'
+                  method: 'GET'
 
                sut.db = [row]
                sut.find data, callback
@@ -210,7 +217,7 @@ describe 'Endpoints', ->
 
             it 'should return response with body as content if file is supplied but cannot be found', ->
                expected = 'the body!'
-               row =
+               row = new Endpoint
                   request:
                      url: '/testing'
                   response:
@@ -218,6 +225,7 @@ describe 'Endpoints', ->
                      file: 'spec/data/endpoints-nonexistant.file'
                data =
                   url: '/testing'
+                  method: 'GET'
 
                sut.db = [row]
                sut.find data, callback
@@ -226,7 +234,7 @@ describe 'Endpoints', ->
 
             it 'should return response with file as content if file is supplied and exists', ->
                expected = 'file contents!'
-               row =
+               row = new Endpoint
                   request:
                      url: '/testing'
                   response:
@@ -234,6 +242,7 @@ describe 'Endpoints', ->
                      file: 'spec/data/endpoints.file'
                data =
                   url: '/testing'
+                  method: 'GET'
 
                sut.db = [row]
                sut.find data, callback
@@ -242,7 +251,7 @@ describe 'Endpoints', ->
 
          describe 'method', ->
             it 'should return response even if cases match', ->
-               row =
+               row = new Endpoint
                   request:
                      method: 'POST'
                   response: {}
@@ -256,7 +265,7 @@ describe 'Endpoints', ->
                expect(callback).toHaveBeenCalledWith null, row.response
 
             it 'should return response even if cases do not match', ->
-               row =
+               row = new Endpoint
                   request:
                      method: 'post'
                   response: {}
@@ -270,7 +279,7 @@ describe 'Endpoints', ->
                expect(callback).toHaveBeenCalledWith null, row.response
 
             it 'should return response if method matches any of the defined', ->
-               row =
+               row = new Endpoint
                   request:
                      method: ['post', 'put']
                   response: {}
@@ -284,7 +293,7 @@ describe 'Endpoints', ->
                expect(callback).toHaveBeenCalledWith null, row.response
 
             it 'should call callback with error if none of the methods match', ->
-               row =
+               row = new Endpoint
                   request:
                      method: ['post', 'put']
                   response: {}
@@ -301,12 +310,13 @@ describe 'Endpoints', ->
          describe 'headers', ->
 
             it 'should return response if all headers of request match', ->
-               row =
+               row = new Endpoint
                   request:
                      headers:
                         'content-type': 'application/json'
                   response: {}
                data =
+                  method: 'GET'
                   headers:
                      'content-type': 'application/json'
 
@@ -317,12 +327,13 @@ describe 'Endpoints', ->
                expect(callback).toHaveBeenCalledWith null, row.response
 
             it 'should call callback with error if all headers of request dont match', ->
-               row =
+               row = new Endpoint
                   request:
                      headers:
                         'content-type': 'application/json'
                   response: {}
                data =
+                  method: 'GET'
                   headers:
                      'authentication': 'Basic gibberish:password'
 
@@ -332,27 +343,16 @@ describe 'Endpoints', ->
 
                expect(callback).toHaveBeenCalledWith "Endpoint with given request doesn't exist."
 
-            it 'should return response if no headers are on endpoint or response', ->
-               row =
-                  request: {}
-                  response: {}
-               data = {}
-
-               sut.db = [row]
-
-               sut.find data, callback
-
-               expect(callback).toHaveBeenCalledWith null, row.response
-
          describe 'query', ->
 
             it 'should return response if all query of request match', ->
-               row =
+               row = new Endpoint
                   request:
                      query:
                         'first': 'value1'
                   response: {}
                data =
+                  method: 'GET'
                   query:
                      'first': 'value1'
 
@@ -363,12 +363,13 @@ describe 'Endpoints', ->
                expect(callback).toHaveBeenCalledWith null, row.response
 
             it 'should call callback with error if all query of request dont match', ->
-               row =
+               row = new Endpoint
                   request:
                      query:
                         'first': 'value1'
                   response: {}
                data =
+                  method: 'GET'
                   query:
                      'unknown': 'good question'
 
@@ -377,16 +378,3 @@ describe 'Endpoints', ->
                sut.find data, callback
 
                expect(callback).toHaveBeenCalledWith "Endpoint with given request doesn't exist."
-
-            it 'should return response if no query are on endpoint or response', ->
-               row =
-                  request: {}
-                  response: {}
-               data = {}
-
-               sut.db = [row]
-
-               sut.find data, callback
-
-               expect(callback).toHaveBeenCalledWith null, row.response
-

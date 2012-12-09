@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.43
+
+* `response.file` and `request.file` are now relative paths from the root data.yaml instead of being relative from the source of execution
+
 ## 0.1.42
 
 * `request.headers.authorization` can now take values such as `username:password` which will automatically be converted to `Basic dXNlcm5hbWU6cGFzc3dvcmQ=`.

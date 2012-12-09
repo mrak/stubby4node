@@ -49,6 +49,7 @@ module.exports.Stubby = class Stubby
       out.mute = options.mute
 
       if errors = contract options.data then return callback errors
+      if options.datadir? then @endpoints.datadir = options.datadir
       @endpoints.create options.data, onEndpointLoaded
 
       httpsOptions = {}

@@ -1,20 +1,22 @@
 ce = require 'cloneextend'
 fs = require 'fs'
+path = require 'path'
 Endpoint = require './endpoint'
 
 NOT_FOUND = "Endpoint with the given id doesn't exist."
 
 module.exports.Endpoints = class Endpoints
-   constructor : (data, callback = ->) ->
+   constructor : (data, callback = (->), datadir = process.cwd()) ->
+      @datadir = datadir
       @db = {}
       @lastId = 0
       @create data, callback
 
    create : (data, callback) ->
       insert = (item) =>
-         item = new Endpoint item
+         item = new Endpoint item, @datadir
          item.id = ++@lastId
-         @db[item.id] = ce.clone item
+         @db[item.id] = item
          callback null, ce.clone item
 
       if data instanceof Array
@@ -30,9 +32,9 @@ module.exports.Endpoints = class Endpoints
    update : (id, data, callback) ->
       if not @db[id] then return callback NOT_FOUND
 
-      endpoint = new Endpoint data
+      endpoint = new Endpoint data, @datadir
       endpoint.id = id
-      @db[endpoint.id] = ce.clone endpoint
+      @db[endpoint.id] = endpoint
       callback()
 
    delete : (id, callback) ->
@@ -51,19 +53,13 @@ module.exports.Endpoints = class Endpoints
 
    find : (data, callback) ->
       for id, endpoint of @db
-         setFallbacks(endpoint)
+         continue unless endpoint.matches data
 
-         continue if endpoint.request.url isnt data.url
-         continue unless compareHashMaps endpoint.request.headers, data.headers
-         continue unless compareHashMaps endpoint.request.query, data.query
-         continue if endpoint.request.post? and endpoint.request.post isnt data.post
+         matched = ce.clone endpoint
+         if matched.response.file?
+            try matched.response.body = fs.readFileSync path.resolve(@datadir, matched.response.file), 'utf8'
 
-         if endpoint.request.method instanceof Array
-            continue unless data.method in endpoint.request.method.map (it) -> it.toUpperCase()
-         else
-            continue if endpoint.request.method?.toUpperCase() isnt data.method
-
-         return found endpoint, callback
+         return found matched, callback
 
       callback "Endpoint with given request doesn't exist."
 
@@ -72,16 +68,3 @@ found = (endpoint, callback) ->
       return setTimeout (-> callback null,  endpoint.response), endpoint.response.latency
    else
       return callback null, endpoint.response
-
-setFallbacks = (endpoint) ->
-   if endpoint.request.file?
-      try endpoint.request.post = (fs.readFileSync endpoint.request.file, 'utf8').trim()
-
-   if endpoint.response.file?
-      try endpoint.response.body = fs.readFileSync endpoint.response.file, 'utf8'
-
-compareHashMaps = (configured = {}, incoming = {}) ->
-   for key, value of configured
-      if configured[key] isnt incoming[key] then return false
-   return true
-

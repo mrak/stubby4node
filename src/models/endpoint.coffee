@@ -1,3 +1,6 @@
+fs = require 'fs'
+path = require 'path'
+
 purifyHeaders = ->
    for prop, value of @request.headers
       delete @request.headers[prop]
@@ -39,7 +42,8 @@ compareHashMaps = (configured = {}, incoming = {}) ->
    return true
 
 module.exports = class Endpoint
-   constructor: (endpoint = {}) ->
+   constructor: (endpoint = {}, datadir = process.cwd()) ->
+      @datadir = datadir
       endpoint.request ?= {}
       endpoint.response ?= {}
 
@@ -69,7 +73,7 @@ module.exports = class Endpoint
 
       file = null
       if @request.file?
-         try file = (fs.readFileSync @request.file, 'utf8').trim()
+         try file = (fs.readFileSync path.resolve(@datadir, @request.file), 'utf8').trim()
 
       if post = file ? @request.post
          return false unless post is request.post

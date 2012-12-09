@@ -1,4 +1,5 @@
 fs = require 'fs'
+path = require 'path'
 yaml = require 'js-yaml'
 out = require './out'
 args = require './args'
@@ -130,6 +131,7 @@ module.exports =
 
    getArgs: (argv = process.argv) ->
       params = args.parse @options, argv
+      params.datadir = path.resolve path.dirname params.data
       if params.watch then params.watch = params.data
 
       for option in @options
