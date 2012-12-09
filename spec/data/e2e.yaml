@@ -13,9 +13,13 @@
       url: /basic/delete
       method: DELETE
 
+-  request:
+      url: /basic/head
+      method: HEAD
+
 - request:
       url: /basic/all
-      method: [put, post, get, delete]
+      method: [put, post, get, delete, head]
 
 
 

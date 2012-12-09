@@ -95,6 +95,17 @@ describe 'End 2 End Stubs Test Suite', ->
          runs ->
             expect(context.response.statusCode).toBe 200
 
+      it 'should return a basic HEAD endpoint', ->
+         runs ->
+            context.url = '/basic/head'
+            context.method = 'head'
+
+            createRequest context
+            waitsFor ( -> context.done ), 'request to finish', 1000
+
+         runs ->
+            expect(context.response.statusCode).toBe 200
+
       it 'should return a response for an endpoint with multiple methods', ->
          runs ->
             context.url = '/basic/all'
@@ -193,6 +204,20 @@ describe 'End 2 End Stubs Test Suite', ->
 
          runs ->
             expect(context.response.statusCode).toBe 200
+
+      it 'should return 404 if query params are not matched', ->
+         runs ->
+            context.url = '/get/query'
+            context.query =
+               first: 'invalid value'
+               second: 'value2'
+            context.method = 'get'
+
+            createRequest context
+            waitsFor ( -> context.done ), 'request to finish', 1000
+
+         runs ->
+            expect(context.response.statusCode).toBe 404
 
 
    describe 'post', ->
