@@ -1,5 +1,7 @@
+sinon = require 'sinon'
 Admin = require('../src/portals/admin').Admin
 require('../src/console/out').mute = true
+assert = require 'assert'
 
 describe 'Admin', ->
    response = null
@@ -8,24 +10,28 @@ describe 'Admin', ->
    endpoints = null
 
    beforeEach ->
-      spyOn console, 'info'
+      sinon.spy console, 'info'
       endpoints =
-         create   : jasmine.createSpy 'endpoints.create'
-         retrieve : jasmine.createSpy 'endpoints.retrieve'
-         update   : jasmine.createSpy 'endpoints.update'
-         delete   : jasmine.createSpy 'endpoints.delete'
-         gather   : jasmine.createSpy 'endpoints.gather'
+         create   : sinon.spy()
+         retrieve : sinon.spy()
+         update   : sinon.spy()
+         delete   : sinon.spy()
+         gather   : sinon.spy()
       sut = new Admin(endpoints, true)
 
       request =
          url: '/'
          method : 'POST'
          headers : {}
+         on: sinon.spy()
       response =
-         setHeader : jasmine.createSpy()
-         writeHead : jasmine.createSpy()
-         write : jasmine.createSpy()
-         end : jasmine.createSpy()
+         setHeader : sinon.spy()
+         writeHead : sinon.spy()
+         write : sinon.spy()
+         end : sinon.spy()
+
+   afterEach ->
+      console.info.restore()
 
    describe 'urlValid', ->
       it 'should accept the root url', ->
@@ -33,35 +39,35 @@ describe 'Admin', ->
 
          result = sut.urlValid url
 
-         expect(result).toBeTruthy()
+         assert result
 
       it 'should not accept urls with a-z in them', ->
          url = '/abcdefhijklmnopqrstuvwxyz'
 
          result = sut.urlValid url
 
-         expect(result).toBeFalsy()
+         assert not result
 
       it 'should accept urls of digits', ->
          url = '/1'
 
          result = sut.urlValid url
 
-         expect(result).toBeTruthy()
+         assert result
 
       it 'should not accept urls not beginning in /', ->
          url = '123456'
 
          result = sut.urlValid url
 
-         expect(result).toBeFalsy()
+         assert not result
 
       it 'should not accept urls beginning with 0', ->
          url = '/012'
 
          result = sut.urlValid url
 
-         expect(result).toBeFalsy()
+         assert not result
 
    describe 'getId', ->
       it 'should get valid id from url', ->
@@ -70,76 +76,76 @@ describe 'Admin', ->
 
          actual = sut.getId url
 
-         expect(actual).toBe id
+         assert actual is id
 
       it 'should return nothing for root url', ->
          url = "/"
 
          actual = sut.getId url
 
-         expect(actual).toBeFalsy()
+         assert not actual
 
 
    describe 'notSupported', ->
       it 'should status code with "405 Not Supported" code and end response', ->
          sut.notSupported response
 
-         expect(response.statusCode).toBe 405
-         expect(response.end).toHaveBeenCalled()
+         assert response.statusCode is 405
+         assert response.end.calledOnce
 
    describe 'notFound', ->
       it 'should write header with "404 Not Found" code and end response', ->
          sut.notFound response
 
-         expect(response.writeHead.mostRecentCall.args[0]).toBe 404
-         expect(response.end).toHaveBeenCalled()
+         assert response.writeHead.calledWith 404
+         assert response.end.calledOnce
 
    describe 'serverError', ->
       it 'should write header with "500 Server Error" code and end response', ->
          sut.serverError response
 
-         expect(response.writeHead.mostRecentCall.args[0]).toBe 500
-         expect(response.end).toHaveBeenCalled()
+         assert response.writeHead.calledWith 500
+         assert response.end.calledOnce
 
    describe 'saveError', ->
       it 'should write header with "422 Uprocessable Entity" code and end response', ->
          sut.saveError response
 
-         expect(response.writeHead.mostRecentCall.args[0]).toBe 422
-         expect(response.end).toHaveBeenCalled()
+         assert response.writeHead.calledWith 422
+         assert response.end.calledOnce
 
    describe 'noContent', ->
       it 'should write header with "204 No Content" code and end response', ->
          sut.noContent response
 
-         expect(response.statusCode).toBe 204
-         expect(response.end).toHaveBeenCalled()
+         assert response.statusCode is 204
+         assert response.end.calledOnce
 
    describe 'ok', ->
       it 'should write header with "200 OK" code and end response', ->
          sut.ok response
 
-         expect(response.writeHead.mostRecentCall.args[0]).toBe 200
-         expect(response.end).toHaveBeenCalled()
+         assert response.writeHead.calledWith 200
+         assert response.end.calledOnce
 
       it 'should write JSON content if supplied', ->
          content = {}
 
          sut.ok response, content
 
-         expect(response.write).toHaveBeenCalled()
+         assert response.write.calledOnce
 
       it 'should write nothing if content is null', ->
          content = null
 
          sut.ok response, content
 
-         expect(response.write).not.toHaveBeenCalled()
+         assert response.write.callCount is 0
 
       it 'should write nothing if content is undefined', ->
          sut.ok response
 
-         expect(response.write).not.toHaveBeenCalled()
+         assert response.write.callCount is 0
 
    describe 'created', ->
       id = null
@@ -151,75 +157,75 @@ describe 'Admin', ->
       it 'should write header with "201 Content Created" code and end response', ->
          sut.created response, request, id
 
-         expect(response.writeHead.mostRecentCall.args[0]).toBe 201
-         expect(response.end).toHaveBeenCalled()
+         assert response.writeHead.calledWith 201
+         assert response.end.calledOnce
 
       it 'should write header with Location set', ->
          expected = {'Location':"#{request.headers.host}/#{id}"}
          sut.created response, request, id
 
-         expect(response.writeHead.mostRecentCall.args[1]).toEqual expected
+         assert.deepEqual response.writeHead.args[0][1], expected
 
    describe 'server', ->
       it 'should call notFound if url not valid', ->
-         spyOn(sut, 'urlValid').andReturn false
-         spyOn sut, 'notFound'
+         sinon.stub(sut, 'urlValid').returns false
+         sinon.spy sut, 'notFound'
 
          sut.server request, response
 
-         expect(sut.notFound).toHaveBeenCalled()
+         assert sut.notFound.calledOnce
 
       it 'should call goPOST if method is POST', ->
-         spyOn(sut, 'urlValid').andReturn true
+         sinon.stub(sut, 'urlValid').returns true
          request.method = 'POST'
-         spyOn sut, 'goPOST'
+         sinon.spy sut, 'goPOST'
 
          sut.server request, response
 
-         expect(sut.goPOST).toHaveBeenCalled()
+         assert sut.goPOST.calledOnce
 
       it 'should call goPUT if method is PUT', ->
-         spyOn(sut, 'urlValid').andReturn true
+         sinon.stub(sut, 'urlValid').returns true
          request.method = 'PUT'
-         spyOn sut, 'goPUT'
+         sinon.spy sut, 'goPUT'
 
          sut.server request, response
 
-         expect(sut.goPUT).toHaveBeenCalled()
+         assert sut.goPUT.calledOnce
 
       it 'should call goGET if method is GET', ->
-         spyOn(sut, 'urlValid').andReturn true
+         sinon.stub(sut, 'urlValid').returns true
          request.method = 'GET'
-         spyOn sut, 'goGET'
+         sinon.spy sut, 'goGET'
 
          sut.server request, response
 
-         expect(sut.goGET).toHaveBeenCalled()
+         assert sut.goGET.calledOnce
 
       it 'should call goDELETE if method is DELETE', ->
-         spyOn(sut, 'urlValid').andReturn true
+         sinon.stub(sut, 'urlValid').returns true
          request.method = 'DELETE'
-         spyOn sut, 'goDELETE'
+         sinon.spy sut, 'goDELETE'
 
          sut.server request, response
 
-         expect(sut.goDELETE).toHaveBeenCalled()
+         assert sut.goDELETE.calledOnce
 
    describe 'POST data handlers', ->
       contract = null
 
       beforeEach ->
          request.on = (event, callback) -> callback()
-         spyOn(sut, 'contract').andReturn null
+         sinon.stub(sut, 'contract').returns null
 
       describe 'goPUT', ->
          it 'should send not supported if there is no id in the url', ->
-            spyOn(sut, 'getId').andReturn ''
-            spyOn sut, 'notSupported'
+            sinon.stub(sut, 'getId').returns ''
+            sinon.spy sut, 'notSupported'
 
             sut.goPUT request, response
 
-            expect(sut.notSupported).toHaveBeenCalled()
+            assert sut.notSupported.calledOnce
 
       describe 'processPUT', ->
          it 'should update item if data is JSON parsable', ->
@@ -227,33 +233,33 @@ describe 'Admin', ->
 
             sut.processPUT "any id", data, response
 
-            expect(endpoints.update).toHaveBeenCalled()
+            assert endpoints.update.calledOnce
 
          it 'should not update item if data isnt JSON parsable', ->
             data = "<H#rg"
 
             sut.processPUT "any id", data, response
 
-            expect(endpoints.update).not.toHaveBeenCalled()
+            assert endpoints.update.callCount is 0
 
          it 'should return BAD REQUEST when contract is violated', ->
             data = '{"property":"value"}'
-            sut.contract.andReturn []
-            spyOn sut, 'badRequest'
+            sut.contract.returns []
+            sinon.spy sut, 'badRequest'
 
             sut.processPUT "any id", data, response
 
-            expect(sut.badRequest).toHaveBeenCalled()
-            expect(sut.contract).toHaveBeenCalled()
+            assert sut.badRequest.calledOnce
+            assert sut.contract.calledOnce
 
       describe 'goPOST', ->
          it 'should send not supported if there is an id in the url', ->
-            spyOn(sut, 'getId').andReturn '123'
-            spyOn sut, 'notSupported'
+            sinon.stub(sut, 'getId').returns '123'
+            sinon.spy sut, 'notSupported'
 
             sut.goPOST request, response
 
-            expect(sut.notSupported).toHaveBeenCalled()
+            assert sut.notSupported.calledOnce
 
       describe 'processPOST', ->
          it 'should create item if data is JSON parsable', ->
@@ -261,52 +267,52 @@ describe 'Admin', ->
 
             sut.processPOST data, response, request
 
-            expect(endpoints.create).toHaveBeenCalled()
+            assert endpoints.create.calledOnce
 
          it 'should not create item if data isnt JSON parsable', ->
             data = "<H#rg"
 
             sut.processPOST data, response, request
 
-            expect(endpoints.create).not.toHaveBeenCalled()
+            assert endpoints.create.callCount is 0
 
          it 'should return BAD REQUEST when contract is violated', ->
             data = '{"property":"value"}'
-            sut.contract.andReturn []
-            spyOn sut, 'badRequest'
+            sut.contract.returns []
+            sinon.spy sut, 'badRequest'
 
             sut.processPOST data, response, request
 
-            expect(sut.badRequest).toHaveBeenCalled()
-            expect(sut.contract).toHaveBeenCalled()
+            assert sut.badRequest.calledOnce
+            assert sut.contract.calledOnce
 
       describe 'goDELETE', ->
          it 'should send not supported for the root url', ->
-            spyOn(sut, 'getId').andReturn ''
-            spyOn sut, 'notSupported'
+            sinon.stub(sut, 'getId').returns ''
+            sinon.spy sut, 'notSupported'
 
             sut.goDELETE request, response
 
-            expect(sut.notSupported).toHaveBeenCalled()
+            assert sut.notSupported.calledOnce
 
          it 'should delete item if id was gathered', ->
-            spyOn(sut, 'getId').andReturn '123'
+            sinon.stub(sut, 'getId').returns '123'
 
             sut.goDELETE request, response
 
-            expect(endpoints.delete).toHaveBeenCalled()
+            assert endpoints.delete.calledOnce
 
       describe 'goGET', ->
          it 'should gather all for the root url', ->
-            spyOn(sut, 'getId').andReturn ''
+            sinon.stub(sut, 'getId').returns ''
 
             sut.goGET request, response
 
-            expect(endpoints.gather).toHaveBeenCalled()
+            assert endpoints.gather.calledOnce
 
          it 'should retrieve item if id was gathered', ->
-            spyOn(sut, 'getId').andReturn '123'
+            sinon.stub(sut, 'getId').returns '123'
 
             sut.goGET request, response
 
-            expect(endpoints.retrieve).toHaveBeenCalled()
+            assert endpoints.retrieve.calledOnce

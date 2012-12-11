@@ -43,7 +43,8 @@ compareHashMaps = (configured = {}, incoming = {}) ->
 
 module.exports = class Endpoint
    constructor: (endpoint = {}, datadir = process.cwd()) ->
-      @datadir = datadir
+      Object.defineProperty @, 'datadir', value: datadir
+
       endpoint.request ?= {}
       endpoint.response ?= {}
 
@@ -75,7 +76,7 @@ module.exports = class Endpoint
       if @request.file?
          try file = (fs.readFileSync path.resolve(@datadir, @request.file), 'utf8').trim()
 
-      if post = file ? @request.post
+      if post = file or @request.post
          return false unless post is request.post
 
       if @request.method instanceof Array

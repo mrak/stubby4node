@@ -1,3 +1,6 @@
+sinon = require 'sinon'
+assert = require 'assert'
+
 describe 'CLI', ->
    sut = null
    out = null
@@ -5,8 +8,12 @@ describe 'CLI', ->
    beforeEach ->
       sut = require('../src/console/cli')
       out = require '../src/console/out'
-      spyOn process, 'exit'
-      spyOn out, 'log'
+      sinon.stub process, 'exit'
+      sinon.stub out, 'log'
+
+   afterEach ->
+      process.exit.restore()
+      out.log.restore()
 
    describe 'version', ->
       it 'should return the version of stubby in package.json', ->
@@ -14,13 +21,13 @@ describe 'CLI', ->
 
          sut.version true
 
-         expect(out.log).toHaveBeenCalledWith expected
+         assert out.log.calledWith expected
 
    describe 'help', ->
       it 'should return help text', ->
          sut.help true
 
-         expect(out.log).toHaveBeenCalled()
+         assert out.log.calledOnce
 
    describe 'getArgs', ->
       describe '-a, --admin', ->
@@ -28,99 +35,102 @@ describe 'CLI', ->
             expected = 8889
             actual = sut.getArgs []
 
-            expect(actual.admin).toBe expected
+            assert actual.admin is expected
 
          it 'should return supplied value when provided', ->
             expected = "81"
             actual = sut.getArgs ['-a', expected]
 
-            expect(actual.admin).toBe expected
+            assert actual.admin is expected
 
          it 'should return supplied value when provided with full flag', ->
             expected = "81"
             actual = sut.getArgs ['--admin', expected]
 
-            expect(actual.admin).toBe expected
+            assert actual.admin is expected
 
       describe '-s, --stubs', ->
          it 'should return default if no flag provided', ->
             expected = 8882
             actual = sut.getArgs []
 
-            expect(actual.stubs).toBe expected
+            assert actual.stubs is expected
 
          it 'should return supplied value when provided', ->
             expected = "80"
             actual = sut.getArgs ['-s', expected]
 
-            expect(actual.stubs).toBe expected
+            assert actual.stubs is expected
 
          it 'should return supplied value when provided with full flag', ->
             expected = "80"
             actual = sut.getArgs ['--stubs', expected]
 
-            expect(actual.stubs).toBe expected
+            assert actual.stubs is expected
 
       describe '-t, --tls', ->
          it 'should return default if no flag provided', ->
             expected = 7443
             actual = sut.getArgs []
 
-            expect(actual.tls).toBe expected
+            assert actual.tls is expected
 
          it 'should return supplied value when provided', ->
             expected = "443"
             actual = sut.getArgs ['-t', expected]
 
-            expect(actual.tls).toBe expected
+            assert actual.tls is expected
 
          it 'should return supplied value when provided with full flag', ->
             expected = "443"
             actual = sut.getArgs ['--tls', expected]
 
-            expect(actual.tls).toBe expected
+            assert actual.tls is expected
 
       describe '-l, --location', ->
          it 'should return default if no flag provided', ->
             expected = 'localhost'
             actual = sut.getArgs []
 
-            expect(actual.location).toBe expected
+            assert actual.location is expected
 
          it 'should return supplied value when provided', ->
             expected = 'stubby.com'
             actual = sut.getArgs ['-l', expected]
 
-            expect(actual.location).toBe expected
+            assert actual.location is expected
 
          it 'should return supplied value when provided with full flag', ->
             expected = 'stubby.com'
             actual = sut.getArgs ['--location', expected]
 
-            expect(actual.location).toBe expected
+            assert actual.location is expected
+
       describe '-v, --version', ->
          it 'should exit the process', ->
             sut.getArgs(['--version'])
-            expect(process.exit).toHaveBeenCalled()
+
+            assert process.exit.calledOnce
 
          it 'should print out version info', ->
             version = require('../package.json').version
 
             sut.getArgs(['-v'])
 
-            expect(out.log).toHaveBeenCalledWith version
+            assert out.log.calledWith version
 
       describe '-h, --help', ->
          it 'should exit the process', ->
             sut.getArgs(['--help'])
-            expect(process.exit).toHaveBeenCalled()
+
+            assert process.exit.calledOnce
 
          it 'should print out help text', ->
             help = sut.help()
 
             sut.getArgs(['-h'])
 
-            expect(out.log).toHaveBeenCalled()
+            assert out.log.calledOnce
 
    describe 'data', ->
       expected = [
@@ -149,19 +159,19 @@ describe 'CLI', ->
       it 'should be about to parse json file with array', ->
          actual = sut.getArgs ['-d', 'spec/data/cli.getData.json']
 
-         expect(actual.data).toEqual expected
+         assert.deepEqual actual.data, expected
 
       it 'should be about to parse yaml file with array', ->
          actual = sut.getArgs ['-d', 'spec/data/cli.getData.yaml']
 
-         expect(actual.data).toEqual expected
+         assert.deepEqual actual.data, expected
 
    describe 'key', ->
       it 'should return contents of file', ->
          expected = 'some generated key'
          actual = sut.key 'spec/data/cli.getKey.pem'
 
-         expect(actual).toBe expected
+         assert actual is expected
 
    describe 'cert', ->
       expected = 'some generated certificate'
@@ -169,19 +179,19 @@ describe 'CLI', ->
       it 'should return contents of file', ->
          actual = sut.cert 'spec/data/cli.getCert.pem'
 
-         expect(actual).toBe expected
+         assert actual is expected
 
    describe 'pfx', ->
       it 'should return contents of file', ->
          expected = 'some generated pfx'
          actual = sut.pfx 'spec/data/cli.getPfx.pfx'
 
-         expect(actual).toBe expected
+         assert actual is expected
 
    describe 'getArgs', ->
       it 'should gather all arguments', ->
          filename = 'file.txt'
-         expected = 
+         expected =
             data : 'a file'
             stubs : "88"
             admin : "90"
@@ -193,11 +203,13 @@ describe 'CLI', ->
             mute: true
             watch: filename
             datadir: process.cwd()
+            help: undefined
+            version: undefined
 
-         spyOn(sut, 'data').andReturn expected.data
-         spyOn(sut, 'key').andReturn expected.key
-         spyOn(sut, 'cert').andReturn expected.cert
-         spyOn(sut, 'pfx').andReturn expected.pfx
+         sinon.stub(sut, 'data').returns expected.data
+         sinon.stub(sut, 'key').returns expected.key
+         sinon.stub(sut, 'cert').returns expected.cert
+         sinon.stub(sut, 'pfx').returns expected.pfx
 
          actual = sut.getArgs [
             '-s', expected.stubs
@@ -212,4 +224,9 @@ describe 'CLI', ->
             '-w'
          ]
 
-         expect(actual).toEqual expected
+         assert.deepEqual actual, expected
+
+         sut.data.restore()
+         sut.key.restore()
+         sut.cert.restore()
+         sut.pfx.restore()

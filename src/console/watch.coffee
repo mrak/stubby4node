@@ -4,8 +4,8 @@ contract = require '../models/contract'
 out = require './out'
 yaml = require 'js-yaml'
 
-timeout = 3000
-timeoutId = null
+interval = 3000
+intervalId = null
 watching = false
 
 module.exports = class Watcher
@@ -25,13 +25,13 @@ module.exports = class Watcher
 
    deactivate: ->
       watching = false
-      clearTimeout timeoutId
+      clearInterval intervalId
 
    activate: ->
       return if watching
 
       watching = true
-      timeoutId = setTimeout @refresh, timeout
+      intervalId = setInterval @refresh, interval
 
    refresh: =>
       shasum = crypto.createHash 'sha1'
@@ -55,6 +55,3 @@ module.exports = class Watcher
             out.log e.message
 
       @sha = sha
-
-
-      timeoutId = setTimeout @refresh, timeout

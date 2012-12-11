@@ -1,5 +1,8 @@
 Endpoints = require('../src/models/endpoints').Endpoints
 Endpoint = require('../src/models/endpoint')
+assert = require 'assert'
+sinon = require 'sinon'
+waitsFor = require './helpers/waits-for'
 sut = null
 
 describe 'Endpoints', ->
@@ -10,7 +13,7 @@ describe 'Endpoints', ->
       callback = null
 
       beforeEach ->
-         callback = jasmine.createSpy 'callback'
+         callback = sinon.spy()
 
       describe 'create', ->
          data = null
@@ -23,25 +26,25 @@ describe 'Endpoints', ->
          it 'should assign id to entered endpoint', ->
             sut.create data, callback
 
-            expect(sut.db[1]).toBeDefined()
-            expect(sut.db[2]).not.toBeDefined()
+            assert sut.db[1] isnt undefined
+            assert sut.db[2] is undefined
 
          it 'should call callback', ->
             sut.create data, callback
 
-            expect(callback.callCount).toBe 1
+            assert callback.calledOnce
 
          it 'should assign ids to entered endpoints', ->
             sut.create [data, data], callback
 
-            expect(sut.db[1]).toBeDefined()
-            expect(sut.db[2]).toBeDefined()
-            expect(sut.db[3]).not.toBeDefined()
+            assert sut.db[1] isnt undefined
+            assert sut.db[2] isnt undefined
+            assert sut.db[3] is undefined
 
          it 'should call callback for each supplied endpoint', ->
             sut.create [data, data], callback
 
-            expect(callback.callCount).toBe 2
+            assert callback.calledTwice
 
       describe 'retrieve', ->
          id = "any id"
@@ -54,14 +57,14 @@ describe 'Endpoints', ->
 
             sut.retrieve id, callback
 
-            expect(callback).toHaveBeenCalledWith null, row
+            assert callback.calledWith null, row
 
          it 'should call callback with error msg if operation does not find item', ->
             sut.db = []
 
             sut.retrieve id, callback
 
-            expect(callback).toHaveBeenCalledWith "Endpoint with the given id doesn't exist."
+            assert callback.calledWith "Endpoint with the given id doesn't exist."
 
       describe 'update', ->
          id = "any id"
@@ -74,13 +77,13 @@ describe 'Endpoints', ->
 
             sut.update id, data, callback
 
-            expect(callback.mostRecentCall.args).toEqual []
+            assert callback.calledWithExactly()
 
          it 'should call callback with error msg if operation does not find item', ->
 
             sut.update id, data, callback
 
-            expect(callback).toHaveBeenCalledWith "Endpoint with the given id doesn't exist."
+            assert callback.calledWith "Endpoint with the given id doesn't exist."
 
       describe 'delete', ->
          id = "any id"
@@ -90,29 +93,29 @@ describe 'Endpoints', ->
 
             sut.delete id, callback
 
-            expect(callback.mostRecentCall.args).toEqual []
+            assert callback.calledWithExactly()
 
          it 'should call callback with error message if operation does not find item', ->
             sut.delete id, callback
 
-            expect(callback).toHaveBeenCalledWith "Endpoint with the given id doesn't exist."
+            assert callback.calledWith "Endpoint with the given id doesn't exist."
 
       describe 'gather', ->
 
-         it 'should call success if operation returns some rows', ->
+         it 'should call callback with rows if operation returns some rows', ->
             data = [{},{}]
             sut.db = data
 
             sut.gather callback
 
-            expect(callback.mostRecentCall.args).toEqual [data]
+            assert callback.calledWith data
 
-         it 'should call missing if operation does not find item', ->
+         it 'should call callback with empty array if operation does not find item', ->
             sut.db = []
 
             sut.gather callback
 
-            expect(callback).toHaveBeenCalledWith []
+            assert callback.calledWith []
 
       describe 'find', ->
          data =
@@ -123,14 +126,14 @@ describe 'Endpoints', ->
             sut.db = [row]
             sut.find data, callback
 
-            expect(callback).toHaveBeenCalledWith null, row.response
+            assert callback.calledWith null, row.response
 
          it 'should call callback with error if operation does not find item', ->
             sut.find data, callback
 
-            expect(callback).toHaveBeenCalledWith "Endpoint with given request doesn't exist."
+            assert callback.calledWith "Endpoint with given request doesn't exist."
 
-         it 'should call callback after timeout if data response has a latency', ->
+         it 'should call callback after timeout if data response has a latency', (done) ->
             row = new Endpoint
                request: {}
                response:
@@ -138,8 +141,8 @@ describe 'Endpoints', ->
 
             sut.db = [row]
             sut.find data, callback
-            expect(callback).not.toHaveBeenCalled()
-            waitsFor (-> callback.callCount is 1), 'Callback call was never called', 1000
+
+            waitsFor (-> callback.called), 'Callback call was never called', [900, 1100], done
 
          describe 'request post versus file', ->
             it 'should match response with post if file is not supplied', ->
@@ -158,7 +161,7 @@ describe 'Endpoints', ->
                sut.db = [row]
                sut.find data, callback
 
-               expect(callback.mostRecentCall.args[1]).toEqual expected
+               assert callback.calledWith null, expected
 
             it 'should match response with post file is supplied but cannot be found', ->
                expected = { status : 200 }
@@ -177,7 +180,7 @@ describe 'Endpoints', ->
                sut.db = [row]
                sut.find data, callback
 
-               expect(callback.mostRecentCall.args[1]).toEqual expected
+               assert callback.calledWith null, expected
 
             it 'should match response with file if file is supplied and exists', ->
                expected = { status : 200 }
@@ -196,7 +199,7 @@ describe 'Endpoints', ->
                sut.db = [row]
                sut.find data, callback
 
-               expect(callback.mostRecentCall.args[1]).toEqual expected
+               assert callback.calledWith null, expected
 
          describe 'response body versus file', ->
             it 'should return response with body as content if file is not supplied', ->
@@ -213,7 +216,7 @@ describe 'Endpoints', ->
                sut.db = [row]
                sut.find data, callback
 
-               expect(callback.mostRecentCall.args[1].body).toBe expected
+               assert callback.args[0][1].body is expected
 
             it 'should return response with body as content if file is supplied but cannot be found', ->
                expected = 'the body!'
@@ -230,7 +233,7 @@ describe 'Endpoints', ->
                sut.db = [row]
                sut.find data, callback
 
-               expect(callback.mostRecentCall.args[1].body).toBe expected
+               assert callback.args[0][1].body is expected
 
             it 'should return response with file as content if file is supplied and exists', ->
                expected = 'file contents!'
@@ -247,7 +250,7 @@ describe 'Endpoints', ->
                sut.db = [row]
                sut.find data, callback
 
-               expect(callback.mostRecentCall.args[1].body.trim()).toBe expected
+               assert callback.args[0][1].body.trim() is expected
 
          describe 'method', ->
             it 'should return response even if cases match', ->
@@ -262,7 +265,7 @@ describe 'Endpoints', ->
 
                sut.find data, callback
 
-               expect(callback).toHaveBeenCalledWith null, row.response
+               assert callback.calledWith null, row.response
 
             it 'should return response even if cases do not match', ->
                row = new Endpoint
@@ -276,7 +279,7 @@ describe 'Endpoints', ->
 
                sut.find data, callback
 
-               expect(callback).toHaveBeenCalledWith null, row.response
+               assert callback.calledWith null, row.response
 
             it 'should return response if method matches any of the defined', ->
                row = new Endpoint
@@ -290,7 +293,7 @@ describe 'Endpoints', ->
 
                sut.find data, callback
 
-               expect(callback).toHaveBeenCalledWith null, row.response
+               assert callback.calledWith null, row.response
 
             it 'should call callback with error if none of the methods match', ->
                row = new Endpoint
@@ -304,8 +307,7 @@ describe 'Endpoints', ->
 
                sut.find data, callback
 
-               expect(callback).toHaveBeenCalledWith "Endpoint with given request doesn't exist."
-
+               assert callback.calledWith "Endpoint with given request doesn't exist."
 
          describe 'headers', ->
 
@@ -324,7 +326,7 @@ describe 'Endpoints', ->
 
                sut.find data, callback
 
-               expect(callback).toHaveBeenCalledWith null, row.response
+               assert callback.calledWith null, row.response
 
             it 'should call callback with error if all headers of request dont match', ->
                row = new Endpoint
@@ -341,7 +343,7 @@ describe 'Endpoints', ->
 
                sut.find data, callback
 
-               expect(callback).toHaveBeenCalledWith "Endpoint with given request doesn't exist."
+               assert callback.calledWith "Endpoint with given request doesn't exist."
 
          describe 'query', ->
 
@@ -360,7 +362,7 @@ describe 'Endpoints', ->
 
                sut.find data, callback
 
-               expect(callback).toHaveBeenCalledWith null, row.response
+               assert callback.calledWith null, row.response
 
             it 'should call callback with error if all query of request dont match', ->
                row = new Endpoint
@@ -377,4 +379,4 @@ describe 'Endpoints', ->
 
                sut.find data, callback
 
-               expect(callback).toHaveBeenCalledWith "Endpoint with given request doesn't exist."
+               assert callback.calledWith "Endpoint with given request doesn't exist."

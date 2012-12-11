@@ -1,3 +1,4 @@
+assert = require 'assert'
 sut = null
 
 describe 'args', ->
@@ -14,7 +15,7 @@ describe 'args', ->
 
             result = sut.parse options, ['-f']
 
-            expect(result.flag).toBe true
+            assert result.flag is true
 
          it 'should parse two flags without parameters', ->
             options = [
@@ -27,8 +28,8 @@ describe 'args', ->
 
             result = sut.parse options, ['-ot']
 
-            expect(result.one).toBe true
-            expect(result.two).toBe true
+            assert result.one is true
+            assert result.two is true
 
          it 'should default to false for flag without parameters', ->
             options = [
@@ -38,7 +39,7 @@ describe 'args', ->
 
             result = sut.parse options, []
 
-            expect(result.flag).toBe false
+            assert result.flag is false
 
 
          it 'should parse a flag with parameters', ->
@@ -51,7 +52,7 @@ describe 'args', ->
 
             result = sut.parse options, ['-f', expected]
 
-            expect(result.flag).toBe expected
+            assert result.flag is expected
 
          it 'should parse two flags with parameters', ->
             options = [
@@ -66,8 +67,8 @@ describe 'args', ->
 
             result = sut.parse options, ['-o', 'one', '-t', 'two']
 
-            expect(result.one).toBe 'one'
-            expect(result.two).toBe 'two'
+            assert result.one is 'one'
+            assert result.two is 'two'
 
          it 'should be default if flag not supplied', ->
             expected = 'a_value'
@@ -80,7 +81,7 @@ describe 'args', ->
 
             result = sut.parse options, []
 
-            expect(result.flag).toBe expected
+            assert result.flag is expected
 
          it 'should be default if flag parameter not supplied', ->
             expected = 'a_value'
@@ -93,7 +94,7 @@ describe 'args', ->
 
             result = sut.parse options, ['-f']
 
-            expect(result.flag).toBe expected
+            assert result.flag is expected
 
          it 'should be default if flag parameter skipped', ->
             expected = 'a_value'
@@ -106,7 +107,7 @@ describe 'args', ->
 
             result = sut.parse options, ['-f', '-z']
 
-            expect(result.flag).toBe expected
+            assert result.flag is expected
 
          it 'should parse a flag with parameters combined with a flag without parameters', ->
             options = [
@@ -120,8 +121,8 @@ describe 'args', ->
 
             result = sut.parse options, ['-ot', 'one']
 
-            expect(result.one).toBe 'one'
-            expect(result.two).toBe true
+            assert result.one is 'one'
+            assert result.two is true
 
       describe 'names', ->
          it 'should parse a name without parameters', ->
@@ -132,7 +133,7 @@ describe 'args', ->
 
             result = sut.parse options, ['--flag']
 
-            expect(result.flag).toBe true
+            assert result.flag is true
 
 
          it 'should parse two names without parameters', ->
@@ -146,8 +147,8 @@ describe 'args', ->
 
             result = sut.parse options, ['--one', '--two']
 
-            expect(result.one).toBe true
-            expect(result.two).toBe true
+            assert result.one is true
+            assert result.two is true
 
          it 'should default to false for name without parameters', ->
             options = [
@@ -157,7 +158,7 @@ describe 'args', ->
 
             result = sut.parse options, []
 
-            expect(result.flag).toBe false
+            assert result.flag is false
 
          it 'should parse a name with parameters', ->
             expected = 'a_value'
@@ -169,7 +170,7 @@ describe 'args', ->
 
             result = sut.parse options, ['--flag', expected]
 
-            expect(result.flag).toBe expected
+            assert result.flag is expected
 
          it 'should parse two names with parameters', ->
             options = [
@@ -184,8 +185,8 @@ describe 'args', ->
 
             result = sut.parse options, ['--one', 'one', '--two', 'two']
 
-            expect(result.one).toBe 'one'
-            expect(result.two).toBe 'two'
+            assert result.one is 'one'
+            assert result.two is 'two'
 
          it 'should be default if name not supplied', ->
             expected = 'a_value'
@@ -198,7 +199,7 @@ describe 'args', ->
 
             result = sut.parse options, []
 
-            expect(result.flag).toBe expected
+            assert result.flag is expected
 
          it 'should be default if name parameter not supplied', ->
             expected = 'a_value'
@@ -211,7 +212,7 @@ describe 'args', ->
 
             result = sut.parse options, ['--flag']
 
-            expect(result.flag).toBe expected
+            assert result.flag is expected
 
          it 'should be default if name parameter skipped', ->
             expected = 'a_value'
@@ -224,5 +225,5 @@ describe 'args', ->
 
             result = sut.parse options, ['--flag', '--another-flag']
 
-            expect(result.flag).toBe expected
+            assert result.flag is expected
 

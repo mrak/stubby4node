@@ -1,160 +1,132 @@
 Stubby = require('../src/main').Stubby
+
 fs = require 'fs'
-http = require 'http'
 yaml = require 'js-yaml'
 ce = require 'cloneextend'
 endpointData = yaml.load (fs.readFileSync 'spec/data/e2e.yaml', 'utf8').trim()
 
-createRequest = (context) ->
-   options =
-      port: 8889
-      method: context.method
-      path: context.url
-
-   request = http.request options, (response) ->
-      data = ''
-      response.on 'data', (chunk) ->
-         data += chunk
-      response.on 'end', ->
-         response.data = data
-         context.response = response
-         context.done = true
-
-   request.write context.post if context.post?
-   request.end()
-   return request
+waitsFor = require './helpers/waits-for'
+assert = require 'assert'
+createRequest = require './helpers/create-request'
 
 describe 'End 2 End Admin Test Suite', ->
    sut = null
    context = null
-   stopStubby = ->
-      stopped = false
-      sut.stop -> stopped = true
-      waitsFor (-> stopped), 'stubby to stop', 1
+   port = 8889
+   stopStubby = (finish) ->
+      if sut? then return sut.stop finish
+      finish()
 
-   beforeEach ->
-      if sut? then stopStubby()
-      sut = new Stubby()
+   beforeEach (done) ->
       context =
          done: false
+         port: port
 
-      go = false
-      sut.start data:endpointData, -> go = true
-      waitsFor ( -> go ), 'stubby to start', 1000
+      finish = ->
+         sut = new Stubby()
+         sut.start {data:endpointData}, done
+
+      stopStubby finish
 
    afterEach stopStubby
 
-   it 'should react to /ping', ->
-      runs ->
+   it 'should react to /ping', (done) ->
          context.url = '/ping'
 
          createRequest context
 
-         waitsFor ( -> context.done), 'request to finish', 1000
+         waitsFor ( -> context.done), 'request to finish', 1000, ->
+            assert context.response.data is 'pong'
+            done()
 
-      runs ->
-         expect(context.response.data).toBe 'pong'
-
-   it 'should be able to retreive an endpoint through GET', ->
+   it 'should be able to retreive an endpoint through GET', (done) ->
       id = 3
       endpoint = ce.clone endpointData[id-1]
-      runs ->
-         endpoint.id = id
+      endpoint.id = id
 
-         context.url = "/#{id}"
-         context.method = 'get'
+      context.url = "/#{id}"
+      context.method = 'get'
 
-         createRequest context
+      createRequest context
 
-         waitsFor ( -> context.done), 'request to finish', 1000
-
-      runs ->
+      waitsFor ( -> context.done), 'request to finish', 1000, ->
          returned = JSON.parse context.response.data
          for prop, value of endpoint.request
-            expect(value).toBe returned.request[prop]
+            assert value is returned.request[prop]
+         done()
 
-   it 'should be able to edit an endpoint through PUT', ->
+   it 'should be able to edit an endpoint through PUT', (done) ->
       id = 2
       endpoint = ce.clone endpointData[id-1]
 
-      runs ->
-         context.url = "/#{id}"
+      context.url = "/#{id}"
 
-         endpoint.request.url = '/munchkin'
-         context.method = 'put'
-         context.post = JSON.stringify endpoint
+      endpoint.request.url = '/munchkin'
+      context.method = 'put'
+      context.post = JSON.stringify endpoint
 
-         createRequest context
-         waitsFor (-> context.done), 'put request to finish', 1000
+      createRequest context
 
-      runs ->
+      waitsFor (-> context.done), 'put request to finish', 1000, ->
          endpoint.id = id
          context.done = false
          context.method = 'get'
 
          createRequest context
 
-         waitsFor (-> context.done), 'get request to finish', 1000
+         waitsFor (-> context.done), 'get request to finish', 1000, ->
+            returned = JSON.parse context.response.data
+            assert returned.request.url is endpoint.request.url
+            done()
 
-      runs ->
-         returned = JSON.parse context.response.data
-         expect(returned.request.url).toBe endpoint.request.url
-
-   it 'should be about to create an endpoint through POST', ->
+   it 'should be about to create an endpoint through POST', (done) ->
       endpoint =
          request:
             url: '/posted/endpoint'
          response:
             status: 200
 
-      runs ->
-         context.url = '/'
-         context.method = 'post'
-         context.post = JSON.stringify endpoint
+      context.url = '/'
+      context.method = 'post'
+      context.post = JSON.stringify endpoint
 
-         createRequest context
+      createRequest context
 
-         waitsFor ( -> context.done), 'post request to finish', 1000
+      waitsFor ( -> context.done), 'post request to finish', 1000, ->
 
-      runs ->
-         expect(context.response.statusCode).toBe 201
+         assert context.response.statusCode is 201
 
-      runs ->
          id = context.response.headers.location.replace /localhost:8889\/([0-9]+)/, '$1'
          context =
+            port: port
             done: false
             url: "/#{id}"
             method: 'get'
 
          createRequest context
 
-         waitsFor ( -> context.done), 'get request to finish', 1000
+         waitsFor ( -> context.done), 'get request to finish', 1000, ->
+            returned = JSON.parse context.response.data
+            assert returned.request.url is endpoint.request.url
+            done()
 
-      runs ->
-         returned = JSON.parse context.response.data
-         expect(returned.request.url).toBe endpoint.request.url
+   it 'should be about to delete an endpoint through DELETE', (done) ->
+      context.url = '/2'
+      context.method = 'delete'
 
-   it 'should be about to delete an endpoint through DELETE', ->
-      runs ->
-         context.url = '/2'
-         context.method = 'delete'
+      createRequest context
 
-         createRequest context
+      waitsFor ( -> context.done), 'delete request to finish', 1000, ->
+         assert context.response.statusCode is 204
 
-         waitsFor ( -> context.done), 'delete request to finish', 1000
-
-      runs ->
-         expect(context.response.statusCode).toBe 204
-
-      runs ->
          context =
+            port: port
             done: false
             url: "/2"
             method: 'get'
 
          createRequest context
 
-         waitsFor ( -> context.done), 'get request to finish', 1000
-
-      runs ->
-         expect(context.response.statusCode).toBe 404
+         waitsFor ( -> context.done), 'get request to finish', 1000, ->
+            context.response.statusCode is 404
+            done()

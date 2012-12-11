@@ -1,5 +1,5 @@
 Endpoint = require '../src/models/endpoint'
-
+assert = require 'assert'
 
 compareOneWay = (left, right) ->
    for own key, value of left
@@ -45,31 +45,31 @@ describe 'Endpoint', ->
 
          actual = new Endpoint data
 
-         expect(compareObjects actual, data).toBe true
+         assert.deepEqual actual, data
 
       it 'should default method to GET', ->
          expected = 'GET'
 
          actual = new Endpoint data
 
-         expect(actual.request.method).toBe expected
+         assert actual.request.method is expected
 
       it 'should default status to 200', ->
          expected = 200
 
          actual = new Endpoint data
 
-         expect(actual.response.status).toBe expected
+         assert actual.response.status is expected
 
       it 'should not default response headers', ->
          actual = new Endpoint data
 
-         expect(actual.response.headers).not.toBeDefined()
+         assert actual.response.headers is undefined
 
       it 'should not default request headers', ->
          actual = new Endpoint data
 
-         expect(actual.request.headers).not.toBeDefined()
+         assert actual.request.headers is undefined
 
       it 'should lower case headers properties', ->
          data.request =
@@ -85,8 +85,8 @@ describe 'Endpoint', ->
 
          actual = new Endpoint data
 
-         expect(actual.response.headers).toEqual expected.response
-         expect(actual.request.headers).toEqual expected.request
+         assert.deepEqual actual.response.headers, expected.response
+         assert.deepEqual actual.request.headers, expected.request
 
       it 'should base64 encode authorization headers if not encoded', ->
          expected = 'Basic dXNlcm5hbWU6cGFzc3dvcmQ='
@@ -95,7 +95,7 @@ describe 'Endpoint', ->
 
          actual = new Endpoint data
 
-         expect(actual.request.headers.authorization).toBe expected
+         assert actual.request.headers.authorization is expected
 
       it 'should not encode authorization headers if encoded', ->
          expected = 'Basic dXNlcm5hbWU6cGFzc3dvc='
@@ -104,7 +104,7 @@ describe 'Endpoint', ->
 
          actual = new Endpoint data
 
-         expect(actual.request.headers.authorization).toBe expected
+         assert actual.request.headers.authorization is expected
 
       it 'should stringify object body in response', ->
          expected = '{"property":"value"}'
@@ -113,4 +113,4 @@ describe 'Endpoint', ->
 
          actual = new Endpoint data
 
-         expect(actual.response.body).toEqual expected
+         assert actual.response.body is expected

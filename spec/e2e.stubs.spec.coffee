@@ -1,317 +1,265 @@
 Stubby = require('../src/main').Stubby
+
 fs = require 'fs'
-http = require 'http'
-qs = require 'querystring'
 yaml = require 'js-yaml'
 ce = require 'cloneextend'
 endpointData = yaml.load (fs.readFileSync 'spec/data/e2e.yaml', 'utf8').trim()
 
-createRequest = (context) ->
-   options =
-      port: 8882
-      method: context.method
-      path: context.url
-      headers: context.requestHeaders
-
-   if context.query?
-      options.path += "?#{qs.stringify context.query}"
-
-   request = http.request options, (response) ->
-      data = ''
-      response.on 'data', (chunk) ->
-         data += chunk
-      response.on 'end', ->
-         response.data = data
-         context.response = response
-         context.done = true
-
-   request.write context.post if context.post?
-   request.end()
-   return request
+waitsFor = require './helpers/waits-for'
+assert = require 'assert'
+createRequest = require './helpers/create-request'
 
 describe 'End 2 End Stubs Test Suite', ->
    sut = null
    context = null
-   stopStubby = ->
-      stopped = false
-      sut.stop -> stopped = true
-      waitsFor (-> stopped), 'stubby to stop', 1
+   port = 8882
+   stopStubby = (finish) ->
+      if sut? then return sut.stop finish
+      finish()
 
-   beforeEach ->
-      if sut? then stopStubby()
-      sut = new Stubby()
+   beforeEach (done) ->
       context =
          done: false
+         port: port
 
-      go = false
+      finish = ->
+         sut = new Stubby()
+         sut.start data:endpointData, done
 
-      sut.start data:endpointData, -> go = true
-      waitsFor ( -> go ), 'stubby to start', 1000
+      stopStubby finish
 
    afterEach stopStubby
 
    describe 'basics', ->
-      it 'should return a basic GET endpoint', ->
-         runs ->
-            context.url = '/basic/get'
-            context.method = 'get'
-            createRequest context
+      it 'should return a basic GET endpoint', (done) ->
+         context.url = '/basic/get'
+         context.method = 'get'
+         createRequest context
 
-            waitsFor ( -> context.done), 'request to finish', 1000
+         waitsFor ( -> context.done), 'request to finish', 1000, ->
+            assert context.response.statusCode is 200
+            done()
 
-         runs ->
-            expect(context.response.statusCode).toBe 200
+      it 'should return a basic PUT endpoint', (done) ->
+         context.url = '/basic/put'
+         context.method = 'put'
+         createRequest context
 
-      it 'should return a basic PUT endpoint', ->
-         runs ->
-            context.url = '/basic/put'
-            context.method = 'put'
-            createRequest context
+         waitsFor ( -> context.done ), 'request to finish', 1000, ->
+            assert context.response.statusCode is 200
+            done()
 
-            waitsFor ( -> context.done ), 'request to finish', 1000
+      it 'should return a basic POST endpoint', (done) ->
+         context.url = '/basic/post'
+         context.method = 'post'
 
-         runs ->
-            expect(context.response.statusCode).toBe 200
+         createRequest context
+         waitsFor ( -> context.done ), 'request to finish', 1000, ->
+            assert context.response.statusCode is 200
+            done()
 
-      it 'should return a basic POST endpoint', ->
-         runs ->
-            context.url = '/basic/post'
-            context.method = 'post'
+      it 'should return a basic DELETE endpoint', (done) ->
+         context.url = '/basic/delete'
+         context.method = 'delete'
 
-            createRequest context
-            waitsFor ( -> context.done ), 'request to finish', 1000
+         createRequest context
+         waitsFor ( -> context.done ), 'request to finish', 1000, ->
+            assert context.response.statusCode is 200
+            done()
 
-         runs ->
-            expect(context.response.statusCode).toBe 200
+      it 'should return a basic HEAD endpoint', (done) ->
+         context.url = '/basic/head'
+         context.method = 'head'
 
-      it 'should return a basic DELETE endpoint', ->
-         runs ->
-            context.url = '/basic/delete'
-            context.method = 'delete'
+         createRequest context
+         waitsFor ( -> context.done ), 'request to finish', 1000, ->
+            assert context.response.statusCode is 200
+            done()
 
-            createRequest context
-            waitsFor ( -> context.done ), 'request to finish', 1000
+      it 'should return a response for an endpoint with multiple methods', (done) ->
+         context.url = '/basic/all'
+         context.method = 'delete'
 
-         runs ->
-            expect(context.response.statusCode).toBe 200
+         createRequest context
 
-      it 'should return a basic HEAD endpoint', ->
-         runs ->
-            context.url = '/basic/head'
-            context.method = 'head'
+         waitsFor ( -> context.done ), 'all endpoint delete to finish', 1000, ->
+            assert context.response.statusCode is 200
 
-            createRequest context
-            waitsFor ( -> context.done ), 'request to finish', 1000
-
-         runs ->
-            expect(context.response.statusCode).toBe 200
-
-      it 'should return a response for an endpoint with multiple methods', ->
-         runs ->
-            context.url = '/basic/all'
-            context.method = 'delete'
-
-            createRequest context
-
-            waitsFor ( -> context.done ), 'all endpoint delete to finish', 1000
-
-         runs ->
-            expect(context.response.statusCode).toBe 200
-
-         runs ->
             context =
+               port: port
                finished: false
                url: "/basic/all"
                method: 'get'
 
             createRequest context
 
-            waitsFor ( -> context.done ), 'all endpoint get to finish', 1000
+            waitsFor ( -> context.done ), 'all endpoint get to finish', 1000, ->
+               assert context.response.statusCode is 200
 
-         runs ->
-            expect(context.response.statusCode).toBe 200
+               context =
+                  port: port
+                  finished: false
+                  url: "/basic/all"
+                  method: 'put'
 
-         runs ->
-            context =
-               finished: false
-               url: "/basic/all"
-               method: 'put'
+               createRequest context
 
-            createRequest context
+               waitsFor ( -> context.done ), 'all endpoint put to finish', 1000, ->
+                  assert context.response.statusCode is 200
 
-            waitsFor ( -> context.done ), 'all endpoint put to finish', 1000
+                  context =
+                     port: port
+                     finished: false
+                     url: "/basic/all"
+                     method: 'post'
 
-         runs ->
-            expect(context.response.statusCode).toBe 200
+                  createRequest context
 
-         runs ->
-            context =
-               finished: false
-               url: "/basic/all"
-               method: 'post'
-
-            createRequest context
-
-            waitsFor ( -> context.done ), 'all endpoint post to finish', 1000
-
-         runs ->
-            expect(context.response.statusCode).toBe 200
+                  waitsFor ( -> context.done ), 'all endpoint post to finish', 1000, ->
+                     assert context.response.statusCode is 200
+                     done()
 
    describe 'GET', ->
-      it 'should return a body from a GET endpoint', ->
-         runs ->
-            context.url = '/get/body'
-            context.method = 'get'
+      it 'should return a body from a GET endpoint', (done) ->
+         context.url = '/get/body'
+         context.method = 'get'
 
-            createRequest context
-            waitsFor ( -> context.done ), 'request to finish', 1000
+         createRequest context
 
-         runs ->
-            expect(context.response.data).toBe 'plain text'
+         waitsFor ( -> context.done ), 'request to finish', 1000, ->
+            assert context.response.data is 'plain text'
+            done()
 
-      it 'should return a body from a json GET endpoint', ->
-         runs ->
-            context.url = '/get/json'
-            context.method = 'get'
+      it 'should return a body from a json GET endpoint', (done) ->
+         context.url = '/get/json'
+         context.method = 'get'
 
-            createRequest context
-            waitsFor ( -> context.done ), 'request to finish', 1000
-         runs ->
-            expect(context.response.data.trim()).toBe '{"property":"value"}'
-            expect(context.response.headers['content-type']).toEqual 'application/json'
+         createRequest context
 
-      it 'should return a 420 GET endpoint', ->
-         runs ->
-            context.url = '/get/420'
-            context.method = 'get'
+         waitsFor ( -> context.done ), 'request to finish', 1000, ->
+            assert context.response.data.trim() is '{"property":"value"}'
+            assert context.response.headers['content-type'] is 'application/json'
+            done()
 
-            createRequest context
-            waitsFor ( -> context.done ), 'request to finish', 1000
+      it 'should return a 420 GET endpoint', (done) ->
+         context.url = '/get/420'
+         context.method = 'get'
 
-         runs ->
-            expect(context.response.statusCode).toBe 420
+         createRequest context
 
-      it 'should be able to handle query params', ->
-         runs ->
-            context.url = '/get/query'
-            context.query =
-               first: 'value1 with spaces!'
-               second: 'value2'
-            context.method = 'get'
+         waitsFor ( -> context.done ), 'request to finish', 1000, ->
+            assert context.response.statusCode is 420
+            done()
 
-            createRequest context
-            waitsFor ( -> context.done ), 'request to finish', 1000
+      it 'should be able to handle query params', (done) ->
+         context.url = '/get/query'
+         context.query =
+            first: 'value1 with spaces!'
+            second: 'value2'
+         context.method = 'get'
 
-         runs ->
-            expect(context.response.statusCode).toBe 200
+         createRequest context
 
-      it 'should return 404 if query params are not matched', ->
-         runs ->
-            context.url = '/get/query'
-            context.query =
-               first: 'invalid value'
-               second: 'value2'
-            context.method = 'get'
+         waitsFor ( -> context.done ), 'request to finish', 1000, ->
+            assert context.response.statusCode is 200
+            done()
 
-            createRequest context
-            waitsFor ( -> context.done ), 'request to finish', 1000
+      it 'should return 404 if query params are not matched', (done) ->
+         context.url = '/get/query'
+         context.query =
+            first: 'invalid value'
+            second: 'value2'
+         context.method = 'get'
 
-         runs ->
-            expect(context.response.statusCode).toBe 404
+         createRequest context
 
+         waitsFor ( -> context.done ), 'request to finish', 1000, ->
+            assert context.response.statusCode is 404
+            done()
 
    describe 'post', ->
-      it 'should be able to handle authorized posts', ->
-         runs ->
-            context.url = '/post/auth'
-            context.method = 'post'
-            context.post = 'some=data'
-            context.requestHeaders =
-               authorization: "Basic c3R1YmJ5OnBhc3N3b3Jk"
+      it 'should be able to handle authorized posts', (done) ->
+         context.url = '/post/auth'
+         context.method = 'post'
+         context.post = 'some=data'
+         context.requestHeaders =
+            authorization: "Basic c3R1YmJ5OnBhc3N3b3Jk"
 
-            createRequest context
-            waitsFor ( -> context.done ), 'request to finish', 1000
+         createRequest context
 
-         runs ->
-            expect(context.response.statusCode).toBe 201
-            expect(context.response.headers.location).toBe '/some/endpoint/id'
-            expect(context.response.data).toBe 'resource has been created'
+         waitsFor ( -> context.done ), 'request to finish', 1000, ->
+            assert context.response.statusCode is 201
+            assert context.response.headers.location is '/some/endpoint/id'
+            assert context.response.data is 'resource has been created'
+            done()
 
 
-      it 'should be able to handle authorized posts where the yaml wasnt pre-encoded', ->
-         runs ->
-            context.url = '/post/auth/pair'
-            context.method = 'post'
-            context.post = 'some=data'
-            context.requestHeaders =
-               authorization: "Basic c3R1YmJ5OnBhc3N3b3JkWjBy"
+      it 'should be able to handle authorized posts where the yaml wasnt pre-encoded', (done) ->
+         context.url = '/post/auth/pair'
+         context.method = 'post'
+         context.post = 'some=data'
+         context.requestHeaders =
+            authorization: "Basic c3R1YmJ5OnBhc3N3b3JkWjBy"
 
-            createRequest context
-            waitsFor ( -> context.done ), 'request to finish', 1000
+         createRequest context
 
-         runs ->
-            expect(context.response.statusCode).toBe 201
-            expect(context.response.headers.location).toBe '/some/endpoint/id'
-            expect(context.response.data).toBe 'resource has been created'
-
+         waitsFor ( -> context.done ), 'request to finish', 1000, ->
+            assert context.response.statusCode is 201
+            assert context.response.headers.location is '/some/endpoint/id'
+            assert context.response.data is 'resource has been created'
+            done()
 
    describe 'put', ->
-      it 'should wait if a 2000ms latency is specified', ->
-         runs ->
-            context.url = '/put/latency'
-            context.method = 'put'
+      it 'should wait if a 2000ms latency is specified', (done) ->
+         @timeout 3500
+         context.url = '/put/latency'
+         context.method = 'put'
 
-            createRequest context
-            waits 1000
-            expect(context.done).toBe false
-            waitsFor ( -> context.done ), 'latency-ridden request to finish', 3000
+         createRequest context
 
-         runs ->
-            expect(context.response.data).toBe 'updated'
+         waitsFor ( -> context.done ), 'latency-ridden request to finish', [2000, 3000], ->
+            assert context.response.data is 'updated'
+            done()
 
    describe 'file use', ->
       describe 'response', ->
-         it 'should handle fallback to body if specified response file cannot be found', ->
-            runs ->
-               context.url = '/file/body/missingfile'
+         it 'should handle fallback to body if specified response file cannot be found', (done) ->
+            context.url = '/file/body/missingfile'
 
-               createRequest context
-               waitsFor ( -> context.done ), 'body-fallback request to finish', 1000
+            createRequest context
 
-            runs ->
-               expect(context.response.data).toBe 'body contents!'
+            waitsFor ( -> context.done ), 'body-fallback request to finish', 1000, ->
+               assert context.response.data is 'body contents!'
+               done()
 
-         it 'should handle file response when file can be found', ->
-            runs ->
-               context.url = '/file/body'
+         it 'should handle file response when file can be found', (done) ->
+            context.url = '/file/body'
 
-               createRequest context
-               waitsFor ( -> context.done ), 'body-fallback request to finish', 1000
+            createRequest context
 
-            runs ->
-               expect(context.response.data.trim()).toBe 'file contents!'
+            waitsFor ( -> context.done ), 'body-fallback request to finish', 1000, ->
+               assert context.response.data.trim() is 'file contents!'
+               done()
 
       describe 'request', ->
-         it 'should handle fallback to post if specified request file cannot be found', ->
-            runs ->
-               context.url = '/file/post/missingfile'
-               context.method = 'post'
-               context.post = 'post contents!'
+         it 'should handle fallback to post if specified request file cannot be found', (done) ->
+            context.url = '/file/post/missingfile'
+            context.method = 'post'
+            context.post = 'post contents!'
 
-               createRequest context
-               waitsFor ( -> context.done ), 'post-fallback request to finish', 1000
+            createRequest context
 
-            runs ->
-               expect(context.response.statusCode).toBe 200
+            waitsFor ( -> context.done ), 'post-fallback request to finish', 1000, ->
+               assert context.response.statusCode is 200
+               done()
 
-         it 'should handle file request when file can be found', ->
-            runs ->
-               context.url = '/file/post'
-               context.method = 'post'
-               context.post = 'file contents!'
+         it 'should handle file request when file can be found', (done) ->
+            context.url = '/file/post'
+            context.method = 'post'
+            context.post = 'file contents!'
 
-               createRequest context
-               waitsFor ( -> context.done ), 'post-fallback request to finish', 1000
+            createRequest context
 
-            runs ->
-               expect(context.response.statusCode).toBe 200
+            waitsFor ( -> context.done ), 'post-fallback request to finish', 1000, ->
+               assert context.response.statusCode is 200
+               done()
