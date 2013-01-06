@@ -104,6 +104,29 @@ describe 'contract', ->
             assert.deepEqual actual, expected
 
       describe 'headers', ->
+         it 'should return error when property is object', ->
+            expected = ["'request.headers' must be strings or numbers."]
+            data.request.headers =
+               property: {}
+            actual = sut data
+
+            assert.deepEqual actual, expected
+
+         it 'should return error when property is null', ->
+            expected = ["'request.headers' must be strings or numbers."]
+            data.request.headers =
+               property: null
+            actual = sut data
+
+            assert.deepEqual actual, expected
+
+         it 'should return error when property is undefined', ->
+            expected = ["'request.headers' must be strings or numbers."]
+            data.request.headers =
+               property: null
+            actual = sut data
+
+            assert.deepEqual actual, expected
          it 'should have no errors when absent', ->
             data.request.headers = null
             result = sut data
@@ -191,6 +214,30 @@ describe 'contract', ->
          assert result is null
 
       describe 'headers', ->
+         it 'should return error when property is object', ->
+            expected = ["'response.headers' must be strings or numbers."]
+            data.response.headers =
+               property: {}
+            actual = sut data
+
+            assert.deepEqual actual, expected
+
+         it 'should return error when property is null', ->
+            expected = ["'response.headers' must be strings or numbers."]
+            data.response.headers =
+               property: null
+            actual = sut data
+
+            assert.deepEqual actual, expected
+
+         it 'should return error when property is undefined', ->
+            expected = ["'response.headers' must be strings or numbers."]
+            data.response.headers =
+               property: null
+            actual = sut data
+
+            assert.deepEqual actual, expected
+
          it 'should return no errors when absent', ->
             data.response.headers = null
             result = sut data

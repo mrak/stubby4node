@@ -87,22 +87,16 @@ module.exports.Stubby = class Stubby
    stop: (callback = ->) => process.nextTick =>
       if @watcher? then @watcher.deactivate()
 
-      closeStubs = =>
-         if @stubsPortal?.address()
-            @stubsPortal.close(callback)
-         else
-            callback()
-
-      closeTls = =>
-         if @tlsPortal?.address()
-            @tlsPortal.close(closeStubs)
-         else
-            closeStubs()
-
       if @adminPortal?.address()
-         @adminPortal.close(closeTls)
-      else
-         closeTls()
+         await @adminPortal.close defer()
+
+      if @stubsPortal?.address()
+         await @stubsPortal.close defer()
+
+      if @tlsPortal?.address()
+         await @tlsPortal.close defer()
+
+      callback()
 
 
    post: (data, callback = ->) -> process.nextTick =>

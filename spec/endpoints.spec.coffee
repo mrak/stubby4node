@@ -119,10 +119,11 @@ describe 'Endpoints', ->
 
       describe 'find', ->
          data =
+            url: '/'
             method: 'GET'
 
          it 'should call callback with null, row if operation returns a row', ->
-            row = new Endpoint()
+            row = new Endpoint request: data
             sut.db = [row]
             sut.find data, callback
 
@@ -135,7 +136,8 @@ describe 'Endpoints', ->
 
          it 'should call callback after timeout if data response has a latency', (done) ->
             row = new Endpoint
-               request: {}
+               request:
+                  url: '/'
                response:
                   latency: 1000
 
@@ -256,9 +258,11 @@ describe 'Endpoints', ->
             it 'should return response even if cases match', ->
                row = new Endpoint
                   request:
+                     url: '/'
                      method: 'POST'
                   response: {}
                data =
+                  url: '/'
                   method: 'POST'
 
                sut.db = [row]
@@ -270,9 +274,11 @@ describe 'Endpoints', ->
             it 'should return response even if cases do not match', ->
                row = new Endpoint
                   request:
+                     url: '/'
                      method: 'post'
                   response: {}
                data =
+                  url: '/'
                   method: 'POST'
 
                sut.db = [row]
@@ -284,9 +290,11 @@ describe 'Endpoints', ->
             it 'should return response if method matches any of the defined', ->
                row = new Endpoint
                   request:
+                     url: '/'
                      method: ['post', 'put']
                   response: {}
                data =
+                  url: '/'
                   method: 'POST'
 
                sut.db = [row]
@@ -298,9 +306,11 @@ describe 'Endpoints', ->
             it 'should call callback with error if none of the methods match', ->
                row = new Endpoint
                   request:
+                     url: '/'
                      method: ['post', 'put']
                   response: {}
                data =
+                  url: '/'
                   method: 'GET'
 
                sut.db = [row]
@@ -314,10 +324,12 @@ describe 'Endpoints', ->
             it 'should return response if all headers of request match', ->
                row = new Endpoint
                   request:
+                     url: '/'
                      headers:
                         'content-type': 'application/json'
                   response: {}
                data =
+                  url: '/'
                   method: 'GET'
                   headers:
                      'content-type': 'application/json'
@@ -331,10 +343,12 @@ describe 'Endpoints', ->
             it 'should call callback with error if all headers of request dont match', ->
                row = new Endpoint
                   request:
+                     url: '/'
                      headers:
                         'content-type': 'application/json'
                   response: {}
                data =
+                  url: '/'
                   method: 'GET'
                   headers:
                      'authentication': 'Basic gibberish:password'
@@ -350,10 +364,12 @@ describe 'Endpoints', ->
             it 'should return response if all query of request match', ->
                row = new Endpoint
                   request:
+                     url: '/'
                      query:
                         'first': 'value1'
                   response: {}
                data =
+                  url: '/'
                   method: 'GET'
                   query:
                      'first': 'value1'
@@ -367,11 +383,13 @@ describe 'Endpoints', ->
             it 'should call callback with error if all query of request dont match', ->
                row = new Endpoint
                   request:
+                     url: '/'
                      query:
                         'first': 'value1'
                   response: {}
                data =
                   method: 'GET'
+                  url: '/'
                   query:
                      'unknown': 'good question'
 

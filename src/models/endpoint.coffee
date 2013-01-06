@@ -29,6 +29,18 @@ pruneUndefined = ->
    for key, value of @response
       delete @response[key] unless value?
 
+upperCaseMethod = ->
+   unless @request.method instanceof Array
+      return @request.method = @request.method.toUpperCase()
+
+   for item, index in @request.method
+      do (item, index) =>
+         @request.method[index] = item.toUpperCase()
+
+purifyUrl = ->
+   return if @request.url?.match /^\//
+   @request.url = '/' + @request.url
+
 setFallbacks = (endpoint) ->
    if endpoint.request.file?
       try endpoint.request.post = (fs.readFileSync endpoint.request.file, 'utf8').trim()
@@ -62,6 +74,8 @@ module.exports = class Endpoint
          file: endpoint.response.file
          body: endpoint.response.body
 
+      purifyUrl.call @
+      upperCaseMethod.call @
       purifyHeaders.call @
       purifyAuthorization.call @
       purifyBody.call @

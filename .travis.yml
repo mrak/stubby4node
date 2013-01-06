@@ -1,4 +1,4 @@
 language: node_js
 node_js:
   - 0.8
-before_install: npm install -g coffee-script mocha
+before_install: npm install -g iced-coffee-script mocha && npm link iced-coffee-script
