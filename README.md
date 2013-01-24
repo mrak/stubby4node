@@ -1,4 +1,9 @@
-[![Build Status](https://secure.travis-ci.org/Afmrak/stubby4node.png?branch=master)](http://travis-ci.org/Afmrak/stubby4node)
+[![Build Status](https://secure.travis-ci.org/mrak/stubby4node.png?branch=master)](http://travis-ci.org/Afmrak/stubby4node)
+
+stubby4node
+===========
+
+## Table of Contents
 
 * [Installation](#installation)
 * [Requirements](#requirements)
@@ -14,15 +19,15 @@
 * [Wishful Thinkings](#wishful-thinkings)
 * [NOTES](#notes)
 
-# Installation
+## Installation
 
-## via npm
+### via npm
 
     npm install -g stubby
 
 This will install `stubby` as a command in your `PATH`. Leave off the `-g` flag if you'd like to use stubby as an embedded module in your project.
 
-## via source
+### via source
 
 You need to have `coffee-script` installed on your system.
 
@@ -31,30 +36,30 @@ You need to have `coffee-script` installed on your system.
     coffee -o lib -c src
     export PATH=$PATH:<pwd>/bin/stubby
 
-# Requirements
+## Requirements
 
 * [node.js](http://nodejs.org/) (tested with v0.8.x)
 
 Development is on Mac OS X Mountain Lion.
 
-## Packaged
+### Packaged
 
 * [JS-YAML](https://github.com/nodeca/js-yaml) for loading yaml files
 * [cloneextend](https://github.com/shimondoodkin/nodejs-clone-extend)
 
-## Optional (for development)
+### Optional (for development)
 
 * [coffee-script](http://coffeescript.org)
 * [node-inspector](https://github.com/dannycoates/node-inspector)
 * [jasmine-node](https://github.com/mhevery/jasmine-node)
 
-# Starting the Server(s)
+## Starting the Server(s)
 
 Some systems require you to `sudo` before running services on port certain ports (like 80)
 
     [sudo] stubby
 
-# Command-line Switches
+## Command-line Switches
 
 ```
 stubby [-a <port>] [-c <file>] [-d <file>] [-h] [-k <file>] [-l <hostname>] [-m] [-p <file>]
@@ -74,7 +79,7 @@ stubby [-a <port>] [-c <file>] [-d <file>] [-h] [-k <file>] [-l <hostname>] [-m]
 -w, --watch                 Auto-reload data file when edits are made.
 ```
 
-# Endpoint Configuration
+## Endpoint Configuration
 
 This section explains the usage, intent and behavior of each property on the `request` and `response` objects.
 
@@ -107,11 +112,11 @@ Here is a fully-populated, unrealistic endpoint:
       file: responseData.xml
 ```
 
-## request
+### request
 
 This object is used to match an incoming request to stubby against the available endpoints that have been configured.
 
-### url (required)
+#### url (required)
 
 * This is the only required property of an endpoint.
 * signify the url after the base host and port (i.e. after `localhost:8882`).
@@ -127,7 +132,7 @@ This is the simplest you can get:
       url: /
 ```
 
-### method
+#### method
 
 * defaults to `GET`.
 * case-insensitive.
@@ -161,7 +166,7 @@ This is the simplest you can get:
          -  POST
 ```
 
-### query
+#### query
 
 * if ommitted, stubby ignores query parameters for the given url.
 * a yaml hashmap of variable/value pairs.
@@ -179,7 +184,7 @@ This is the simplest you can get:
          filter: month
 ```
 
-### post
+#### post
 
 * if ommitted, any post data is ignored.
 * the body contents of the server request, such as form data.
@@ -190,7 +195,7 @@ This is the simplest you can get:
       post: name=John&email=john@example.com
 ```
 
-### file
+#### file
 
 * if supplied, replaces `post` with the contents of the locally given file.
     * paths are relative from where stubby was executed.
@@ -211,7 +216,7 @@ postedData.json
 
 * if `postedData.json` doesn't exist on the filesystem when `/match/against/file` is requested, stubby will match post contents against `{"fallback":"data"}` (from `post`) instead.
 
-### headers
+#### headers
 
 * if ommitted, stubby ignores headers for the given url.
 * case-insensitive matching of header names.
@@ -227,11 +232,11 @@ The following endpoint only accepts requests with `application/json` post values
          content-type: application/json
 ```
 
-## response
+### response
 
 Assuming a match has been made against the given `request` object, data from `response` is used to build the stubbed response back to the client.
 
-### status
+#### status
 
 * the HTTP status code of the response.
 * integer or integer-like string.
@@ -245,7 +250,7 @@ Assuming a match has been made against the given `request` object, data from `re
       status: 420
 ```
 
-### body
+#### body
 
 * contents of the response body
 * defaults to an empty content body
@@ -257,7 +262,7 @@ Assuming a match has been made against the given `request` object, data from `re
       body: ':)'
 ```
 
-### file
+#### file
 
 * similar to `request.file`, but the contents of the file are used as the `body`.
 
@@ -268,7 +273,7 @@ Assuming a match has been made against the given `request` object, data from `re
       file: extremelyLongJsonFile.json
 ```
 
-### headers
+#### headers
 
 * similar to `request.headers` except that these are sent back to the client.
 
@@ -288,7 +293,7 @@ Assuming a match has been made against the given `request` object, data from `re
          }]
 ```
 
-### latency
+#### latency
 
 * time to wait, in milliseconds, before sending back the response
 * good for testing timeouts, or slow connections
@@ -301,11 +306,11 @@ Assuming a match has been made against the given `request` object, data from `re
       body: Hello, World!
 ```
 
-# The Admin Portal
+## The Admin Portal
 
 The admin portal is a RESTful(ish) endpoint running on `localhost:8889`. Or wherever you described through stubby's options.
 
-## Supplying Endpoints to Stubby
+### Supplying Endpoints to Stubby
 
 Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the following structure for each endpoint:
 
@@ -323,7 +328,7 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
    * `body`: the textual body of the server's response to the client
    * `status`: the numerical HTTP status code (200 for OK, 404 for NOT FOUND, etc.)
 
-### YAML (file only)
+#### YAML (file only)
 ```yaml
 -  request:
       url: /path/to/something
@@ -366,7 +371,7 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
       status: 304
 ```
 
-### JSON (file or POST/PUT)
+#### JSON (file or POST/PUT)
 ```json
 [
   {
@@ -430,29 +435,29 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
 
 If you want to load more than one endpoint via file, use either a JSON array or YAML list (-) syntax. On success, the response will contain `Location` in the header with the newly created resources' location
 
-## Getting the Current List of Stubbed Endpoints
+### Getting the Current List of Stubbed Endpoints
 
 Performing a `GET` request on `localhost:8889` will return a JSON array of all currently saved responses. It will reply with `204 : No Content` if there are none saved.
 
 Performing a `GET` request on `localhost:8889/<id>` will return the JSON object representing the response with the supplied id.
 
-### The Status Page
+#### The Status Page
 
 You can also view the currently configured endpoints by going to `localhost:8889/status`
 
-## Changing Existing Endpoints
+### Changing Existing Endpoints
 
 Perform `PUT` requests in the same format as using `POST`, only this time supply the id in the path. For instance, to update the response with id 4 you would `PUT` to `localhost:8889/4`.
 
-## Deleting Endpoints
+### Deleting Endpoints
 
 Send a `DELETE` request to `localhost:8889/<id>`
 
-# The Stubs Portal
+## The Stubs Portal
 
 Requests sent to any url at `localhost:8882` (or wherever you told stubby to run) will search through the available endpoints and, if a match is found, respond with that endpoint's `response` data
 
-## How Endpoints Are Matched
+### How Endpoints Are Matched
 
 For a given endpoint, stubby only cares about matching the properties of the request that have been defined in the YAML. The exception to this rule is `method`; if it is omitted it is defaulted to `GET`.
 
@@ -481,9 +486,9 @@ for each <endpoint> of stored endpoints {
 }
 ```
 
-# Programmatic API
+## Programmatic API
 
-## The Stubby module
+### The Stubby module
 
 Add `stubby` as a module within your project's directory:
 
@@ -502,7 +507,7 @@ Then within your project files you can do something like:
 
 What can I do with it, you ask? Read on!
 
-### start(options, [callback])
+#### start(options, [callback])
 
 * `options`: an object containing parameters with which to start this stubby. Parameters go along with the full-name flags used from the command line.
    * `stubs`: port number to run the stubs portal
@@ -517,38 +522,38 @@ What can I do with it, you ask? Read on!
    * `mute`: defaults to `true`. Pass in `false` to have console output (if available)
 * `callback`: takes one parameter: the error message (if there is one), undefined otherwise
 
-### start([callback])
+#### start([callback])
 Identical to previous signature, only all options are assumed to be defaults.
 
-### stop([callback])
+#### stop([callback])
 closes the connections and ports being used by stubby's stubs and admin portals. Executes `callback` afterward.
 
-### get(id, callback)
+#### get(id, callback)
 Simulates a GET request to the admin portal, with the callback receiving the resultant data.
 
 * `id`: the id of the endpoint to retrieve. If ommitted, an array of all registered endpoints is passed the callback.
 * `callback(err, endpoint)`: `err` is defined if no endpoint exists with the given id. Else, `endpoint` is populated.
 
-### get(callback)
+#### get(callback)
 Simulates a GET request to the admin portal, with the callback receiving the resultant data.
 
 * `id`: the id of the endpoint to retrieve. If ommitted, an array of all registered endpoints is passed the callback.
 * `callback(endpoints)`: takes a single parameter containing an array of returned results. Empty if no endpoints are registered
 
-### post(data, [callback])
+#### post(data, [callback])
 * `data`: an endpoint object to store in stubby
 * `callback(err, endpoint)`: if all goes well, gets executed with the created endpoint. If there is an error, gets called with the error message.
 
-### put(id, data, [callback])
+#### put(id, data, [callback])
 * `id`: id of the endpoint to update.
 * `data`: data with which to replace the endpoint.
 * `callback(err)`: executed with no passed parameters if successful. Else, passed the error message.
 
-### delete([id], callback)
+#### delete([id], callback)
 * `id`: id of the endpoint to destroy. If ommitted, all endoints are cleared from stubby.
 * `callback()`: called after the endpoint has been removed
 
-### Example (coffeescript)
+#### Example (coffeescript)
 ```coffeescript
 Stubby = require('stubby').Stubby
 
@@ -573,7 +578,7 @@ stubby2.start
    location: '127.0.0.2'
 ```
 
-# Running Tests
+## Running Tests
 
 If you don't have `jasmine-node` already, install it:
 
@@ -587,22 +592,22 @@ If you want to see more informative output:
 
     jasmine-node --verbose --coffee spec
 
-# See Also
+## See Also
 
 **[stubby4j](https://github.com/azagniotov/stubby4j):** A java implementation of stubby
 
-# TODO
+## TODO
 
 * Auto-Base64 encode `username:password` if `authorization` is given as a request header.
 * `post` parameter as a hashmap under `request` for easy form-submission value matching
 
-# Wishful Thinkings
+## Wishful Thinkings
 
 * SOAP request/response compliance
 * Randomized responses based on supplied pattern (exploratory QA abuse)
 * Minify js in `npm` module?
 
-# NOTES
+## NOTES
 
 * __Copyright__ 2012 Eric Mrak, Alexander Zagniotov, Isa Goksu
 * __License__ Apache v2.0
