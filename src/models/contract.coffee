@@ -20,11 +20,9 @@ module.exports = Contract = (endpoint) ->
          method: "'request.method' must be one of #{httpMethods}."
          headers:
             type: "'request.headers', if supplied, must be an object."
-            property: "'request.headers' must be strings or numbers."
       response:
          headers:
             type: "'response.headers', if supplied, must be an object."
-            property: "'response.headers' must be strings or numbers."
          status:
             type: "'response.status' must be integer-like."
             small: "'response.status' must be >= 100."
@@ -40,9 +38,6 @@ module.exports = Contract = (endpoint) ->
          if not headers then return null
          if headers instanceof Array or typeof headers isnt 'object'
             return messages.request.headers.type
-         for key, value of headers
-            if typeof value not in ['number', 'string']
-               return messages.request.headers.property
          null
       method : (method) ->
          if not method then return null
@@ -74,9 +69,6 @@ module.exports = Contract = (endpoint) ->
          if not headers then return null
          if headers instanceof Array or typeof headers isnt 'object'
             return messages.response.headers.type
-         for key, value of headers
-            if typeof value not in ['number', 'string']
-               return messages.response.headers.property
          null
       latency : (latency) ->
          if not latency then return null

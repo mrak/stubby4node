@@ -1,5 +1,4 @@
 Stubby = require('../src/main').Stubby
-Endpoint = require '../src/models/endpoint'
 
 fs = require 'fs'
 yaml = require 'js-yaml'
@@ -42,7 +41,7 @@ describe 'End 2 End Admin Test Suite', ->
 
    it 'should be able to retreive an endpoint through GET', (done) ->
       id = 3
-      endpoint = new Endpoint endpointData[id-1]
+      endpoint = ce.clone endpointData[id-1]
       endpoint.id = id
 
       context.url = "/#{id}"
@@ -58,7 +57,7 @@ describe 'End 2 End Admin Test Suite', ->
 
    it 'should be able to edit an endpoint through PUT', (done) ->
       id = 2
-      endpoint = new Endpoint endpointData[id-1]
+      endpoint = ce.clone endpointData[id-1]
 
       context.url = "/#{id}"
 

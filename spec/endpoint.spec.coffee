@@ -28,7 +28,7 @@ describe 'Endpoint', ->
          data =
             request:
                url: '/'
-               method: 'POST'
+               method: 'post'
                query:
                   variable: 'value'
                headers:
@@ -46,14 +46,6 @@ describe 'Endpoint', ->
          actual = new Endpoint data
 
          assert.deepEqual actual, data
-
-      it 'should upper-case method', ->
-         expected = 'POST'
-         data.request.method = 'post'
-
-         actual = new Endpoint data
-
-         assert actual.request.method is expected
 
       it 'should default method to GET', ->
          expected = 'GET'
@@ -122,11 +114,3 @@ describe 'Endpoint', ->
          actual = new Endpoint data
 
          assert actual.response.body is expected
-
-      it 'should add / to beginning of url if missing', ->
-         expected = '/a/url'
-         data.request.url = 'a/url'
-
-         actual = new Endpoint data
-
-         assert actual.request.url is expected

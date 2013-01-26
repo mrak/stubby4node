@@ -28,9 +28,9 @@
    ],
    "files": ["lib", "package.json", "bin", "tls", "man/stubby.1"],
    "scripts": {
-      "prepublish": "iced -o lib -c src",
+      "prepublish": "coffee -o lib -c src",
       "start": "bin/stubby",
-      "test": "mocha --compilers coffee:iced-coffee-script spec"
+      "test": "mocha --compilers coffee:coffee-script spec"
    },
    "bin": {
       "stubby": "bin/stubby"
