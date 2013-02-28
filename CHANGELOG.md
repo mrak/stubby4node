@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.44
+
+* line endings are normalized to `\n` and trailing whitespace is trimmed from the end when matching request's post/file contents
+
 ## 0.1.43
 
 * `response.file` and `request.file` are now relative paths from the root data.yaml instead of being relative from the source of execution

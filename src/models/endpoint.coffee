@@ -1,6 +1,9 @@
 fs = require 'fs'
 path = require 'path'
 
+normalizeEOL = (string) ->
+   return (string.replace /\r\n/g, '\n').replace /\s*$/, ''
+
 purifyHeaders = ->
    for prop, value of @request.headers
       delete @request.headers[prop]
@@ -31,7 +34,7 @@ pruneUndefined = ->
 
 setFallbacks = (endpoint) ->
    if endpoint.request.file?
-      try endpoint.request.post = (fs.readFileSync endpoint.request.file, 'utf8').trim()
+      try endpoint.request.post = fs.readFileSync endpoint.request.file, 'utf8'
 
    if endpoint.response.file?
       try endpoint.response.body = fs.readFileSync endpoint.response.file, 'utf8'
@@ -74,10 +77,10 @@ module.exports = class Endpoint
 
       file = null
       if @request.file?
-         try file = (fs.readFileSync path.resolve(@datadir, @request.file), 'utf8').trim()
+         try file = fs.readFileSync path.resolve(@datadir, @request.file), 'utf8'
 
       if post = file or @request.post
-         return false unless post is request.post
+         return false unless normalizeEOL(post) is normalizeEOL(request.post)
 
       if @request.method instanceof Array
          return false unless request.method in @request.method.map (it) -> it.toUpperCase()
