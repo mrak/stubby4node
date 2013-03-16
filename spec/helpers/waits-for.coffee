@@ -12,4 +12,7 @@ module.exports = waitsFor = (fn, message, range, finish, time = process.hrtime()
       assert elapsed > min, "Condition succeeded before #{min}ms were up"
       return finish()
 
-   setImmediate -> waitsFor.call @, fn, message, range, finish, time
+   if setImmediate?
+      setImmediate -> waitsFor.call @, fn, message, range, finish, time
+   else
+      setTimeout (-> waitsFor.call @, fn, message, range, finish, time), 5
