@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.45
+
+* fixed a bug involving recursive use of `process.nextTick`
+
 ## 0.1.44
 
 * line endings are normalized to `\n` and trailing whitespace is trimmed from the end when matching request's post/file contents
