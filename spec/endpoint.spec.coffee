@@ -45,7 +45,13 @@ describe 'Endpoint', ->
 
          actual = new Endpoint data
 
+         actualbody = actual.response.body.toString()
+         delete actual.response.body
+         expectedBody = data.response.body
+         delete data.response.body
+
          assert.deepEqual actual, data
+         assert expectedBody is actualbody
 
       it 'should default method to GET', ->
          expected = 'GET'
@@ -113,4 +119,4 @@ describe 'Endpoint', ->
 
          actual = new Endpoint data
 
-         assert actual.response.body is expected
+         assert actual.response.body.toString() is expected

@@ -161,7 +161,7 @@ describe 'Endpoints', ->
                sut.db = [row]
                sut.find data, callback
 
-               assert callback.calledWith null, expected
+               assert callback.calledWith null
 
             it 'should match response with post file is supplied but cannot be found', ->
                expected = { status : 200 }
@@ -180,7 +180,7 @@ describe 'Endpoints', ->
                sut.db = [row]
                sut.find data, callback
 
-               assert callback.calledWith null, expected
+               assert callback.calledWith null
 
             it 'should match response with file if file is supplied and exists', ->
                expected = { status : 200 }
@@ -199,7 +199,7 @@ describe 'Endpoints', ->
                sut.db = [row]
                sut.find data, callback
 
-               assert callback.calledWith null, expected
+               assert callback.calledWith null
 
          describe 'response body versus file', ->
             it 'should return response with body as content if file is not supplied', ->
@@ -216,7 +216,7 @@ describe 'Endpoints', ->
                sut.db = [row]
                sut.find data, callback
 
-               assert callback.args[0][1].body is expected
+               assert callback.args[0][1].body.toString() is expected
 
             it 'should return response with body as content if file is supplied but cannot be found', ->
                expected = 'the body!'
@@ -233,7 +233,7 @@ describe 'Endpoints', ->
                sut.db = [row]
                sut.find data, callback
 
-               assert callback.args[0][1].body is expected
+               assert callback.args[0][1].body.toString() is expected
 
             it 'should return response with file as content if file is supplied and exists', ->
                expected = 'file contents!'
@@ -250,7 +250,7 @@ describe 'Endpoints', ->
                sut.db = [row]
                sut.find data, callback
 
-               assert callback.args[0][1].body.trim() is expected
+               assert callback.args[0][1].body.toString().trim() is expected
 
          describe 'method', ->
             it 'should return response even if cases match', ->

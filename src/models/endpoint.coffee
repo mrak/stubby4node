@@ -23,8 +23,11 @@ purifyAuthorization = ->
    @request.headers.authorization = 'Basic ' + new Buffer(auth).toString 'base64'
 
 purifyBody = ->
-   if @response.body? and typeof @response.body is 'object'
+   @response.body ?= ''
+   if typeof @response.body is 'object'
       @response.body = JSON.stringify @response.body
+
+   @response.body = new Buffer(@response.body)
 
 pruneUndefined = ->
    for key, value of @request

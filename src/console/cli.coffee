@@ -80,10 +80,10 @@ module.exports =
       process.exit()
 
    version: (go = false)->
-      return unless go
+      version = (require '../../package.json').version
+      return version unless go
 
-      out.log (require '../../package.json').version
-
+      out.log version
       process.exit()
 
    data: (filename) ->

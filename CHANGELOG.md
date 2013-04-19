@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.46
+
+* binary data files are working correctly when used as a response body
+* fixed a bug were stubby's version number was appearing as `undefined` in the `Server` header
+
 ## 0.1.45
 
 * fixed a bug involving recursive use of `process.nextTick`

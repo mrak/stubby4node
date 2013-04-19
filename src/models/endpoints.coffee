@@ -56,8 +56,9 @@ module.exports.Endpoints = class Endpoints
          continue unless endpoint.matches data
 
          matched = ce.clone endpoint
+         matched.response.body = new Buffer (matched.response.body ? 0) , 'utf8'
          if matched.response.file?
-            try matched.response.body = fs.readFileSync path.resolve(@datadir, matched.response.file), 'utf8'
+            try matched.response.body = fs.readFileSync path.resolve(@datadir, matched.response.file)
 
          return found matched, callback
 

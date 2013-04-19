@@ -204,7 +204,7 @@ describe 'CLI', ->
             watch: filename
             datadir: process.cwd()
             help: undefined
-            version: undefined
+            version: (require '../package.json').version
 
          sinon.stub(sut, 'data').returns expected.data
          sinon.stub(sut, 'key').returns expected.key
