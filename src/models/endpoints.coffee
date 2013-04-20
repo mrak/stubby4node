@@ -4,6 +4,7 @@ path = require 'path'
 Endpoint = require './endpoint'
 
 NOT_FOUND = "Endpoint with the given id doesn't exist."
+NO_MATCH = "Endpoint with given request doesn't exist."
 
 module.exports.Endpoints = class Endpoints
    constructor : (data, callback = (->), datadir = process.cwd()) ->
@@ -62,7 +63,7 @@ module.exports.Endpoints = class Endpoints
 
          return found matched, callback
 
-      callback "Endpoint with given request doesn't exist."
+      callback NO_MATCH
 
 found = (endpoint, callback) ->
    if parseInt endpoint.response.latency

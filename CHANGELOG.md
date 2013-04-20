@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.47
+
+* urls are now matched via regular expressions. If you want an exact match, remember to prefix your urls with `^` and postfix with `$`
+
 ## 0.1.46
 
 * binary data files are working correctly when used as a response body

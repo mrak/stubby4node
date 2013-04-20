@@ -90,18 +90,25 @@
 
 
 -  request:
-      url: /file/body
-   response:
-      file: spec/data/endpoints.file
-      body: body contents!
-
--  request:
       url: /file/body/missingfile
    response:
       file: spec/data/endpoints-nonexistant.file
       body: body contents!
 
+-  request:
+      url: /file/body
+   response:
+      file: spec/data/endpoints.file
+      body: body contents!
 
+
+
+-  request:
+      url: /file/post/missingfile
+      method: POST
+      file: spec/data/endpoints-nonexistant.file
+      post: post contents!
+   response: {}
 
 -  request:
       url: /file/post
@@ -110,9 +117,3 @@
       post: post contents!
    response: {}
 
--  request:
-      url: /file/post/missingfile
-      method: POST
-      file: spec/data/endpoints-nonexistant.file
-      post: post contents!
-   response: {}

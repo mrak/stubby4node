@@ -74,7 +74,7 @@ module.exports = class Endpoint
       pruneUndefined.call @
 
    matches: (request) ->
-      return false if @request.url isnt request.url
+      return false unless RegExp(@request.url).test request.url
       return false unless compareHashMaps @request.headers, request.headers
       return false unless compareHashMaps @request.query, request.query
 
