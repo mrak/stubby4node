@@ -118,9 +118,9 @@ This object is used to match an incoming request to stubby against the available
 
 #### url (required)
 
+* is a full-fledged __regular expression__
 * This is the only required property of an endpoint.
 * signify the url after the base host and port (i.e. after `localhost:8882`).
-* must begin with ` / `.
 * any query paramters are stripped (so don't include them, that's what `query` is for).
     * `/url?some=value&another=value` becomes `/url`
 * no checking is done for URI-encoding compliance.
@@ -130,6 +130,18 @@ This is the simplest you can get:
 ```yaml
 -  request:
       url: /
+```
+
+A demonstration using regular expressions:
+```yaml
+-  request:
+      url: ^/has/to/begin/with/this/
+
+-  request:
+      url: /has/to/end/with/this/$
+
+-  request:
+      url: ^/must/be/this/exactly/with/optional/trailing/slash/?$
 ```
 
 #### method
