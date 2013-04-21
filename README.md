@@ -606,7 +606,8 @@ If you want to see more informative output:
 
 ## See Also
 
-**[stubby4j](https://github.com/azagniotov/stubby4j):** A java implementation of stubby
+* **[stubby4j](https://github.com/azagniotov/stubby4j):** A java implementation of stubby
+* **[stubby4net](https://github.com/mrak/stubby4net):** A .NET implementation of stubby
 
 ## TODO
 
@@ -620,6 +621,6 @@ If you want to see more informative output:
 
 ## NOTES
 
-* __Copyright__ 2012 Eric Mrak, Alexander Zagniotov, Isa Goksu
+* __Copyright__ 2013 Eric Mrak, Alexander Zagniotov
 * __License__ Apache v2.0
 
