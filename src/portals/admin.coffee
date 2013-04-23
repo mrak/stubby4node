@@ -2,7 +2,8 @@ contract = require '../models/contract'
 Portal = require('./portal').Portal
 http = require 'http'
 ns = require 'node-static'
-status = new ns.Server 'webroot'
+path = require 'path'
+status = new ns.Server (path.resolve __dirname, '../../webroot')
 
 module.exports.Admin = class Admin extends Portal
    constructor : (endpoints) ->
@@ -145,9 +146,8 @@ module.exports.Admin = class Admin extends Portal
 
       if request.url is '/ping' then @goPong response
 
-      else if request.url.match /^\/status/
-         request.on 'end', ->
-            status.serve request, response
+      else if /^\/status(\/.*)?/.test request.url
+         status.serve request, response
 
       else if @urlValid request.url
          switch request.method.toUpperCase()

@@ -2,6 +2,7 @@ Admin = require('./portals/admin').Admin
 Stubs = require('./portals/stubs').Stubs
 Endpoints = require('./models/endpoints').Endpoints
 Watcher = require('./console/watch')
+async = require 'async'
 CLI = require './console/cli'
 out = require './console/out'
 http = require 'http'
@@ -26,6 +27,29 @@ onError = (err, port, location) ->
    process.exit()
 
 onEndpointLoaded = (err, endpoint) -> out.notice "Loaded: #{endpoint.request.method} #{endpoint.request.url}"
+setupStartOptions = (options, callback) ->
+   if typeof options is 'function'
+      callback = options
+      options = {}
+
+   options.mute ?= true
+   defaults = CLI.getArgs []
+
+   for key, value of defaults
+      options[key] ?= value
+
+   out.mute = options.mute
+
+createHttpsOptions = (options) ->
+   httpsOptions = {}
+   if options.key and options.cert
+      httpsOptions =
+         key: options.key
+         cert: options.cert
+   else if options.pfx
+      httpsOptions =
+         pfx: options.pfx
+   return httpsOptions
 
 module.exports.Stubby = class Stubby
    constructor: ->
@@ -35,33 +59,13 @@ module.exports.Stubby = class Stubby
       @adminPortal = null
 
    start: (options = {}, callback = ->) -> @stop =>
-      if typeof options is 'function'
-         callback = options
-         options = {}
-
-      options.mute ?= true
-
-      defaults = CLI.getArgs []
-
-      for key, value of defaults
-         options[key] ?= value
-
-      out.mute = options.mute
+      setupStartOptions options, callback
 
       if errors = contract options.data then return callback errors
       if options.datadir? then @endpoints.datadir = options.datadir
       @endpoints.create options.data, onEndpointLoaded
 
-      httpsOptions = {}
-      if options.key and options.cert
-         httpsOptions =
-            key: options.key
-            cert: options.cert
-      else if options.pfx
-         httpsOptions =
-            pfx: options.pfx
-
-      @tlsPortal = https.createServer httpsOptions, new Stubs(@endpoints).server
+      @tlsPortal = https.createServer createHttpsOptions(options), new Stubs(@endpoints).server
       @tlsPortal.on 'listening', -> onListening 'Stubs', options.tls, 'https', options.location
       @tlsPortal.on 'error', (err) -> onError(err, options.tls, options.location)
       @tlsPortal.listen options.tls, options.location
@@ -76,56 +80,38 @@ module.exports.Stubby = class Stubby
       @adminPortal.on 'error', (err) -> onError(err, options.admin, options.location)
       @adminPortal.listen options.admin, options.location
 
-      if options.watch
-         debugger
-         @watcher = new Watcher @endpoints, options.watch
-
+      if options.watch then @watcher = new Watcher @endpoints, options.watch
       out.info '\nQuit: ctrl-c\n'
-
       callback()
 
    stop: (callback = ->) => process.nextTick =>
       if @watcher? then @watcher.deactivate()
 
-      closeStubs = =>
-         if @stubsPortal?.address()
-            @stubsPortal.close(callback)
-         else
-            callback()
-
-      closeTls = =>
-         if @tlsPortal?.address()
-            @tlsPortal.close(closeStubs)
-         else
-            closeStubs()
-
-      if @adminPortal?.address()
-         @adminPortal.close(closeTls)
-      else
-         closeTls()
+      async.parallel {
+         closeAdmin: (cb) => if @adminPortal?.address() then @adminPortal.close cb else cb()
+         closeStubs: (cb) => if @stubsPortal?.address() then @stubsPortal.close(cb) else cb()
+         closeTls:   (cb) => if @tlsPortal?.address() then @tlsPortal.close cb else cb()
+      }, callback
 
 
    post: (data, callback = ->) -> process.nextTick =>
       if not contract data then return callback "The supplied endpoint data couldn't be saved"
       @endpoints.create data, callback
 
-   get: (id, callback) -> process.nextTick =>
-      callback ?= ->
+   get: (id = (->), callback = id) -> process.nextTick =>
       if typeof id is 'function'
-         @endpoints.gather id, id
+         @endpoints.gather callback
       else
          @endpoints.retrieve id, callback
 
-   put: (id, data, callback) -> process.nextTick =>
-      callback ?= ->
+   put: (id, data, callback = ->) -> process.nextTick =>
       if not contract data then return callback "The supplied endpoint data couldn't be saved"
       @endpoints.update id, data, callback
 
-   delete: (id, callback) -> process.nextTick =>
-      callback ?= ->
-      if id?
-         @endpoints.delete id, callback
-      else
+   delete: (id = (->), callback = id) -> process.nextTick =>
+      if typeof id is 'function'
          delete @endpoints.db
          @endpoints.db = {}
          callback()
+      else
+         @endpoints.delete id, callback

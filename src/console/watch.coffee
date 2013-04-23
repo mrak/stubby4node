@@ -31,6 +31,7 @@ module.exports = class Watcher
       return if watching
 
       watching = true
+      out.status "Watching for changes in #{@filename}..."
       intervalId = setInterval @refresh, interval
 
    refresh: =>

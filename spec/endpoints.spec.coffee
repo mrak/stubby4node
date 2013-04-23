@@ -57,7 +57,8 @@ describe 'Endpoints', ->
 
             sut.retrieve id, callback
 
-            assert callback.calledWith null, row
+            assert callback.args[0][0] is null
+            assert callback.args[0][1]
 
          it 'should call callback with error msg if operation does not find item', ->
             sut.db = []
@@ -126,7 +127,8 @@ describe 'Endpoints', ->
             sut.db = [row]
             sut.find data, callback
 
-            assert callback.calledWith null, row.response
+            assert callback.args[0][0] is null
+            assert callback.args[0][1]
 
          it 'should call callback with error if operation does not find item', ->
             sut.find data, callback
@@ -265,7 +267,7 @@ describe 'Endpoints', ->
 
                sut.find data, callback
 
-               assert callback.calledWith null, row.response
+               assert callback.args[0][1]
 
             it 'should return response even if cases do not match', ->
                row = new Endpoint
@@ -279,7 +281,7 @@ describe 'Endpoints', ->
 
                sut.find data, callback
 
-               assert callback.calledWith null, row.response
+               assert callback.args[0][1]
 
             it 'should return response if method matches any of the defined', ->
                row = new Endpoint
@@ -293,7 +295,7 @@ describe 'Endpoints', ->
 
                sut.find data, callback
 
-               assert callback.calledWith null, row.response
+               assert callback.args[0][1]
 
             it 'should call callback with error if none of the methods match', ->
                row = new Endpoint
@@ -326,7 +328,7 @@ describe 'Endpoints', ->
 
                sut.find data, callback
 
-               assert callback.calledWith null, row.response
+               assert callback.args[0][1]
 
             it 'should call callback with error if all headers of request dont match', ->
                row = new Endpoint
@@ -362,7 +364,7 @@ describe 'Endpoints', ->
 
                sut.find data, callback
 
-               assert callback.calledWith null, row.response
+               assert callback.args[0][1]
 
             it 'should call callback with error if all query of request dont match', ->
                row = new Endpoint

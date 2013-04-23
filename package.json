@@ -1,55 +1,64 @@
 {
-   "name": "stubby",
-   "preferGlobal": true,
-   "version": "0.1.47",
-   "author": {
+  "name": "stubby",
+  "preferGlobal": true,
+  "version": "0.1.47",
+  "author": {
+    "name": "Eric Mrak",
+    "email": "enmrak@gmail.com"
+  },
+  "description": "a lightweight server for stubbing external systems and endpoints",
+  "man": "./man/stubby.1",
+  "keywords": [
+    "server",
+    "stub",
+    "mock",
+    "service",
+    "endpoint",
+    "http",
+    "https",
+    "api",
+    "rest"
+  ],
+  "homepage": "http://stub.by/4node",
+  "contributors": [
+    {
       "name": "Eric Mrak",
       "email": "enmrak@gmail.com"
-   },
-   "description": "a lightweight server for stubbing external systems and endpoints",
-   "man": "./man/stubby.1",
-   "keywords": [
-      "server",
-      "stub",
-      "mock",
-      "service",
-      "endpoint",
-      "http",
-      "https",
-      "api",
-      "rest"
-   ],
-   "homepage": "http://stub.by/4node",
-   "contributors": [
-      {
-         "name": "Eric Mrak",
-         "email": "enmrak@gmail.com"
-      }
-   ],
-   "files": ["lib", "package.json", "bin", "tls", "man/stubby.1"],
-   "scripts": {
-      "prepublish": "coffee -o lib -c src",
-      "start": "bin/stubby",
-      "test": "mocha --compilers coffee:coffee-script spec"
-   },
-   "bin": {
-      "stubby": "bin/stubby"
-   },
-   "main": "lib/main.js",
-   "repository": {
-      "type": "git",
-      "url": "http://github.com/mrak/stubby4node.git"
-   },
-   "dependencies": {
-      "js-yaml": ">=1.0.1",
-      "node-static":">=0.6.4",
-      "cloneextend": ">=0.0.3"
-   },
-   "devDependencies": {
-      "sinon": ">=1.5.2"
-   },
-   "license": "Apache",
-   "engine": {
-      "node": ">=0.8.x"
-   }
+    }
+  ],
+  "files": [
+    "lib",
+    "package.json",
+    "bin",
+    "tls",
+    "man/stubby.1",
+    "webroot"
+  ],
+  "scripts": {
+    "prepublish": "coffee -o lib -c src",
+    "start": "bin/stubby",
+    "test": "mocha --compilers coffee:coffee-script spec"
+  },
+  "bin": {
+    "stubby": "bin/stubby"
+  },
+  "main": "lib/main.js",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/mrak/stubby4node.git"
+  },
+  "dependencies": {
+    "js-yaml": ">=1.0.1",
+    "async": ">=0.2.7",
+    "node-static": ">=0.6.4",
+    "cloneextend": ">=0.0.3"
+  },
+  "devDependencies": {
+    "sinon": ">=1.5.2",
+    "grunt": "~0.4.1"
+  },
+  "license": "Apache",
+  "engine": {
+    "node": ">=0.8.x"
+  }
 }

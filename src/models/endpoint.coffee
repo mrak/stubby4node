@@ -27,8 +27,6 @@ purifyBody = ->
    if typeof @response.body is 'object'
       @response.body = JSON.stringify @response.body
 
-   @response.body = new Buffer(@response.body)
-
 pruneUndefined = ->
    for key, value of @request
       delete @request[key] unless value?
