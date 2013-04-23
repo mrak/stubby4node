@@ -21,9 +21,18 @@
         <p class="view"><a href="https://github.com/mrak/stubby4node">View the Project on GitHub <small>mrak/stubby4node</small></a></p>
 
 
+        <ul>
+          <li><a href="https://github.com/mrak/stubby4node/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/mrak/stubby4node/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/mrak/stubby4node">View On <strong>GitHub</strong></a></li>
+        </ul>
       </header>
       <section>
-        <p><a href="http://travis-ci.org/Afmrak/stubby4node"><img src="https://secure.travis-ci.org/Afmrak/stubby4node.png?branch=master" alt="Build Status"></a></p>
+        <p><a href="http://travis-ci.org/Afmrak/stubby4node"><img src="https://secure.travis-ci.org/mrak/stubby4node.png?branch=master" alt="Build Status"></a></p>
+
+<h1>stubby4node</h1>
+
+<h2>Table of Contents</h2>
 
 <ul>
 <li><a href="#installation">Installation</a></li>
@@ -39,16 +48,16 @@
 <li><a href="#todo">TODO</a></li>
 <li><a href="#wishful-thinkings">Wishful Thinkings</a></li>
 <li><a href="#notes">NOTES</a></li>
-</ul><h1>Installation</h1>
+</ul><h2>Installation</h2>
 
-<h2>via npm</h2>
+<h3>via npm</h3>
 
 <pre><code>npm install -g stubby
 </code></pre>
 
 <p>This will install <code>stubby</code> as a command in your <code>PATH</code>. Leave off the <code>-g</code> flag if you'd like to use stubby as an embedded module in your project.</p>
 
-<h2>via source</h2>
+<h3>via source</h3>
 
 <p>You need to have <code>coffee-script</code> installed on your system.</p>
 
@@ -58,33 +67,33 @@ coffee -o lib -c src
 export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 </code></pre>
 
-<h1>Requirements</h1>
+<h2>Requirements</h2>
 
 <ul>
 <li>
 <a href="http://nodejs.org/">node.js</a> (tested with v0.8.x)</li>
 </ul><p>Development is on Mac OS X Mountain Lion.</p>
 
-<h2>Packaged</h2>
+<h3>Packaged</h3>
 
 <ul>
 <li>
 <a href="https://github.com/nodeca/js-yaml">JS-YAML</a> for loading yaml files</li>
 <li><a href="https://github.com/shimondoodkin/nodejs-clone-extend">cloneextend</a></li>
-</ul><h2>Optional (for development)</h2>
+</ul><h3>Optional (for development)</h3>
 
 <ul>
 <li><a href="http://coffeescript.org">coffee-script</a></li>
 <li><a href="https://github.com/dannycoates/node-inspector">node-inspector</a></li>
 <li><a href="https://github.com/mhevery/jasmine-node">jasmine-node</a></li>
-</ul><h1>Starting the Server(s)</h1>
+</ul><h2>Starting the Server(s)</h2>
 
 <p>Some systems require you to <code>sudo</code> before running services on port certain ports (like 80)</p>
 
 <pre><code>[sudo] stubby
 </code></pre>
 
-<h1>Command-line Switches</h1>
+<h2>Command-line Switches</h2>
 
 <pre><code>stubby [-a &lt;port&gt;] [-c &lt;file&gt;] [-d &lt;file&gt;] [-h] [-k &lt;file&gt;] [-l &lt;hostname&gt;] [-m] [-p &lt;file&gt;]
        [-s &lt;port&gt;] [-t &lt;port&gt;] [-v] [-w]
@@ -103,17 +112,17 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 -w, --watch                 Auto-reload data file when edits are made.
 </code></pre>
 
-<h1>Endpoint Configuration</h1>
+<h2>Endpoint Configuration</h2>
 
 <p>This section explains the usage, intent and behavior of each property on the <code>request</code> and <code>response</code> objects.</p>
 
 <p>Here is a fully-populated, unrealistic endpoint:</p>
 
 <div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
-      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/your/awesome/endpoint</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/your/awesome/endpoint$</span>
       <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">POST</span>
       <span class="l-Scalar-Plain">query</span><span class="p-Indicator">:</span>
-         <span class="l-Scalar-Plain">exclamation</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">post%20requests%20can%20have%20query%20strings%21</span>
+         <span class="l-Scalar-Plain">exclamation</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">post requests can have query strings!</span>
       <span class="l-Scalar-Plain">headers</span><span class="p-Indicator">:</span>
          <span class="l-Scalar-Plain">content-type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">application/xml</span>
       <span class="l-Scalar-Plain">post</span><span class="p-Indicator">:</span> <span class="p-Indicator">&gt;</span>
@@ -136,16 +145,17 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
       <span class="l-Scalar-Plain">file</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">responseData.xml</span>
 </pre></div>
 
-<h2>request</h2>
+<h3>request</h3>
 
 <p>This object is used to match an incoming request to stubby against the available endpoints that have been configured.</p>
 
-<h3>url (required)</h3>
+<h4>url (required)</h4>
 
 <ul>
+<li>is a full-fledged <strong>regular expression</strong>
+</li>
 <li>This is the only required property of an endpoint.</li>
 <li>signify the url after the base host and port (i.e. after <code>localhost:8882</code>).</li>
-<li>must begin with <code>/</code>.</li>
 <li>any query paramters are stripped (so don't include them, that's what <code>query</code> is for).
 
 <ul>
@@ -166,7 +176,19 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
       <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/</span>
 </pre></div>
 
-<h3>method</h3>
+<p>A demonstration using regular expressions:</p>
+
+<div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/has/to/begin/with/this/</span>
+
+<span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/has/to/end/with/this/$</span>
+
+<span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/must/be/this/exactly/with/optional/trailing/slash/?$</span>
+</pre></div>
+
+<h4>method</h4>
 
 <ul>
 <li>defaults to <code>GET</code>.</li>
@@ -195,14 +217,14 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
       <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">GET</span><span class="p-Indicator">,</span> <span class="nv">HEAD</span><span class="p-Indicator">]</span>
 
 <span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
-      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/yonder</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/yonder</span>
       <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span>
          <span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">GET</span>
          <span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">HEAD</span>
          <span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">POST</span>
 </pre></div>
 
-<h3>query</h3>
+<h4>query</h4>
 
 <ul>
 <li>if ommitted, stubby ignores query parameters for the given url.</li>
@@ -217,23 +239,23 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 </ul>
 </li>
 </ul><div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
-      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/with/parameters</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/with/parameters$</span>
       <span class="l-Scalar-Plain">query</span><span class="p-Indicator">:</span>
-         <span class="l-Scalar-Plain">search</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">search+terms</span>
+         <span class="l-Scalar-Plain">search</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">search terms</span>
          <span class="l-Scalar-Plain">filter</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">month</span>
 </pre></div>
 
-<h3>post</h3>
+<h4>post</h4>
 
 <ul>
 <li>if ommitted, any post data is ignored.</li>
 <li>the body contents of the server request, such as form data.</li>
 </ul><div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
-      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/post/form/data</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/post/form/data$</span>
       <span class="l-Scalar-Plain">post</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">name=John&amp;email=john@example.com</span>
 </pre></div>
 
-<h3>file</h3>
+<h4>file</h4>
 
 <ul>
 <li>if supplied, replaces <code>post</code> with the contents of the locally given file.
@@ -245,7 +267,7 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 <li>if the file is not found when the request is made, falls back to <code>post</code> for matching.</li>
 <li>allows you to split up stubby data across multiple files</li>
 </ul><div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
-      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/match/against/file</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/match/against/file$</span>
       <span class="l-Scalar-Plain">file</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">postedData.json</span>
       <span class="l-Scalar-Plain">post</span><span class="p-Indicator">:</span> <span class="s">'{"fallback":"data"}'</span>
 </pre></div>
@@ -257,7 +279,7 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 
 <ul>
 <li>if <code>postedData.json</code> doesn't exist on the filesystem when <code>/match/against/file</code> is requested, stubby will match post contents against <code>{"fallback":"data"}</code> (from <code>post</code>) instead.</li>
-</ul><h3>headers</h3>
+</ul><h4>headers</h4>
 
 <ul>
 <li>if ommitted, stubby ignores headers for the given url.</li>
@@ -272,35 +294,35 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
          <span class="l-Scalar-Plain">content-type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">application/json</span>
 </pre></div>
 
-<h2>response</h2>
+<h3>response</h3>
 
 <p>Assuming a match has been made against the given <code>request</code> object, data from <code>response</code> is used to build the stubbed response back to the client.</p>
 
-<h3>status</h3>
+<h4>status</h4>
 
 <ul>
 <li>the HTTP status code of the response.</li>
 <li>integer or integer-like string.</li>
 <li>defaults to <code>200</code>.</li>
 </ul><div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
-      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/im/a/teapot</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/im/a/teapot$</span>
       <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">POST</span>
    <span class="l-Scalar-Plain">response</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">status</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">420</span>
 </pre></div>
 
-<h3>body</h3>
+<h4>body</h4>
 
 <ul>
 <li>contents of the response body</li>
 <li>defaults to an empty content body</li>
 </ul><div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
-      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/give/me/a/smile</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/give/me/a/smile$</span>
    <span class="l-Scalar-Plain">response</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">body</span><span class="p-Indicator">:</span> <span class="s">':)'</span>
 </pre></div>
 
-<h3>file</h3>
+<h4>file</h4>
 
 <ul>
 <li>similar to <code>request.file</code>, but the contents of the file are used as the <code>body</code>.</li>
@@ -310,12 +332,12 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
       <span class="l-Scalar-Plain">file</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">extremelyLongJsonFile.json</span>
 </pre></div>
 
-<h3>headers</h3>
+<h4>headers</h4>
 
 <ul>
 <li>similar to <code>request.headers</code> except that these are sent back to the client.</li>
 </ul><div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
-      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/give/me/some/json</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/give/me/some/json$</span>
    <span class="l-Scalar-Plain">response</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">headers</span><span class="p-Indicator">:</span>
          <span class="l-Scalar-Plain">content-type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">application/json</span>
@@ -329,23 +351,23 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
          <span class="no">}]</span>
 </pre></div>
 
-<h3>latency</h3>
+<h4>latency</h4>
 
 <ul>
 <li>time to wait, in milliseconds, before sending back the response</li>
 <li>good for testing timeouts, or slow connections</li>
 </ul><div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
-      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/hello/to/jupiter</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/hello/to/jupiter$</span>
    <span class="l-Scalar-Plain">response</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">latency</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">800000</span>
       <span class="l-Scalar-Plain">body</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Hello, World!</span>
 </pre></div>
 
-<h1>The Admin Portal</h1>
+<h2>The Admin Portal</h2>
 
 <p>The admin portal is a RESTful(ish) endpoint running on <code>localhost:8889</code>. Or wherever you described through stubby's options.</p>
 
-<h2>Supplying Endpoints to Stubby</h2>
+<h3>Supplying Endpoints to Stubby</h3>
 
 <p>Submit <code>POST</code> requests to <code>localhost:8889</code> or load a data-file (-d) with the following structure for each endpoint:</p>
 
@@ -357,7 +379,7 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 <li>
 <code>method</code>: GET/POST/PUT/DELETE/etc.</li>
 <li>
-<code>url</code>: the URI string. GET parameters should also be included inline here</li>
+<code>url</code>: the URI regex string. GET parameters should also be included inline here</li>
 <li>
 <code>query</code>: a key/value map of query string parameters included with the request</li>
 <li>
@@ -384,10 +406,10 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 <code>status</code>: the numerical HTTP status code (200 for OK, 404 for NOT FOUND, etc.)</li>
 </ul>
 </li>
-</ul><h3>YAML (file only)</h3>
+</ul><h4>YAML (file only)</h4>
 
 <div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
-      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/path/to/something</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/path/to/something$</span>
       <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">POST</span>
       <span class="l-Scalar-Plain">headers</span><span class="p-Indicator">:</span>
          <span class="l-Scalar-Plain">authorization</span><span class="p-Indicator">:</span> <span class="s">"Basic</span><span class="nv"> </span><span class="s">usernamez:passwordinBase64"</span>
@@ -400,7 +422,7 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
       <span class="l-Scalar-Plain">body</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">You're request was successfully processed!</span>
 
 <span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
-      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/path/to/anotherThing</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/path/to/anotherThing</span>
       <span class="l-Scalar-Plain">query</span><span class="p-Indicator">:</span>
          <span class="l-Scalar-Plain">a</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">anything</span>
          <span class="l-Scalar-Plain">b</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">more</span>
@@ -416,7 +438,7 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
       <span class="l-Scalar-Plain">file</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">path/to/page.html</span>
 
 <span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
-      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/path/to/thing</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/path/to/thing$</span>
       <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">POST</span>
       <span class="l-Scalar-Plain">headers</span><span class="p-Indicator">:</span>
          <span class="l-Scalar-Plain">Content-Type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">application/json</span>
@@ -427,12 +449,12 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
       <span class="l-Scalar-Plain">status</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">304</span>
 </pre></div>
 
-<h3>JSON (file or POST/PUT)</h3>
+<h4>JSON (file or POST/PUT)</h4>
 
 <div class="highlight"><pre><span class="p">[</span>
   <span class="p">{</span>
     <span class="nt">"request"</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">"url"</span><span class="p">:</span> <span class="s2">"/path/to/something"</span><span class="p">,</span> 
+      <span class="nt">"url"</span><span class="p">:</span> <span class="s2">"^/path/to/something$"</span><span class="p">,</span> 
       <span class="nt">"post"</span><span class="p">:</span> <span class="s2">"this is some post data in textual format"</span><span class="p">,</span> 
       <span class="nt">"headers"</span><span class="p">:</span> <span class="p">{</span>
          <span class="nt">"authorization"</span><span class="p">:</span> <span class="s2">"Basic usernamez:passwordinBase64"</span>
@@ -450,7 +472,7 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
   <span class="p">},</span> 
   <span class="p">{</span>
     <span class="nt">"request"</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">"url"</span><span class="p">:</span> <span class="s2">"/path/to/anotherThing"</span><span class="p">,</span> 
+      <span class="nt">"url"</span><span class="p">:</span> <span class="s2">"^/path/to/anotherThing"</span><span class="p">,</span> 
       <span class="nt">"query"</span><span class="p">:</span> <span class="p">{</span>
          <span class="nt">"a"</span><span class="p">:</span> <span class="s2">"anything"</span><span class="p">,</span>
          <span class="nt">"b"</span><span class="p">:</span> <span class="s2">"more"</span>
@@ -472,7 +494,7 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
   <span class="p">},</span> 
   <span class="p">{</span>
     <span class="nt">"request"</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">"url"</span><span class="p">:</span> <span class="s2">"/path/to/thing"</span><span class="p">,</span> 
+      <span class="nt">"url"</span><span class="p">:</span> <span class="s2">"^/path/to/thing$"</span><span class="p">,</span> 
       <span class="nt">"headers"</span><span class="p">:</span> <span class="p">{</span>
         <span class="nt">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span>
       <span class="p">},</span>
@@ -491,29 +513,29 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 
 <p>If you want to load more than one endpoint via file, use either a JSON array or YAML list (-) syntax. On success, the response will contain <code>Location</code> in the header with the newly created resources' location</p>
 
-<h2>Getting the Current List of Stubbed Endpoints</h2>
+<h3>Getting the Current List of Stubbed Endpoints</h3>
 
 <p>Performing a <code>GET</code> request on <code>localhost:8889</code> will return a JSON array of all currently saved responses. It will reply with <code>204 : No Content</code> if there are none saved.</p>
 
 <p>Performing a <code>GET</code> request on <code>localhost:8889/&lt;id&gt;</code> will return the JSON object representing the response with the supplied id.</p>
 
-<h3>The Status Page</h3>
+<h4>The Status Page</h4>
 
 <p>You can also view the currently configured endpoints by going to <code>localhost:8889/status</code></p>
 
-<h2>Changing Existing Endpoints</h2>
+<h3>Changing Existing Endpoints</h3>
 
 <p>Perform <code>PUT</code> requests in the same format as using <code>POST</code>, only this time supply the id in the path. For instance, to update the response with id 4 you would <code>PUT</code> to <code>localhost:8889/4</code>.</p>
 
-<h2>Deleting Endpoints</h2>
+<h3>Deleting Endpoints</h3>
 
 <p>Send a <code>DELETE</code> request to <code>localhost:8889/&lt;id&gt;</code></p>
 
-<h1>The Stubs Portal</h1>
+<h2>The Stubs Portal</h2>
 
 <p>Requests sent to any url at <code>localhost:8882</code> (or wherever you told stubby to run) will search through the available endpoints and, if a match is found, respond with that endpoint's <code>response</code> data</p>
 
-<h2>How Endpoints Are Matched</h2>
+<h3>How Endpoints Are Matched</h3>
 
 <p>For a given endpoint, stubby only cares about matching the properties of the request that have been defined in the YAML. The exception to this rule is <code>method</code>; if it is omitted it is defaulted to <code>GET</code>.</p>
 
@@ -540,9 +562,9 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 }
 </code></pre>
 
-<h1>Programmatic API</h1>
+<h2>Programmatic API</h2>
 
-<h2>The Stubby module</h2>
+<h3>The Stubby module</h3>
 
 <p>Add <code>stubby</code> as a module within your project's directory:</p>
 
@@ -559,7 +581,7 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 
 <p>What can I do with it, you ask? Read on!</p>
 
-<h3>start(options, [callback])</h3>
+<h4>start(options, [callback])</h4>
 
 <ul>
 <li>
@@ -590,15 +612,15 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 </li>
 <li>
 <code>callback</code>: takes one parameter: the error message (if there is one), undefined otherwise</li>
-</ul><h3>start([callback])</h3>
+</ul><h4>start([callback])</h4>
 
 <p>Identical to previous signature, only all options are assumed to be defaults.</p>
 
-<h3>stop([callback])</h3>
+<h4>stop([callback])</h4>
 
 <p>closes the connections and ports being used by stubby's stubs and admin portals. Executes <code>callback</code> afterward.</p>
 
-<h3>get(id, callback)</h3>
+<h4>get(id, callback)</h4>
 
 <p>Simulates a GET request to the admin portal, with the callback receiving the resultant data.</p>
 
@@ -607,7 +629,7 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 <code>id</code>: the id of the endpoint to retrieve. If ommitted, an array of all registered endpoints is passed the callback.</li>
 <li>
 <code>callback(err, endpoint)</code>: <code>err</code> is defined if no endpoint exists with the given id. Else, <code>endpoint</code> is populated.</li>
-</ul><h3>get(callback)</h3>
+</ul><h4>get(callback)</h4>
 
 <p>Simulates a GET request to the admin portal, with the callback receiving the resultant data.</p>
 
@@ -616,14 +638,14 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 <code>id</code>: the id of the endpoint to retrieve. If ommitted, an array of all registered endpoints is passed the callback.</li>
 <li>
 <code>callback(endpoints)</code>: takes a single parameter containing an array of returned results. Empty if no endpoints are registered</li>
-</ul><h3>post(data, [callback])</h3>
+</ul><h4>post(data, [callback])</h4>
 
 <ul>
 <li>
 <code>data</code>: an endpoint object to store in stubby</li>
 <li>
 <code>callback(err, endpoint)</code>: if all goes well, gets executed with the created endpoint. If there is an error, gets called with the error message.</li>
-</ul><h3>put(id, data, [callback])</h3>
+</ul><h4>put(id, data, [callback])</h4>
 
 <ul>
 <li>
@@ -632,14 +654,14 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 <code>data</code>: data with which to replace the endpoint.</li>
 <li>
 <code>callback(err)</code>: executed with no passed parameters if successful. Else, passed the error message.</li>
-</ul><h3>delete([id], callback)</h3>
+</ul><h4>delete([id], callback)</h4>
 
 <ul>
 <li>
 <code>id</code>: id of the endpoint to destroy. If ommitted, all endoints are cleared from stubby.</li>
 <li>
 <code>callback()</code>: called after the endpoint has been removed</li>
-</ul><h3>Example (coffeescript)</h3>
+</ul><h4>Example (coffeescript)</h4>
 
 <div class="highlight"><pre><span class="nv">Stubby = </span><span class="nx">require</span><span class="p">(</span><span class="s">'stubby'</span><span class="p">).</span><span class="nx">Stubby</span>
 
@@ -664,7 +686,7 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
    <span class="nv">location: </span><span class="s">'127.0.0.2'</span>
 </pre></div>
 
-<h1>Running Tests</h1>
+<h2>Running Tests</h2>
 
 <p>If you don't have <code>jasmine-node</code> already, install it:</p>
 
@@ -681,28 +703,29 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 <pre><code>jasmine-node --verbose --coffee spec
 </code></pre>
 
-<h1>See Also</h1>
-
-<p><strong><a href="https://github.com/azagniotov/stubby4j">stubby4j</a>:</strong> A java implementation of stubby</p>
-
-<h1>TODO</h1>
+<h2>See Also</h2>
 
 <ul>
-<li>URI-encode <code>query</code> variables</li>
-<li>Auto-Base64 encode <code>username:password</code> if <code>authorization</code> is given as a request header.</li>
+<li>
+<strong><a href="https://github.com/azagniotov/stubby4j">stubby4j</a>:</strong> A java implementation of stubby</li>
+<li>
+<strong><a href="https://github.com/mrak/stubby4net">stubby4net</a>:</strong> A .NET implementation of stubby</li>
+</ul><h2>TODO</h2>
+
+<ul>
 <li>
 <code>post</code> parameter as a hashmap under <code>request</code> for easy form-submission value matching</li>
-</ul><h1>Wishful Thinkings</h1>
+</ul><h2>Wishful Thinkings</h2>
 
 <ul>
 <li>SOAP request/response compliance</li>
 <li>Randomized responses based on supplied pattern (exploratory QA abuse)</li>
 <li>Minify js in <code>npm</code> module?</li>
-</ul><h1>NOTES</h1>
+</ul><h2>NOTES</h2>
 
 <ul>
 <li>
-<strong>Copyright</strong> 2012 Eric Mrak, Alexander Zagniotov, Isa Goksu</li>
+<strong>Copyright</strong> 2013 Eric Mrak, Alexander Zagniotov</li>
 <li>
 <strong>License</strong> Apache v2.0</li>
 </ul>
