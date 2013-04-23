@@ -2,4 +2,4 @@ language: node_js
 node_js:
    - 0.8
    - 0.10.0
-before_install: npm install -g coffee-script mocha
+before_install: npm install -g grunt-cli

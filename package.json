@@ -36,7 +36,7 @@
   ],
   "scripts": {
     "prepublish": "grunt",
-    "test": "mocha --compilers coffee:coffee-script spec"
+    "test": "grunt test"
   },
   "bin": {
     "stubby": "bin/stubby"
@@ -57,7 +57,8 @@
     "grunt": "~0.4.1",
     "grunt-contrib-coffee": "~0.7.0",
     "grunt-mocha-cli": "~1.0.3",
-    "grunt-contrib-watch": "~0.3.1"
+    "grunt-contrib-watch": "~0.3.1",
+    "coffee-script": "~1.6.2"
   },
   "license": "Apache",
   "engine": {
