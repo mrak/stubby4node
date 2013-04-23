@@ -35,8 +35,7 @@
     "webroot"
   ],
   "scripts": {
-    "prepublish": "coffee -o lib -c src",
-    "start": "bin/stubby",
+    "prepublish": "grunt",
     "test": "mocha --compilers coffee:coffee-script spec"
   },
   "bin": {
@@ -55,7 +54,10 @@
   },
   "devDependencies": {
     "sinon": ">=1.5.2",
-    "grunt": "~0.4.1"
+    "grunt": "~0.4.1",
+    "grunt-contrib-coffee": "~0.7.0",
+    "grunt-mocha-cli": "~1.0.3",
+    "grunt-contrib-watch": "~0.3.1"
   },
   "license": "Apache",
   "engine": {
