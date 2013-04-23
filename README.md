@@ -86,7 +86,7 @@ This section explains the usage, intent and behavior of each property on the `re
 Here is a fully-populated, unrealistic endpoint:
 ```yaml
 -  request:
-      url: /your/awesome/endpoint
+      url: ^/your/awesome/endpoint$
       method: POST
       query:
          exclamation: post requests can have query strings!
@@ -171,7 +171,7 @@ A demonstration using regular expressions:
       method: [GET, HEAD]
 
 -  request:
-      url: /yonder
+      url: ^/yonder
       method:
          -  GET
          -  HEAD
@@ -190,7 +190,7 @@ A demonstration using regular expressions:
 
 ```yaml
 -  request:
-      url: /with/parameters
+      url: ^/with/parameters$
       query:
          search: search terms
          filter: month
@@ -203,7 +203,7 @@ A demonstration using regular expressions:
 
 ```yaml
 -  request:
-      url: /post/form/data
+      url: ^/post/form/data$
       post: name=John&email=john@example.com
 ```
 
@@ -216,7 +216,7 @@ A demonstration using regular expressions:
 
 ```yaml
 -  request:
-      url: /match/against/file
+      url: ^/match/against/file$
       file: postedData.json
       post: '{"fallback":"data"}'
 ```
@@ -256,7 +256,7 @@ Assuming a match has been made against the given `request` object, data from `re
 
 ```yaml
 -  request:
-      url: /im/a/teapot
+      url: ^/im/a/teapot$
       method: POST
    response:
       status: 420
@@ -269,7 +269,7 @@ Assuming a match has been made against the given `request` object, data from `re
 
 ```yaml
 -  request:
-      url: /give/me/a/smile
+      url: ^/give/me/a/smile$
    response:
       body: ':)'
 ```
@@ -291,7 +291,7 @@ Assuming a match has been made against the given `request` object, data from `re
 
 ```yaml
 -  request:
-      url: /give/me/some/json
+      url: ^/give/me/some/json$
    response:
       headers:
          content-type: application/json
@@ -312,7 +312,7 @@ Assuming a match has been made against the given `request` object, data from `re
 
 ```yaml
 -  request:
-      url: /hello/to/jupiter
+      url: ^/hello/to/jupiter$
    response:
       latency: 800000
       body: Hello, World!
@@ -328,7 +328,7 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
 
 * `request`: describes the client's call to the server
    * `method`: GET/POST/PUT/DELETE/etc.
-   * `url`: the URI string. GET parameters should also be included inline here
+   * `url`: the URI regex string. GET parameters should also be included inline here
    * `query`: a key/value map of query string parameters included with the request
    * `headers`: a key/value map of headers the server should respond to
    * `post`: a string matching the textual body of the response.
@@ -343,7 +343,7 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
 #### YAML (file only)
 ```yaml
 -  request:
-      url: /path/to/something
+      url: ^/path/to/something$
       method: POST
       headers:
          authorization: "Basic usernamez:passwordinBase64"
@@ -356,7 +356,7 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
       body: You're request was successfully processed!
 
 -  request:
-      url: /path/to/anotherThing
+      url: ^/path/to/anotherThing
       query:
          a: anything
          b: more
@@ -372,7 +372,7 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
       file: path/to/page.html
 
 -  request:
-      url: /path/to/thing
+      url: ^/path/to/thing$
       method: POST
       headers:
          Content-Type: application/json
@@ -388,7 +388,7 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
 [
   {
     "request": {
-      "url": "/path/to/something", 
+      "url": "^/path/to/something$", 
       "post": "this is some post data in textual format", 
       "headers": {
          "authorization": "Basic usernamez:passwordinBase64"
@@ -406,7 +406,7 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
   }, 
   {
     "request": {
-      "url": "/path/to/anotherThing", 
+      "url": "^/path/to/anotherThing", 
       "query": {
          "a": "anything",
          "b": "more"
@@ -428,7 +428,7 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
   }, 
   {
     "request": {
-      "url": "/path/to/thing", 
+      "url": "^/path/to/thing$", 
       "headers": {
         "Content-Type": "application/json"
       },
