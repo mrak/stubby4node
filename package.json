@@ -35,7 +35,7 @@
     "webroot"
   ],
   "scripts": {
-    "prepublish": "grunt",
+    "prepublish": "grunt compile",
     "test": "grunt test"
   },
   "bin": {

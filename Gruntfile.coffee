@@ -37,3 +37,4 @@ module.exports = (grunt) ->
 
    grunt.registerTask 'default', ['coffee', 'mochacli']
    grunt.registerTask 'test', ['mochacli']
+   grunt.registerTask 'compile', ['coffee']
