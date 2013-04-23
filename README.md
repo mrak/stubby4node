@@ -49,9 +49,8 @@ Development is on Mac OS X Mountain Lion.
 
 ### Optional (for development)
 
-* [coffee-script](http://coffeescript.org)
+* [grunt-cli](http://gruntjs.com)
 * [node-inspector](https://github.com/dannycoates/node-inspector)
-* [jasmine-node](https://github.com/mhevery/jasmine-node)
 
 ## Starting the Server(s)
 
@@ -592,17 +591,14 @@ stubby2.start
 
 ## Running Tests
 
-If you don't have `jasmine-node` already, install it:
+If you don't have `grunt-cli` already, install it:
 
-    npm install -g jasmine-node
+    npm install -g grunt-cli
+    npm install
 
 From the root directory run:
 
-    jasmine-node --coffee spec
-
-If you want to see more informative output:
-
-    jasmine-node --verbose --coffee spec
+    grunt test
 
 ## See Also
 
