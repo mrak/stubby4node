@@ -54,7 +54,7 @@ module.exports =
       for option in options
          do (option) =>
             option.default ?= null
-            args[option.name] = pullPassedValue option, argv
+            args[option.name ? options.flag] = pullPassedValue option, argv
 
       return args
 
