@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.48
+
+* fixed a bug with the latest version of node where status page was no longer showing.
+
 ## 0.1.47
 
 * urls are now matched via regular expressions. If you want an exact match, remember to prefix your urls with `^` and postfix with `$`
