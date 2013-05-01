@@ -20,9 +20,9 @@ module.exports = (grunt) ->
             dest: 'lib'
             ext: '.js'
 
-         webroot:
+         websrc:
             expand: true
-            cwd: 'webrootSrc'
+            cwd: 'websrc'
             src: ['**/*.coffee']
             dest: 'webroot'
             ext: '.js'
@@ -31,8 +31,8 @@ module.exports = (grunt) ->
          src:
             files: 'src/**/*.coffee'
             tasks: 'coffee:src'
-         webroot:
-            files: 'webroot/**/*.coffee'
+         websrc:
+            files: 'websrc/**/*.coffee'
             tasks: 'coffee:webroot'
 
    grunt.registerTask 'default', ['coffee', 'mochacli']
