@@ -29,6 +29,7 @@ describe 'Admin', ->
          writeHead : sinon.spy()
          write : sinon.spy()
          end : sinon.spy()
+         on : sinon.spy()
 
    afterEach ->
       console.info.restore()
@@ -133,7 +134,8 @@ describe 'Admin', ->
 
          sut.ok response, content
 
-         assert response.write.calledOnce
+         assert response.end.calledOnce
+         assert response.end.args[0].length is 1
 
       it 'should write nothing if content is null', ->
          content = null

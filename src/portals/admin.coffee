@@ -13,13 +13,11 @@ module.exports.Admin = class Admin extends Portal
 
    urlPattern : /^\/([1-9][0-9]*)?$/
 
-   goPong: (response) =>
+   goPong: (response) ->
       response.writeHead 200, {'Content-Type' : 'text/plain'}
-      response.write 'pong'
-      response.end()
-      @responded 200
+      response.end 'pong'
 
-   goPUT : (request, response) =>
+   goPUT : (request, response) ->
       id = @getId request.url
       if not id
          @notSupported response
@@ -41,7 +39,7 @@ module.exports.Admin = class Admin extends Portal
 
       request.on 'end', => @processPOST data, response, request
 
-   goDELETE : (request, response) =>
+   goDELETE : (request, response) ->
       id = @getId request.url
       if not id then return @notSupported response
 
@@ -51,7 +49,7 @@ module.exports.Admin = class Admin extends Portal
 
       @endpoints.delete id, callback
 
-   goGET : (request, response) =>
+   goGET : (request, response) ->
       id = @getId request.url
 
       if id
@@ -60,12 +58,12 @@ module.exports.Admin = class Admin extends Portal
             @ok response, endpoint
          @endpoints.retrieve id, callback
       else
-         callback = (data) =>
+         callback = (err, data) =>
             if data.length is 0 then return @noContent response
             @ok response, data
          @endpoints.gather callback
 
-   processPUT : (id, data, response) =>
+   processPUT : (id, data, response) ->
       try
          data = JSON.parse data
       catch e
@@ -80,7 +78,7 @@ module.exports.Admin = class Admin extends Portal
 
       @endpoints.update id, data, callback
 
-   processPOST : (data, response, request) =>
+   processPOST : (data, response, request) ->
       try
          data = JSON.parse data
       catch e
@@ -93,47 +91,40 @@ module.exports.Admin = class Admin extends Portal
 
       @endpoints.create data, callback
 
-   ok : (response, result) =>
+   ok : (response, result) ->
       response.writeHead 200, {'Content-Type' : 'application/json'}
-      response.write JSON.stringify result if result?
-      response.end()
-      @responded 200
+      if result?
+         response.end(JSON.stringify result)
+      else
+         response.end()
 
-   created : (response, request, id) =>
+   created : (response, request, id) ->
       response.writeHead 201, {'Location' : "#{request.headers.host}/#{id}"}
       response.end()
-      @responded 201
 
-   noContent : (response) =>
+   noContent : (response) ->
       response.statusCode = 204
       response.end()
-      @responded 204
 
-   badRequest : (response, errors) =>
+   badRequest : (response, errors) ->
       response.writeHead 400, {'Content-Type' : 'application/json'}
-      response.write JSON.stringify errors
-      response.end()
-      @responded 400
+      response.end JSON.stringify errors
 
-   notSupported : (response) =>
+   notSupported : (response) ->
       response.statusCode = 405
       response.end()
-      @responded 405
 
-   notFound : (response) =>
+   notFound : (response) ->
       response.writeHead 404, {'Content-Type' : 'text/plain'}
       response.end()
-      @responded 404
 
-   saveError : (response) =>
+   saveError : (response) ->
       response.writeHead 422, {'Content-Type' : 'text/plain'}
       response.end()
-      @responded 422
 
-   serverError : (response) =>
+   serverError : (response) ->
       response.writeHead 500, {'Content-Type' : 'text/plain'}
       response.end()
-      @responded 500
 
    urlValid : (url) ->
       return url.match(@urlPattern)?
@@ -143,13 +134,15 @@ module.exports.Admin = class Admin extends Portal
 
    server : (request, response) =>
       @received request, response
+      response.on 'finish', => @responded response.statusCode, request.url
 
-      if request.url is '/ping' then @goPong response
+      if request.url is '/ping'
+         return @goPong response
 
-      else if /^\/status(\/.*)?/.test request.url
-         status.serve request, response
+      if /^\/(status|js|css)(\/.*)?$/.test request.url
+         return status.serve request, response
 
-      else if @urlValid request.url
+      if @urlValid request.url
          switch request.method.toUpperCase()
             when 'PUT'    then @goPUT request, response
             when 'POST'   then @goPOST request, response
@@ -158,3 +151,4 @@ module.exports.Admin = class Admin extends Portal
             else @notSupported response
       else
          @notFound response
+

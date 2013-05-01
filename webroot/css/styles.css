@@ -31,6 +31,7 @@ li { list-style: none; }
    margin: 25px 0;
    border-radius: 6px;
    overflow: hidden;
+   border: 10px solid black;
 }
 
 table {
@@ -56,23 +57,39 @@ caption {
 th, td {
    border: 1px solid black;
    padding: 10px;
+   background: black;
 }
 
 td {
    font-family: monospace;
 }
 
-th{
-   border-top: 1px solid #333333;
+th {
    vertical-align: top;
-   background: black;
-   color: #FCC971;
-   width: 100px;
-   text-align: right;
+   width: 115px;
+}
+
+th.section::after, th.property::after {
+   content: ":";
 }
 
 th.section {
-   text-align: center;
+   color: rgb(207, 117, 186);
+}
+
+th.property {
+   color: #009900;
+}
+
+th.property::before {
+   content: "";
+   display: inline-block;
+   width: 40px;
+}
+
+td > pre {
+   border-radius: 3px;
+   overflow: hidden;
 }
 
 .query-params li {

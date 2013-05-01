@@ -50,7 +50,7 @@ module.exports.Endpoints = class Endpoints
       for id, endpoint of @db
          all.push endpoint
 
-      callback ce.clone all
+      callback null, ce.clone all
 
    find : (data, callback) ->
       for id, endpoint of @db

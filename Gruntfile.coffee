@@ -33,7 +33,7 @@ module.exports = (grunt) ->
             tasks: 'coffee:src'
          websrc:
             files: 'websrc/**/*.coffee'
-            tasks: 'coffee:webroot'
+            tasks: 'coffee:websrc'
 
    grunt.registerTask 'default', ['coffee', 'mochacli']
    grunt.registerTask 'test', ['mochacli']

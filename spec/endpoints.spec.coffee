@@ -109,14 +109,14 @@ describe 'Endpoints', ->
 
             sut.gather callback
 
-            assert callback.calledWith data
+            assert callback.calledWith null, data
 
          it 'should call callback with empty array if operation does not find item', ->
             sut.db = []
 
             sut.gather callback
 
-            assert callback.calledWith []
+            assert callback.calledWith null, []
 
       describe 'find', ->
          data =

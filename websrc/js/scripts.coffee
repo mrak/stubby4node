@@ -8,17 +8,17 @@ template = """
          <th class="section" colspan="2">request</th>
       </tr>
       <tr>
-         <th>url</th>
+         <th class="property">url</th>
          <td><%= request.url %></td>
       </tr>
       <% if(request.method) { %>
       <tr>
-         <th>method</th>
+         <th class="property">method</th>
          <td><%= request.method %></td>
       </tr>
       <% } if(request.query) { %>
       <tr>
-         <th>query</th>
+         <th class="property">query</th>
          <td><% print(queryParams(request.query)); %></td>
       </tr>
       <tr>
@@ -36,7 +36,7 @@ template = """
       </tr>
       <% } if(request.headers) { %>
       <tr>
-         <th>headers</th>
+         <th class="property">headers</th>
          <td>
             <ul>
                <% _.each(_.keys(request.headers), function(key) { %>
@@ -50,12 +50,12 @@ template = """
       </tr>
       <% } if(request.post) { %>
       <tr>
-         <th>post</th>
-         <td><%= request.post %></td>
+         <th class="property">post</th>
+         <td><pre><code><%= request.post %></code></pre></td>
       </tr>
       <% } if(request.file) { %>
       <tr>
-         <th>file</th>
+         <th class="property">file</th>
          <td><%= request.file %></td>
       </tr>
       <% } %>
@@ -64,12 +64,12 @@ template = """
       </tr>
       <% if(response.status) { %>
       <tr>
-         <th>status</th>
+         <th class="property">status</th>
          <td><%= response.status %></td>
       </tr>
       <% } if(request.headers) { %>
       <tr>
-         <th>headers</th>
+         <th class="property">headers</th>
          <td>
             <ul>
                <% _.each(_.keys(response.headers), function(key) { %>
@@ -83,17 +83,17 @@ template = """
       </tr>
       <% } if(response.body) { %>
       <tr>
-         <th>body</th>
-         <td><%= response.body %></td>
+         <th class="property">body</th>
+         <td><pre><code><%= response.body %></code></pre></td>
       </tr>
       <% } if(response.file) { %>
       <tr>
-         <th>file</th>
+         <th class="property">file</th>
          <td><%= response.file %></td>
       </tr>
       <% } if(response.latency) { %>
       <tr>
-         <th>latency</th>
+         <th class="property">latency</th>
          <td><%= response.latency %></td>
       </tr>
       <% } %>
@@ -123,6 +123,8 @@ success = ->
          endpoint.adminUrl = window.location.href.replace /status/, endpoint.id
          html = _.template template, endpoint
          list.innerHTML += html
+
+   hljs.initHighlighting()
 
 complete = (e) ->
    return unless ajax.readyState is 4

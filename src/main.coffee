@@ -58,7 +58,7 @@ module.exports.Stubby = class Stubby
       @tlsPortal = null
       @adminPortal = null
 
-   start: (options = {}, callback = ->) -> @stop =>
+   start: (options = {}, callback = ->) => @stop =>
       setupStartOptions options, callback
 
       if errors = contract options.data then return callback errors

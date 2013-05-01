@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.49
+
+* updating styling of status page.
+
 ## 0.1.48
 
 * fixed a bug with the latest version of node where status page was no longer showing.
