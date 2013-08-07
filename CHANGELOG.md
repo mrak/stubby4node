@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.50
+
+* bugfix: admin and programmatic APIs correctly parse incoming data
+
 ## 0.1.49
 
 * updating styling of status page.

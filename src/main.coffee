@@ -9,6 +9,8 @@ http = require 'http'
 https = require 'https'
 contract = require './models/contract'
 
+couldNotSave = "The supplied endpoint data couldn't be saved"
+
 onListening = (portal, port, protocol = 'http', location) ->
    out.status "#{portal} portal running at #{protocol}://#{location}:#{port}"
 onError = (err, port, location) ->
@@ -40,6 +42,8 @@ setupStartOptions = (options, callback) ->
 
    out.mute = options.mute
 
+   [options,callback]
+
 createHttpsOptions = (options) ->
    httpsOptions = {}
    if options.key and options.cert
@@ -59,7 +63,7 @@ module.exports.Stubby = class Stubby
       @adminPortal = null
 
    start: (options = {}, callback = ->) => @stop =>
-      setupStartOptions options, callback
+      [options,callback] = setupStartOptions options, callback
 
       if errors = contract options.data then return callback errors
       if options.datadir? then @endpoints.datadir = options.datadir
@@ -95,7 +99,7 @@ module.exports.Stubby = class Stubby
 
 
    post: (data, callback = ->) -> process.nextTick =>
-      if not contract data then return callback "The supplied endpoint data couldn't be saved"
+      if contract data then return callback couldNotSave
       @endpoints.create data, callback
 
    get: (id = (->), callback = id) -> process.nextTick =>
@@ -105,7 +109,7 @@ module.exports.Stubby = class Stubby
          @endpoints.retrieve id, callback
 
    put: (id, data, callback = ->) -> process.nextTick =>
-      if not contract data then return callback "The supplied endpoint data couldn't be saved"
+      if contract data then return callback couldNotSave
       @endpoints.update id, data, callback
 
    delete: (id = (->), callback = id) -> process.nextTick =>
