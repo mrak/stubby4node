@@ -35,20 +35,21 @@ describe 'Endpoint', ->
                   header: 'string'
                post: 'data'
                file: 'file.txt'
-            response:
+            response: [
                latency: 3000
                body: 'contents'
                file: 'another.file'
                status: 420
                headers:
                   'access-control-allow-origin': '*'
+            ]
 
          actual = new Endpoint data
 
-         actualbody = actual.response.body.toString()
-         delete actual.response.body
-         expectedBody = data.response.body
-         delete data.response.body
+         actualbody = actual.response[0].body.toString()
+         delete actual.response[0].body
+         expectedBody = data.response[0].body
+         delete data.response[0].body
 
          assert.deepEqual actual, data
          assert expectedBody is actualbody
@@ -65,17 +66,7 @@ describe 'Endpoint', ->
 
          actual = new Endpoint data
 
-         assert actual.response.status is expected
-
-      xit 'should not default response headers', ->
-         actual = new Endpoint data
-
-         assert actual.response.headers is undefined
-
-      xit 'should not default request headers', ->
-         actual = new Endpoint data
-
-         assert actual.request.headers is undefined
+         assert actual.response[0].status is expected
 
       it 'should lower case headers properties', ->
          data.request =
@@ -91,7 +82,7 @@ describe 'Endpoint', ->
 
          actual = new Endpoint data
 
-         assert.deepEqual actual.response.headers, expected.response
+         assert.deepEqual actual.response[0].headers, expected.response
          assert.deepEqual actual.request.headers, expected.request
 
       it 'should base64 encode authorization headers if not encoded', ->
@@ -119,4 +110,4 @@ describe 'Endpoint', ->
 
          actual = new Endpoint data
 
-         assert actual.response.body.toString() is expected
+         assert actual.response[0].body.toString() is expected

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.0
+
+* added cyclic responses. `response` can now be a yaml sequence of responses. Backward compatible, thus the minor version bump
+
 ## 0.1.50
 
 * bugfix: admin and programmatic APIs correctly parse incoming data

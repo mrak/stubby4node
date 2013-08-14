@@ -124,7 +124,7 @@ describe 'Endpoints', ->
 
          it 'should call callback with null, row if operation returns a row', ->
             row = new Endpoint()
-            sut.db = [row]
+            sut.create {}
             sut.find data, callback
 
             assert callback.args[0][0] is null
@@ -136,12 +136,11 @@ describe 'Endpoints', ->
             assert callback.calledWith "Endpoint with given request doesn't exist."
 
          it 'should call callback after timeout if data response has a latency', (done) ->
-            row = new Endpoint
+           sut.create
                request: {}
                response:
                   latency: 1000
 
-            sut.db = [row]
             sut.find data, callback
 
             waitsFor (-> callback.called), 'Callback call was never called', [900, 1100], done
@@ -149,7 +148,7 @@ describe 'Endpoints', ->
          describe 'request post versus file', ->
             it 'should match response with post if file is not supplied', ->
                expected = { status: 200 }
-               row = new Endpoint
+               sut.create
                   request:
                      url: '/testing'
                      post: 'the post!'
@@ -160,14 +159,13 @@ describe 'Endpoints', ->
                   url: '/testing'
                   post: 'the post!'
 
-               sut.db = [row]
                sut.find data, callback
 
                assert callback.calledWith null
 
             it 'should match response with post file is supplied but cannot be found', ->
                expected = { status : 200 }
-               row = new Endpoint
+               sut.create
                   request:
                      url: '/testing'
                      file: 'spec/data/endpoints-nonexistant.file'
@@ -179,14 +177,13 @@ describe 'Endpoints', ->
                   url: '/testing'
                   post: 'post data!'
 
-               sut.db = [row]
                sut.find data, callback
 
                assert callback.calledWith null
 
             it 'should match response with file if file is supplied and exists', ->
                expected = { status : 200 }
-               row = new Endpoint
+               sut.create
                   request:
                      url: '/testing'
                      file: 'spec/data/endpoints.file'
@@ -198,7 +195,6 @@ describe 'Endpoints', ->
                   post: 'file contents!'
                   method: 'POST'
 
-               sut.db = [row]
                sut.find data, callback
 
                assert callback.calledWith null
@@ -206,7 +202,7 @@ describe 'Endpoints', ->
          describe 'response body versus file', ->
             it 'should return response with body as content if file is not supplied', ->
                expected = 'the body!'
-               row = new Endpoint
+               sut.create
                   request:
                      url: '/testing'
                   response:
@@ -215,14 +211,13 @@ describe 'Endpoints', ->
                   url: '/testing'
                   method: 'GET'
 
-               sut.db = [row]
                sut.find data, callback
 
                assert callback.args[0][1].body.toString() is expected
 
             it 'should return response with body as content if file is supplied but cannot be found', ->
                expected = 'the body!'
-               row = new Endpoint
+               sut.create
                   request:
                      url: '/testing'
                   response:
@@ -232,14 +227,13 @@ describe 'Endpoints', ->
                   url: '/testing'
                   method: 'GET'
 
-               sut.db = [row]
                sut.find data, callback
 
                assert callback.args[0][1].body.toString() is expected
 
             it 'should return response with file as content if file is supplied and exists', ->
                expected = 'file contents!'
-               row = new Endpoint
+               sut.create
                   request:
                      url: '/testing'
                   response:
@@ -249,63 +243,54 @@ describe 'Endpoints', ->
                   url: '/testing'
                   method: 'GET'
 
-               sut.db = [row]
                sut.find data, callback
 
                assert callback.args[0][1].body.toString().trim() is expected
 
          describe 'method', ->
             it 'should return response even if cases match', ->
-               row = new Endpoint
+              sut.create
                   request:
                      method: 'POST'
                   response: {}
                data =
                   method: 'POST'
 
-               sut.db = [row]
-
                sut.find data, callback
 
                assert callback.args[0][1]
 
             it 'should return response even if cases do not match', ->
-               row = new Endpoint
+              sut.create
                   request:
                      method: 'post'
                   response: {}
                data =
                   method: 'POST'
 
-               sut.db = [row]
-
                sut.find data, callback
 
                assert callback.args[0][1]
 
             it 'should return response if method matches any of the defined', ->
-               row = new Endpoint
+              sut.create
                   request:
                      method: ['post', 'put']
                   response: {}
                data =
                   method: 'POST'
 
-               sut.db = [row]
-
                sut.find data, callback
 
                assert callback.args[0][1]
 
             it 'should call callback with error if none of the methods match', ->
-               row = new Endpoint
+              sut.create
                   request:
                      method: ['post', 'put']
                   response: {}
                data =
                   method: 'GET'
-
-               sut.db = [row]
 
                sut.find data, callback
 
@@ -314,7 +299,7 @@ describe 'Endpoints', ->
          describe 'headers', ->
 
             it 'should return response if all headers of request match', ->
-               row = new Endpoint
+              sut.create
                   request:
                      headers:
                         'content-type': 'application/json'
@@ -324,14 +309,12 @@ describe 'Endpoints', ->
                   headers:
                      'content-type': 'application/json'
 
-               sut.db = [row]
-
                sut.find data, callback
 
                assert callback.args[0][1]
 
             it 'should call callback with error if all headers of request dont match', ->
-               row = new Endpoint
+              sut.create
                   request:
                      headers:
                         'content-type': 'application/json'
@@ -341,8 +324,6 @@ describe 'Endpoints', ->
                   headers:
                      'authentication': 'Basic gibberish:password'
 
-               sut.db = [row]
-
                sut.find data, callback
 
                assert callback.calledWith "Endpoint with given request doesn't exist."
@@ -350,7 +331,7 @@ describe 'Endpoints', ->
          describe 'query', ->
 
             it 'should return response if all query of request match', ->
-               row = new Endpoint
+              sut.create
                   request:
                      query:
                         'first': 'value1'
@@ -360,14 +341,13 @@ describe 'Endpoints', ->
                   query:
                      'first': 'value1'
 
-               sut.db = [row]
 
                sut.find data, callback
 
                assert callback.args[0][1]
 
             it 'should call callback with error if all query of request dont match', ->
-               row = new Endpoint
+              sut.create
                   request:
                      query:
                         'first': 'value1'
@@ -376,8 +356,6 @@ describe 'Endpoints', ->
                   method: 'GET'
                   query:
                      'unknown': 'good question'
-
-               sut.db = [row]
 
                sut.find data, callback
 

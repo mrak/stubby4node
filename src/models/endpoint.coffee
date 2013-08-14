@@ -43,15 +43,22 @@ purifyRequest = (incoming = {}) ->
   outgoing = pruneUndefined outgoing
   return outgoing
 
-purifyResponse = (incoming = {}) ->
-  outgoing =
-    headers: purifyHeaders incoming.headers
-    status: parseInt(incoming.status) or 200
-    latency: parseInt(incoming.latency) or undefined
-    file: incoming.file
-    body: purifyBody incoming.body
+purifyResponse = (incoming = []) ->
+  unless incoming instanceof Array
+    incoming = [incoming]
+  outgoing = []
 
-  outgoing = pruneUndefined outgoing
+  if incoming.length is 0
+    incoming.push {}
+
+  for response in incoming
+    outgoing.push pruneUndefined
+      headers: purifyHeaders response.headers
+      status: parseInt(response.status) or 200
+      latency: parseInt(response.latency) or undefined
+      file: response.file
+      body: purifyBody response.body
+
   return outgoing
 
 purifyHeaders = (incoming) ->
