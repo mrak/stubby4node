@@ -36,7 +36,7 @@ module.exports.Stubs = class Stubs extends Portal
             @Endpoints.find criteria, callback
          catch e
             response.statusCode =  500
-            @responded 500, request.url, "unexpectedly generated a server error"
+            @responded 500, request.url, "unexpectedly generated a server error: #{e.message}"
             response.end()
 
 
