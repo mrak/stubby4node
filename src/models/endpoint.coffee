@@ -9,7 +9,7 @@ module.exports = class Endpoint
     @response = purifyResponse endpoint.response
 
   matches: (request) ->
-    return false unless RegExp(@request.url).test request.url
+    return false unless matchRegex @request.url, request.url
     return false unless compareHashMaps @request.headers, request.headers
     return false unless compareHashMaps @request.query, request.query
 
@@ -18,7 +18,7 @@ module.exports = class Endpoint
       try file = fs.readFileSync path.resolve(@datadir, @request.file), 'utf8'
 
     if post = file or @request.post
-      return false unless normalizeEOL(post) is normalizeEOL(request.post)
+      return false unless matchRegex normalizeEOL(post), normalizeEOL(request.post)
 
     if @request.method instanceof Array
       return false unless request.method in @request.method.map (it) -> it.toUpperCase()
@@ -98,6 +98,9 @@ setFallbacks = (endpoint) ->
 
 compareHashMaps = (configured = {}, incoming = {}) ->
   for key, value of configured
-    if configured[key] isnt incoming[key] then return false
+    return false unless matchRegex configured[key], incoming[key]
   return true
+
+matchRegex = (compileMe, testMe) ->
+  return RegExp(compileMe,'m').test testMe
 

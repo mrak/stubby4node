@@ -3,6 +3,7 @@
 ## 0.2.0
 
 * added cyclic responses. `response` can now be a yaml sequence of responses. Backward compatible, thus the minor version bump
+* all string values for `response` criteria are matched as regular expressions against the incoming request
 
 ## 0.1.50
 
