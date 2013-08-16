@@ -98,7 +98,7 @@ Here is a fully-populated, unrealistic endpoint:
          </envelope>
       file: tryMyFirst.xml
    response:
-      status: 200
+    - status: 200
       latency: 5000
       headers:
          content-type: application/xml
@@ -109,6 +109,8 @@ Here is a fully-populated, unrealistic endpoint:
             <content></content>
          </responseXML>
       file: responseData.xml
+    - status: 200
+      body: "Haha!"
 ```
 
 ### request
@@ -179,6 +181,7 @@ A demonstration using regular expressions:
 
 #### query
 
+* values are full-fledged __regular expressions__
 * if ommitted, stubby ignores query parameters for the given url.
 * a yaml hashmap of variable/value pairs.
 * allows the query parameters to appear in any order in a uri
@@ -197,6 +200,7 @@ A demonstration using regular expressions:
 
 #### post
 
+* is a full-fledged __regular expression__
 * if ommitted, any post data is ignored.
 * the body contents of the server request, such as form data.
 
@@ -229,6 +233,7 @@ postedData.json
 
 #### headers
 
+* values are full-fledged __regular expressions__
 * if ommitted, stubby ignores headers for the given url.
 * case-insensitive matching of header names.
 * a hashmap of header/value pairs similar to `query`.
@@ -246,6 +251,8 @@ The following endpoint only accepts requests with `application/json` post values
 ### response
 
 Assuming a match has been made against the given `request` object, data from `response` is used to build the stubbed response back to the client.
+
+__NOTE:__ The `response` property can also be a yaml sequence of responses that cycle as each request is made.
 
 #### status
 
@@ -445,6 +452,10 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
 ```
 
 If you want to load more than one endpoint via file, use either a JSON array or YAML list (-) syntax. On success, the response will contain `Location` in the header with the newly created resources' location
+
+### Getting the ID of a Loaded Endpoint
+
+Stubby adds the response-header `X-Stubby-Resource-ID` to outgoing responses. This ID can be referenced for use with the Admin portal.
 
 ### Getting the Current List of Stubbed Endpoints
 
