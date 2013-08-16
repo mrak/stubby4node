@@ -7,7 +7,6 @@
     "email": "enmrak@gmail.com"
   },
   "description": "a lightweight server for stubbing external systems and endpoints",
-  "man": "./man/stubby.1",
   "keywords": [
     "server",
     "stub",
@@ -31,7 +30,7 @@
     "package.json",
     "bin",
     "tls",
-    "man/stubby.1",
+    "man",
     "webroot"
   ],
   "scripts": {
