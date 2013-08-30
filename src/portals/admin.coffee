@@ -6,6 +6,7 @@ path = require 'path'
 status = new ns.Server (path.resolve __dirname, '../../webroot')
 
 module.exports.Admin = class Admin extends Portal
+
    constructor : (endpoints) ->
       @endpoints = endpoints
       @contract = contract
@@ -14,7 +15,7 @@ module.exports.Admin = class Admin extends Portal
    urlPattern : /^\/([1-9][0-9]*)?$/
 
    goPong: (response) ->
-      response.writeHead 200, {'Content-Type' : 'text/plain'}
+      @writeHead response, 200, {'Content-Type' : 'text/plain'}
       response.end 'pong'
 
    goPUT : (request, response) ->
@@ -92,14 +93,14 @@ module.exports.Admin = class Admin extends Portal
       @endpoints.create data, callback
 
    ok : (response, result) ->
-      response.writeHead 200, {'Content-Type' : 'application/json'}
+      @writeHead response, 200, {'Content-Type' : 'application/json'}
       if result?
          response.end(JSON.stringify result)
       else
          response.end()
 
    created : (response, request, id) ->
-      response.writeHead 201, {'Location' : "#{request.headers.host}/#{id}"}
+      @writeHead response, 201, {'Location' : "#{request.headers.host}/#{id}"}
       response.end()
 
    noContent : (response) ->
@@ -107,7 +108,7 @@ module.exports.Admin = class Admin extends Portal
       response.end()
 
    badRequest : (response, errors) ->
-      response.writeHead 400, {'Content-Type' : 'application/json'}
+      @writeHead response, 400, {'Content-Type' : 'application/json'}
       response.end JSON.stringify errors
 
    notSupported : (response) ->
@@ -115,15 +116,15 @@ module.exports.Admin = class Admin extends Portal
       response.end()
 
    notFound : (response) ->
-      response.writeHead 404, {'Content-Type' : 'text/plain'}
+      @writeHead response, 404, {'Content-Type' : 'text/plain'}
       response.end()
 
    saveError : (response) ->
-      response.writeHead 422, {'Content-Type' : 'text/plain'}
+      @writeHead response, 422, {'Content-Type' : 'text/plain'}
       response.end()
 
    serverError : (response) ->
-      response.writeHead 500, {'Content-Type' : 'text/plain'}
+      @writeHead response, 500, {'Content-Type' : 'text/plain'}
       response.end()
 
    urlValid : (url) ->
