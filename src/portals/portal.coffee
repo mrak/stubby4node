@@ -6,6 +6,10 @@ module.exports.Portal = class Portal
    constructor: ->
       @name = 'portal'
 
+   writeHead: (response, status_code, headers) ->
+      response.writeHead status_code, headers if !response.headersSent
+      return response
+
    received: (request, response) ->
       date = new Date()
       hours = "0#{date.getHours()}".slice -2

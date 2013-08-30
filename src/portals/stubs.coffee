@@ -23,10 +23,10 @@ module.exports.Stubs = class Stubs extends Portal
 
          callback = (err, endpointResponse) =>
             if err
-               response.writeHead 404, {}
+               @writeHead response, 404, {}
                @responded 404, request.url, 'is not a registered endpoint'
             else
-               response.writeHead endpointResponse.status, endpointResponse.headers
+               @writeHead response, endpointResponse.status, endpointResponse.headers
                response.write endpointResponse.body
 
                @responded endpointResponse.status, request.url
