@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+* bugfix for "Could not render headers to client" from `h2non`
+
 ## 0.2.0
 
 * added cyclic responses. `response` can now be a yaml sequence of responses. Backward compatible, thus the minor version bump
