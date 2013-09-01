@@ -14,6 +14,7 @@ stubby4node
 * [The Stubs Portal](#the-stubs-portal)
 * [Programmatic API](#programmatic-api)
 * [Running Tests](#running-tests)
+* [Grunt task](#grunt-task)
 * [See Also](#see-also)
 * [TODO](#todo)
 * [Wishful Thinkings](#wishful-thinkings)
@@ -615,6 +616,10 @@ From the root directory run:
 
 * **[stubby4j](https://github.com/azagniotov/stubby4j):** A java implementation of stubby
 * **[stubby4net](https://github.com/mrak/stubby4net):** A .NET implementation of stubby
+
+## Grunt task
+
+For [Grunt](http://gruntjs.com) automation, see the [stubby task](https://github.com/h2non/grunt-stubby)
 
 ## TODO
 
