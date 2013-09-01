@@ -65,7 +65,7 @@ module.exports.Endpoints = class Endpoints
 found = (endpoint, callback) ->
   response = endpoint.response[@sightings[endpoint.id]++ % endpoint.response.length]
   response.body = new Buffer (response.body ? 0) , 'utf8'
-  response.headers['X-Stubby-Resource-ID'] = endpoint.id
+  response.headers['x-stubby-resource-id'] = endpoint.id
 
   if response.file?
     try response.body = fs.readFileSync path.resolve(@datadir, response.file)
