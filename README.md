@@ -1,4 +1,5 @@
 [![Build Status](https://secure.travis-ci.org/mrak/stubby4node.png?branch=master)](http://travis-ci.org/Afmrak/stubby4node)
+[![NPM version](https://badge.fury.io/js/stubby.png)](http://badge.fury.io/js/stubby)
 
 stubby4node
 ===========
