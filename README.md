@@ -215,7 +215,7 @@ A demonstration using regular expressions:
 #### file
 
 * if supplied, replaces `post` with the contents of the locally given file.
-    * paths are relative from where stubby was executed.
+    * paths are relative from where the `--data` file is located
 * if the file is not found when the request is made, falls back to `post` for matching.
 * allows you to split up stubby data across multiple files
 
@@ -336,7 +336,7 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
 
 * `request`: describes the client's call to the server
    * `method`: GET/POST/PUT/DELETE/etc.
-   * `url`: the URI regex string. GET parameters should also be included inline here
+   * `url`: the URI regex string.
    * `query`: a key/value map of query string parameters included with the request
    * `headers`: a key/value map of headers the server should respond to
    * `post`: a string matching the textual body of the response.
