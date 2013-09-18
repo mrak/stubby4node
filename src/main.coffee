@@ -73,7 +73,7 @@ module.exports.Stubby = class Stubby
       @tlsPortal = https.createServer createHttpsOptions(options), new Stubs(@endpoints).server
       @tlsPortal.on 'listening', -> onListening 'Stubs', options.tls, 'https', options.location
       @tlsPortal.on 'error', (err) -> onError(err, options.tls, options.location)
-      @tlsPortal.listen options.tls, options.location or '0.0.0.0'
+      @tlsPortal.listen options.tls, options.location
 
       @stubsPortal = http.createServer(new Stubs(@endpoints).server)
       @stubsPortal.on 'listening', -> onListening 'Stubs', options.stubs, 'http', options.location
