@@ -119,6 +119,21 @@ describe 'End 2 End Stubs Test Suite', ->
                      assert context.response.statusCode is 200
                      done()
 
+      it 'should return the CORS headers', (done) ->
+         expected = 'http://example.org'
+
+         context.url = '/basic/get'
+         context.method = 'get'
+         context.requestHeaders =
+            'origin': expected
+
+         createRequest context
+         waitsFor ( -> context.done ), 'request to finish', 1000, ->
+            headers = context.response.headers
+            assert headers['access-control-allow-origin'] is expected
+            assert headers['access-control-allow-credentials'] is 'true'
+            done()
+
    describe 'GET', ->
       it 'should return a body from a GET endpoint', (done) ->
          context.url = '/get/body'

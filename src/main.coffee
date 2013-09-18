@@ -35,6 +35,7 @@ setupStartOptions = (options, callback) ->
       options = {}
 
    options.mute ?= true
+   options.location = '0.0.0.0' if options.location is '*'
    defaults = CLI.getArgs []
 
    for key, value of defaults
