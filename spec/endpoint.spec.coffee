@@ -111,3 +111,12 @@ describe 'Endpoint', ->
          actual = new Endpoint data
 
          assert actual.response[0].body.toString() is expected
+
+      it 'should get the Origin header', ->
+         expected = 'http://example.org'
+         data.request.headers =
+            Origin: 'http://example.org'
+
+         actual = new Endpoint data
+
+         assert actual.request.headers.origin is expected

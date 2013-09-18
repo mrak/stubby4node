@@ -118,17 +118,17 @@ describe 'main', ->
                     done()
 
             it 'should default data to empty array', (done) ->
-                sut.start options, -> 
+                sut.start options, ->
                     assert options.data instanceof Array
                     assert options.data.length is 0
                     done()
 
             it 'should default key to null', (done) ->
-                sut.start options, -> 
+                sut.start options, ->
                     assert options.key is defaults.key
                     done()
 
             it 'should default cert to null', (done) ->
-                sut.start options, -> 
+                sut.start options, ->
                     assert options.cert is defaults.cert
                     done()
