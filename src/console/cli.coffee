@@ -25,7 +25,6 @@ module.exports =
    ,
       name: 'help'
       flag: 'h'
-      exit: true
       default: false
       description: 'This help text.'
    ,
@@ -64,7 +63,6 @@ module.exports =
    ,
       name: 'version'
       flag: 'v'
-      exit: true
       description: "Prints stubby's version number."
    ,
       name: 'watch'
