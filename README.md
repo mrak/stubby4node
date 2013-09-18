@@ -538,7 +538,7 @@ What can I do with it, you ask? Read on!
    * `admin`: port number to run the admin portal
    * `tls`: port number to run the stubs portal over https
    * `data`: JavaScript Object/Array containing endpoint data
-   * `location`: address/hostname at which to run stubby
+   * `location`: address/hostname at which to run stubby. Use '*' for listening on all interfaces
    * `key`: keyfile contents (in PEM format)
    * `cert`: certificate file contents (in PEM format)
    * `pfx`: pfx file contents (mutually exclusive with key/cert options)

@@ -19,6 +19,10 @@ module.exports.Portal = class Portal
       out.incoming "#{hours}:#{minutes}:#{seconds} -> #{request.method} #{@name}#{request.url}"
       response.setHeader 'Server', "stubby/#{CLI.version()} node/#{process.version} (#{process.platform} #{process.arch})"
 
+      if origin = request.headers['origin']?
+         response.setHeader 'Access-Control-Allow-Origin', origin
+         response.setHeader 'Access-Control-Allow-Credentials', true
+
    responded: (status, url = '', message = http.STATUS_CODES[status]) ->
       date = new Date()
       hours = "0#{date.getHours()}".slice -2
