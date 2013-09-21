@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.2
+
+* CORS compliance as per W3C specifications. Using `*` as the `--location` will instruct stubby to listen on all interfaces. Implemented by [Tomás Aparicio](https://github.com/h2non)
+
 ## 0.2.1
 
 * bugfix for "Could not render headers to client" from `h2non`
