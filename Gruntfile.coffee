@@ -10,6 +10,10 @@ module.exports = (grunt) ->
       mochacli:
          options:
             compilers: ['coffee:coffee-script']
+            timeout: 5000
+            ignoreLeaks: false
+            ui: 'bdd'
+            reporter: 'spec'
          all: 'spec/**/*.coffee'
 
       coffee:
@@ -36,5 +40,5 @@ module.exports = (grunt) ->
             tasks: 'coffee:websrc'
 
    grunt.registerTask 'default', ['coffee', 'mochacli']
-   grunt.registerTask 'test', ['mochacli']
+   grunt.registerTask 'test', ['compile', 'mochacli']
    grunt.registerTask 'compile', ['coffee']
