@@ -117,3 +117,10 @@
       post: post contents!
    response: {}
 
+-  request:
+      url: /file/body/matchstring
+      method: POST
+      file: spec/data/fixtures/matchstring.json
+      matchAsString: true
+   response: {}
+

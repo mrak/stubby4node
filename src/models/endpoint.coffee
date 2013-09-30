@@ -18,6 +18,10 @@ module.exports = class Endpoint
       try file = fs.readFileSync path.resolve(@datadir, @request.file), 'utf8'
 
     if post = file or @request.post
+      console.log @request
+      if post? and @request.matchAsString
+        post = escapeRegex post
+
       return false unless matchRegex normalizeEOL(post), normalizeEOL(request.post)
 
     if @request.method instanceof Array
@@ -102,5 +106,10 @@ compareHashMaps = (configured = {}, incoming = {}) ->
   return true
 
 matchRegex = (compileMe, testMe) ->
-  return RegExp(compileMe,'m').test testMe
+  return RegExp(compileMe, 'm').test testMe
+
+escapeRegex = (string) ->
+  return normalizeEOL(string).replace /[.^$*+?()[{\|]/g , (match) ->
+    return '\\' + match
+
 
