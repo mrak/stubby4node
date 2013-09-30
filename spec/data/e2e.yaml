@@ -122,5 +122,7 @@
       method: POST
       file: spec/data/fixtures/matchstring.json
       matchAsString: true
-   response: {}
+   response: 
+      status: 200
+      body: 'found'
 
