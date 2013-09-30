@@ -295,6 +295,5 @@ describe 'End 2 End Stubs Test Suite', ->
           createRequest context
 
           waitsFor ( -> context.done ), 'body match', 1000, ->
-            console.log context.response.data
             assert context.response.data is 'body contents!'
             done()

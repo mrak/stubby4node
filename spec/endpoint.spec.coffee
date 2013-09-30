@@ -133,3 +133,4 @@ describe 'Endpoint', ->
          assert actual.request.headers.origin is expected
          assert actual.request.headers['access-control-allow-origin'] is 'POST'
          assert actual.request.headers['access-control-request-header'] is 'Content-Type, origin'
+
