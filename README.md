@@ -625,12 +625,8 @@ For [Grunt](http://gruntjs.com) automation, see the [stubby task](https://github
 ## TODO
 
 * `post` parameter as a hashmap under `request` for easy form-submission value matching
-
-## Wishful Thinkings
-
-* SOAP request/response compliance
-* Randomized responses based on supplied pattern (exploratory QA abuse)
-* Minify js in `npm` module?
+* regex capture groups and dynamic token replacement
+* record & replay
 
 ## NOTES
 
