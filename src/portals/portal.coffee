@@ -25,7 +25,7 @@ module.exports.Portal = class Portal
         if request.headers['access-control-request-headers']?
           response.setHeader 'access-control-allow-headers', request.headers['access-control-request-headers']
         if request.headers['access-control-request-method']?
-          response.setHeader 'access-control-allow-methods', request.headers['access-control-request-method']
+          response.setHeader 'access-control-allow-methods', request.headers['access-control-request-methods']
 
       return response
 
