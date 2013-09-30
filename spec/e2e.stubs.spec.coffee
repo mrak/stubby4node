@@ -24,7 +24,7 @@ describe 'End 2 End Stubs Test Suite', ->
 
       finish = ->
          sut = new Stubby()
-         sut.start data:endpointData, done
+         sut.start data: endpointData, done
 
       stopStubby finish
 
@@ -295,6 +295,5 @@ describe 'End 2 End Stubs Test Suite', ->
           createRequest context
 
           waitsFor ( -> context.done ), 'body match', 1000, ->
-            console.log context.response.data
             assert context.response.data.length isnt 0
             done()
