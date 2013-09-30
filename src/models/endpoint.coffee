@@ -18,7 +18,6 @@ module.exports = class Endpoint
       try file = fs.readFileSync path.resolve(@datadir, @request.file), 'utf8'
 
     if post = file or @request.post
-      console.log @request
       if post? and @request.matchAsString
         post = escapeRegex post
 

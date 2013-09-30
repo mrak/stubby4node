@@ -296,4 +296,5 @@ describe 'End 2 End Stubs Test Suite', ->
 
           waitsFor ( -> context.done ), 'body match', 1000, ->
             assert context.response.data.length isnt 0
+            assert context.response.code is 200
             done()
