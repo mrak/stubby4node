@@ -126,11 +126,11 @@ describe 'Endpoint', ->
          data.request.headers =
             Origin: 'http://example.org'
             'Access-Control-Request-Method': 'POST'
-            'Access-Control-Request-Header': 'Content-Type, origin'
+            'Access-Control-Request-Headers': 'Content-Type, origin'
 
          actual = new Endpoint data
 
          assert actual.request.headers.origin is expected
-         assert actual.request.headers['access-control-allow-origin'] is 'POST'
-         assert actual.request.headers['access-control-request-header'] is 'Content-Type, origin'
+         assert actual.request.headers['access-control-allow-methods'] is 'POST'
+         assert actual.request.headers['access-control-allow-headers'] is 'Content-Type, origin'
 
