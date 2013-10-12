@@ -278,8 +278,8 @@ describe 'End 2 End Stubs Test Suite', ->
             waitsFor ( -> context.done ), 'post-fallback request to finish', 1000, ->
                assert context.response.statusCode is 200
                done()
-
-      describe 'match file as string', ->
+      
+      describe 'match file as plain string', ->
         it 'should match the post body with the file properly', (done) ->
           context.url = '/file/body/matchstring'
           context.method = 'post'
@@ -298,3 +298,4 @@ describe 'End 2 End Stubs Test Suite', ->
             assert context.response.data.length isnt 0
             assert context.response.code is 200
             done()
+
