@@ -1,7 +1,7 @@
 {
   "name": "stubby",
   "preferGlobal": true,
-  "version": "0.2.2",
+  "version": "0.2.3",
   "author": {
     "name": "Eric Mrak",
     "email": "enmrak@gmail.com"

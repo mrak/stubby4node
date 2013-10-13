@@ -1,12 +1,16 @@
 fs = require 'fs'
 path = require 'path'
+http = require 'http'
+url = require 'url'
+q = require 'querystring'
+out = require '../console/out'
 
 module.exports = class Endpoint
   constructor: (endpoint = {}, datadir = process.cwd()) ->
     Object.defineProperty @, 'datadir', value: datadir
 
     @request = purifyRequest endpoint.request
-    @response = purifyResponse endpoint.response
+    @response = purifyResponse @, endpoint.response
 
   matches: (request) ->
     return false unless matchRegex @request.url, request.url
@@ -27,6 +31,41 @@ module.exports = class Endpoint
 
     return true
 
+record = (me, urlToRecord) ->
+  recording = {}
+  parsed = url.parse urlToRecord
+  options =
+    method: me.request.method ? 'GET'
+    hostname: parsed.hostname
+    headers: me.request.headers
+    port: parsed.port
+    path: parsed.pathname + '?'
+
+  if parsed.query?
+    options.path += parsed.query + '&'
+  if me.request.query?
+    options.path += q.stringify me.request.query
+
+  recorder = http.request options, (res) ->
+    recording.status = res.statusCode
+    recording.headers = res.headers
+    recording.body = ''
+
+    res.on 'data', (chunk) ->
+      recording.body += chunk
+    res.on 'end', -> out.notice "recorded #{urlToRecord}"
+
+  recorder.on 'error', (e) -> out.warn "error recording response #{urlToRecord}: #{e.message}"
+
+  recording.post = new Buffer (me.request.post ? 0), 'utf8'
+  if me.request.file?
+    try recording.post = fs.readFileSync path.resolve(me.datadir, me.request.file)
+
+  recorder.write recording.post
+  recorder.end()
+
+  return recording
+
 normalizeEOL = (string) ->
   return (string.replace /\r\n/g, '\n').replace /\s*$/, ''
 
@@ -43,7 +82,7 @@ purifyRequest = (incoming = {}) ->
   outgoing = pruneUndefined outgoing
   return outgoing
 
-purifyResponse = (incoming = []) ->
+purifyResponse = (me, incoming = []) ->
   unless incoming instanceof Array
     incoming = [incoming]
   outgoing = []
@@ -52,12 +91,15 @@ purifyResponse = (incoming = []) ->
     incoming.push {}
 
   for response in incoming
-    outgoing.push pruneUndefined
-      headers: purifyHeaders response.headers
-      status: parseInt(response.status) or 200
-      latency: parseInt(response.latency) or undefined
-      file: response.file
-      body: purifyBody response.body
+    if typeof response is 'string'
+      outgoing.push(record me, response)
+    else
+      outgoing.push pruneUndefined
+        headers: purifyHeaders response.headers
+        status: parseInt(response.status) or 200
+        latency: parseInt(response.latency) or undefined
+        file: response.file
+        body: purifyBody response.body
 
   return outgoing
 

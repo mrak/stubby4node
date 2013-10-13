@@ -87,9 +87,7 @@ module.exports =
    data: (filename) ->
       return [] if filename is null
 
-      extension = filename.replace /^.*\.([a-zA-Z0-9]+)$/, '$1'
       filedata = []
-      parser = ->
 
       try
          filedata = (fs.readFileSync filename, 'utf8').trim()
@@ -97,13 +95,8 @@ module.exports =
          out.warn "File '#{filename}' could not be found. Ignoring..."
          return []
 
-      if extension is 'json'
-         parser = JSON.parse
-      if extension in ['yaml','yml']
-         parser = yaml.load
-
       try
-         return parser filedata
+         return yaml.load filedata
       catch e
          out.warn "Couldn't parse '#{filename}' due to syntax errors:"
          out.log e.message

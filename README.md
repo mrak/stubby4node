@@ -254,7 +254,26 @@ The following endpoint only accepts requests with `application/json` post values
 
 Assuming a match has been made against the given `request` object, data from `response` is used to build the stubbed response back to the client.
 
-__NOTE:__ The `response` property can also be a yaml sequence of responses that cycle as each request is made.
+__ALSO:__ The `response` property can also be a yaml sequence of responses that cycle as each request is made.
+__ALSO:__ The `response` property can also be a url (string) or sequence of object/urls. The url will be used to record a response object to be used in calls to stubby. When used this way, data from the `request` portion of the endpoint will be used to assemble a request to the url given as the `response`.
+
+```yaml
+- request:
+    url: /single/object
+  response:
+    status: 204
+
+- request:
+    url: /single/url/to/record
+  response: http://example.com
+
+- request:
+    url: /object/and/url/in/sequence
+  response:
+  - http://google.com
+  - status: 200
+    body: 'second hit'
+```
 
 #### status
 
