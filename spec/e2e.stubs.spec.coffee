@@ -24,7 +24,7 @@ describe 'End 2 End Stubs Test Suite', ->
 
       finish = ->
          sut = new Stubby()
-         sut.start data: endpointData, done
+         sut.start data:endpointData, done
 
       stopStubby finish
 
@@ -278,24 +278,23 @@ describe 'End 2 End Stubs Test Suite', ->
             waitsFor ( -> context.done ), 'post-fallback request to finish', 1000, ->
                assert context.response.statusCode is 200
                done()
-      
-      describe 'match file as plain string', ->
-        it 'should match the post body with the file properly', (done) ->
-          context.url = '/file/body/matchstring'
-          context.method = 'post'
-          context.post = '''
-          { "data": [ "test" ],
-            "hypermedia": [
-              "*",
-              "[a-z]{1,2}+/"
-            ]
-          }
-          '''
 
-          createRequest context
+      describe 'match file as string', ->
+         it 'should match the post body with the file properly', (done) ->
+            context.url = '/file/body/matchstring'
+            context.method = 'post'
+            context.post = '''
+            { 
+               "data": [ "test" ],
+               "hypermedia": [
+                 "*",
+                 "[a-z]{1,2}+/"
+               ]
+            }
+            '''
 
-          waitsFor ( -> context.done ), 'body match', 1000, ->
-            assert context.response.data.length isnt 0
-            assert context.response.code is 200
-            done()
+            createRequest context
 
+            waitsFor ( -> context.done ), 'body match', 100, ->
+               assert context.response.code is 200
+               done()

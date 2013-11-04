@@ -124,5 +124,3 @@
       matchAsString: true
    response: 
       status: 200
-      body: 'found'
-

@@ -111,4 +111,3 @@ escapeRegex = (string) ->
   return normalizeEOL(string).replace /[.^$*+?()[{\|]/g , (match) ->
     return '\\' + match
 
-

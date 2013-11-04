@@ -10,6 +10,10 @@ module.exports = (grunt) ->
       mochacli:
          options:
             compilers: ['coffee:coffee-script']
+            timeout: 5000
+            ignoreLeaks: false
+            ui: 'bdd'
+            reporter: 'spec'
          all: 'spec/**/*.coffee'
 
       coffee:

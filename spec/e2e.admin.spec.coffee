@@ -31,13 +31,13 @@ describe 'End 2 End Admin Test Suite', ->
    afterEach stopStubby
 
    it 'should react to /ping', (done) ->
-      context.url = '/ping'
+         context.url = '/ping'
 
-      createRequest context
+         createRequest context
 
-      waitsFor ( -> context.done), 'request to finish', 1000, ->
-         assert context.response.data is 'pong'
-         done()
+         waitsFor ( -> context.done), 'request to finish', 1000, ->
+            assert context.response.data is 'pong'
+            done()
 
    it 'should be able to retreive an endpoint through GET', (done) ->
       id = 3
