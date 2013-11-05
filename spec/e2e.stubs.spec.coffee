@@ -279,13 +279,13 @@ describe 'End 2 End Stubs Test Suite', ->
                assert context.response.statusCode is 200
                done()
 
-      ###
+
       describe 'match file as string', ->
          it 'should match the post body with the file properly', (done) ->
             context.url = '/file/body/matchstring'
             context.method = 'post'
             context.post = '''
-            { 
+            {
                "data": [ "test" ],
                "hypermedia": [
                  "*",
@@ -300,4 +300,4 @@ describe 'End 2 End Stubs Test Suite', ->
                console.log 'STATUS ->', context.response.code
                assert context.response.code is 200
                done()
-      ###
+
