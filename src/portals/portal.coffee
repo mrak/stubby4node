@@ -20,12 +20,12 @@ module.exports.Portal = class Portal
       response.setHeader 'Server', "stubby/#{CLI.version()} node/#{process.version} (#{process.platform} #{process.arch})"
 
       if request.headers['origin']?
-        response.setHeader 'access-control-allow-origin', request.headers['origin']
-        response.setHeader 'access-control-allow-credentials', true
+        response.setHeader 'Access-Control-Allow-Origin', request.headers['origin']
+        response.setHeader 'Access-Control-Allow-Credentials', true
         if request.headers['access-control-request-headers']?
-          response.setHeader 'access-control-allow-headers', request.headers['access-control-request-headers']
+          response.setHeader 'Access-Control-Allow-Headers', request.headers['access-control-request-headers']
         if request.headers['access-control-request-method']?
-          response.setHeader 'access-control-allow-methods', request.headers['access-control-request-method']
+          response.setHeader 'Access-Control-Allow-Methods', request.headers['access-control-request-method']
 
       return response
 
