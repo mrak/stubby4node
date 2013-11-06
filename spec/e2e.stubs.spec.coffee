@@ -278,3 +278,4 @@ describe 'End 2 End Stubs Test Suite', ->
             waitsFor ( -> context.done ), 'post-fallback request to finish', 1000, ->
                assert context.response.statusCode is 200
                done()
+

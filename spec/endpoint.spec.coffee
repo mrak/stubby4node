@@ -120,3 +120,17 @@ describe 'Endpoint', ->
          actual = new Endpoint data
 
          assert actual.request.headers.origin is expected
+
+      it 'should define aditional Cross-Origin headers', ->
+         expected = 'http://example.org'
+         data.request.headers =
+            Origin: 'http://example.org'
+            'Access-Control-Request-Method': 'POST'
+            'Access-Control-Request-Headers': 'Content-Type, origin'
+
+         actual = new Endpoint data
+
+         assert actual.request.headers.origin is expected
+         assert actual.request.headers['access-control-request-method'] is 'POST'
+         assert actual.request.headers['access-control-request-headers'] is 'Content-Type, origin'
+

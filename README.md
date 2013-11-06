@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/mrak/stubby4node.png?branch=master)](http://travis-ci.org/Afmrak/stubby4node)
+[![Build Status](https://secure.travis-ci.org/mrak/stubby4node.png?branch=master)](http://travis-ci.org/mrak/stubby4node)
 [![NPM version](https://badge.fury.io/js/stubby.png)](http://badge.fury.io/js/stubby)
 
 stubby4node
@@ -40,7 +40,7 @@ You need to have `coffee-script` installed on your system.
 
 ## Requirements
 
-* [node.js](http://nodejs.org/) (tested with v0.8.x)
+* [node.js](http://nodejs.org/) (>=0.8.x)
 
 Development is on Mac OS X Mountain Lion.
 
