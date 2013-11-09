@@ -72,7 +72,7 @@ describe 'Endpoint', ->
 
   describe 'recording', ->
     it 'should fill in a string response with the recorded endpoint', (done) ->
-      waitTime = 4000
+      waitTime = 10000
       @timeout waitTime
       @data.response = 'http://google.com'
       actual = new Endpoint @data
@@ -82,7 +82,7 @@ describe 'Endpoint', ->
       ), "endpoint to record", waitTime, done
 
     it 'should fill in a string reponse with the recorded endpoint in series', (done) ->
-      waitTime = 4000
+      waitTime = 10000
       @timeout waitTime
       @data.response = ['http://google.com','http://example.com']
       actual = new Endpoint @data
@@ -92,7 +92,7 @@ describe 'Endpoint', ->
       ), "endpoint to record", waitTime, done
 
     it 'should fill in a string reponse with the recorded endpoint in series', (done) ->
-      waitTime = 4000
+      waitTime = 10000
       @timeout waitTime
       @data =
         request:
