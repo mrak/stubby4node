@@ -89,7 +89,7 @@ describe 'CLI', ->
 
       describe '-l, --location', ->
          it 'should return default if no flag provided', ->
-            expected = 'localhost'
+            expected = '0.0.0.0'
             actual = sut.getArgs []
 
             assert actual.location is expected

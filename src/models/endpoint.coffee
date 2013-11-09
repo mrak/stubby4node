@@ -103,8 +103,3 @@ compareHashMaps = (configured = {}, incoming = {}) ->
 
 matchRegex = (compileMe, testMe) ->
   return RegExp(compileMe, 'm').test testMe
-
-escapeRegex = (string) ->
-  return normalizeEOL(string).replace /[.^$*+?()[{\|]/g , (match) ->
-    return '\\' + match
-
