@@ -30,7 +30,7 @@ module.exports = class Endpoint
     else
       return null unless @request.method.toUpperCase() is request.method
 
-    return true
+    return matches
 
 record = (me, urlToRecord) ->
   recording = {}

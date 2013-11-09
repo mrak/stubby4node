@@ -22,6 +22,54 @@ describe 'Endpoint', ->
     @data =
       request: {}
 
+  describe 'matches', ->
+    it 'should return regex captures for url', ->
+      @data.request.url = '/capture/(.*)/$'
+      endpoint = new Endpoint @data
+      actual = endpoint.matches
+        url: '/capture/me/'
+        method: 'GET'
+
+      assert actual.url[0] is '/capture/me/'
+      assert actual.url[1] is 'me'
+
+    it 'should return regex captures for post', ->
+      @data.request.url = '/'
+      @data.request.post = 'some sentence with a (\\w+) in it'
+      endpoint = new Endpoint @data
+      actual = endpoint.matches
+        url: '/'
+        method: 'GET'
+        post: 'some sentence with a word in it'
+
+      assert actual.post[1] is 'word'
+
+    it 'should return regex captures for headers', ->
+      @data.request.url = '/'
+      @data.request.headers =
+        'content-type': 'application/(\\w+)'
+      endpoint = new Endpoint @data
+      actual = endpoint.matches
+        url: '/'
+        method: 'GET'
+        headers:
+          'content-type': 'application/json'
+
+      assert actual.headers['content-type'][1] is 'json'
+
+    it 'should return regex captures for query', ->
+      @data.request.url = '/'
+      @data.request.query =
+        variable: '.*'
+      endpoint = new Endpoint @data
+      actual = endpoint.matches
+        url: '/'
+        method: 'GET'
+        query:
+          variable: 'value'
+
+      assert actual.query.variable[0] is 'value'
+
   describe 'recording', ->
     it 'should fill in a string response with the recorded endpoint', (done) ->
       waitTime = 4000

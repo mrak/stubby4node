@@ -49,7 +49,8 @@
     "js-yaml": ">=1.0.1",
     "async": ">=0.2.7",
     "node-static": ">=0.6.4",
-    "cloneextend": ">=0.0.3"
+    "cloneextend": ">=0.0.3",
+    "ejs": ">=0.8.4"
   },
   "devDependencies": {
     "sinon": ">=1.5.2",
