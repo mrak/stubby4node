@@ -13,21 +13,22 @@ module.exports = class Endpoint
     @response = purifyResponse @, endpoint.response
 
   matches: (request) ->
-    return false unless matchRegex @request.url, request.url
-    return false unless compareHashMaps @request.headers, request.headers
-    return false unless compareHashMaps @request.query, request.query
+    matches = {}
+    return null unless matches.url = matchRegex @request.url, request.url
+    return null unless matches.headers = compareHashMaps @request.headers, request.headers
+    return null unless matches.query = compareHashMaps @request.query, request.query
 
     file = null
     if @request.file?
       try file = fs.readFileSync path.resolve(@datadir, @request.file), 'utf8'
 
     if post = file or @request.post
-      return false unless matchRegex normalizeEOL(post), normalizeEOL(request.post)
+      return null unless matches.post = matchRegex normalizeEOL(post), normalizeEOL(request.post)
 
     if @request.method instanceof Array
-      return false unless request.method in @request.method.map (it) -> it.toUpperCase()
+      return null unless request.method in @request.method.map (it) -> it.toUpperCase()
     else
-      return false unless @request.method.toUpperCase() is request.method
+      return null unless @request.method.toUpperCase() is request.method
 
     return true
 
@@ -139,10 +140,11 @@ setFallbacks = (endpoint) ->
     try endpoint.response.body = fs.readFileSync endpoint.response.file, 'utf8'
 
 compareHashMaps = (configured = {}, incoming = {}) ->
+  headers = {}
   for key, value of configured
-    return false unless matchRegex configured[key], incoming[key]
-  return true
+    return null unless headers[key] = matchRegex configured[key], incoming[key]
+  return headers
 
-matchRegex = (compileMe, testMe) ->
-  return RegExp(compileMe,'m').test testMe
+matchRegex = (compileMe, testMe = '') ->
+  return testMe.match RegExp(compileMe,'m')
 
