@@ -37,7 +37,7 @@ module.exports =
       name: 'location'
       flag: 'l'
       param: 'hostname'
-      default: 'localhost'
+      default: '0.0.0.0'
       description: 'Hostname at which to bind stubby.'
    ,
       name: 'mute'

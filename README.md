@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/mrak/stubby4node.png?branch=master)](http://travis-ci.org/Afmrak/stubby4node)
+[![Build Status](https://secure.travis-ci.org/mrak/stubby4node.png?branch=master)](http://travis-ci.org/mrak/stubby4node)
 [![NPM version](https://badge.fury.io/js/stubby.png)](http://badge.fury.io/js/stubby)
 
 stubby4node
@@ -11,6 +11,7 @@ stubby4node
 * [Starting the Server(s)](#starting-the-servers)
 * [Command-line Switches](#command-line-switches)
 * [Endpoint Configuration](#endpoint-configuration)
+* [Dynamic Token Replacement](#dynamic-token-replacement)
 * [The Admin Portal](#the-admin-portal)
 * [The Stubs Portal](#the-stubs-portal)
 * [Programmatic API](#programmatic-api)
@@ -40,7 +41,7 @@ You need to have `coffee-script` installed on your system.
 
 ## Requirements
 
-* [node.js](http://nodejs.org/) (tested with v0.8.x)
+* [node.js](http://nodejs.org/) (>=0.8.x)
 
 Development is on Mac OS X Mountain Lion.
 
@@ -345,6 +346,72 @@ __ALSO:__ The `response` property can also be a url (string) or sequence of obje
       body: Hello, World!
 ```
 
+## Dynamic Token Replacement
+
+While `stubby` is matching request data against configured endpoints, it is keeping a hash of all regular expression capture groups along the way.
+These capture groups can be referenced in `response` data. Here's an example
+
+```yaml
+-  request:
+      method: [GET]
+      url: ^/account/(\d{5})/category/([a-zA-Z]+)
+      query:
+         date: "([a-zA-Z]+)"
+      headers:
+         custom-header: "[0-9]+"
+
+   response:
+      status: 200
+      body: Returned invoice number# <% url[1] %> in category '<% url[2] %>' on the date '<% query.date[1] %>', using header custom-header <% headers.custom-header[0] %>
+```
+
+###Example explained
+
+The url regex `^/account/(\d{5})/category/([a-zA-Z]+)` has two defined capturing groups: `(\d{5})` and `([a-zA-Z]+)`, query regex has one defined capturing group `([a-zA-Z]+)`. In other words, a manually defined capturing group has parenthesis around it.
+
+Although, the headers regex does not have capturing groups defined explicitly (no regex sections within parenthesis), its matched value is still accessible in a template (keep on reading!).
+
+###Token structure
+
+The tokens in response body follow the format of `< %PROPERTY_NAME[CAPTURING_GROUP_ID] %>`. If it is a token that should correspond to headers or query regex match, then the token structure would be as follows: `<% HEADERS_OR_QUERY.[KEY_NAME][CAPTURING_GROUP_ID] %>.
+
+###Numbering the tokens based on capturing groups without sub-groups
+
+When giving tokens their ID based on the count of manually defined capturing groups within regex, you should start from `1`, not zero (zero reserved for token that holds __full__ regex match) from left to right. So the leftmost capturing group would be `1` and the next one to the right of it would be `2`, etc.
+
+In other words `<% url[1] %>` and `<% url[2] %>` tokens correspond to two capturing groups from the url regex `(\d{5})` and `([a-zA-Z]+)`, while `<% query.date[1] %>` token corresponds to one capturing group `([a-zA-Z]+)` from the `query` `date` property regex.
+
+###Numbering the tokens based on capturing groups with sub-groups
+
+In regex world, capturing groups can contain capturing sub-groups, as an example consider proposed `url` regex: `^/resource/(([a-z]{3})-([0-9]{3}))$`. In the latter example, the regex has three groups - a parent group `([a-z]{3}-[0-9]{3})` and two sub-groups within: `([a-z]{3})` & `([0-9]{3})`.
+
+When giving tokens their ID based on the count of capturing groups, you should start from 1, not zero (zero reserved for token that holds __full__ regex match) from left to right. If a group has sub-group within, you count the sub-group(s) first (also from left to right) before counting the next one to the right of the parent group.
+
+In other words tokens `<% url[1] %>`, `<% url[2] %>` and `<% url[3] %>` correspond to the three capturing groups from the url regex (starting from left to right): `([a-z]{3}-[0-9]{3})`, `([a-z]{3})` and `([0-9]{3})`.
+
+###Tokens with ID zero
+
+Tokens with ID zero can obtain `full` match value from the regex they reference. In other words, tokens with ID zero do not care whether regex has capturing groups defined or not. For example, token `<% url[0] %>` will be replaced with the `ur`l __full__ regex match from `^/account/(\d{5})/category/([a-zA-Z]+)`. So if you want to access the `url` __full__ regex match, respectively you would use token `<% url[0] %>` in your template.
+
+Another example, would be the earlier case where `headers` `custom-header` property regex does not have capturing groups defined within. Which is fine, since the `<% headers.custom-header[0] %>` token corresponds to the __full__ regex match in the `header` `custom-header` property regex: `[0-9]+`.
+
+It is also worth to mention, that the __full__ regex match value replacing token `<% query.date[0] %>`, would be equal to the regex capturing group value replacing `<% query.date[1] %>`. This is due to how the `query` `date` property regex is defined - the one and only capturing group in the query date regex, is also the __full__ regex itself.
+
+###Where to specify the template
+
+You can specify template with tokens in both `body` as a string or using `file` by specifying template as external local file. When template is specified as `file`, the contents of local file from `file` will be replaced, __not__ the path to local file defined in `file`.
+
+###When token interpolation happens
+
+After successful HTTP request verification, if your body or contents of local file from file contain tokens - the tokens will be replaced just before rendering HTTP response.
+
+### Troubleshooting
+
+* Make sure that the regex you used in your stubby4j configuration actually does what it suppose to do. Validate that it works before using it in stubby4j
+* Make sure that the regex has capturing groups for the parts of regex you want to capture as token values. In other words, make sure that you did not forget the parenthesis within your regex if your token IDs start from `1`
+* Make sure that you are using token ID zero, when wanting to use __full__ regex match as the token value
+* Make sure that the token names you used in your template are correct: check that property name is correct, capturing group IDs, token ID of the __full__ match, the `<%` and `%>`
+
 ## The Admin Portal
 
 The admin portal is a RESTful(ish) endpoint running on `localhost:8889`. Or wherever you described through stubby's options.
@@ -557,7 +624,7 @@ What can I do with it, you ask? Read on!
    * `admin`: port number to run the admin portal
    * `tls`: port number to run the stubs portal over https
    * `data`: JavaScript Object/Array containing endpoint data
-   * `location`: address/hostname at which to run stubby. Use '*' for listening on all interfaces
+   * `location`: address/hostname at which to run stubby.
    * `key`: keyfile contents (in PEM format)
    * `cert`: certificate file contents (in PEM format)
    * `pfx`: pfx file contents (mutually exclusive with key/cert options)
