@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.3
+
+* added recording feature. If a `response` object uses a string in place of an object (or a sequence of objects/string) the strings will be interpreted as a url to record the response from. Details configured in the `request` object (such as `method`, `headers`, etc) will be used to make the recording request to the specified url
+* improved CORS compliance with request/response headers
+* added dynamic templating features for interpolating data captured in request regular expressions into response strings
+
 ## 0.2.2
 
 * CORS compliance as per W3C specifications. Using `*` as the `--location` will instruct stubby to listen on all interfaces. Implemented by [Tomás Aparicio](https://github.com/h2non)

@@ -11,14 +11,13 @@ createRequest = require './helpers/create-request'
 
 describe 'End 2 End Stubs Test Suite', ->
    sut = null
-   context = null
    port = 8882
    stopStubby = (finish) ->
       if sut? then return sut.stop finish
       finish()
 
    beforeEach (done) ->
-      context =
+      @context =
          done: false
          port: port
 
@@ -32,250 +31,250 @@ describe 'End 2 End Stubs Test Suite', ->
 
    describe 'basics', ->
       it 'should return a basic GET endpoint', (done) ->
-         context.url = '/basic/get'
-         context.method = 'get'
-         createRequest context
+         @context.url = '/basic/get'
+         @context.method = 'get'
+         createRequest @context
 
-         waitsFor ( -> context.done), 'request to finish', 1000, ->
-            assert context.response.statusCode is 200
+         waitsFor ( => @context.done), 'request to finish', 1000, =>
+            assert @context.response.statusCode is 200
             done()
 
       it 'should return a basic PUT endpoint', (done) ->
-         context.url = '/basic/put'
-         context.method = 'put'
-         createRequest context
+         @context.url = '/basic/put'
+         @context.method = 'put'
+         createRequest @context
 
-         waitsFor ( -> context.done ), 'request to finish', 1000, ->
-            assert context.response.statusCode is 200
+         waitsFor ( => @context.done ), 'request to finish', 1000, =>
+            assert @context.response.statusCode is 200
             done()
 
       it 'should return a basic POST endpoint', (done) ->
-         context.url = '/basic/post'
-         context.method = 'post'
+         @context.url = '/basic/post'
+         @context.method = 'post'
 
-         createRequest context
-         waitsFor ( -> context.done ), 'request to finish', 1000, ->
-            assert context.response.statusCode is 200
+         createRequest @context
+         waitsFor ( => @context.done ), 'request to finish', 1000, =>
+            assert @context.response.statusCode is 200
             done()
 
       it 'should return a basic DELETE endpoint', (done) ->
-         context.url = '/basic/delete'
-         context.method = 'delete'
+         @context.url = '/basic/delete'
+         @context.method = 'delete'
 
-         createRequest context
-         waitsFor ( -> context.done ), 'request to finish', 1000, ->
-            assert context.response.statusCode is 200
+         createRequest @context
+         waitsFor ( => @context.done ), 'request to finish', 1000, =>
+            assert @context.response.statusCode is 200
             done()
 
       it 'should return a basic HEAD endpoint', (done) ->
-         context.url = '/basic/head'
-         context.method = 'head'
+         @context.url = '/basic/head'
+         @context.method = 'head'
 
-         createRequest context
-         waitsFor ( -> context.done ), 'request to finish', 1000, ->
-            assert context.response.statusCode is 200
+         createRequest @context
+         waitsFor ( => @context.done ), 'request to finish', 1000, =>
+            assert @context.response.statusCode is 200
             done()
 
       it 'should return a response for an endpoint with multiple methods', (done) ->
-         context.url = '/basic/all'
-         context.method = 'delete'
+         @context.url = '/basic/all'
+         @context.method = 'delete'
 
-         createRequest context
+         createRequest @context
 
-         waitsFor ( -> context.done ), 'all endpoint delete to finish', 1000, ->
-            assert context.response.statusCode is 200
+         waitsFor ( => @context.done ), 'all endpoint delete to finish', 1000, =>
+            assert @context.response.statusCode is 200
 
-            context =
+            @context =
                port: port
                finished: false
                url: "/basic/all"
                method: 'get'
 
-            createRequest context
+            createRequest @context
 
-            waitsFor ( -> context.done ), 'all endpoint get to finish', 1000, ->
-               assert context.response.statusCode is 200
+            waitsFor ( => @context.done ), 'all endpoint get to finish', 1000, =>
+               assert @context.response.statusCode is 200
 
-               context =
+               @context =
                   port: port
                   finished: false
                   url: "/basic/all"
                   method: 'put'
 
-               createRequest context
+               createRequest @context
 
-               waitsFor ( -> context.done ), 'all endpoint put to finish', 1000, ->
-                  assert context.response.statusCode is 200
+               waitsFor ( => @context.done ), 'all endpoint put to finish', 1000, =>
+                  assert @context.response.statusCode is 200
 
-                  context =
+                  @context =
                      port: port
                      finished: false
                      url: "/basic/all"
                      method: 'post'
 
-                  createRequest context
+                  createRequest @context
 
-                  waitsFor ( -> context.done ), 'all endpoint post to finish', 1000, ->
-                     assert context.response.statusCode is 200
+                  waitsFor ( => @context.done ), 'all endpoint post to finish', 1000, =>
+                     assert @context.response.statusCode is 200
                      done()
 
       it 'should return the CORS headers', (done) ->
          expected = 'http://example.org'
 
-         context.url = '/basic/get'
-         context.method = 'get'
-         context.requestHeaders =
+         @context.url = '/basic/get'
+         @context.method = 'get'
+         @context.requestHeaders =
             'origin': expected
 
-         createRequest context
-         waitsFor ( -> context.done ), 'request to finish', 1000, ->
-            headers = context.response.headers
+         createRequest @context
+         waitsFor ( => @context.done ), 'request to finish', 1000, =>
+            headers = @context.response.headers
             assert headers['access-control-allow-origin'] is expected
             assert headers['access-control-allow-credentials'] is 'true'
             done()
 
    describe 'GET', ->
       it 'should return a body from a GET endpoint', (done) ->
-         context.url = '/get/body'
-         context.method = 'get'
+         @context.url = '/get/body'
+         @context.method = 'get'
 
-         createRequest context
+         createRequest @context
 
-         waitsFor ( -> context.done ), 'request to finish', 1000, ->
-            assert context.response.data is 'plain text'
+         waitsFor ( => @context.done ), 'request to finish', 1000, =>
+            assert @context.response.data is 'plain text'
             done()
 
       it 'should return a body from a json GET endpoint', (done) ->
-         context.url = '/get/json'
-         context.method = 'get'
+         @context.url = '/get/json'
+         @context.method = 'get'
 
-         createRequest context
+         createRequest @context
 
-         waitsFor ( -> context.done ), 'request to finish', 1000, ->
-            assert context.response.data.trim() is '{"property":"value"}'
-            assert context.response.headers['content-type'] is 'application/json'
+         waitsFor ( => @context.done ), 'request to finish', 1000, =>
+            assert @context.response.data.trim() is '{"property":"value"}'
+            assert @context.response.headers['content-type'] is 'application/json'
             done()
 
       it 'should return a 420 GET endpoint', (done) ->
-         context.url = '/get/420'
-         context.method = 'get'
+         @context.url = '/get/420'
+         @context.method = 'get'
 
-         createRequest context
+         createRequest @context
 
-         waitsFor ( -> context.done ), 'request to finish', 1000, ->
-            assert context.response.statusCode is 420
+         waitsFor ( => @context.done ), 'request to finish', 1000, =>
+            assert @context.response.statusCode is 420
             done()
 
       it 'should be able to handle query params', (done) ->
-         context.url = '/get/query'
-         context.query =
+         @context.url = '/get/query'
+         @context.query =
             first: 'value1 with spaces!'
             second: 'value2'
-         context.method = 'get'
+         @context.method = 'get'
 
-         createRequest context
+         createRequest @context
 
-         waitsFor ( -> context.done ), 'request to finish', 1000, ->
-            assert context.response.statusCode is 200
+         waitsFor ( => @context.done ), 'request to finish', 1000, =>
+            assert @context.response.statusCode is 200
             done()
 
       it 'should return 404 if query params are not matched', (done) ->
-         context.url = '/get/query'
-         context.query =
+         @context.url = '/get/query'
+         @context.query =
             first: 'invalid value'
             second: 'value2'
-         context.method = 'get'
+         @context.method = 'get'
 
-         createRequest context
+         createRequest @context
 
-         waitsFor ( -> context.done ), 'request to finish', 1000, ->
-            assert context.response.statusCode is 404
+         waitsFor ( => @context.done ), 'request to finish', 1000, =>
+            assert @context.response.statusCode is 404
             done()
 
    describe 'post', ->
       it 'should be able to handle authorized posts', (done) ->
-         context.url = '/post/auth'
-         context.method = 'post'
-         context.post = 'some=data'
-         context.requestHeaders =
+         @context.url = '/post/auth'
+         @context.method = 'post'
+         @context.post = 'some=data'
+         @context.requestHeaders =
             authorization: "Basic c3R1YmJ5OnBhc3N3b3Jk"
 
-         createRequest context
+         createRequest @context
 
-         waitsFor ( -> context.done ), 'request to finish', 1000, ->
-            assert context.response.statusCode is 201
-            assert context.response.headers.location is '/some/endpoint/id'
-            assert context.response.data is 'resource has been created'
+         waitsFor ( => @context.done ), 'request to finish', 1000, =>
+            assert @context.response.statusCode is 201
+            assert @context.response.headers.location is '/some/endpoint/id'
+            assert @context.response.data is 'resource has been created'
             done()
 
 
       it 'should be able to handle authorized posts where the yaml wasnt pre-encoded', (done) ->
-         context.url = '/post/auth/pair'
-         context.method = 'post'
-         context.post = 'some=data'
-         context.requestHeaders =
+         @context.url = '/post/auth/pair'
+         @context.method = 'post'
+         @context.post = 'some=data'
+         @context.requestHeaders =
             authorization: "Basic c3R1YmJ5OnBhc3N3b3JkWjBy"
 
-         createRequest context
+         createRequest @context
 
-         waitsFor ( -> context.done ), 'request to finish', 1000, ->
-            assert context.response.statusCode is 201
-            assert context.response.headers.location is '/some/endpoint/id'
-            assert context.response.data is 'resource has been created'
+         waitsFor ( => @context.done ), 'request to finish', 1000, =>
+            assert @context.response.statusCode is 201
+            assert @context.response.headers.location is '/some/endpoint/id'
+            assert @context.response.data is 'resource has been created'
             done()
 
    describe 'put', ->
       it 'should wait if a 2000ms latency is specified', (done) ->
          @timeout 3500
-         context.url = '/put/latency'
-         context.method = 'put'
+         @context.url = '/put/latency'
+         @context.method = 'put'
 
-         createRequest context
+         createRequest @context
 
-         waitsFor ( -> context.done ), 'latency-ridden request to finish', [2000, 3000], ->
-            assert context.response.data is 'updated'
+         waitsFor ( => @context.done ), 'latency-ridden request to finish', [2000, 3000], =>
+            assert @context.response.data is 'updated'
             done()
 
    describe 'file use', ->
       describe 'response', ->
          it 'should handle fallback to body if specified response file cannot be found', (done) ->
-            context.url = '/file/body/missingfile'
+            @context.url = '/file/body/missingfile'
 
-            createRequest context
+            createRequest @context
 
-            waitsFor ( -> context.done ), 'body-fallback request to finish', 1000, ->
-               assert context.response.data is 'body contents!'
+            waitsFor ( => @context.done ), 'body-fallback request to finish', 1000, =>
+               assert @context.response.data is 'body contents!'
                done()
 
          it 'should handle file response when file can be found', (done) ->
-            context.url = '/file/body'
+            @context.url = '/file/body'
 
-            createRequest context
+            createRequest @context
 
-            waitsFor ( -> context.done ), 'body-fallback request to finish', 1000, ->
-               assert context.response.data.trim() is 'file contents!'
+            waitsFor ( => @context.done ), 'body-fallback request to finish', 1000, =>
+               assert @context.response.data.trim() is 'file contents!'
                done()
 
       describe 'request', ->
          it 'should handle fallback to post if specified request file cannot be found', (done) ->
-            context.url = '/file/post/missingfile'
-            context.method = 'post'
-            context.post = 'post contents!'
+            @context.url = '/file/post/missingfile'
+            @context.method = 'post'
+            @context.post = 'post contents!'
 
-            createRequest context
+            createRequest @context
 
-            waitsFor ( -> context.done ), 'post-fallback request to finish', 1000, ->
-               assert context.response.statusCode is 200
+            waitsFor ( => @context.done ), 'post-fallback request to finish', 1000, =>
+               assert @context.response.statusCode is 200
                done()
 
          it 'should handle file request when file can be found', (done) ->
-            context.url = '/file/post'
-            context.method = 'post'
-            context.post = 'file contents!'
+            @context.url = '/file/post'
+            @context.method = 'post'
+            @context.post = 'file contents!'
 
-            createRequest context
+            createRequest @context
 
-            waitsFor ( -> context.done ), 'post-fallback request to finish', 1000, ->
-               assert context.response.statusCode is 200
+            waitsFor ( => @context.done ), 'post-fallback request to finish', 1000, =>
+               assert @context.response.statusCode is 200
                done()
 

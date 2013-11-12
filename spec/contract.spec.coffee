@@ -190,14 +190,15 @@ describe 'contract', ->
       result = sut data
       assert result is null
 
+    it 'should be acceptable as a string', ->
+      data.response = 'http://www.google.com'
+      result = sut data
+      assert result is null
+
     it 'should be acceptable as an array', ->
       data.response = [
         status: 200
       ]
-      result = sut data
-      assert result is null
-
-      data.response = undefined
       result = sut data
       assert result is null
 

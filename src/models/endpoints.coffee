@@ -1,5 +1,6 @@
 ce = require 'cloneextend'
 fs = require 'fs'
+ejs = require 'ejs'
 path = require 'path'
 Endpoint = require './endpoint'
 
@@ -56,19 +57,29 @@ module.exports.Endpoints = class Endpoints
 
   find : (data, callback = ->) ->
     for id, endpoint of @db
-      continue unless endpoint.matches data
+      continue unless captures = endpoint.matches data
+
       matched = ce.clone endpoint
-      return found.call @, matched, callback
+      return found.call @, matched, captures, callback
 
     callback NO_MATCH
 
-found = (endpoint, callback) ->
+applyTemplating = (obj, captures) ->
+  for key, value of obj
+    if typeof value is 'string' or value instanceof Buffer
+      obj[key] = ejs.render value.toString().replace('<%', '<%='), captures
+    else
+      applyTemplating value, captures
+
+found = (endpoint, captures, callback) ->
   response = endpoint.response[@sightings[endpoint.id]++ % endpoint.response.length]
   response.body = new Buffer (response.body ? 0) , 'utf8'
   response.headers['x-stubby-resource-id'] = endpoint.id
 
   if response.file?
     try response.body = fs.readFileSync path.resolve(@datadir, response.file)
+
+  applyTemplating response, captures
 
   if parseInt response.latency
     return setTimeout (-> callback null,  response), response.latency

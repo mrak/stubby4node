@@ -35,7 +35,6 @@ setupStartOptions = (options, callback) ->
       options = {}
 
    options.mute ?= true
-   options.location = '0.0.0.0' if options.location is '*'
    defaults = CLI.getArgs []
 
    for key, value of defaults
@@ -93,9 +92,9 @@ module.exports.Stubby = class Stubby
       if @watcher? then @watcher.deactivate()
 
       async.parallel {
-         closeAdmin: (cb) => if @adminPortal?.address() then @adminPortal.close cb else cb()
+         closeAdmin: (cb) => if @adminPortal?.address() then @adminPortal.close(cb) else cb()
          closeStubs: (cb) => if @stubsPortal?.address() then @stubsPortal.close(cb) else cb()
-         closeTls:   (cb) => if @tlsPortal?.address() then @tlsPortal.close cb else cb()
+         closeTls:   (cb) => if @tlsPortal?.address()   then @tlsPortal.close(cb) else cb()
       }, callback
 
 

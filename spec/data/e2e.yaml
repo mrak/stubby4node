@@ -117,3 +117,6 @@
       post: post contents!
    response: {}
 
+-  request:
+      url: /search
+   response: http://google.com

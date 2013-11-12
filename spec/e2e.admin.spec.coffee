@@ -11,14 +11,13 @@ createRequest = require './helpers/create-request'
 
 describe 'End 2 End Admin Test Suite', ->
    sut = null
-   context = null
    port = 8889
    stopStubby = (finish) ->
       if sut? then return sut.stop finish
       finish()
 
    beforeEach (done) ->
-      context =
+      @context =
          done: false
          port: port
 
@@ -31,12 +30,12 @@ describe 'End 2 End Admin Test Suite', ->
    afterEach stopStubby
 
    it 'should react to /ping', (done) ->
-         context.url = '/ping'
+         @context.url = '/ping'
 
-         createRequest context
+         createRequest @context
 
-         waitsFor ( -> context.done), 'request to finish', 1000, ->
-            assert context.response.data is 'pong'
+         waitsFor ( => @context.done), 'request to finish', 1000, =>
+            assert @context.response.data is 'pong'
             done()
 
    it 'should be able to retreive an endpoint through GET', (done) ->
@@ -44,13 +43,13 @@ describe 'End 2 End Admin Test Suite', ->
       endpoint = ce.clone endpointData[id-1]
       endpoint.id = id
 
-      context.url = "/#{id}"
-      context.method = 'get'
+      @context.url = "/#{id}"
+      @context.method = 'get'
 
-      createRequest context
+      createRequest @context
 
-      waitsFor ( -> context.done), 'request to finish', 1000, ->
-         returned = JSON.parse context.response.data
+      waitsFor ( => @context.done), 'request to finish', 1000, =>
+         returned = JSON.parse @context.response.data
          for prop, value of endpoint.request
             assert value is returned.request[prop]
          done()
@@ -59,23 +58,23 @@ describe 'End 2 End Admin Test Suite', ->
       id = 2
       endpoint = ce.clone endpointData[id-1]
 
-      context.url = "/#{id}"
+      @context.url = "/#{id}"
 
       endpoint.request.url = '/munchkin'
-      context.method = 'put'
-      context.post = JSON.stringify endpoint
+      @context.method = 'put'
+      @context.post = JSON.stringify endpoint
 
-      createRequest context
+      createRequest @context
 
-      waitsFor (-> context.done), 'put request to finish', 1000, ->
+      waitsFor (=> @context.done), 'put request to finish', 1000, =>
          endpoint.id = id
-         context.done = false
-         context.method = 'get'
+         @context.done = false
+         @context.method = 'get'
 
-         createRequest context
+         createRequest @context
 
-         waitsFor (-> context.done), 'get request to finish', 1000, ->
-            returned = JSON.parse context.response.data
+         waitsFor (=> @context.done), 'get request to finish', 1000, =>
+            returned = JSON.parse @context.response.data
             assert returned.request.url is endpoint.request.url
             done()
 
@@ -86,47 +85,47 @@ describe 'End 2 End Admin Test Suite', ->
          response:
             status: 200
 
-      context.url = '/'
-      context.method = 'post'
-      context.post = JSON.stringify endpoint
+      @context.url = '/'
+      @context.method = 'post'
+      @context.post = JSON.stringify endpoint
 
-      createRequest context
+      createRequest @context
 
-      waitsFor ( -> context.done), 'post request to finish', 1000, ->
+      waitsFor ( => @context.done), 'post request to finish', 1000, =>
 
-         assert context.response.statusCode is 201
+         assert @context.response.statusCode is 201
 
-         id = context.response.headers.location.replace /localhost:8889\/([0-9]+)/, '$1'
-         context =
+         id = @context.response.headers.location.replace /localhost:8889\/([0-9]+)/, '$1'
+         @context =
             port: port
             done: false
             url: "/#{id}"
             method: 'get'
 
-         createRequest context
+         createRequest @context
 
-         waitsFor ( -> context.done), 'get request to finish', 1000, ->
-            returned = JSON.parse context.response.data
+         waitsFor ( => @context.done), 'get request to finish', 1000, =>
+            returned = JSON.parse @context.response.data
             assert returned.request.url is endpoint.request.url
             done()
 
    it 'should be about to delete an endpoint through DELETE', (done) ->
-      context.url = '/2'
-      context.method = 'delete'
+      @context.url = '/2'
+      @context.method = 'delete'
 
-      createRequest context
+      createRequest @context
 
-      waitsFor ( -> context.done), 'delete request to finish', 1000, ->
-         assert context.response.statusCode is 204
+      waitsFor ( => @context.done), 'delete request to finish', 1000, =>
+         assert @context.response.statusCode is 204
 
-         context =
+         @context =
             port: port
             done: false
             url: "/2"
             method: 'get'
 
-         createRequest context
+         createRequest @context
 
-         waitsFor ( -> context.done), 'get request to finish', 1000, ->
-            context.response.statusCode is 404
+         waitsFor ( => @context.done), 'get request to finish', 1000, =>
+            @context.response.statusCode is 404
             done()
