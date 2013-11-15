@@ -145,6 +145,15 @@ compareHashMaps = (configured = {}, incoming = {}) ->
     return null unless headers[key] = matchRegex configured[key], incoming[key]
   return headers
 
+<<<<<<< HEAD
+matchRegex = (compileMe, testMe) ->
+  return RegExp(compileMe, 'm').test testMe
+
+escapeRegex = (string) ->
+  return normalizeEOL(string).replace /[.^$*+?()[{\|]/g , (match) ->
+    return '\\' + match
+=======
 matchRegex = (compileMe, testMe = '') ->
   return testMe.match RegExp(compileMe,'m')
+>>>>>>> ed254951409e929af1ef8ace87fd279a1fbd6cc2
 
