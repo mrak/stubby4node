@@ -13,11 +13,7 @@ module.exports = (grunt) ->
             timeout: 5000
             ignoreLeaks: false
             ui: 'bdd'
-<<<<<<< HEAD
-            reporter: 'spec'
-=======
             reporter: 'dot'
->>>>>>> ed254951409e929af1ef8ace87fd279a1fbd6cc2
          all: 'spec/**/*.coffee'
 
       coffee:
@@ -43,11 +39,6 @@ module.exports = (grunt) ->
             files: 'websrc/**/*.coffee'
             tasks: 'coffee:websrc'
 
-<<<<<<< HEAD
-   grunt.registerTask 'default', ['coffee', 'mochacli']
-   grunt.registerTask 'test', ['compile', 'mochacli']
-=======
    grunt.registerTask 'default', ['compile', 'test']
    grunt.registerTask 'test', ['mochacli']
->>>>>>> ed254951409e929af1ef8ace87fd279a1fbd6cc2
    grunt.registerTask 'compile', ['coffee']
