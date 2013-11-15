@@ -7,7 +7,7 @@ module.exports.Portal = class Portal
       @name = 'portal'
 
    writeHead: (response, status_code, headers) ->
-      response.writeHead status_code, headers if !response.headersSent
+      response.writeHead status_code, processHeaders response, headers if !response.headersSent
       return response
 
    received: (request, response) ->
@@ -48,3 +48,11 @@ module.exports.Portal = class Portal
 
       out[fn] "#{hours}:#{minutes}:#{seconds} <- #{status} #{@name}#{url} #{message}"
 
+processHeaders = (response, headers) ->
+  store = {}
+  for own head, value of headers
+    if typeof value is 'object' and value.toString() is '[object Array]'
+      response.setHeader head, value
+    else
+      store[head] = value
+  store
