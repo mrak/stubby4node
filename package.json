@@ -4,7 +4,7 @@
   "version": "0.2.3",
   "author": {
     "name": "Eric Mrak",
-    "email": "enmrak@gmail.com"
+    "email": "mail@ericmrak.info"
   },
   "description": "a lightweight server for stubbing external systems and endpoints",
   "keywords": [
@@ -22,7 +22,7 @@
   "contributors": [
     {
       "name": "Eric Mrak",
-      "email": "enmrak@gmail.com"
+      "email": "mail@ericmrak.info"
     }
   ],
   "files": [
