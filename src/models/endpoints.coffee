@@ -67,7 +67,7 @@ module.exports.Endpoints = class Endpoints
 applyTemplating = (obj, captures) ->
   for key, value of obj
     if typeof value is 'string' or value instanceof Buffer
-      obj[key] = ejs.render value.toString().replace('<%', '<%='), captures
+      obj[key] = ejs.render value.toString().replace(/<%/g, '<%='), captures
     else
       applyTemplating value, captures
 
