@@ -28,7 +28,9 @@ module.exports.Portal = class Portal
         if request.headers['access-control-request-method']?
           response.setHeader 'Access-Control-Allow-Methods', request.headers['access-control-request-method']
         
-        response.end() if request.method is 'OPTIONS'
+        if request.method is 'OPTIONS'
+          @writeHead response, 200, response.headers
+          response.end()
 
       response
 
