@@ -8,7 +8,7 @@ module.exports.Portal = class Portal
 
    writeHead: (response, status_code, headers) ->
       response.writeHead status_code, headers if !response.headersSent
-      return response
+      response
 
    received: (request, response) ->
       date = new Date()
@@ -22,12 +22,15 @@ module.exports.Portal = class Portal
       if request.headers['origin']?
         response.setHeader 'Access-Control-Allow-Origin', request.headers['origin']
         response.setHeader 'Access-Control-Allow-Credentials', true
+        
         if request.headers['access-control-request-headers']?
           response.setHeader 'Access-Control-Allow-Headers', request.headers['access-control-request-headers']
         if request.headers['access-control-request-method']?
           response.setHeader 'Access-Control-Allow-Methods', request.headers['access-control-request-method']
+        
+        response.end() if request.method is 'OPTIONS'
 
-      return response
+      response
 
    responded: (status, url = '', message = http.STATUS_CODES[status]) ->
       date = new Date()
@@ -47,4 +50,3 @@ module.exports.Portal = class Portal
             fn = 'info'
 
       out[fn] "#{hours}:#{minutes}:#{seconds} <- #{status} #{@name}#{url} #{message}"
-
