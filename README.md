@@ -610,7 +610,7 @@ Then within your project files you can do something like:
 
 ```javascript
     var Stubby = require('stubby').Stubby;
-    var mockExternalService = new Stubby();
+    var mockService = new Stubby();
 
     mockService.start();
 ```
