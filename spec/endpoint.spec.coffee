@@ -77,9 +77,7 @@ describe 'Endpoint', ->
       @data.response = 'http://google.com'
       actual = new Endpoint @data
 
-      waitsFor (->
-        return actual.response[0].status is 301
-      ), "endpoint to record", waitTime, done
+      waitsFor (-> actual.response[0].status is 301), "endpoint to record", waitTime, done
 
     it 'should fill in a string reponse with the recorded endpoint in series', (done) ->
       waitTime = 10000
@@ -88,7 +86,7 @@ describe 'Endpoint', ->
       actual = new Endpoint @data
 
       waitsFor (->
-        return actual.response[0].status is 301 and actual.response[1].status is 200
+        actual.response[0].status is 301 and actual.response[1].status is 200
       ), "endpoint to record", waitTime, done
 
     it 'should fill in a string reponse with the recorded endpoint in series', (done) ->
