@@ -171,6 +171,26 @@ describe 'Endpoint', ->
       assert.deepEqual actual.response[0].headers, expected.response
       assert.deepEqual actual.request.headers, expected.request
 
+    it 'should define multiple headers with same name', ->
+      @data.request =
+        headers: 'Content-Type': 'application/json'
+      @data.response =
+        headers: 
+          'Content-Type': 'application/json'
+          'Set-Cookie': ['type=ninja', 'language=coffeescript']
+
+      expected =
+        request:
+          'content-type': 'application/json'
+        response:
+          'content-type': 'application/json'
+          'set-cookie': ['type=ninja', 'language=coffeescript']
+
+      actual = new Endpoint @data
+
+      assert.deepEqual actual.response[0].headers, expected.response
+      assert.deepEqual actual.request.headers, expected.request
+
     it 'should base64 encode authorization headers if not encoded', ->
       expected = 'Basic dXNlcm5hbWU6cGFzc3dvcmQ='
       @data.request.headers =

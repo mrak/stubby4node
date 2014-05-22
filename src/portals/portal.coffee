@@ -47,4 +47,3 @@ module.exports.Portal = class Portal
             fn = 'info'
 
       out[fn] "#{hours}:#{minutes}:#{seconds} <- #{status} #{@name}#{url} #{message}"
-
