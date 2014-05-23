@@ -133,6 +133,18 @@ describe 'End 2 End Stubs Test Suite', ->
             assert headers['access-control-allow-credentials'] is 'true'
             done()
 
+      it 'should return multiple headers with the same name', (done) ->
+         expected = ['type=ninja', 'language=coffeescript']
+
+         @context.url = '/duplicated/header'
+         @context.method = 'get'
+
+         createRequest @context
+         waitsFor ( => @context.done ), 'request to finish', 1000, =>
+            headers = @context.response.headers
+            assert.deepEqual headers['set-cookie'], expected
+            done()
+
    describe 'GET', ->
       it 'should return a body from a GET endpoint', (done) ->
          @context.url = '/get/body'
