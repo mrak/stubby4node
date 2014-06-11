@@ -77,6 +77,8 @@ found = (endpoint, captures, callback) ->
   response.headers['x-stubby-resource-id'] = endpoint.id
 
   if response.file?
+    # dynamic token replacement in file name before file fetch
+    applyTemplating response, captures
     try response.body = fs.readFileSync path.resolve(@datadir, response.file)
 
   applyTemplating response, captures
