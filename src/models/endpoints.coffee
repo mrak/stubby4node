@@ -64,12 +64,15 @@ module.exports.Endpoints = class Endpoints
 
     callback NO_MATCH
 
-applyTemplating = (obj, captures) ->
+applyCaptures = (obj, captures) ->
+  if typeof obj is 'string'
+    return ejs.render obj.toString().replace(/<%/g, '<%='), captures
+
   for key, value of obj
     if typeof value is 'string' or value instanceof Buffer
       obj[key] = ejs.render value.toString().replace(/<%/g, '<%='), captures
     else
-      applyTemplating value, captures
+      applyCaptures value, captures
 
 found = (endpoint, captures, callback) ->
   response = endpoint.response[@sightings[endpoint.id]++ % endpoint.response.length]
@@ -77,11 +80,10 @@ found = (endpoint, captures, callback) ->
   response.headers['x-stubby-resource-id'] = endpoint.id
 
   if response.file?
-    # dynamic token replacement in file name before file fetch
-    applyTemplating response, captures
-    try response.body = fs.readFileSync path.resolve(@datadir, response.file)
+    filename = applyCaptures response.file, captures
+    try response.body = fs.readFileSync path.resolve(@datadir, filename)
 
-  applyTemplating response, captures
+  applyCaptures response, captures
 
   if parseInt response.latency
     return setTimeout (-> callback null,  response), response.latency
