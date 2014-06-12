@@ -718,4 +718,3 @@ For [Grunt](http://gruntjs.com) automation, see the [stubby task](https://github
 
 * __Copyright__ 2013 Eric Mrak, Alexander Zagniotov
 * __License__ Apache v2.0
-
