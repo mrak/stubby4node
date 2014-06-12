@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.5
+
+* token replacement from regex capture groups is now usable for dynamic `file:`
+  usage
+
 ## 0.2.3
 
 * added recording feature. If a `response` object uses a string in place of an object (or a sequence of objects/string) the strings will be interpreted as a url to record the response from. Details configured in the `request` object (such as `method`, `headers`, etc) will be used to make the recording request to the specified url
