@@ -146,13 +146,13 @@ describe 'Endpoints', ->
         waitsFor (-> callback.called), 'Callback call was never called', [900, 1100], done
 
       describe 'dynamic templating', ->
-        it 'should replace captures in body', (done) ->
+        it 'should replace all captures in body', (done) ->
           sut.create
             request:
               url: '/'
               post: '.*'
             response:
-              body: 'you posted "<% post[0] %>"'
+              body: 'you posted "<% post[0] %>" and "<% post[0] %>"'
 
           data =
             url: '/'
@@ -160,8 +160,26 @@ describe 'Endpoints', ->
             post: 'hello, there!'
 
           sut.find data, (err, match) ->
-            assert match.body is 'you posted "hello, there!"'
+            assert match.body is 'you posted "hello, there!" and "hello, there!"'
             done()
+
+        it 'should replace captures in file', ->
+          expected = 'file contents!'
+          sut.create
+            request:
+              url: '/'
+              post: '.*'
+            response:
+              file: 'spec/data/<% post[0] %>.file'
+
+          data =
+            url: '/'
+            method: 'GET'
+            post: 'endpoints'
+
+          sut.find data, callback
+
+          assert callback.args[0][1].body.toString().trim() is expected
 
       describe 'request post versus file', ->
         it 'should match response with post if file is not supplied', ->
