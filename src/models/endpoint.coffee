@@ -22,7 +22,7 @@ module.exports = class Endpoint
     if @request.file?
       try file = fs.readFileSync path.resolve(@datadir, @request.file), 'utf8'
 
-    if post = file or @request.post
+    if (post = file or @request.post) and request.post
       return null unless matches.post = matchRegex normalizeEOL(post), normalizeEOL(request.post)
 
     if @request.method instanceof Array
