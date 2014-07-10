@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.6
+
+* fixes an issue where identical URLs with different request methods may throw
+  an exception
+
 ## 0.2.5
 
 * token replacement from regex capture groups is now usable for dynamic `file:`
@@ -158,7 +163,7 @@
 
 ## 0.1.23beta
 
-* fixed but with endpoints with undefined headers not being accepted 
+* fixed but with endpoints with undefined headers not being accepted
 
 ## 0.1.22beta
 
