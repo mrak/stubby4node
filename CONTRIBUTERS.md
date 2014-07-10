@@ -4,9 +4,9 @@ Eric Mrak
 
 Tomás Aparicio (https://github.com/h2non)
 
-Jay Parlar (http://parlar.ca)
+Jay Parlar (https://github.com/parlarjb)
 
-Josh Price
+Josh Price (https://github.cim/joshprice)
 
 # Special Thanks
 
