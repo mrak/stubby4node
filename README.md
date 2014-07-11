@@ -16,10 +16,9 @@ stubby4node
 * [The Stubs Portal](#the-stubs-portal)
 * [Programmatic API](#programmatic-api)
 * [Running Tests](#running-tests)
-* [Grunt task](#grunt-task)
+* [Contributing](#contributing)
 * [See Also](#see-also)
 * [TODO](#todo)
-* [Wishful Thinkings](#wishful-thinkings)
 * [NOTES](#notes)
 
 ## Installation
