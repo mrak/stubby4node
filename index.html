@@ -1,38 +1,44 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>stubby4node by mrak</title>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="stubby4node : A configurable server for stubbing external systems during development. Uses Node.js and written in Coffeescript" />
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>stubby4node</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1>stubby4node</h1>
-        <p>A configurable server for stubbing external systems during development. Uses Node.js and written in Coffeescript</p>
 
-        <p class="view"><a href="https://github.com/mrak/stubby4node">View the Project on GitHub <small>mrak/stubby4node</small></a></p>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/mrak/stubby4node">View on GitHub</a>
 
+          <h1 id="project_title">stubby4node</h1>
+          <h2 id="project_tagline">A configurable server for stubbing external systems during development. Uses Node.js and written in Coffeescript</h2>
 
-        <ul>
-          <li><a href="https://github.com/mrak/stubby4node/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/mrak/stubby4node/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/mrak/stubby4node">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <p><a href="http://travis-ci.org/Afmrak/stubby4node"><img src="https://secure.travis-ci.org/mrak/stubby4node.png?branch=master" alt="Build Status"></a></p>
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/mrak/stubby4node/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/mrak/stubby4node/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
 
-<h1>stubby4node</h1>
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p><a href="http://travis-ci.org/mrak/stubby4node"><img src="https://secure.travis-ci.org/mrak/stubby4node.png?branch=master" alt="Build Status"></a>
+<a href="http://badge.fury.io/js/stubby"><img src="https://badge.fury.io/js/stubby.png" alt="NPM version"></a></p>
 
-<h2>Table of Contents</h2>
+<h1>
+<a name="stubby4node" class="anchor" href="#stubby4node"><span class="octicon octicon-link"></span></a>stubby4node</h1>
+
+<h2>
+<a name="table-of-contents" class="anchor" href="#table-of-contents"><span class="octicon octicon-link"></span></a>Table of Contents</h2>
 
 <ul>
 <li><a href="#installation">Installation</a></li>
@@ -40,24 +46,28 @@
 <li><a href="#starting-the-servers">Starting the Server(s)</a></li>
 <li><a href="#command-line-switches">Command-line Switches</a></li>
 <li><a href="#endpoint-configuration">Endpoint Configuration</a></li>
+<li><a href="#dynamic-token-replacement">Dynamic Token Replacement</a></li>
 <li><a href="#the-admin-portal">The Admin Portal</a></li>
 <li><a href="#the-stubs-portal">The Stubs Portal</a></li>
 <li><a href="#programmatic-api">Programmatic API</a></li>
 <li><a href="#running-tests">Running Tests</a></li>
+<li><a href="#contributing">Contributing</a></li>
 <li><a href="#see-also">See Also</a></li>
 <li><a href="#todo">TODO</a></li>
-<li><a href="#wishful-thinkings">Wishful Thinkings</a></li>
 <li><a href="#notes">NOTES</a></li>
-</ul><h2>Installation</h2>
+</ul><h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
 
-<h3>via npm</h3>
+<h3>
+<a name="via-npm" class="anchor" href="#via-npm"><span class="octicon octicon-link"></span></a>via npm</h3>
 
 <pre><code>npm install -g stubby
 </code></pre>
 
 <p>This will install <code>stubby</code> as a command in your <code>PATH</code>. Leave off the <code>-g</code> flag if you'd like to use stubby as an embedded module in your project.</p>
 
-<h3>via source</h3>
+<h3>
+<a name="via-source" class="anchor" href="#via-source"><span class="octicon octicon-link"></span></a>via source</h3>
 
 <p>You need to have <code>coffee-script</code> installed on your system.</p>
 
@@ -67,33 +77,37 @@ coffee -o lib -c src
 export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 </code></pre>
 
-<h2>Requirements</h2>
+<h2>
+<a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2>
 
 <ul>
 <li>
-<a href="http://nodejs.org/">node.js</a> (tested with v0.8.x)</li>
-</ul><p>Development is on Mac OS X Mountain Lion.</p>
+<a href="http://nodejs.org/">node.js</a> (&gt;=0.10.x)</li>
+</ul><p>Development is on x86-64 Linux.</p>
 
-<h3>Packaged</h3>
+<h3>
+<a name="packaged" class="anchor" href="#packaged"><span class="octicon octicon-link"></span></a>Packaged</h3>
 
 <ul>
 <li>
 <a href="https://github.com/nodeca/js-yaml">JS-YAML</a> for loading yaml files</li>
 <li><a href="https://github.com/shimondoodkin/nodejs-clone-extend">cloneextend</a></li>
-</ul><h3>Optional (for development)</h3>
+</ul><h3>
+<a name="optional-for-development" class="anchor" href="#optional-for-development"><span class="octicon octicon-link"></span></a>Optional (for development)</h3>
 
 <ul>
-<li><a href="http://coffeescript.org">coffee-script</a></li>
+<li><a href="http://gruntjs.com">grunt-cli</a></li>
 <li><a href="https://github.com/dannycoates/node-inspector">node-inspector</a></li>
-<li><a href="https://github.com/mhevery/jasmine-node">jasmine-node</a></li>
-</ul><h2>Starting the Server(s)</h2>
+</ul><h2>
+<a name="starting-the-servers" class="anchor" href="#starting-the-servers"><span class="octicon octicon-link"></span></a>Starting the Server(s)</h2>
 
 <p>Some systems require you to <code>sudo</code> before running services on port certain ports (like 80)</p>
 
 <pre><code>[sudo] stubby
 </code></pre>
 
-<h2>Command-line Switches</h2>
+<h2>
+<a name="command-line-switches" class="anchor" href="#command-line-switches"><span class="octicon octicon-link"></span></a>Command-line Switches</h2>
 
 <pre><code>stubby [-a &lt;port&gt;] [-c &lt;file&gt;] [-d &lt;file&gt;] [-h] [-k &lt;file&gt;] [-l &lt;hostname&gt;] [-m] [-p &lt;file&gt;]
        [-s &lt;port&gt;] [-t &lt;port&gt;] [-v] [-w]
@@ -112,13 +126,14 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 -w, --watch                 Auto-reload data file when edits are made.
 </code></pre>
 
-<h2>Endpoint Configuration</h2>
+<h2>
+<a name="endpoint-configuration" class="anchor" href="#endpoint-configuration"><span class="octicon octicon-link"></span></a>Endpoint Configuration</h2>
 
 <p>This section explains the usage, intent and behavior of each property on the <code>request</code> and <code>response</code> objects.</p>
 
 <p>Here is a fully-populated, unrealistic endpoint:</p>
 
-<div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+<div class="highlight highlight-yaml"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/your/awesome/endpoint$</span>
       <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">POST</span>
       <span class="l-Scalar-Plain">query</span><span class="p-Indicator">:</span>
@@ -132,7 +147,7 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
          <span class="no">&lt;/envelope&gt;</span>
       <span class="l-Scalar-Plain">file</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">tryMyFirst.xml</span>
    <span class="l-Scalar-Plain">response</span><span class="p-Indicator">:</span>
-      <span class="l-Scalar-Plain">status</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">200</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">status</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">200</span>
       <span class="l-Scalar-Plain">latency</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">5000</span>
       <span class="l-Scalar-Plain">headers</span><span class="p-Indicator">:</span>
          <span class="l-Scalar-Plain">content-type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">application/xml</span>
@@ -143,13 +158,17 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
             <span class="no">&lt;content&gt;&lt;/content&gt;</span>
          <span class="no">&lt;/responseXML&gt;</span>
       <span class="l-Scalar-Plain">file</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">responseData.xml</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">status</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">200</span>
+      <span class="l-Scalar-Plain">body</span><span class="p-Indicator">:</span> <span class="s">"Haha!"</span>
 </pre></div>
 
-<h3>request</h3>
+<h3>
+<a name="request" class="anchor" href="#request"><span class="octicon octicon-link"></span></a>request</h3>
 
 <p>This object is used to match an incoming request to stubby against the available endpoints that have been configured.</p>
 
-<h4>url (required)</h4>
+<h4>
+<a name="url-required" class="anchor" href="#url-required"><span class="octicon octicon-link"></span></a>url (required)</h4>
 
 <ul>
 <li>is a full-fledged <strong>regular expression</strong>
@@ -172,13 +191,13 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 </li>
 </ul><p>This is the simplest you can get:</p>
 
-<div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+<div class="highlight highlight-yaml"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/</span>
 </pre></div>
 
 <p>A demonstration using regular expressions:</p>
 
-<div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+<div class="highlight highlight-yaml"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/has/to/begin/with/this/</span>
 
 <span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
@@ -188,7 +207,8 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
       <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/must/be/this/exactly/with/optional/trailing/slash/?$</span>
 </pre></div>
 
-<h4>method</h4>
+<h4>
+<a name="method" class="anchor" href="#method"><span class="octicon octicon-link"></span></a>method</h4>
 
 <ul>
 <li>defaults to <code>GET</code>.</li>
@@ -205,14 +225,14 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 <li>etc.</li>
 </ul>
 </li>
-</ul><div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+</ul><div class="highlight highlight-yaml"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/anything</span>
       <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">GET</span>
 </pre></div>
 
 <ul>
 <li>it can also be an array of values.</li>
-</ul><div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+</ul><div class="highlight highlight-yaml"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/anything</span>
       <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">GET</span><span class="p-Indicator">,</span> <span class="nv">HEAD</span><span class="p-Indicator">]</span>
 
@@ -224,9 +244,12 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
          <span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">POST</span>
 </pre></div>
 
-<h4>query</h4>
+<h4>
+<a name="query" class="anchor" href="#query"><span class="octicon octicon-link"></span></a>query</h4>
 
 <ul>
+<li>values are full-fledged <strong>regular expressions</strong>
+</li>
 <li>if ommitted, stubby ignores query parameters for the given url.</li>
 <li>a yaml hashmap of variable/value pairs.</li>
 <li><p>allows the query parameters to appear in any order in a uri</p></li>
@@ -238,35 +261,39 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 <li><code>/with/parameters?filter=month&amp;search=search+terms</code></li>
 </ul>
 </li>
-</ul><div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+</ul><div class="highlight highlight-yaml"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/with/parameters$</span>
       <span class="l-Scalar-Plain">query</span><span class="p-Indicator">:</span>
          <span class="l-Scalar-Plain">search</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">search terms</span>
          <span class="l-Scalar-Plain">filter</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">month</span>
 </pre></div>
 
-<h4>post</h4>
+<h4>
+<a name="post" class="anchor" href="#post"><span class="octicon octicon-link"></span></a>post</h4>
 
 <ul>
+<li>is a full-fledged <strong>regular expression</strong>
+</li>
 <li>if ommitted, any post data is ignored.</li>
 <li>the body contents of the server request, such as form data.</li>
-</ul><div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+</ul><div class="highlight highlight-yaml"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/post/form/data$</span>
       <span class="l-Scalar-Plain">post</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">name=John&amp;email=john@example.com</span>
 </pre></div>
 
-<h4>file</h4>
+<h4>
+<a name="file" class="anchor" href="#file"><span class="octicon octicon-link"></span></a>file</h4>
 
 <ul>
 <li>if supplied, replaces <code>post</code> with the contents of the locally given file.
 
 <ul>
-<li>paths are relative from where stubby was executed.</li>
+<li>paths are relative from where the <code>--data</code> file is located</li>
 </ul>
 </li>
 <li>if the file is not found when the request is made, falls back to <code>post</code> for matching.</li>
 <li>allows you to split up stubby data across multiple files</li>
-</ul><div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+</ul><div class="highlight highlight-yaml"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/match/against/file$</span>
       <span class="l-Scalar-Plain">file</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">postedData.json</span>
       <span class="l-Scalar-Plain">post</span><span class="p-Indicator">:</span> <span class="s">'{"fallback":"data"}'</span>
@@ -274,69 +301,97 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 
 <p>postedData.json</p>
 
-<div class="highlight"><pre><span class="p">{</span><span class="nt">"fileContents"</span><span class="p">:</span><span class="s2">"match against this if the file is here"</span><span class="p">}</span>
+<div class="highlight highlight-json"><pre><span class="p">{</span><span class="nt">"fileContents"</span><span class="p">:</span><span class="s2">"match against this if the file is here"</span><span class="p">}</span>
 </pre></div>
 
 <ul>
 <li>if <code>postedData.json</code> doesn't exist on the filesystem when <code>/match/against/file</code> is requested, stubby will match post contents against <code>{"fallback":"data"}</code> (from <code>post</code>) instead.</li>
-</ul><h4>headers</h4>
+</ul><h4>
+<a name="headers" class="anchor" href="#headers"><span class="octicon octicon-link"></span></a>headers</h4>
 
 <ul>
+<li>values are full-fledged <strong>regular expressions</strong>
+</li>
 <li>if ommitted, stubby ignores headers for the given url.</li>
 <li>case-insensitive matching of header names.</li>
 <li>a hashmap of header/value pairs similar to <code>query</code>.</li>
 </ul><p>The following endpoint only accepts requests with <code>application/json</code> post values:</p>
 
-<div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+<div class="highlight highlight-yaml"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/post/json</span>
       <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">post</span>
       <span class="l-Scalar-Plain">headers</span><span class="p-Indicator">:</span>
          <span class="l-Scalar-Plain">content-type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">application/json</span>
 </pre></div>
 
-<h3>response</h3>
+<h3>
+<a name="response" class="anchor" href="#response"><span class="octicon octicon-link"></span></a>response</h3>
 
 <p>Assuming a match has been made against the given <code>request</code> object, data from <code>response</code> is used to build the stubbed response back to the client.</p>
 
-<h4>status</h4>
+<p><strong>ALSO:</strong> The <code>response</code> property can also be a yaml sequence of responses that cycle as each request is made.
+<strong>ALSO:</strong> The <code>response</code> property can also be a url (string) or sequence of object/urls. The url will be used to record a response object to be used in calls to stubby. When used this way, data from the <code>request</code> portion of the endpoint will be used to assemble a request to the url given as the <code>response</code>.</p>
+
+<div class="highlight highlight-yaml"><pre><span class="p-Indicator">-</span> <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/single/object</span>
+  <span class="l-Scalar-Plain">response</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">status</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">204</span>
+
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/single/url/to/record</span>
+  <span class="l-Scalar-Plain">response</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http://example.com</span>
+
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/object/and/url/in/sequence</span>
+  <span class="l-Scalar-Plain">response</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">http://google.com</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">status</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">200</span>
+    <span class="l-Scalar-Plain">body</span><span class="p-Indicator">:</span> <span class="s">'second</span><span class="nv"> </span><span class="s">hit'</span>
+</pre></div>
+
+<h4>
+<a name="status" class="anchor" href="#status"><span class="octicon octicon-link"></span></a>status</h4>
 
 <ul>
 <li>the HTTP status code of the response.</li>
 <li>integer or integer-like string.</li>
 <li>defaults to <code>200</code>.</li>
-</ul><div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+</ul><div class="highlight highlight-yaml"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/im/a/teapot$</span>
       <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">POST</span>
    <span class="l-Scalar-Plain">response</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">status</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">420</span>
 </pre></div>
 
-<h4>body</h4>
+<h4>
+<a name="body" class="anchor" href="#body"><span class="octicon octicon-link"></span></a>body</h4>
 
 <ul>
 <li>contents of the response body</li>
 <li>defaults to an empty content body</li>
-</ul><div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+</ul><div class="highlight highlight-yaml"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/give/me/a/smile$</span>
    <span class="l-Scalar-Plain">response</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">body</span><span class="p-Indicator">:</span> <span class="s">':)'</span>
 </pre></div>
 
-<h4>file</h4>
+<h4>
+<a name="file-1" class="anchor" href="#file-1"><span class="octicon octicon-link"></span></a>file</h4>
 
 <ul>
 <li>similar to <code>request.file</code>, but the contents of the file are used as the <code>body</code>.</li>
-</ul><div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+</ul><div class="highlight highlight-yaml"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/</span>
    <span class="l-Scalar-Plain">response</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">file</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">extremelyLongJsonFile.json</span>
 </pre></div>
 
-<h4>headers</h4>
+<h4>
+<a name="headers-1" class="anchor" href="#headers-1"><span class="octicon octicon-link"></span></a>headers</h4>
 
 <ul>
 <li>similar to <code>request.headers</code> except that these are sent back to the client.</li>
-</ul><div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+</ul><div class="highlight highlight-yaml"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/give/me/some/json$</span>
    <span class="l-Scalar-Plain">response</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">headers</span><span class="p-Indicator">:</span>
@@ -351,23 +406,102 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
          <span class="no">}]</span>
 </pre></div>
 
-<h4>latency</h4>
+<h4>
+<a name="latency" class="anchor" href="#latency"><span class="octicon octicon-link"></span></a>latency</h4>
 
 <ul>
 <li>time to wait, in milliseconds, before sending back the response</li>
 <li>good for testing timeouts, or slow connections</li>
-</ul><div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+</ul><div class="highlight highlight-yaml"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/hello/to/jupiter$</span>
    <span class="l-Scalar-Plain">response</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">latency</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">800000</span>
       <span class="l-Scalar-Plain">body</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Hello, World!</span>
 </pre></div>
 
-<h2>The Admin Portal</h2>
+<h2>
+<a name="dynamic-token-replacement" class="anchor" href="#dynamic-token-replacement"><span class="octicon octicon-link"></span></a>Dynamic Token Replacement</h2>
+
+<p>While <code>stubby</code> is matching request data against configured endpoints, it is keeping a hash of all regular expression capture groups along the way.
+These capture groups can be referenced in <code>response</code> data. Here's an example</p>
+
+<div class="highlight highlight-yaml"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+      <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">GET</span><span class="p-Indicator">]</span>
+      <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/account/(\d{5})/category/([a-zA-Z]+)</span>
+      <span class="l-Scalar-Plain">query</span><span class="p-Indicator">:</span>
+         <span class="l-Scalar-Plain">date</span><span class="p-Indicator">:</span> <span class="s">"([a-zA-Z]+)"</span>
+      <span class="l-Scalar-Plain">headers</span><span class="p-Indicator">:</span>
+         <span class="l-Scalar-Plain">custom-header</span><span class="p-Indicator">:</span> <span class="s">"[0-9]+"</span>
+
+   <span class="l-Scalar-Plain">response</span><span class="p-Indicator">:</span>
+      <span class="l-Scalar-Plain">status</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">200</span>
+      <span class="l-Scalar-Plain">body</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Returned invoice number# &lt;% url[1] %&gt; in category '&lt;% url[2] %&gt;' on the date '&lt;% query.date[1] %&gt;', using header custom-header &lt;% headers.custom-header[0] %&gt;</span>
+</pre></div>
+
+<h3>
+<a name="example-explained" class="anchor" href="#example-explained"><span class="octicon octicon-link"></span></a>Example explained</h3>
+
+<p>The url regex <code>^/account/(\d{5})/category/([a-zA-Z]+)</code> has two defined capturing groups: <code>(\d{5})</code> and <code>([a-zA-Z]+)</code>, query regex has one defined capturing group <code>([a-zA-Z]+)</code>. In other words, a manually defined capturing group has parenthesis around it.</p>
+
+<p>Although, the headers regex does not have capturing groups defined explicitly (no regex sections within parenthesis), its matched value is still accessible in a template (keep on reading!).</p>
+
+<h3>
+<a name="token-structure" class="anchor" href="#token-structure"><span class="octicon octicon-link"></span></a>Token structure</h3>
+
+<p>The tokens in response body follow the format of <code>&lt; %PROPERTY_NAME[CAPTURING_GROUP_ID] %&gt;</code>. If it is a token that should correspond to headers or query regex match, then the token structure would be as follows: `&lt;% HEADERS_OR_QUERY.[KEY_NAME][CAPTURING_GROUP_ID] %&gt;.</p>
+
+<h3>
+<a name="numbering-the-tokens-based-on-capturing-groups-without-sub-groups" class="anchor" href="#numbering-the-tokens-based-on-capturing-groups-without-sub-groups"><span class="octicon octicon-link"></span></a>Numbering the tokens based on capturing groups without sub-groups</h3>
+
+<p>When giving tokens their ID based on the count of manually defined capturing groups within regex, you should start from <code>1</code>, not zero (zero reserved for token that holds <strong>full</strong> regex match) from left to right. So the leftmost capturing group would be <code>1</code> and the next one to the right of it would be <code>2</code>, etc.</p>
+
+<p>In other words <code>&lt;% url[1] %&gt;</code> and <code>&lt;% url[2] %&gt;</code> tokens correspond to two capturing groups from the url regex <code>(\d{5})</code> and <code>([a-zA-Z]+)</code>, while <code>&lt;% query.date[1] %&gt;</code> token corresponds to one capturing group <code>([a-zA-Z]+)</code> from the <code>query</code> <code>date</code> property regex.</p>
+
+<h3>
+<a name="numbering-the-tokens-based-on-capturing-groups-with-sub-groups" class="anchor" href="#numbering-the-tokens-based-on-capturing-groups-with-sub-groups"><span class="octicon octicon-link"></span></a>Numbering the tokens based on capturing groups with sub-groups</h3>
+
+<p>In regex world, capturing groups can contain capturing sub-groups, as an example consider proposed <code>url</code> regex: <code>^/resource/(([a-z]{3})-([0-9]{3}))$</code>. In the latter example, the regex has three groups - a parent group <code>([a-z]{3}-[0-9]{3})</code> and two sub-groups within: <code>([a-z]{3})</code> &amp; <code>([0-9]{3})</code>.</p>
+
+<p>When giving tokens their ID based on the count of capturing groups, you should start from 1, not zero (zero reserved for token that holds <strong>full</strong> regex match) from left to right. If a group has sub-group within, you count the sub-group(s) first (also from left to right) before counting the next one to the right of the parent group.</p>
+
+<p>In other words tokens <code>&lt;% url[1] %&gt;</code>, <code>&lt;% url[2] %&gt;</code> and <code>&lt;% url[3] %&gt;</code> correspond to the three capturing groups from the url regex (starting from left to right): <code>([a-z]{3}-[0-9]{3})</code>, <code>([a-z]{3})</code> and <code>([0-9]{3})</code>.</p>
+
+<h3>
+<a name="tokens-with-id-zero" class="anchor" href="#tokens-with-id-zero"><span class="octicon octicon-link"></span></a>Tokens with ID zero</h3>
+
+<p>Tokens with ID zero can obtain <code>full</code> match value from the regex they reference. In other words, tokens with ID zero do not care whether regex has capturing groups defined or not. For example, token <code>&lt;% url[0] %&gt;</code> will be replaced with the <code>ur</code>l <strong>full</strong> regex match from <code>^/account/(\d{5})/category/([a-zA-Z]+)</code>. So if you want to access the <code>url</code> <strong>full</strong> regex match, respectively you would use token <code>&lt;% url[0] %&gt;</code> in your template.</p>
+
+<p>Another example, would be the earlier case where <code>headers</code> <code>custom-header</code> property regex does not have capturing groups defined within. Which is fine, since the <code>&lt;% headers.custom-header[0] %&gt;</code> token corresponds to the <strong>full</strong> regex match in the <code>header</code> <code>custom-header</code> property regex: <code>[0-9]+</code>.</p>
+
+<p>It is also worth to mention, that the <strong>full</strong> regex match value replacing token <code>&lt;% query.date[0] %&gt;</code>, would be equal to the regex capturing group value replacing <code>&lt;% query.date[1] %&gt;</code>. This is due to how the <code>query</code> <code>date</code> property regex is defined - the one and only capturing group in the query date regex, is also the <strong>full</strong> regex itself.</p>
+
+<h3>
+<a name="where-to-specify-the-template" class="anchor" href="#where-to-specify-the-template"><span class="octicon octicon-link"></span></a>Where to specify the template</h3>
+
+<p>You can specify template with tokens in both <code>body</code> as a string or using <code>file</code> by specifying template as external local file. When template is specified as <code>file</code>, the contents of local file from <code>file</code> will be replaced, <strong>not</strong> the path to local file defined in <code>file</code>.</p>
+
+<h3>
+<a name="when-token-interpolation-happens" class="anchor" href="#when-token-interpolation-happens"><span class="octicon octicon-link"></span></a>When token interpolation happens</h3>
+
+<p>After successful HTTP request verification, if your body or contents of local file from file contain tokens - the tokens will be replaced just before rendering HTTP response.</p>
+
+<h3>
+<a name="troubleshooting" class="anchor" href="#troubleshooting"><span class="octicon octicon-link"></span></a>Troubleshooting</h3>
+
+<ul>
+<li>Make sure that the regex you used in your stubby configuration actually does what it suppose to do. Validate that it works before using it in stubby</li>
+<li>Make sure that the regex has capturing groups for the parts of regex you want to capture as token values. In other words, make sure that you did not forget the parenthesis within your regex if your token IDs start from <code>1</code>
+</li>
+<li>Make sure that you are using token ID zero, when wanting to use <strong>full</strong> regex match as the token value</li>
+<li>Make sure that the token names you used in your template are correct: check that property name is correct, capturing group IDs, token ID of the <strong>full</strong> match, the <code>&lt;%</code> and <code>%&gt;</code>
+</li>
+</ul><h2>
+<a name="the-admin-portal" class="anchor" href="#the-admin-portal"><span class="octicon octicon-link"></span></a>The Admin Portal</h2>
 
 <p>The admin portal is a RESTful(ish) endpoint running on <code>localhost:8889</code>. Or wherever you described through stubby's options.</p>
 
-<h3>Supplying Endpoints to Stubby</h3>
+<h3>
+<a name="supplying-endpoints-to-stubby" class="anchor" href="#supplying-endpoints-to-stubby"><span class="octicon octicon-link"></span></a>Supplying Endpoints to Stubby</h3>
 
 <p>Submit <code>POST</code> requests to <code>localhost:8889</code> or load a data-file (-d) with the following structure for each endpoint:</p>
 
@@ -379,7 +513,7 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 <li>
 <code>method</code>: GET/POST/PUT/DELETE/etc.</li>
 <li>
-<code>url</code>: the URI regex string. GET parameters should also be included inline here</li>
+<code>url</code>: the URI regex string.</li>
 <li>
 <code>query</code>: a key/value map of query string parameters included with the request</li>
 <li>
@@ -406,9 +540,10 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 <code>status</code>: the numerical HTTP status code (200 for OK, 404 for NOT FOUND, etc.)</li>
 </ul>
 </li>
-</ul><h4>YAML (file only)</h4>
+</ul><h4>
+<a name="yaml-file-only" class="anchor" href="#yaml-file-only"><span class="octicon octicon-link"></span></a>YAML (file only)</h4>
 
-<div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+<div class="highlight highlight-yaml"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">^/path/to/something$</span>
       <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">POST</span>
       <span class="l-Scalar-Plain">headers</span><span class="p-Indicator">:</span>
@@ -449,30 +584,31 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
       <span class="l-Scalar-Plain">status</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">304</span>
 </pre></div>
 
-<h4>JSON (file or POST/PUT)</h4>
+<h4>
+<a name="json-file-or-postput" class="anchor" href="#json-file-or-postput"><span class="octicon octicon-link"></span></a>JSON (file or POST/PUT)</h4>
 
-<div class="highlight"><pre><span class="p">[</span>
+<div class="highlight highlight-json"><pre><span class="p">[</span>
   <span class="p">{</span>
     <span class="nt">"request"</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">"url"</span><span class="p">:</span> <span class="s2">"^/path/to/something$"</span><span class="p">,</span> 
-      <span class="nt">"post"</span><span class="p">:</span> <span class="s2">"this is some post data in textual format"</span><span class="p">,</span> 
+      <span class="nt">"url"</span><span class="p">:</span> <span class="s2">"^/path/to/something$"</span><span class="p">,</span>
+      <span class="nt">"post"</span><span class="p">:</span> <span class="s2">"this is some post data in textual format"</span><span class="p">,</span>
       <span class="nt">"headers"</span><span class="p">:</span> <span class="p">{</span>
          <span class="nt">"authorization"</span><span class="p">:</span> <span class="s2">"Basic usernamez:passwordinBase64"</span>
       <span class="p">},</span>
       <span class="nt">"method"</span><span class="p">:</span> <span class="s2">"POST"</span>
-    <span class="p">},</span> 
+    <span class="p">},</span>
     <span class="nt">"response"</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">"status"</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> 
+      <span class="nt">"status"</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
       <span class="nt">"headers"</span><span class="p">:</span> <span class="p">{</span>
         <span class="nt">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span>
       <span class="p">},</span>
       <span class="nt">"latency"</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
       <span class="nt">"body"</span><span class="p">:</span> <span class="s2">"You're request was successfully processed!"</span>
     <span class="p">}</span>
-  <span class="p">},</span> 
+  <span class="p">},</span>
   <span class="p">{</span>
     <span class="nt">"request"</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">"url"</span><span class="p">:</span> <span class="s2">"^/path/to/anotherThing"</span><span class="p">,</span> 
+      <span class="nt">"url"</span><span class="p">:</span> <span class="s2">"^/path/to/anotherThing"</span><span class="p">,</span>
       <span class="nt">"query"</span><span class="p">:</span> <span class="p">{</span>
          <span class="nt">"a"</span><span class="p">:</span> <span class="s2">"anything"</span><span class="p">,</span>
          <span class="nt">"b"</span><span class="p">:</span> <span class="s2">"more"</span>
@@ -480,32 +616,32 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
       <span class="nt">"headers"</span><span class="p">:</span> <span class="p">{</span>
         <span class="nt">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span>
       <span class="p">},</span>
-      <span class="nt">"post"</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span> 
+      <span class="nt">"post"</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
       <span class="nt">"method"</span><span class="p">:</span> <span class="s2">"GET"</span>
-    <span class="p">},</span> 
+    <span class="p">},</span>
     <span class="nt">"response"</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">"status"</span><span class="p">:</span> <span class="mi">204</span><span class="p">,</span> 
+      <span class="nt">"status"</span><span class="p">:</span> <span class="mi">204</span><span class="p">,</span>
       <span class="nt">"headers"</span><span class="p">:</span> <span class="p">{</span>
         <span class="nt">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">,</span>
         <span class="nt">"Access-Control-Allow-Origin"</span><span class="p">:</span> <span class="s2">"*"</span>
-      <span class="p">},</span> 
+      <span class="p">},</span>
       <span class="nt">"file"</span><span class="p">:</span> <span class="s2">"path/to/page.html"</span>
     <span class="p">}</span>
-  <span class="p">},</span> 
+  <span class="p">},</span>
   <span class="p">{</span>
     <span class="nt">"request"</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">"url"</span><span class="p">:</span> <span class="s2">"^/path/to/thing$"</span><span class="p">,</span> 
+      <span class="nt">"url"</span><span class="p">:</span> <span class="s2">"^/path/to/thing$"</span><span class="p">,</span>
       <span class="nt">"headers"</span><span class="p">:</span> <span class="p">{</span>
         <span class="nt">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span>
       <span class="p">},</span>
-      <span class="nt">"post"</span><span class="p">:</span> <span class="s2">"this is some post data in textual format"</span><span class="p">,</span> 
+      <span class="nt">"post"</span><span class="p">:</span> <span class="s2">"this is some post data in textual format"</span><span class="p">,</span>
       <span class="nt">"method"</span><span class="p">:</span> <span class="s2">"POST"</span>
-    <span class="p">},</span> 
+    <span class="p">},</span>
     <span class="nt">"response"</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">"status"</span><span class="p">:</span> <span class="mi">304</span><span class="p">,</span> 
+      <span class="nt">"status"</span><span class="p">:</span> <span class="mi">304</span><span class="p">,</span>
       <span class="nt">"headers"</span><span class="p">:</span> <span class="p">{</span>
         <span class="nt">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span>
-      <span class="p">}</span> 
+      <span class="p">}</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">]</span>
@@ -513,35 +649,46 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 
 <p>If you want to load more than one endpoint via file, use either a JSON array or YAML list (-) syntax. On success, the response will contain <code>Location</code> in the header with the newly created resources' location</p>
 
-<h3>Getting the Current List of Stubbed Endpoints</h3>
+<h3>
+<a name="getting-the-id-of-a-loaded-endpoint" class="anchor" href="#getting-the-id-of-a-loaded-endpoint"><span class="octicon octicon-link"></span></a>Getting the ID of a Loaded Endpoint</h3>
+
+<p>Stubby adds the response-header <code>X-Stubby-Resource-ID</code> to outgoing responses. This ID can be referenced for use with the Admin portal.</p>
+
+<h3>
+<a name="getting-the-current-list-of-stubbed-endpoints" class="anchor" href="#getting-the-current-list-of-stubbed-endpoints"><span class="octicon octicon-link"></span></a>Getting the Current List of Stubbed Endpoints</h3>
 
 <p>Performing a <code>GET</code> request on <code>localhost:8889</code> will return a JSON array of all currently saved responses. It will reply with <code>204 : No Content</code> if there are none saved.</p>
 
 <p>Performing a <code>GET</code> request on <code>localhost:8889/&lt;id&gt;</code> will return the JSON object representing the response with the supplied id.</p>
 
-<h4>The Status Page</h4>
+<h4>
+<a name="the-status-page" class="anchor" href="#the-status-page"><span class="octicon octicon-link"></span></a>The Status Page</h4>
 
 <p>You can also view the currently configured endpoints by going to <code>localhost:8889/status</code></p>
 
-<h3>Changing Existing Endpoints</h3>
+<h3>
+<a name="changing-existing-endpoints" class="anchor" href="#changing-existing-endpoints"><span class="octicon octicon-link"></span></a>Changing Existing Endpoints</h3>
 
 <p>Perform <code>PUT</code> requests in the same format as using <code>POST</code>, only this time supply the id in the path. For instance, to update the response with id 4 you would <code>PUT</code> to <code>localhost:8889/4</code>.</p>
 
-<h3>Deleting Endpoints</h3>
+<h3>
+<a name="deleting-endpoints" class="anchor" href="#deleting-endpoints"><span class="octicon octicon-link"></span></a>Deleting Endpoints</h3>
 
 <p>Send a <code>DELETE</code> request to <code>localhost:8889/&lt;id&gt;</code></p>
 
-<h2>The Stubs Portal</h2>
+<h2>
+<a name="the-stubs-portal" class="anchor" href="#the-stubs-portal"><span class="octicon octicon-link"></span></a>The Stubs Portal</h2>
 
 <p>Requests sent to any url at <code>localhost:8882</code> (or wherever you told stubby to run) will search through the available endpoints and, if a match is found, respond with that endpoint's <code>response</code> data</p>
 
-<h3>How Endpoints Are Matched</h3>
+<h3>
+<a name="how-endpoints-are-matched" class="anchor" href="#how-endpoints-are-matched"><span class="octicon octicon-link"></span></a>How Endpoints Are Matched</h3>
 
 <p>For a given endpoint, stubby only cares about matching the properties of the request that have been defined in the YAML. The exception to this rule is <code>method</code>; if it is omitted it is defaulted to <code>GET</code>.</p>
 
 <p>For instance, the following will match any <code>POST</code> request to the root url:</p>
 
-<div class="highlight"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
+<div class="highlight highlight-yaml"><pre><span class="p-Indicator">-</span>  <span class="l-Scalar-Plain">request</span><span class="p-Indicator">:</span>
       <span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/</span>
       <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">POST</span>
    <span class="l-Scalar-Plain">response</span><span class="p-Indicator">:</span> <span class="p-Indicator">{}</span>
@@ -562,9 +709,11 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 }
 </code></pre>
 
-<h2>Programmatic API</h2>
+<h2>
+<a name="programmatic-api" class="anchor" href="#programmatic-api"><span class="octicon octicon-link"></span></a>Programmatic API</h2>
 
-<h3>The Stubby module</h3>
+<h3>
+<a name="the-stubby-module" class="anchor" href="#the-stubby-module"><span class="octicon octicon-link"></span></a>The Stubby module</h3>
 
 <p>Add <code>stubby</code> as a module within your project's directory:</p>
 
@@ -573,15 +722,16 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 
 <p>Then within your project files you can do something like:</p>
 
-<div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">Stubby</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'stubby'</span><span class="p">).</span><span class="nx">Stubby</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">mockExternalService</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Stubby</span><span class="p">();</span>
+<div class="highlight highlight-javascript"><pre>    <span class="kd">var</span> <span class="nx">Stubby</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'stubby'</span><span class="p">).</span><span class="nx">Stubby</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">mockService</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Stubby</span><span class="p">();</span>
 
     <span class="nx">mockService</span><span class="p">.</span><span class="nx">start</span><span class="p">();</span>
 </pre></div>
 
 <p>What can I do with it, you ask? Read on!</p>
 
-<h4>start(options, [callback])</h4>
+<h4>
+<a name="startoptions-callback" class="anchor" href="#startoptions-callback"><span class="octicon octicon-link"></span></a>start(options, [callback])</h4>
 
 <ul>
 <li>
@@ -597,7 +747,7 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 <li>
 <code>data</code>: JavaScript Object/Array containing endpoint data</li>
 <li>
-<code>location</code>: address/hostname at which to run stubby</li>
+<code>location</code>: address/hostname at which to run stubby.</li>
 <li>
 <code>key</code>: keyfile contents (in PEM format)</li>
 <li>
@@ -612,15 +762,18 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 </li>
 <li>
 <code>callback</code>: takes one parameter: the error message (if there is one), undefined otherwise</li>
-</ul><h4>start([callback])</h4>
+</ul><h4>
+<a name="startcallback" class="anchor" href="#startcallback"><span class="octicon octicon-link"></span></a>start([callback])</h4>
 
 <p>Identical to previous signature, only all options are assumed to be defaults.</p>
 
-<h4>stop([callback])</h4>
+<h4>
+<a name="stopcallback" class="anchor" href="#stopcallback"><span class="octicon octicon-link"></span></a>stop([callback])</h4>
 
 <p>closes the connections and ports being used by stubby's stubs and admin portals. Executes <code>callback</code> afterward.</p>
 
-<h4>get(id, callback)</h4>
+<h4>
+<a name="getid-callback" class="anchor" href="#getid-callback"><span class="octicon octicon-link"></span></a>get(id, callback)</h4>
 
 <p>Simulates a GET request to the admin portal, with the callback receiving the resultant data.</p>
 
@@ -629,7 +782,8 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 <code>id</code>: the id of the endpoint to retrieve. If ommitted, an array of all registered endpoints is passed the callback.</li>
 <li>
 <code>callback(err, endpoint)</code>: <code>err</code> is defined if no endpoint exists with the given id. Else, <code>endpoint</code> is populated.</li>
-</ul><h4>get(callback)</h4>
+</ul><h4>
+<a name="getcallback" class="anchor" href="#getcallback"><span class="octicon octicon-link"></span></a>get(callback)</h4>
 
 <p>Simulates a GET request to the admin portal, with the callback receiving the resultant data.</p>
 
@@ -638,14 +792,16 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 <code>id</code>: the id of the endpoint to retrieve. If ommitted, an array of all registered endpoints is passed the callback.</li>
 <li>
 <code>callback(endpoints)</code>: takes a single parameter containing an array of returned results. Empty if no endpoints are registered</li>
-</ul><h4>post(data, [callback])</h4>
+</ul><h4>
+<a name="postdata-callback" class="anchor" href="#postdata-callback"><span class="octicon octicon-link"></span></a>post(data, [callback])</h4>
 
 <ul>
 <li>
 <code>data</code>: an endpoint object to store in stubby</li>
 <li>
 <code>callback(err, endpoint)</code>: if all goes well, gets executed with the created endpoint. If there is an error, gets called with the error message.</li>
-</ul><h4>put(id, data, [callback])</h4>
+</ul><h4>
+<a name="putid-data-callback" class="anchor" href="#putid-data-callback"><span class="octicon octicon-link"></span></a>put(id, data, [callback])</h4>
 
 <ul>
 <li>
@@ -654,88 +810,101 @@ export PATH=$PATH:&lt;pwd&gt;/bin/stubby
 <code>data</code>: data with which to replace the endpoint.</li>
 <li>
 <code>callback(err)</code>: executed with no passed parameters if successful. Else, passed the error message.</li>
-</ul><h4>delete([id], callback)</h4>
+</ul><h4>
+<a name="deleteid-callback" class="anchor" href="#deleteid-callback"><span class="octicon octicon-link"></span></a>delete([id], callback)</h4>
 
 <ul>
 <li>
 <code>id</code>: id of the endpoint to destroy. If ommitted, all endoints are cleared from stubby.</li>
 <li>
 <code>callback()</code>: called after the endpoint has been removed</li>
-</ul><h4>Example (coffeescript)</h4>
+</ul><h4>
+<a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Example</h4>
 
-<div class="highlight"><pre><span class="nv">Stubby = </span><span class="nx">require</span><span class="p">(</span><span class="s">'stubby'</span><span class="p">).</span><span class="nx">Stubby</span>
+<div class="highlight highlight-javascript"><pre><span class="kd">var</span> <span class="nx">Stubby</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'stubby'</span><span class="p">).</span><span class="nx">Stubby</span><span class="p">;</span>
 
-<span class="nv">stubby1 = </span><span class="k">new</span> <span class="nx">Stubby</span><span class="p">()</span>
-<span class="nv">stubby2 = </span><span class="k">new</span> <span class="nx">Stubby</span><span class="p">()</span>
+<span class="kd">var</span> <span class="nx">stubby1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Stubby</span><span class="p">();</span>
+<span class="kd">var</span> <span class="nx">stubby2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Stubby</span><span class="p">();</span>
 
-<span class="nx">stubby1</span><span class="p">.</span><span class="nx">start</span>
-   <span class="nv">stubs: </span><span class="mi">80</span>
-   <span class="nv">admin: </span><span class="mi">81</span>
-   <span class="nv">location: </span><span class="s">'localhost'</span>
-   <span class="nv">data: </span><span class="p">[</span>
-      <span class="nv">request:</span>
-         <span class="nv">url: </span><span class="s">"/anywhere"</span>
-   <span class="p">,</span>
-      <span class="nv">request:</span>
-         <span class="nv">url: </span><span class="s">"/but/here"</span>
-   <span class="p">]</span>
+<span class="nx">stubby1</span><span class="p">.</span><span class="nx">start</span><span class="p">({</span>
+  <span class="nx">stubs</span><span class="o">:</span> <span class="mi">80</span><span class="p">,</span>
+  <span class="nx">admin</span><span class="o">:</span> <span class="mi">81</span><span class="p">,</span>
+  <span class="nx">location</span><span class="o">:</span> <span class="s1">'localhost'</span><span class="p">,</span>
+  <span class="nx">data</span><span class="o">:</span> <span class="p">[{</span>
+    <span class="nx">request</span><span class="o">:</span> <span class="p">{</span> <span class="nx">url</span><span class="o">:</span> <span class="s2">"/anywhere"</span> <span class="p">}</span>
+  <span class="p">},{</span>
+    <span class="nx">request</span><span class="o">:</span> <span class="p">{</span> <span class="nx">url</span><span class="o">:</span> <span class="s2">"/but/here"</span> <span class="p">}</span>
+  <span class="p">}]</span>
+<span class="p">});</span>
 
-<span class="nx">stubby2</span><span class="p">.</span><span class="nx">start</span>
-   <span class="nv">stubs: </span><span class="mi">82</span>
-   <span class="nv">admin: </span><span class="mi">83</span>
-   <span class="nv">location: </span><span class="s">'127.0.0.2'</span>
+<span class="nx">stubby2</span><span class="p">.</span><span class="nx">start</span><span class="p">({</span>
+  <span class="nx">stubs</span><span class="o">:</span> <span class="mi">82</span><span class="p">,</span>
+  <span class="nx">admin</span><span class="o">:</span> <span class="mi">83</span><span class="p">,</span>
+  <span class="nx">location</span><span class="o">:</span> <span class="s1">'127.0.0.2'</span>
+<span class="p">});</span>
 </pre></div>
 
-<h2>Running Tests</h2>
+<h2>
+<a name="running-tests" class="anchor" href="#running-tests"><span class="octicon octicon-link"></span></a>Running Tests</h2>
 
-<p>If you don't have <code>jasmine-node</code> already, install it:</p>
+<p>If you don't have <code>grunt-cli</code> already, install it:</p>
 
-<pre><code>npm install -g jasmine-node
+<pre><code>npm install -g grunt-cli
+npm install
 </code></pre>
 
 <p>From the root directory run:</p>
 
-<pre><code>jasmine-node --coffee spec
+<pre><code>grunt test
 </code></pre>
 
-<p>If you want to see more informative output:</p>
+<h2>
+<a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h2>
 
-<pre><code>jasmine-node --verbose --coffee spec
-</code></pre>
+<p>Fork, modify, request a pull. If changes are significant or touch more than one
+part of the system, tests are suggested.</p>
 
-<h2>See Also</h2>
+<p>If large pull requests do not have tests there may be some push back until
+functionality can be verified :)</p>
+
+<h2>
+<a name="see-also" class="anchor" href="#see-also"><span class="octicon octicon-link"></span></a>See Also</h2>
 
 <ul>
 <li>
 <strong><a href="https://github.com/azagniotov/stubby4j">stubby4j</a>:</strong> A java implementation of stubby</li>
 <li>
 <strong><a href="https://github.com/mrak/stubby4net">stubby4net</a>:</strong> A .NET implementation of stubby</li>
-</ul><h2>TODO</h2>
+<li>
+<strong><a href="https://github.com/h2non/grunt-stubby">grunt-stubby</a>:</strong> grunt integration with stubby</li>
+</ul><h2>
+<a name="todo" class="anchor" href="#todo"><span class="octicon octicon-link"></span></a>TODO</h2>
 
 <ul>
 <li>
 <code>post</code> parameter as a hashmap under <code>request</code> for easy form-submission value matching</li>
-</ul><h2>Wishful Thinkings</h2>
-
-<ul>
-<li>SOAP request/response compliance</li>
-<li>Randomized responses based on supplied pattern (exploratory QA abuse)</li>
-<li>Minify js in <code>npm</code> module?</li>
-</ul><h2>NOTES</h2>
+<li>record &amp; replay</li>
+</ul><h2>
+<a name="notes" class="anchor" href="#notes"><span class="octicon octicon-link"></span></a>NOTES</h2>
 
 <ul>
 <li>
-<strong>Copyright</strong> 2013 Eric Mrak, Alexander Zagniotov</li>
+<strong>Copyright</strong> 2014 Eric Mrak, Alexander Zagniotov</li>
 <li>
 <strong>License</strong> Apache v2.0</li>
 </ul>
       </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/mrak">mrak</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">stubby4node maintained by <a href="https://github.com/mrak">mrak</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
+
     
+
   </body>
 </html>
