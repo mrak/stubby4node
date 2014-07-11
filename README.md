@@ -43,7 +43,7 @@ You need to have `coffee-script` installed on your system.
 
 * [node.js](http://nodejs.org/) (>=0.10.x)
 
-Development is on Mac OS X Mountain Lion.
+Development is on x86-64 Linux.
 
 ### Packaged
 
@@ -482,25 +482,25 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
 [
   {
     "request": {
-      "url": "^/path/to/something$", 
-      "post": "this is some post data in textual format", 
+      "url": "^/path/to/something$",
+      "post": "this is some post data in textual format",
       "headers": {
          "authorization": "Basic usernamez:passwordinBase64"
       },
       "method": "POST"
-    }, 
+    },
     "response": {
-      "status": 200, 
+      "status": 200,
       "headers": {
         "Content-Type": "application/json"
       },
       "latency": 1000,
       "body": "You're request was successfully processed!"
     }
-  }, 
+  },
   {
     "request": {
-      "url": "^/path/to/anotherThing", 
+      "url": "^/path/to/anotherThing",
       "query": {
          "a": "anything",
          "b": "more"
@@ -508,32 +508,32 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
       "headers": {
         "Content-Type": "application/json"
       },
-      "post": null, 
+      "post": null,
       "method": "GET"
-    }, 
+    },
     "response": {
-      "status": 204, 
+      "status": 204,
       "headers": {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*"
-      }, 
+      },
       "file": "path/to/page.html"
     }
-  }, 
+  },
   {
     "request": {
-      "url": "^/path/to/thing$", 
+      "url": "^/path/to/thing$",
       "headers": {
         "Content-Type": "application/json"
       },
-      "post": "this is some post data in textual format", 
+      "post": "this is some post data in textual format",
       "method": "POST"
-    }, 
+    },
     "response": {
-      "status": 304, 
+      "status": 304,
       "headers": {
         "Content-Type": "application/json"
-      } 
+      }
     }
   }
 ]
@@ -663,29 +663,29 @@ Simulates a GET request to the admin portal, with the callback receiving the res
 * `id`: id of the endpoint to destroy. If ommitted, all endoints are cleared from stubby.
 * `callback()`: called after the endpoint has been removed
 
-#### Example (coffeescript)
-```coffeescript
-Stubby = require('stubby').Stubby
+#### Example
+```javascript
+var Stubby = require('stubby').Stubby;
 
-stubby1 = new Stubby()
-stubby2 = new Stubby()
+var stubby1 = new Stubby();
+var stubby2 = new Stubby();
 
-stubby1.start
-   stubs: 80
-   admin: 81
-   location: 'localhost'
-   data: [
-      request:
-         url: "/anywhere"
-   ,
-      request:
-         url: "/but/here"
-   ]
+stubby1.start({
+  stubs: 80,
+  admin: 81,
+  location: 'localhost',
+  data: [{
+    request: { url: "/anywhere" }
+  },{
+    request: { url: "/but/here" }
+  }]
+});
 
-stubby2.start
-   stubs: 82
-   admin: 83
-   location: '127.0.0.2'
+stubby2.start({
+  stubs: 82,
+  admin: 83,
+  location: '127.0.0.2'
+});
 ```
 
 ## Running Tests
@@ -699,22 +699,26 @@ From the root directory run:
 
     grunt test
 
+## Contributing
+
+Fork, modify, request a pull. If changes are significant or touch more than one
+part of the system, tests are suggested.
+
+If large pull requests do not have tests there may be some push back until
+functionality can be verified :)
+
 ## See Also
 
 * **[stubby4j](https://github.com/azagniotov/stubby4j):** A java implementation of stubby
 * **[stubby4net](https://github.com/mrak/stubby4net):** A .NET implementation of stubby
-
-## Grunt task
-
-For [Grunt](http://gruntjs.com) automation, see the [stubby task](https://github.com/h2non/grunt-stubby)
+* **[grunt-stubby](https://github.com/h2non/grunt-stubby):** grunt integration with stubby
 
 ## TODO
 
 * `post` parameter as a hashmap under `request` for easy form-submission value matching
-* regex capture groups and dynamic token replacement
 * record & replay
 
 ## NOTES
 
-* __Copyright__ 2013 Eric Mrak, Alexander Zagniotov
+* __Copyright__ 2014 Eric Mrak, Alexander Zagniotov
 * __License__ Apache v2.0
