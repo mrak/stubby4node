@@ -22,7 +22,7 @@ onError = (err, port, location) ->
       when 'EADDRINUSE'
          msg = "Port #{port} is already in use! Exiting..."
       when 'EADDRNOTAVAIL'
-         msg = "Host \"#{options.location}\" is not available! Exiting..."
+         msg = "Host \"#{location}\" is not available! Exiting..."
 
    out.error msg
    console.dir err
