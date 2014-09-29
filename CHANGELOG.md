@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.7
+
+* fixes unhelpful output when the location given cannot be bound to
+
 ## 0.2.6
 
 * fixes an issue where identical URLs with different request methods may throw
