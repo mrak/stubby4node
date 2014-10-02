@@ -124,7 +124,7 @@ This object is used to match an incoming request to stubby against the available
 * is a full-fledged __regular expression__
 * This is the only required property of an endpoint.
 * signify the url after the base host and port (i.e. after `localhost:8882`).
-* any query paramters are stripped (so don't include them, that's what `query` is for).
+* any query parameters are stripped (so don't include them, that's what `query` is for).
     * `/url?some=value&another=value` becomes `/url`
 * no checking is done for URI-encoding compliance.
     * If it's invalid, it won't ever trigger a match.
@@ -390,7 +390,7 @@ In other words tokens `<% url[1] %>`, `<% url[2] %>` and `<% url[3] %>` correspo
 
 ###Tokens with ID zero
 
-Tokens with ID zero can obtain `full` match value from the regex they reference. In other words, tokens with ID zero do not care whether regex has capturing groups defined or not. For example, token `<% url[0] %>` will be replaced with the `ur`l __full__ regex match from `^/account/(\d{5})/category/([a-zA-Z]+)`. So if you want to access the `url` __full__ regex match, respectively you would use token `<% url[0] %>` in your template.
+Tokens with ID zero can obtain `full` match value from the regex they reference. In other words, tokens with ID zero do not care whether regex has capturing groups defined or not. For example, token `<% url[0] %>` will be replaced with the `url` __full__ regex match from `^/account/(\d{5})/category/([a-zA-Z]+)`. So if you want to access the `url` __full__ regex match, respectively you would use token `<% url[0] %>` in your template.
 
 Another example, would be the earlier case where `headers` `custom-header` property regex does not have capturing groups defined within. Which is fine, since the `<% headers.custom-header[0] %>` token corresponds to the __full__ regex match in the `header` `custom-header` property regex: `[0-9]+`.
 
