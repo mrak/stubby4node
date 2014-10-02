@@ -184,7 +184,7 @@ A demonstration using regular expressions:
 #### query
 
 * values are full-fledged __regular expressions__
-* if ommitted, stubby ignores query parameters for the given url.
+* if omitted, stubby ignores query parameters for the given url.
 * a yaml hashmap of variable/value pairs.
 * allows the query parameters to appear in any order in a uri
 
@@ -203,7 +203,7 @@ A demonstration using regular expressions:
 #### post
 
 * is a full-fledged __regular expression__
-* if ommitted, any post data is ignored.
+* if omitted, any post data is ignored.
 * the body contents of the server request, such as form data.
 
 ```yaml
@@ -236,7 +236,7 @@ postedData.json
 #### headers
 
 * values are full-fledged __regular expressions__
-* if ommitted, stubby ignores headers for the given url.
+* if omitted, stubby ignores headers for the given url.
 * case-insensitive matching of header names.
 * a hashmap of header/value pairs similar to `query`.
 
@@ -640,13 +640,13 @@ closes the connections and ports being used by stubby's stubs and admin portals.
 #### get(id, callback)
 Simulates a GET request to the admin portal, with the callback receiving the resultant data.
 
-* `id`: the id of the endpoint to retrieve. If ommitted, an array of all registered endpoints is passed the callback.
+* `id`: the id of the endpoint to retrieve. If omitted, an array of all registered endpoints is passed the callback.
 * `callback(err, endpoint)`: `err` is defined if no endpoint exists with the given id. Else, `endpoint` is populated.
 
 #### get(callback)
 Simulates a GET request to the admin portal, with the callback receiving the resultant data.
 
-* `id`: the id of the endpoint to retrieve. If ommitted, an array of all registered endpoints is passed the callback.
+* `id`: the id of the endpoint to retrieve. If omitted, an array of all registered endpoints is passed the callback.
 * `callback(endpoints)`: takes a single parameter containing an array of returned results. Empty if no endpoints are registered
 
 #### post(data, [callback])
@@ -659,7 +659,7 @@ Simulates a GET request to the admin portal, with the callback receiving the res
 * `callback(err)`: executed with no passed parameters if successful. Else, passed the error message.
 
 #### delete([id], callback)
-* `id`: id of the endpoint to destroy. If ommitted, all endoints are cleared from stubby.
+* `id`: id of the endpoint to destroy. If omitted, all endoints are cleared from stubby.
 * `callback()`: called after the endpoint has been removed
 
 #### Example
