@@ -122,7 +122,7 @@ success = ->
          endpoint.queryParams = queryParams
          endpoint.adminUrl = window.location.href.replace /status/, endpoint.id
          html = _.template template
-         html endpoint
+         html = html endpoint
          list.innerHTML += html
 
    hljs.initHighlighting()
