@@ -75,26 +75,26 @@ template = """
                <% _.each(_.keys(response.headers), function(key) { %>
                <li>
                   <dt><%= key %></dt>
-                  <dd><%= response.headers[key] %></dd>
+                  <dd><%= response[0].headers[key] %></dd>
                </li>
                <% }); %>
             </ul>
          </td>
       </tr>
-      <% } if(response.body) { %>
+      <% } if(response[0].body) { %>
       <tr>
          <th class="property">body</th>
-         <td><pre><code><%= response.body %></code></pre></td>
+         <td><pre><code><%= response[0].body %></code></pre></td>
       </tr>
-      <% } if(response.file) { %>
+      <% } if(response[0].file) { %>
       <tr>
          <th class="property">file</th>
-         <td><%= response.file %></td>
+         <td><%= response[0].file %></td>
       </tr>
-      <% } if(response.latency) { %>
+      <% } if(response[0].latency) { %>
       <tr>
          <th class="property">latency</th>
-         <td><%= response.latency %></td>
+         <td><%= response[0].latency %></td>
       </tr>
       <% } %>
    </table>
@@ -121,7 +121,8 @@ success = ->
       do (endpoint) ->
          endpoint.queryParams = queryParams
          endpoint.adminUrl = window.location.href.replace /status/, endpoint.id
-         html = _.template template, endpoint
+         html = _.template template
+         html endpoint
          list.innerHTML += html
 
    hljs.initHighlighting()
