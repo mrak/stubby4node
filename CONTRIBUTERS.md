@@ -1,14 +1,16 @@
 # Development
 
-Eric Mrak
+[Eric Mrak](https://github.com/mrak)
 
-Tomás Aparicio (https://github.com/h2non)
+[Tomás Aparicio](https://github.com/h2non)
 
-Jay Parlar (https://github.com/parlarjb)
+[Jay Parlar](https://github.com/parlarjb)
 
-Josh Price (https://github.com/joshprice)
+[Josh Price](https://github.com/joshprice)
 
-Mark Campbell (https://github.com/Nitrodist)
+[Mark Campbell](https://github.com/Nitrodist)
+
+[Hadi Michael](https://github.com/hadimichael)
 
 # Special Thanks
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.8
+
+* fixes the status page display (Hadi Michael)
+
 ## 0.2.7
 
 * fixes unhelpful output when the location given cannot be bound to
