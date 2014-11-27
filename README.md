@@ -711,6 +711,7 @@ functionality can be verified :)
 * **[stubby4j](https://github.com/azagniotov/stubby4j):** A java implementation of stubby
 * **[stubby4net](https://github.com/mrak/stubby4net):** A .NET implementation of stubby
 * **[grunt-stubby](https://github.com/h2non/grunt-stubby):** grunt integration with stubby
+* **[gulp-stubby](https://github.com/felixzapata/gulp-stubby):** gulp integration with stubby
 
 ## TODO
 
