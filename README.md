@@ -715,7 +715,6 @@ functionality can be verified :)
 ## TODO
 
 * `post` parameter as a hashmap under `request` for easy form-submission value matching
-* record & replay
 
 ## NOTES
 
