@@ -34,8 +34,9 @@
     "webroot"
   ],
   "scripts": {
-    "prepublish": "grunt compile",
-    "test": "grunt test"
+    "prepublish": "grunt",
+    "test": "grunt test",
+    "start": "bin/stubby"
   },
   "bin": {
     "stubby": "bin/stubby"

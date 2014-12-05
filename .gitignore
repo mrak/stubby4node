@@ -1,6 +1,3 @@
 node_modules
 npm-debug.log
 data/*
-lib/*
-webroot/js/**
-!webroot/js/external

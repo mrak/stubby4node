@@ -1,5 +1,5 @@
 waitsFor = require './helpers/waits-for'
-Endpoint = require '../src/models/endpoint'
+Endpoint = require '../lib/models/endpoint'
 assert = require 'assert'
 
 compareOneWay = (left, right) ->
@@ -173,7 +173,7 @@ describe 'Endpoint', ->
       @data.request =
         headers: 'Content-Type': 'application/json'
       @data.response =
-        headers: 
+        headers:
           'Content-Type': 'application/json'
           'Set-Cookie': ['type=ninja', 'language=coffeescript']
 

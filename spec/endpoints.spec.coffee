@@ -1,5 +1,5 @@
-Endpoints = require('../src/models/endpoints').Endpoints
-Endpoint = require('../src/models/endpoint')
+Endpoints = require('../lib/models/endpoints').Endpoints
+Endpoint = require('../lib/models/endpoint')
 assert = require 'assert'
 sinon = require 'sinon'
 waitsFor = require './helpers/waits-for'

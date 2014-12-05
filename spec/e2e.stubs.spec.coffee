@@ -1,4 +1,4 @@
-Stubby = require('../src/main').Stubby
+Stubby = require('../lib/main').Stubby
 
 fs = require 'fs'
 yaml = require 'js-yaml'

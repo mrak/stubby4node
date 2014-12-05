@@ -5,3 +5,7 @@ var stubby = new (require('../lib/main').Stubby);
 var options = CLI.getArgs();
 
 stubby.start(options);
+
+process.on('SIGHUP', function() {
+  stubby.delete(function () { stubby.start(options); });
+})

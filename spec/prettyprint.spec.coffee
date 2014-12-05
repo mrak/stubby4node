@@ -1,4 +1,4 @@
-sut = require '../src/console/prettyprint'
+sut = require '../lib/console/prettyprint'
 assert = require 'assert'
 
 describe 'prettyprint', ->

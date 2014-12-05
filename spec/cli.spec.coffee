@@ -6,8 +6,8 @@ describe 'CLI', ->
    out = null
 
    beforeEach ->
-      sut = require('../src/console/cli')
-      out = require '../src/console/out'
+      sut = require('../lib/console/cli')
+      out = require '../lib/console/out'
       sinon.stub process, 'exit'
       sinon.stub out, 'log'
 

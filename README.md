@@ -31,12 +31,9 @@ This will install `stubby` as a command in your `PATH`. Leave off the `-g` flag 
 
 ### via source
 
-You need to have `coffee-script` installed on your system.
-
     git clone git://github.com/Afmrak/stubby4node.git
     cd stubby4node
-    coffee -o lib -c src
-    export PATH=$PATH:<pwd>/bin/stubby
+    npm start -- <stubby args>
 
 ## Requirements
 
@@ -79,6 +76,8 @@ stubby [-a <port>] [-c <file>] [-d <file>] [-h] [-k <file>] [-l <hostname>] [-m]
 -v, --version               Prints stubby's version number.
 -w, --watch                 Auto-reload data file when edits are made.
 ```
+
+When used from the command-line, `stubby` responds to the `SIGHUP` signal to reload its configuration.
 
 ## Endpoint Configuration
 
