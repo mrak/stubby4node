@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.9
+
+* Rewrote library in JavaScript (was CoffeeScript)
+* fix colorsafe console wrapper errors (Esco Obong)
+
 ## 0.2.8
 
 * fixes the status page display (Hadi Michael)

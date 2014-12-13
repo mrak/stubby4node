@@ -12,6 +12,8 @@
 
 [Hadi Michael](https://github.com/hadimichael)
 
+[Esco Obong](https://github.com/esco)
+
 # Special Thanks
 
 Alexander Zagniotov
