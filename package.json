@@ -58,7 +58,7 @@
     "coffee-script": "~1.7.1",
     "grunt": "~0.4.2",
     "grunt-cli": "^0.1.13",
-    "grunt-mocha-cli": "~1.5.0",
+    "grunt-mocha-cli": "1.5.0",
     "sinon": "~1.8.1"
   },
   "license": "Apache",
