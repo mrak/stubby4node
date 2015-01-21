@@ -416,7 +416,7 @@ The admin portal is a RESTful(ish) endpoint running on `localhost:8889`. Or wher
 
 ### Supplying Endpoints to Stubby
 
-Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the following structure for each endpoint:
+Submit `POST` requests to `localhost:8889`, `PUT` requests to `localhost:8889/:id`[\*](#getting-the-id-of-a-loaded-endpoint), or load a data-file (-d) with the following structure for each endpoint:
 
 * `request`: describes the client's call to the server
    * `method`: GET/POST/PUT/DELETE/etc.
@@ -432,7 +432,7 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
    * `body`: the textual body of the server's response to the client
    * `status`: the numerical HTTP status code (200 for OK, 404 for NOT FOUND, etc.)
 
-#### YAML (file only)
+#### YAML
 ```yaml
 -  request:
       url: ^/path/to/something$
@@ -475,7 +475,7 @@ Submit `POST` requests to `localhost:8889` or load a data-file (-d) with the fol
       status: 304
 ```
 
-#### JSON (file or POST/PUT)
+#### JSON
 ```json
 [
   {
