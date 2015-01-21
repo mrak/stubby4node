@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.11
+
+* fixes several scope-binding issues caused by the JavaScript rewrite (sorry!)
+* clarify use of `PUT` and the admin portal
+
 ## 0.2.10
 
 * fix colorsafe console wrapper errors (Esco Obong)

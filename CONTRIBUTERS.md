@@ -14,6 +14,10 @@
 
 [Esco Obong](https://github.com/esco)
 
+[Diego Santos da Silveira](https://github.com/diegosilveira)
+
+[James Murphy](https://github.com/murphyj)
+
 # Special Thanks
 
 Alexander Zagniotov
