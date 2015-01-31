@@ -4,6 +4,7 @@
 
 * fixes several scope-binding issues caused by the JavaScript rewrite (sorry!)
 * clarify use of `PUT` and the admin portal
+* added `_httpsOptions` to pass through options to the underlying tls server.
 
 ## 0.2.10
 

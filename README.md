@@ -628,6 +628,8 @@ What can I do with it, you ask? Read on!
    * `pfx`: pfx file contents (mutually exclusive with key/cert options)
    * `watch`: filename to monitor and load as stubby's data when changes occur
    * `mute`: defaults to `true`. Pass in `false` to have console output (if available)
+   * `_httpsOptions`: additional options to pass to the [underlying tls
+     server](http://nodejs.org/api/tls.html#tls_tls_createserver_options_secureconnectionlistener).
 * `callback`: takes one parameter: the error message (if there is one), undefined otherwise
 
 #### start([callback])
