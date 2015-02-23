@@ -716,7 +716,17 @@ functionality can be verified :)
 
 ## TODO
 
+Non-breaking changes
+
 * `post` parameter as a hashmap under `request` for easy form-submission value matching
+* Allow multi-value fields (arrays and maps) as query/post params
+
+Breaking changes
+
+* Intepret configuration values beginning and ending with `/` as regular
+  expressions, otherwise consider as exact string matches
+  * if `/` surrounded values do not compile as regex, log error to
+    console/response when adding
 
 ## NOTES
 
