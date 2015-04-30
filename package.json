@@ -56,6 +56,7 @@
     "node-static": ">=0.6.4"
   },
   "devDependencies": {
+    "buffer-equal": "0.0.1",
     "coffee-script": "~1.7.1",
     "grunt": "~0.4.2",
     "grunt-cli": "^0.1.13",

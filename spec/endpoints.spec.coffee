@@ -2,6 +2,7 @@ Endpoints = require('../lib/models/endpoints').Endpoints
 Endpoint = require('../lib/models/endpoint')
 assert = require 'assert'
 sinon = require 'sinon'
+bufferEqual = require 'buffer-equal'
 waitsFor = require './helpers/waits-for'
 sut = null
 
@@ -203,7 +204,7 @@ describe 'Endpoints', ->
           sut.find data, callback
 
           body = callback.args[0][1].body
-          assert (body instanceof Buffer) and body.equals(expected)
+          assert (body instanceof Buffer) and bufferEqual(body, expected)
 
       describe 'request post versus file', ->
         it 'should match response with post if file is not supplied', ->
