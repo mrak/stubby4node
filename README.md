@@ -232,6 +232,17 @@ postedData.json
 
 * if `postedData.json` doesn't exist on the filesystem when `/match/against/file` is requested, stubby will match post contents against `{"fallback":"data"}` (from `post`) instead.
 
+__ALSO:__ The path may contain parameters as seen in header. The parameter names should be enclosed within `<>` brackets.
+
+```yaml
+- request:
+    url: /object/and/url/in/sequence
+  response:
+    file: ../responses/<headerParam>/someResponse
+```
+
+If `headerParam` is part of header the value of it would replace `<headerParam>`, else `<headerParam>` is replaced with `default` resulting in `../responses/default/someResponse`.
+
 #### headers
 
 * values are full-fledged __regular expressions__
@@ -273,17 +284,6 @@ __ALSO:__ The `response` property can also be a url (string) or sequence of obje
   - status: 200
     body: 'second hit'
 ```
-
-__ALSO:__ The `response` property can also contain file name components manipulatable accoring to `request` header. Content enclosed within `<>` brackets is replaced with header parameter value.
-
-```yaml
-- request:
-    url: /object/and/url/in/sequence
-  response:
-    file: ../responses/<headerParam>/someResponse
-```
-
-If headerParam is part of header the value of it would replace <headerParam>, else <headerParam> is replaced with `default` resulting in `../responses/default/someResponse`.
 
 #### status
 
