@@ -274,6 +274,17 @@ __ALSO:__ The `response` property can also be a url (string) or sequence of obje
     body: 'second hit'
 ```
 
+__ALSO:__ The `response` property can also contain file name components manipulatable accoring to `request` header. Content enclosed within `<>` brackets is replaced with header parameter value.
+
+```yaml
+- request:
+    url: /object/and/url/in/sequence
+  response:
+    file: ../responses/<headerParam>/someResponse
+```
+
+If headerParam is part of header the value of it would replace <headerParam>, else <headerParam> is replaced with `default` resulting in `../responses/default/someResponse`.
+
 #### status
 
 * the HTTP status code of the response.
