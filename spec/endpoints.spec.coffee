@@ -2,6 +2,7 @@ Endpoints = require('../lib/models/endpoints').Endpoints
 Endpoint = require('../lib/models/endpoint')
 assert = require 'assert'
 sinon = require 'sinon'
+bufferEqual = require 'buffer-equal'
 waitsFor = require './helpers/waits-for'
 sut = null
 
@@ -163,7 +164,7 @@ describe 'Endpoints', ->
             assert match.body is 'you posted "hello, there!" and "hello, there!"'
             done()
 
-        it 'should replace captures in file', ->
+        it 'should replace captures in a text file', ->
           expected = 'file contents!'
           sut.create
             request:
@@ -180,6 +181,30 @@ describe 'Endpoints', ->
           sut.find data, callback
 
           assert callback.args[0][1].body.toString().trim() is expected
+
+        it 'should return binary data unmolested', ->
+          expected = new Buffer([
+            0x80, 0x81, 0x82, 0xab, 0xcd, 0xef, 0x3c, 0x25,
+            0x20, 0x70, 0x6f, 0x73, 0x74, 0x5b, 0x30, 0x5d,
+            0x20, 0x25, 0x3e, 0xfe, 0xdc, 0xba, 0x82, 0x81,
+            0x80
+          ])
+          sut.create
+            request:
+              url: '/'
+              post: '.*'
+            response:
+              file: 'spec/data/<% post[0] %>.file'
+
+          data =
+            url: '/'
+            method: 'GET'
+            post: 'binary'
+
+          sut.find data, callback
+
+          body = callback.args[0][1].body
+          assert (body instanceof Buffer) and bufferEqual(body, expected)
 
       describe 'request post versus file', ->
         it 'should match response with post if file is not supplied', ->
