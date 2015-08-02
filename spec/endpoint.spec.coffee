@@ -1,6 +1,7 @@
 waitsFor = require './helpers/waits-for'
 Endpoint = require '../lib/models/endpoint'
 assert = require 'assert'
+cli = require '../lib/console/cli'
 
 compareOneWay = (left, right) ->
   for own key, value of left
@@ -225,7 +226,7 @@ describe 'Endpoint', ->
 
       assert actual.request.headers.origin is expected
 
-    it 'should define aditional Cross-Origin headers', ->
+    it 'should define additional Cross-Origin headers', ->
       expected = 'http://example.org'
       @data.request.headers =
         Origin: 'http://example.org'
@@ -237,3 +238,16 @@ describe 'Endpoint', ->
       assert actual.request.headers.origin is expected
       assert actual.request.headers['access-control-request-method'] is 'POST'
       assert actual.request.headers['access-control-request-headers'] is 'Content-Type, origin'
+
+    it 'should allow custom latency', ->
+      expected = 5000
+
+      @data =
+        response: [
+          latency: expected
+        ]
+
+      actual = new Endpoint @data
+
+      assert actual.response[0].latency is expected
+

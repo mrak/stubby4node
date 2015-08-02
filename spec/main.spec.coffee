@@ -132,3 +132,8 @@ describe 'main', ->
                 sut.start options, ->
                     assert options.cert is defaults.cert
                     done()
+
+            it 'should default latency to 0', (done) ->
+                sut.start options, ->
+                    assert options.latency is defaults.latency
+                    done()
