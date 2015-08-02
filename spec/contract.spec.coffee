@@ -299,6 +299,11 @@ describe 'contract', ->
         actual = sut data
         assert.deepEqual actual, expected
 
+      it 'should return no errors for latency undefined', ->
+        data.response.latency = undefined
+        result = sut data
+        assert result is null
+
     it 'should return no errors for an empty body', ->
       delete data.response.body
       result = sut data

@@ -132,6 +132,26 @@ describe 'CLI', ->
 
             assert out.log.calledOnce
 
+      describe '-o, --latency', ->
+       it 'should return default if no flag provided', ->
+         expected = 0
+         actual = sut.getArgs []
+
+         assert actual.latency is expected
+
+       it 'should return supplied value when provided', ->
+         expected = '12345'
+         actual = sut.getArgs ['-o', expected]
+
+         assert actual.latency is expected
+
+       it 'should return supplied value when provided with full flag', ->
+         expected = '54321'
+         actual = sut.getArgs ['--latency', expected]
+
+         assert actual.latency is expected
+
+
    describe 'data', ->
       expected = [
          request:
@@ -202,9 +222,11 @@ describe 'CLI', ->
             tls: "443"
             mute: true
             watch: filename
+            latency: 0
             datadir: process.cwd()
             help: undefined
             version: (require '../package.json').version
+
 
          sinon.stub(sut, 'data').returns expected.data
          sinon.stub(sut, 'key').returns expected.key
@@ -222,7 +244,9 @@ describe 'CLI', ->
             '-t', expected.tls
             '-m'
             '-w'
+            '-o'
          ]
+
 
          assert.deepEqual actual, expected
 

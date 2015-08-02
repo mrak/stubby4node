@@ -75,6 +75,7 @@ stubby [-a <port>] [-c <file>] [-d <file>] [-h] [-k <file>] [-l <hostname>] [-m]
 -t, --tls <port>            Port for https stubs portal. Defaults to 7443.
 -v, --version               Prints stubby's version number.
 -w, --watch                 Auto-reload data file when edits are made.
+-o, --latency               Global latency delay when not defined in a route.
 ```
 
 When used from the command-line, `stubby` responds to the `SIGHUP` signal to reload its configuration.
