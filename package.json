@@ -36,7 +36,7 @@
   ],
   "scripts": {
     "prepublish": "npm test",
-    "lint": "eslint src",
+    "lint": "eslint src test",
     "test": "npm run lint && mocha --compilers coffee:coffee-script/register --recursive test --reporter dot",
     "start": "bin/stubby"
   },
