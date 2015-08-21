@@ -1,4 +1,3 @@
-sinon = require 'sinon'
 Admin = require('../lib/portals/admin').Admin
 require('../lib/console/out').mute = true
 assert = require 'assert'
@@ -10,26 +9,26 @@ describe 'Admin', ->
    endpoints = null
 
    beforeEach ->
-      sinon.spy console, 'info'
+      @sandbox.spy console, 'info'
       endpoints =
-         create   : sinon.spy()
-         retrieve : sinon.spy()
-         update   : sinon.spy()
-         delete   : sinon.spy()
-         gather   : sinon.spy()
+         create   : @sandbox.spy()
+         retrieve : @sandbox.spy()
+         update   : @sandbox.spy()
+         delete   : @sandbox.spy()
+         gather   : @sandbox.spy()
       sut = new Admin(endpoints, true)
 
       request =
          url: '/'
          method : 'POST'
          headers : {}
-         on: sinon.spy()
+         on: @sandbox.spy()
       response =
-         setHeader : sinon.spy()
-         writeHead : sinon.spy()
-         write : sinon.spy()
-         end : sinon.spy()
-         on : sinon.spy()
+         setHeader : @sandbox.spy()
+         writeHead : @sandbox.spy()
+         write : @sandbox.spy()
+         end : @sandbox.spy()
+         on : @sandbox.spy()
 
    afterEach ->
       console.info.restore()
@@ -170,44 +169,44 @@ describe 'Admin', ->
 
    describe 'server', ->
       it 'should call notFound if url not valid', ->
-         sinon.stub(sut, 'urlValid').returns false
-         sinon.spy sut, 'notFound'
+         @sandbox.stub(sut, 'urlValid').returns false
+         @sandbox.spy sut, 'notFound'
 
          sut.server request, response
 
          assert sut.notFound.calledOnce
 
       it 'should call goPOST if method is POST', ->
-         sinon.stub(sut, 'urlValid').returns true
+         @sandbox.stub(sut, 'urlValid').returns true
          request.method = 'POST'
-         sinon.spy sut, 'goPOST'
+         @sandbox.spy sut, 'goPOST'
 
          sut.server request, response
 
          assert sut.goPOST.calledOnce
 
       it 'should call goPUT if method is PUT', ->
-         sinon.stub(sut, 'urlValid').returns true
+         @sandbox.stub(sut, 'urlValid').returns true
          request.method = 'PUT'
-         sinon.spy sut, 'goPUT'
+         @sandbox.spy sut, 'goPUT'
 
          sut.server request, response
 
          assert sut.goPUT.calledOnce
 
       it 'should call goGET if method is GET', ->
-         sinon.stub(sut, 'urlValid').returns true
+         @sandbox.stub(sut, 'urlValid').returns true
          request.method = 'GET'
-         sinon.spy sut, 'goGET'
+         @sandbox.spy sut, 'goGET'
 
          sut.server request, response
 
          assert sut.goGET.calledOnce
 
       it 'should call goDELETE if method is DELETE', ->
-         sinon.stub(sut, 'urlValid').returns true
+         @sandbox.stub(sut, 'urlValid').returns true
          request.method = 'DELETE'
-         sinon.spy sut, 'goDELETE'
+         @sandbox.spy sut, 'goDELETE'
 
          sut.server request, response
 
@@ -218,12 +217,12 @@ describe 'Admin', ->
 
       beforeEach ->
          request.on = (event, callback) -> callback()
-         sinon.stub(sut, 'contract').returns null
+         @sandbox.stub(sut, 'contract').returns null
 
       describe 'goPUT', ->
          it 'should send not supported if there is no id in the url', ->
-            sinon.stub(sut, 'getId').returns ''
-            sinon.spy sut, 'notSupported'
+            @sandbox.stub(sut, 'getId').returns ''
+            @sandbox.spy sut, 'notSupported'
 
             sut.goPUT request, response
 
@@ -247,7 +246,7 @@ describe 'Admin', ->
          it 'should return BAD REQUEST when contract is violated', ->
             data = '{"property":"value"}'
             sut.contract.returns []
-            sinon.spy sut, 'badRequest'
+            @sandbox.spy sut, 'badRequest'
 
             sut.processPUT "any id", data, response
 
@@ -256,8 +255,8 @@ describe 'Admin', ->
 
       describe 'goPOST', ->
          it 'should send not supported if there is an id in the url', ->
-            sinon.stub(sut, 'getId').returns '123'
-            sinon.spy sut, 'notSupported'
+            @sandbox.stub(sut, 'getId').returns '123'
+            @sandbox.spy sut, 'notSupported'
 
             sut.goPOST request, response
 
@@ -281,7 +280,7 @@ describe 'Admin', ->
          it 'should return BAD REQUEST when contract is violated', ->
             data = '{"property":"value"}'
             sut.contract.returns []
-            sinon.spy sut, 'badRequest'
+            @sandbox.spy sut, 'badRequest'
 
             sut.processPOST data, response, request
 
@@ -290,15 +289,15 @@ describe 'Admin', ->
 
       describe 'goDELETE', ->
          it 'should send not supported for the root url', ->
-            sinon.stub(sut, 'getId').returns ''
-            sinon.spy sut, 'notSupported'
+            @sandbox.stub(sut, 'getId').returns ''
+            @sandbox.spy sut, 'notSupported'
 
             sut.goDELETE request, response
 
             assert sut.notSupported.calledOnce
 
          it 'should delete item if id was gathered', ->
-            sinon.stub(sut, 'getId').returns '123'
+            @sandbox.stub(sut, 'getId').returns '123'
 
             sut.goDELETE request, response
 
@@ -306,14 +305,14 @@ describe 'Admin', ->
 
       describe 'goGET', ->
          it 'should gather all for the root url', ->
-            sinon.stub(sut, 'getId').returns ''
+            @sandbox.stub(sut, 'getId').returns ''
 
             sut.goGET request, response
 
             assert endpoints.gather.calledOnce
 
          it 'should retrieve item if id was gathered', ->
-            sinon.stub(sut, 'getId').returns '123'
+            @sandbox.stub(sut, 'getId').returns '123'
 
             sut.goGET request, response
 

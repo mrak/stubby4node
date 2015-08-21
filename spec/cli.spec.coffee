@@ -1,4 +1,3 @@
-sinon = require 'sinon'
 assert = require 'assert'
 
 describe 'CLI', ->
@@ -8,8 +7,8 @@ describe 'CLI', ->
    beforeEach ->
       sut = require('../lib/console/cli')
       out = require '../lib/console/out'
-      sinon.stub process, 'exit'
-      sinon.stub out, 'log'
+      @sandbox.stub process, 'exit'
+      @sandbox.stub out, 'log'
 
    afterEach ->
       process.exit.restore()
@@ -206,10 +205,10 @@ describe 'CLI', ->
             help: undefined
             version: (require '../package.json').version
 
-         sinon.stub(sut, 'data').returns expected.data
-         sinon.stub(sut, 'key').returns expected.key
-         sinon.stub(sut, 'cert').returns expected.cert
-         sinon.stub(sut, 'pfx').returns expected.pfx
+         @sandbox.stub(sut, 'data').returns expected.data
+         @sandbox.stub(sut, 'key').returns expected.key
+         @sandbox.stub(sut, 'cert').returns expected.cert
+         @sandbox.stub(sut, 'pfx').returns expected.pfx
 
          actual = sut.getArgs [
             '-s', expected.stubs

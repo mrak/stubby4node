@@ -1,7 +1,6 @@
 Endpoints = require('../lib/models/endpoints').Endpoints
 Endpoint = require('../lib/models/endpoint')
 assert = require 'assert'
-sinon = require 'sinon'
 bufferEqual = require 'buffer-equal'
 waitsFor = require './helpers/waits-for'
 sut = null
@@ -14,7 +13,7 @@ describe 'Endpoints', ->
     callback = null
 
     beforeEach ->
-      callback = sinon.spy()
+      callback = @sandbox.spy()
 
     describe 'create', ->
       data = null

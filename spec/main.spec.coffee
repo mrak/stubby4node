@@ -3,7 +3,6 @@ CLI = require '../lib/console/cli'
 defaults = CLI.getArgs []
 options = null
 
-sinon = require 'sinon'
 waitsFor = require './helpers/waits-for'
 assert = require 'assert'
 
@@ -24,7 +23,7 @@ describe 'main', ->
 
     describe 'put', ->
         it 'should return warning when the contract is violated', (done) ->
-            callback = sinon.spy()
+            callback = @sandbox.spy()
             sut.endpoints =
                 update: (_,__,cb) -> cb(null)
 
@@ -40,7 +39,7 @@ describe 'main', ->
                 done()
 
         it 'should not return warning when the contract is upheld', (done) ->
-            callback = sinon.spy()
+            callback = @sandbox.spy()
             sut.endpoints =
                 update: (_,__,cb) -> cb(null)
 
@@ -57,7 +56,7 @@ describe 'main', ->
 
     describe 'post', ->
         it 'should return warning when the contract is violated', (done) ->
-            callback = sinon.spy()
+            callback = @sandbox.spy()
 
             sut.post {
                 request:
@@ -71,7 +70,7 @@ describe 'main', ->
                 done()
 
         it 'should not return warning when the contract is upheld', (done) ->
-            callback = sinon.spy()
+            callback = @sandbox.spy()
 
             sut.post {
                 request:
@@ -90,13 +89,13 @@ describe 'main', ->
 
         describe 'callback', ->
             it 'should treat the callback as optional', (done) ->
-                callback = sinon.spy()
+                callback = @sandbox.spy()
                 sut.start {}, callback
 
                 waitsFor (-> callback.called), 'callback to have been called', 10, done
 
             it 'should take one parameter as a function', (done) ->
-                callback = sinon.spy()
+                callback = @sandbox.spy()
                 sut.start callback
 
                 waitsFor (-> callback.called), 'callback to have been called', 10, done
