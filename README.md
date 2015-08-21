@@ -364,7 +364,8 @@ These capture groups can be referenced in `response` data. Here's an example
 ```
 
 The `url` regex `^/account/(\d{5})/category/([a-zA-Z]+)` has two defined capturing groups: `(\d{5})` and `([a-zA-Z]+)`. The `query` regex has one defined capturing group: `([a-zA-Z]+)`.
-Although the `headers` do not have capturing groups defined explicitly (no regex sections within parenthesis), the individual headers' fully-matched value is still accessible in a template (see [Tokens with ID zero](#tokens-with-id-zero)).
+
+Although the `headers` do not have capturing groups defined explicitly (no regex sections within parenthesis), the individual headers' fully-matched value is still accessible in a template (see [Capture group IDs](#capture-group-ids)).
 
 ### Templating `body` and `file`
 
