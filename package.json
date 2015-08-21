@@ -35,8 +35,9 @@
     "webroot"
   ],
   "scripts": {
-    "prepublish": "grunt",
-    "test": "grunt test",
+    "prepublish": "npm test",
+    "lint": "eslint lib",
+    "test": "npm run lint && mocha --compilers coffee:coffee-script/register --recursive spec --reporter dot",
     "start": "bin/stubby"
   },
   "bin": {
@@ -58,9 +59,8 @@
   "devDependencies": {
     "buffer-equal": "0.0.1",
     "coffee-script": "~1.7.1",
-    "grunt": "~0.4.2",
-    "grunt-cli": "^0.1.13",
-    "grunt-mocha-cli": "1.5.0",
+    "eslint": "^1.2.1",
+    "mocha": "^2.2.5",
     "sinon": "~1.8.1"
   },
   "license": "Apache",

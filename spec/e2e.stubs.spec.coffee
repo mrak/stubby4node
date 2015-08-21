@@ -27,7 +27,8 @@ describe 'End 2 End Stubs Test Suite', ->
 
       stopStubby finish
 
-   afterEach stopStubby
+   afterEach (done) ->
+     stopStubby done
 
    describe 'basics', ->
       it 'should return a basic GET endpoint', (done) ->
@@ -124,7 +125,7 @@ describe 'End 2 End Stubs Test Suite', ->
          @context.url = '/basic/get'
          @context.method = 'get'
          @context.requestHeaders =
-            'origin': expected
+            origin: expected
 
          createRequest @context
          waitsFor ( => @context.done ), 'request to finish', 1000, =>

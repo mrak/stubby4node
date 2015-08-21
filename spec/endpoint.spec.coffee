@@ -92,7 +92,7 @@ describe 'Endpoint', ->
     it 'should fill in a string reponse with the recorded endpoint in series', (done) ->
       waitTime = 10000
       @timeout waitTime
-      @data =
+      data =
         request:
           url: '/'
           method: 'GET'
@@ -101,7 +101,7 @@ describe 'Endpoint', ->
         response: ['http://google.com', {
           status: 420
         }]
-      actual = new Endpoint @data
+      actual = new Endpoint data
 
       waitsFor (->
         return actual.response[0].status is 301 and actual.response[1].status is 420
@@ -109,7 +109,7 @@ describe 'Endpoint', ->
 
   describe 'constructor', ->
     it 'should at least copy over valid data', ->
-      @data =
+      data =
         request:
           url: '/'
           method: 'post'
@@ -128,14 +128,14 @@ describe 'Endpoint', ->
             'access-control-allow-origin': '*'
         ]
 
-      actual = new Endpoint @data
+      actual = new Endpoint data
 
       actualbody = actual.response[0].body.toString()
       delete actual.response[0].body
-      expectedBody = @data.response[0].body
-      delete @data.response[0].body
+      expectedBody = data.response[0].body
+      delete data.response[0].body
 
-      assert.deepEqual actual, @data
+      assert.deepEqual actual, data
       assert expectedBody is actualbody
 
     it 'should default method to GET', ->

@@ -27,7 +27,8 @@ describe 'End 2 End Admin Test Suite', ->
 
       stopStubby finish
 
-   afterEach stopStubby
+   afterEach (done) ->
+     stopStubby done
 
    it 'should react to /ping', (done) ->
          @context.url = '/ping'
