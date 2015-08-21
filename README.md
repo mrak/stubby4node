@@ -15,8 +15,6 @@ stubby4node
 * [The Admin Portal](#the-admin-portal)
 * [The Stubs Portal](#the-stubs-portal)
 * [Programmatic API](#programmatic-api)
-* [Running Tests](#running-tests)
-* [Contributing](#contributing)
 * [See Also](#see-also)
 * [TODO](#todo)
 * [NOTES](#notes)
@@ -40,16 +38,6 @@ This will install `stubby` as a command in your `PATH`. Leave off the `-g` flag 
 * [node.js](http://nodejs.org/) (>=0.10.x)
 
 Development is on x86-64 Linux.
-
-### Packaged
-
-* [JS-YAML](https://github.com/nodeca/js-yaml) for loading yaml files
-* [cloneextend](https://github.com/shimondoodkin/nodejs-clone-extend)
-
-### Optional (for development)
-
-* [grunt-cli](http://gruntjs.com)
-* [node-inspector](https://github.com/dannycoates/node-inspector)
 
 ## Starting the Server(s)
 
@@ -703,25 +691,6 @@ stubby2.start({
 });
 ```
 
-## Running Tests
-
-If you don't have `grunt-cli` already, install it:
-
-    npm install -g grunt-cli
-    npm install
-
-From the root directory run:
-
-    grunt test
-
-## Contributing
-
-Fork, modify, request a pull. If changes are significant or touch more than one
-part of the system, tests are suggested.
-
-If large pull requests do not have tests there may be some push back until
-functionality can be verified :)
-
 ## See Also
 
 * **[stubby4j](https://github.com/azagniotov/stubby4j):** A java implementation of stubby
@@ -745,5 +714,5 @@ Breaking changes
 
 ## NOTES
 
-* __Copyright__ 2014 Eric Mrak, Alexander Zagniotov
+* __Copyright__ 2015 Eric Mrak, Alexander Zagniotov
 * __License__ Apache v2.0
