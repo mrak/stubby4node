@@ -5,8 +5,8 @@ describe 'CLI', ->
    out = null
 
    beforeEach ->
-      sut = require('../lib/console/cli')
-      out = require '../lib/console/out'
+      sut = require('../src/console/cli')
+      out = require '../src/console/out'
       @sandbox.stub process, 'exit'
       @sandbox.stub out, 'log'
 
@@ -156,19 +156,19 @@ describe 'CLI', ->
       ]
 
       it 'should be about to parse json file with array', ->
-         actual = sut.getArgs ['-d', 'spec/data/cli.getData.json']
+         actual = sut.getArgs ['-d', 'test/data/cli.getData.json']
 
          assert.deepEqual actual.data, expected
 
       it 'should be about to parse yaml file with array', ->
-         actual = sut.getArgs ['-d', 'spec/data/cli.getData.yaml']
+         actual = sut.getArgs ['-d', 'test/data/cli.getData.yaml']
 
          assert.deepEqual actual.data, expected
 
    describe 'key', ->
       it 'should return contents of file', ->
          expected = 'some generated key'
-         actual = sut.key 'spec/data/cli.getKey.pem'
+         actual = sut.key 'test/data/cli.getKey.pem'
 
          assert actual is expected
 
@@ -176,14 +176,14 @@ describe 'CLI', ->
       expected = 'some generated certificate'
 
       it 'should return contents of file', ->
-         actual = sut.cert 'spec/data/cli.getCert.pem'
+         actual = sut.cert 'test/data/cli.getCert.pem'
 
          assert actual is expected
 
    describe 'pfx', ->
       it 'should return contents of file', ->
          expected = 'some generated pfx'
-         actual = sut.pfx 'spec/data/cli.getPfx.pfx'
+         actual = sut.pfx 'test/data/cli.getPfx.pfx'
 
          assert actual is expected
 

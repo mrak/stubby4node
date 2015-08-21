@@ -1,5 +1,5 @@
-Endpoints = require('../lib/models/endpoints').Endpoints
-Endpoint = require('../lib/models/endpoint')
+Endpoints = require('../src/models/endpoints').Endpoints
+Endpoint = require('../src/models/endpoint')
 assert = require 'assert'
 bufferEqual = require 'buffer-equal'
 waitsFor = require './helpers/waits-for'
@@ -170,7 +170,7 @@ describe 'Endpoints', ->
               url: '/'
               post: '.*'
             response:
-              file: 'spec/data/<% post[0] %>.file'
+              file: 'test/data/<% post[0] %>.file'
 
           data =
             url: '/'
@@ -193,7 +193,7 @@ describe 'Endpoints', ->
               url: '/'
               post: '.*'
             response:
-              file: 'spec/data/<% post[0] %>.file'
+              file: 'test/data/<% post[0] %>.file'
 
           data =
             url: '/'
@@ -228,7 +228,7 @@ describe 'Endpoints', ->
           sut.create
             request:
               url: '/testing'
-              file: 'spec/data/endpoints-nonexistant.file'
+              file: 'test/data/endpoints-nonexistant.file'
               post: 'post data!'
               method: 'post'
             response: expected
@@ -246,7 +246,7 @@ describe 'Endpoints', ->
           sut.create
             request:
               url: '/testing'
-              file: 'spec/data/endpoints.file'
+              file: 'test/data/endpoints.file'
               post: 'post data!'
               method: 'post'
             response: expected
@@ -282,7 +282,7 @@ describe 'Endpoints', ->
               url: '/testing'
             response:
               body: expected
-              file: 'spec/data/endpoints-nonexistant.file'
+              file: 'test/data/endpoints-nonexistant.file'
           data =
             url: '/testing'
             method: 'GET'
@@ -298,7 +298,7 @@ describe 'Endpoints', ->
               url: '/testing'
             response:
               body: 'body contents!'
-              file: 'spec/data/endpoints.file'
+              file: 'test/data/endpoints.file'
           data =
             url: '/testing'
             method: 'GET'

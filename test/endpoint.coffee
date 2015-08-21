@@ -1,5 +1,5 @@
 waitsFor = require './helpers/waits-for'
-Endpoint = require '../lib/models/endpoint'
+Endpoint = require '../src/models/endpoint'
 assert = require 'assert'
 
 compareOneWay = (left, right) ->

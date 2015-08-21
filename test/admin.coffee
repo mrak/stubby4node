@@ -1,5 +1,5 @@
-Admin = require('../lib/portals/admin').Admin
-require('../lib/console/out').mute = true
+Admin = require('../src/portals/admin').Admin
+require('../src/console/out').mute = true
 assert = require 'assert'
 
 describe 'Admin', ->

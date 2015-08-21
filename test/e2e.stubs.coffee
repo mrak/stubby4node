@@ -1,9 +1,9 @@
-Stubby = require('../lib/main').Stubby
+Stubby = require('../src/main').Stubby
 
 fs = require 'fs'
 yaml = require 'js-yaml'
 ce = require 'cloneextend'
-endpointData = yaml.load (fs.readFileSync 'spec/data/e2e.yaml', 'utf8').trim()
+endpointData = yaml.load (fs.readFileSync 'test/data/e2e.yaml', 'utf8').trim()
 
 waitsFor = require './helpers/waits-for'
 assert = require 'assert'

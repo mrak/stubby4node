@@ -1,5 +1,5 @@
 sut = null
-CLI = require '../lib/console/cli'
+CLI = require '../src/console/cli'
 defaults = CLI.getArgs []
 options = null
 
@@ -14,7 +14,7 @@ describe 'main', ->
 
     beforeEach (done) ->
         finish = ->
-            sut = new (require('../lib/main').Stubby)()
+            sut = new (require('../src/main').Stubby)()
             done()
 
         stopStubby finish

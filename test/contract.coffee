@@ -5,7 +5,7 @@ describe 'contract', ->
   data = null
 
   beforeEach ->
-    sut = require('../lib/models/contract')
+    sut = require('../src/models/contract')
     data =
       request :
         url : "something"

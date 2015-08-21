@@ -3,7 +3,7 @@ sut = null
 
 describe 'args', ->
    beforeEach ->
-      sut = require '../lib/console/args'
+      sut = require '../src/console/args'
 
    describe 'parse', ->
       describe 'flags', ->

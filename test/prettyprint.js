@@ -1,6 +1,6 @@
 'use strict';
 
-var sut = require('../lib/console/prettyprint');
+var sut = require('../src/console/prettyprint');
 var assert = require('assert');
 
 describe('prettyprint', function () {
