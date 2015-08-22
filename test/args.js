@@ -1,13 +1,9 @@
 'use strict';
 
 var assert = require('assert');
-var sut = null;
+var sut = require('../src/console/args');
 
 describe('args', function () {
-  beforeEach(function () {
-    sut = require('../src/console/args');
-  });
-
   describe('parse', function () {
     describe('flags', function () {
       it('should parse a flag without parameters', function () {

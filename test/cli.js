@@ -1,13 +1,11 @@
 'use strict';
 
 var assert = require('assert');
+var sut = require('../src/console/cli');
+var out = require('../src/console/out');
 
 describe('CLI', function () {
-  var out, sut;
-
   beforeEach(function () {
-    sut = require('../src/console/cli');
-    out = require('../src/console/out');
     this.sandbox.stub(process, 'exit');
     this.sandbox.stub(out, 'log');
   });
