@@ -11,9 +11,6 @@ This project uses [ESLint](http://eslint.org) for code style and conformity.
 
 ## Running Tests
 
-__I apologize in advance:__ the tests are all written in CoffeeScript and I've been
-to lazy to rewrite them.
-
     npm test
 
 ## Relevant tools
@@ -24,5 +21,3 @@ to lazy to rewrite them.
   - For linting and code-style
 - [mocha](https://mochajs.org)
   - BDD-style testing framework
-- [coffee-script](http://coffeescript.org)
-  - Unfancy JavaScript
