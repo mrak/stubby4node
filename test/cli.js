@@ -247,7 +247,7 @@ describe('CLI', function () {
         mute: true,
         watch: filename,
         datadir: process.cwd(),
-        help: null,
+        help: undefined, // eslint-disable-line no-undefined
         version: (require('../package.json')).version
       };
       this.sandbox.stub(sut, 'data').returns(expected.data);
