@@ -221,6 +221,9 @@
     operator-linebreak:
       - 2
       - "after"
+      - overrides:
+          "?": "before"
+          ":": "before"
     padded-blocks:
       - 2
       - "never"
