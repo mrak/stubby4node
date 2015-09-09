@@ -35,7 +35,7 @@ This will install `stubby` as a command in your `PATH`. Leave off the `-g` flag 
 
 ## Requirements
 
-* [node.js](http://nodejs.org/) (>=0.10.x)
+* [node.js](http://nodejs.org/) (0.10.x, 0.12.x, io latest, 4.0.x)
 
 Development is on x86-64 Linux.
 
