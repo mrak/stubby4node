@@ -208,7 +208,7 @@ function compareHashMaps(configured, incoming) {
 
 function matchRegex(compileMe, testMe) {
   if (testMe == null) { testMe = ''; }
-  return testMe.match(RegExp(compileMe, 'm'));
+  return String(testMe).match(RegExp(compileMe, 'm'));
 }
 
 module.exports = Endpoint;
