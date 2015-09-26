@@ -296,6 +296,22 @@ describe('End 2 End Stubs Test Suite', function () {
         done();
       });
     });
+
+    it('should comma-separate repeated query params', function (done) {
+      var self = this;
+      this.context.url = '/query/array?array=one&array=two';
+      this.context.method = 'get';
+
+      createRequest(this.context);
+
+      waitsFor(function () {
+        return self.context.done;
+      }, 'request to finish', 1000, function () {
+        assert(self.context.response.statusCode === 200);
+        assert(self.context.response.data === 'query as array works!');
+        done();
+      });
+    });
   });
 
   describe('post', function () {

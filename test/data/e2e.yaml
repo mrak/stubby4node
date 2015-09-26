@@ -127,3 +127,10 @@
     headers:
       Content-Type: 'application/json'
       Set-Cookie: ['type=ninja', 'language=coffeescript']
+
+- request:
+    url: /query/array
+    query:
+      array: one,two
+  response:
+    body: query as array works!

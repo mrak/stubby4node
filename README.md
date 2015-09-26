@@ -161,11 +161,11 @@ A demonstration using regular expressions:
       method: [GET, HEAD]
 
 -  request:
-      url: ^/yonder
-      method:
-         -  GET
-         -  HEAD
-         -  POST
+     url: ^/yonder
+     method:
+       -  GET
+       -  HEAD
+       -  POST
 ```
 
 #### query
@@ -181,10 +181,26 @@ A demonstration using regular expressions:
 
 ```yaml
 -  request:
-      url: ^/with/parameters$
-      query:
-         search: search terms
-         filter: month
+     url: ^/with/parameters$
+     query:
+       search: search terms
+       filter: month
+```
+
+__NOTE__: repeated querystring keys (often array representations) will have
+their values converted to a comma-separated list.
+
+```
+/url?array=one&array=two
+```
+
+will be matched by:
+
+```yaml
+- request:
+    url: ^/url$
+    query:
+      array: one,two
 ```
 
 #### post
