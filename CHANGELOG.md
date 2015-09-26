@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.12
+
+* fixes array representations in query strings
+
 ## 0.2.11
 
 * fixes several scope-binding issues caused by the JavaScript rewrite (sorry!)
