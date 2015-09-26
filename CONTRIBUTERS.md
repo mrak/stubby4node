@@ -18,6 +18,8 @@
 
 [James Murphy](https://github.com/murphyj)
 
+[Vincent Lemeunier](https://github.com/kombucha)
+
 # Special Thanks
 
 Alexander Zagniotov
