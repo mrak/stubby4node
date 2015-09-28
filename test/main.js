@@ -128,6 +128,11 @@ describe('main', function () {
     });
 
     describe('callback', function () {
+      it('should not fail to start a server without options or a callback', function (done) {
+        sut.start();
+        done();
+      });
+
       it('should treat the callback as optional', function (done) {
         var callback = this.sandbox.spy();
 
