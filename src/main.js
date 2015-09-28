@@ -86,13 +86,13 @@ function Stubby() {
 }
 
 Stubby.prototype.start = function (o, cb) {
-  var oc = setupStartOptions(o, cb);
+  var _o = o == null ? {} : o;
+  var _cb = cb == null ? noop : cb;
+
+  var oc = setupStartOptions(_o, _cb);
   var options = oc[0];
   var callback = oc[1];
   var self = this;
-
-  if (o == null) { o = {}; }
-  if (cb == null) { cb = noop; }
 
   this.stop(function () {
     var errors = contract(options.data);
