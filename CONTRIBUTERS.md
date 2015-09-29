@@ -20,6 +20,8 @@
 
 [Vincent Lemeunier](https://github.com/kombucha)
 
+[Andrew Yurisich](https://github.com/Droogans)
+
 # Special Thanks
 
 Alexander Zagniotov
