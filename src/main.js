@@ -47,6 +47,9 @@ function onEndpointLoaded(err, endpoint) {
 function setupStartOptions(options, callback) {
   var defaults, key;
 
+  options = options == null ? {} : options;
+  callback = callback == null ? noop : callback;
+
   if (typeof options === 'function') {
     callback = options;
     options = {};
@@ -86,10 +89,7 @@ function Stubby() {
 }
 
 Stubby.prototype.start = function (o, cb) {
-  var _o = o == null ? {} : o;
-  var _cb = cb == null ? noop : cb;
-
-  var oc = setupStartOptions(_o, _cb);
+  var oc = setupStartOptions(o, cb);
   var options = oc[0];
   var callback = oc[1];
   var self = this;
