@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.13
+
+* fixes a crash when using `start()` without any options
+
 ## 0.2.12
 
 * fixes array representations in query strings
