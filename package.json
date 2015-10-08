@@ -58,10 +58,10 @@
     "buffer-equal": "0.0.1",
     "eslint": "^1.2.1",
     "mocha": "^2.2.5",
-    "sinon": "~1.8.1"
+    "sinon": "^1.8.1"
   },
-  "license": "Apache",
+  "license": "Apache 2.0",
   "engine": {
-    "node": ">=0.10.x"
+    "node": ">=0.10"
   }
 }
