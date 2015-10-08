@@ -5,7 +5,6 @@ var fs = require('fs');
 var yaml = require('js-yaml');
 var ce = require('cloneextend');
 var endpointData = yaml.load((fs.readFileSync('test/data/e2e.yaml', 'utf8')).trim());
-var waitsFor = require('./helpers/waits-for');
 var assert = require('assert');
 var createRequest = require('./helpers/create-request');
 
@@ -42,34 +41,24 @@ describe('End 2 End Admin Test Suite', function () {
   });
 
   it('should react to /ping', function (done) {
-    var self = this;
     this.context.url = '/ping';
 
-    createRequest(this.context);
-
-    waitsFor(function () {
-      return self.context.done;
-    }, 'request to finish', 1000, function () {
-      assert(self.context.response.data === 'pong');
+    createRequest(this.context, function (response) {
+      assert(response.data === 'pong');
       return done();
     });
   });
 
   it('should be able to retreive an endpoint through GET', function (done) {
-    var self = this;
     var id = 3;
     var endpoint = ce.clone(endpointData[id - 1]);
     endpoint.id = id;
     this.context.url = '/' + id;
     this.context.method = 'get';
 
-    createRequest(this.context);
-
-    waitsFor(function () {
-      return self.context.done;
-    }, 'request to finish', 1000, function () {
+    createRequest(this.context, function (response) {
       var prop, value;
-      var returned = JSON.parse(self.context.response.data);
+      var returned = JSON.parse(response.data);
       var req = endpoint.req;
 
       for (prop in req) {
@@ -92,19 +81,12 @@ describe('End 2 End Admin Test Suite', function () {
     this.context.method = 'put';
     this.context.post = JSON.stringify(endpoint);
 
-    createRequest(this.context);
-
-    waitsFor(function () {
-      return self.context.done;
-    }, 'put request to finish', 1000, function () {
+    createRequest(this.context, function () {
       endpoint.id = id;
-      self.context.done = false;
       self.context.method = 'get';
 
-      createRequest(self.context);
-
-      waitsFor(function () { return self.context.done; }, 'get request to finish', 1000, function () {
-        var returned = JSON.parse(self.context.response.data);
+      createRequest(self.context, function (response) {
+        var returned = JSON.parse(response.data);
 
         assert(returned.request.url === endpoint.request.url);
 
@@ -127,14 +109,10 @@ describe('End 2 End Admin Test Suite', function () {
     this.context.method = 'post';
     this.context.post = JSON.stringify(endpoint);
 
-    createRequest(this.context);
+    createRequest(this.context, function (response) {
+      var id = response.headers.location.replace(/localhost:8889\/([0-9]+)/, '$1');
 
-    waitsFor(function () {
-      return self.context.done;
-    }, 'post request to finish', 1000, function () {
-      var id = self.context.response.headers.location.replace(/localhost:8889\/([0-9]+)/, '$1');
-
-      assert(self.context.response.statusCode === 201);
+      assert(response.statusCode === 201);
 
       self.context = {
         port: port,
@@ -143,12 +121,8 @@ describe('End 2 End Admin Test Suite', function () {
         method: 'get'
       };
 
-      createRequest(self.context);
-
-      waitsFor(function () {
-        return self.context.done;
-      }, 'get request to finish', 1000, function () {
-        var returned = JSON.parse(self.context.response.data);
+      createRequest(self.context, function (response2) {
+        var returned = JSON.parse(response2.data);
 
         assert(returned.request.url === endpoint.request.url);
         done();
@@ -161,12 +135,8 @@ describe('End 2 End Admin Test Suite', function () {
     this.context.url = '/2';
     this.context.method = 'delete';
 
-    createRequest(this.context);
-
-    waitsFor(function () {
-      return self.context.done;
-    }, 'delete request to finish', 1000, function () {
-      assert(self.context.response.statusCode === 204);
+    createRequest(this.context, function (response) {
+      assert(response.statusCode === 204);
 
       self.context = {
         port: port,
@@ -175,12 +145,8 @@ describe('End 2 End Admin Test Suite', function () {
         method: 'get'
       };
 
-      createRequest(self.context);
-
-      waitsFor(function () {
-        return self.context.done;
-      }, 'get request to finish', 1000, function () {
-        assert(self.context.response.statusCode === 404);
+      createRequest(self.context, function (response2) {
+        assert(response2.statusCode === 404);
         done();
       });
     });

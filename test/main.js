@@ -2,7 +2,6 @@
 
 var CLI = require('../src/console/cli');
 var defaults = CLI.getArgs([]);
-var waitsFor = require('./helpers/waits-for');
 var assert = require('assert');
 var Stubby = require('../src/main').Stubby;
 
@@ -30,7 +29,6 @@ describe('main', function () {
 
   describe('put', function () {
     it('should return warning when the contract is violated', function (done) {
-      var callback = this.sandbox.spy();
       sut.endpoints = {
         update: function (_, __, cb) {
           return cb(null);
@@ -44,18 +42,13 @@ describe('main', function () {
         response: {
           status: 800
         }
-      }, callback);
-
-      waitsFor(function () {
-        return callback.called;
-      }, 'callback to have been called', 10, function () {
-        assert(callback.args[0][0] === "The supplied endpoint data couldn't be saved");
+      }, function (err) {
+        assert(err === "The supplied endpoint data couldn't be saved");
         done();
       });
     });
 
     it('should not return warning when the contract is upheld', function (done) {
-      var callback = this.sandbox.spy();
       sut.endpoints = {
         update: function (_, __, cb) {
           cb(null);
@@ -69,12 +62,8 @@ describe('main', function () {
         response: {
           status: 200
         }
-      }, callback);
-
-      waitsFor(function () {
-        return callback.called;
-      }, 'callback to have been called', 10, function () {
-        assert(callback.args[0][0] === null);
+      }, function (err) {
+        assert(err === null);
         done();
       });
     });
@@ -82,8 +71,6 @@ describe('main', function () {
 
   describe('post', function () {
     it('should return warning when the contract is violated', function (done) {
-      var callback = this.sandbox.spy();
-
       sut.post({
         request: {
           url: '/somewhere'
@@ -91,19 +78,13 @@ describe('main', function () {
         response: {
           status: 800
         }
-      }, callback);
-
-      return waitsFor(function () {
-        return callback.called;
-      }, 'callback to have been called', 10, function () {
-        assert(callback.args[0][0] === "The supplied endpoint data couldn't be saved");
+      }, function (err) {
+        assert(err === "The supplied endpoint data couldn't be saved");
         done();
       });
     });
 
     it('should not return warning when the contract is upheld', function (done) {
-      var callback = this.sandbox.spy();
-
       sut.post({
         request: {
           url: '/somewhere'
@@ -111,12 +92,8 @@ describe('main', function () {
         response: {
           status: 200
         }
-      }, callback);
-
-      waitsFor(function () {
-        return callback.called;
-      }, 'callback to have been called', 10, function () {
-        assert(callback.args[0][0] === null);
+      }, function (err) {
+        assert(err === null);
         done();
       });
     });
@@ -134,23 +111,11 @@ describe('main', function () {
       });
 
       it('should treat the callback as optional', function (done) {
-        var callback = this.sandbox.spy();
-
-        sut.start({}, callback);
-
-        waitsFor(function () {
-          return callback.called;
-        }, 'callback to have been called', 10, done);
+        sut.start({}, done);
       });
 
       it('should take one parameter as a function', function (done) {
-        var callback = this.sandbox.spy();
-
-        sut.start(callback);
-
-        waitsFor(function () {
-          return callback.called;
-        }, 'callback to have been called', 10, done);
+        sut.start(done);
       });
     });
 

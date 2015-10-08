@@ -3,7 +3,7 @@
 var http = require('http');
 var qs = require('querystring');
 
-module.exports = function (context) {
+module.exports = function (context, callback) {
   var request;
   var options = {
     port: context.port,
@@ -27,8 +27,7 @@ module.exports = function (context) {
 
     response.on('end', function () {
       response.data = data;
-      context.response = response;
-      context.done = true;
+      callback(response);
     });
   });
 

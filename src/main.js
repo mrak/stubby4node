@@ -129,7 +129,7 @@ Stubby.prototype.stop = function (callback) {
 
   if (callback == null) { callback = noop; }
 
-  process.nextTick(function () {
+  setTimeout(function () {
     if (self.watcher != null) { self.watcher.deactivate(); }
 
     async.parallel({
@@ -143,7 +143,7 @@ Stubby.prototype.stop = function (callback) {
         if (self.tlsPortal && self.tlsPortal.address()) { self.tlsPortal.close(cb); } else { return cb(); }
       }
     }, callback);
-  });
+  }, 1);
 };
 
 Stubby.prototype.post = function (data, callback) {
@@ -151,9 +151,9 @@ Stubby.prototype.post = function (data, callback) {
 
   if (callback == null) { callback = noop; }
 
-  process.nextTick(function () {
+  setTimeout(function () {
     if (contract(data)) { callback(couldNotSave); } else { self.endpoints.create(data, callback); }
-  });
+  }, 1);
 };
 
 Stubby.prototype.get = function (id, callback) {
@@ -162,9 +162,9 @@ Stubby.prototype.get = function (id, callback) {
   if (id == null) { id = noop; }
   if (callback == null) { callback = id; }
 
-  process.nextTick(function () {
+  setTimeout(function () {
     if (typeof id === 'function') { self.endpoints.gather(callback); } else { self.endpoints.retrieve(id, callback); }
-  });
+  }, 1);
 };
 
 Stubby.prototype.put = function (id, data, callback) {
@@ -172,9 +172,9 @@ Stubby.prototype.put = function (id, data, callback) {
 
   if (callback == null) { callback = noop; }
 
-  process.nextTick(function () {
+  setTimeout(function () {
     if (contract(data)) { callback(couldNotSave); } else { self.endpoints.update(id, data, callback); }
-  });
+  }, 1);
 };
 
 Stubby.prototype.delete = function (id, callback) {
@@ -183,7 +183,7 @@ Stubby.prototype.delete = function (id, callback) {
   if (id == null) { id = noop; }
   if (callback == null) { callback = id; }
 
-  process.nextTick(function () {
+  setTimeout(function () {
     if (typeof id === 'function') {
       delete self.endpoints.db;
       self.endpoints.db = {};
@@ -191,7 +191,7 @@ Stubby.prototype.delete = function (id, callback) {
     } else {
       self.endpoints.delete(id, callback);
     }
-  });
+  }, 1);
 };
 
 module.exports.Stubby = Stubby;

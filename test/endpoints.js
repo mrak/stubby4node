@@ -4,7 +4,6 @@ var sut;
 var Endpoints = require('../src/models/endpoints').Endpoints;
 var assert = require('assert');
 var bufferEqual = require('buffer-equal');
-var waitsFor = require('./helpers/waits-for');
 
 describe('Endpoints', function () {
   beforeEach(function () {
@@ -162,17 +161,19 @@ describe('Endpoints', function () {
       });
 
       it('should call callback after timeout if data response has a latency', function (done) {
+        var start = new Date();
+
         sut.create({
           request: {},
           response: {
             latency: 1000
           }
         });
-        sut.find(data, callback);
-
-        waitsFor(function () {
-          return callback.called;
-        }, 'Callback call was never called', [900, 1100], done);
+        sut.find(data, function () {
+          var elapsed = new Date() - start;
+          assert(elapsed > 900 && elapsed < 1100);
+          done();
+        });
       });
 
       describe('dynamic templating', function () {
