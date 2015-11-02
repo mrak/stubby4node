@@ -29,7 +29,7 @@ This will install `stubby` as a command in your `PATH`. Leave off the `-g` flag 
 
 ### via source
 
-    git clone git://github.com/Afmrak/stubby4node.git
+    git clone https://github.com/mrak/stubby4node.git
     cd stubby4node
     npm start -- <stubby args>
 
