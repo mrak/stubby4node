@@ -4,6 +4,10 @@
 stubby4node
 ===========
 
+A configurable server for mocking/stubbing external systems during development.
+
+`stubby` takes endpoint descriptors in the form of a YAML or JSON file that tell it how to respond to incoming requests. For each incoming request, configured endpoints are checked in-order until a match is found.
+
 ## Table of Contents
 
 * [Installation](#installation)
@@ -258,6 +262,7 @@ The following endpoint only accepts requests with `application/json` post values
 Assuming a match has been made against the given `request` object, data from `response` is used to build the stubbed response back to the client.
 
 __ALSO:__ The `response` property can also be a yaml sequence of responses that cycle as each request is made.
+
 __ALSO:__ The `response` property can also be a url (string) or sequence of object/urls. The url will be used to record a response object to be used in calls to stubby. When used this way, data from the `request` portion of the endpoint will be used to assemble a request to the url given as the `response`.
 
 ```yaml
