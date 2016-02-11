@@ -304,6 +304,18 @@ describe('End 2 End Stubs Test Suite', function () {
           done();
         });
       });
+
+      it('should handle module file response when file can be found', function (done) {
+        var expect = '{"title":"New Item"}';
+        this.context.url = '/file/module';
+        this.context.method = 'post';
+        this.context.post = expect;
+
+        createRequest(this.context, function (response) {
+          assert(response.data === expect);
+          done();
+        });
+      });
     });
 
     describe('request', function () {

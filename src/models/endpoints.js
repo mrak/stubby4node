@@ -107,9 +107,7 @@ Endpoints.prototype.find = function (data, callback) {
 };
 
 Endpoints.prototype.found = function (endpoint, captures, callback, data) {
-  var filename;
-  var filePath;
-  var body;
+  var filename, filePath, body;
   var response = endpoint.response[this.sightings[endpoint.id]++ % endpoint.response.length];
   var _ref = response.body;
 
@@ -121,7 +119,7 @@ Endpoints.prototype.found = function (endpoint, captures, callback, data) {
     filePath = path.resolve(this.datadir, filename);
 
     try {
-      if( path.extname(filename) === '.js' ) {
+      if (path.extname(filename) === '.js') {
         body = require(filePath.toString())({
           response: response,
           endpoint: endpoint,
@@ -129,7 +127,7 @@ Endpoints.prototype.found = function (endpoint, captures, callback, data) {
           data: data
         });
 
-        response.body = new Buffer(JSON.stringify(body), 'utf8');
+        response.body = new Buffer(body, 'utf8');
       } else {
         response.body = fs.readFileSync(filePath);
       }
