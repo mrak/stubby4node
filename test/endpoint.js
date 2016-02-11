@@ -137,7 +137,7 @@ describe('Endpoint', function () {
       actual = new Endpoint(this.data);
 
       waitsFor(function () {
-        return actual.response[0].status === 302;
+        return actual.response[0].status === 301;
       }, 'endpoint to record', waitTime, done);
     });
 
@@ -150,7 +150,7 @@ describe('Endpoint', function () {
       actual = new Endpoint(this.data);
 
       waitsFor(function () {
-        return actual.response[0].status === 302 && actual.response[1].status === 200;
+        return actual.response[0].status === 301 && actual.response[1].status === 200;
       }, 'endpoint to record', waitTime, done);
     });
 
@@ -175,7 +175,7 @@ describe('Endpoint', function () {
       actual = new Endpoint(data);
 
       waitsFor(function () {
-        return actual.response[0].status === 302 && actual.response[1].status === 420;
+        return actual.response[0].status === 301 && actual.response[1].status === 420;
       }, 'endpoint to record', waitTime, done);
     });
   });
