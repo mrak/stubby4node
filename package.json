@@ -36,7 +36,8 @@
   ],
   "scripts": {
     "lint": "eslint src test",
-    "test": "npm run lint && mocha --recursive test --reporter dot"
+    "test": "npm run lint && mocha --recursive test --reporter dot",
+    "start": "bin/stubby"
   },
   "bin": {
     "stubby": "bin/stubby"
