@@ -161,7 +161,7 @@ function purifyAuthorization(headers) {
   if (headers == null || headers.authorization == null) { return headers; }
 
   auth = headers.authorization || '';
-  if (!/:/.test(auth)) { return headers; }
+  if (!/:/.test(auth) || /Bearer: /.test(auth)) { return headers; }
 
   headers.authorization = 'Basic ' + new Buffer(auth).toString('base64');
   return headers;

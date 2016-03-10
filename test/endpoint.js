@@ -312,6 +312,18 @@ describe('Endpoint', function () {
       assert(actual.request.headers.authorization === expected);
     });
 
+    it('should not encode authorization headers if bearer token', function () {
+      var actual, expected;
+      expected = 'Bearer: MY_TOKEN_123';
+      this.data.request.headers = {
+        authorization: 'Bearer: MY_TOKEN_123'
+      };
+
+      actual = new Endpoint(this.data);
+
+      assert(actual.request.headers.authorization === expected);
+    });
+
     it('should stringify object body in response', function () {
       var actual, expected;
       expected = '{"property":"value"}';
