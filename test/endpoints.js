@@ -244,6 +244,97 @@ describe('Endpoints', function () {
         });
       });
 
+      describe('request json versus post or file', function () {
+        it('should not match response if the request json does not match the incoming post', function () {
+          var expected = 'Endpoint with given request doesn\'t exist.';
+
+          sut.create({
+            request: {
+              url: '/testing',
+              json: '{"key2":"value2", "key1":"value1"}',
+              method: 'post'
+            },
+            response: 200
+          });
+          data = {
+            method: 'POST',
+            url: '/testing',
+            post: '{"key1": "value1", "key3":"value3"}'
+          };
+          sut.find(data, callback);
+
+          assert(callback.calledWith(expected));
+        });
+
+        it('should match response with json if json is supplied and neither post nor file are supplied', function () {
+          var expected = {
+            status: 200
+          };
+          sut.create({
+            request: {
+              url: '/testing',
+              json: '{"key2":"value2", "key1":"value1"}',
+              method: 'post'
+            },
+            response: expected
+          });
+          data = {
+            method: 'POST',
+            url: '/testing',
+            post: '{"key1": "value1", "key2":"value2"}'
+          };
+          sut.find(data, callback);
+
+          assert(callback.calledWith(null));
+        });
+
+        it('should match response with post if post is supplied', function () {
+          var expected = {
+            status: 200
+          };
+          sut.create({
+            request: {
+              url: '/testing',
+              json: '{"key":"value"}',
+              post: 'the post!',
+              method: 'post'
+            },
+            response: expected
+          });
+          data = {
+            method: 'POST',
+            url: '/testing',
+            post: 'the post!'
+          };
+          sut.find(data, callback);
+
+          assert(callback.calledWith(null));
+        });
+
+        it('should match response with file if file is supplied', function () {
+          var expected = {
+            status: 200
+          };
+          sut.create({
+            request: {
+              url: '/testing',
+              file: 'test/data/endpoints.file',
+              json: '{"key":"value"}',
+              method: 'post'
+            },
+            response: expected
+          });
+          data = {
+            method: 'POST',
+            url: '/testing',
+            post: 'file contents!'
+          };
+          sut.find(data, callback);
+
+          assert(callback.calledWith(null));
+        });
+      });
+
       describe('request post versus file', function () {
         it('should match response with post if file is not supplied', function () {
           var expected = {

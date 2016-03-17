@@ -245,6 +245,24 @@ postedData.json
 
 * if `postedData.json` doesn't exist on the filesystem when `/match/against/file` is requested, stubby will match post contents against `{"fallback":"data"}` (from `post`) instead.
 
+#### json
+
+* not used if `post` or `file` are present.
+* will be parsed into a JavaScript object.
+* allows you to specify a JSON string that will be deeply compared with a JSON request
+
+Although not required, it is recommended to also specify a `application/json` header requirement.
+
+```yaml
+-  request:
+      url: ^/match/against/jsonString$
+      headers:
+         content-type: application/json
+      json: '{"key1":"value1","key2":"value2"}'
+```
+
+JSON strings may contain `"key": "value"` pairs in any order: `{"key1":"value1, "key2":"value2"}` is equivalent to `{"key2":"value2, "key1":"value1"}`
+
 #### headers
 
 * values are full-fledged __regular expressions__
