@@ -227,6 +227,18 @@ describe('contract', function () {
       result = sut(data);
       assert(result === null);
     });
+
+    it('should return no errors for a missing json field', function () {
+      var result;
+
+      data.request.json = null;
+      result = sut(data);
+      assert(result === null);
+
+      delete data.request.json;
+      result = sut(data);
+      assert(result === null);
+    });
   });
 
   describe('response', function () {

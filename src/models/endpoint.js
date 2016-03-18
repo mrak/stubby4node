@@ -18,7 +18,7 @@ function Endpoint(endpoint, datadir) {
 }
 
 Endpoint.prototype.matches = function (request) {
-  var file, post, upperMethods;
+  var file, post, json, upperMethods;
   var matches = {};
 
   matches.url = matchRegex(this.request.url, request.url);
@@ -41,6 +41,13 @@ Endpoint.prototype.matches = function (request) {
   if (post && request.post) {
     matches.post = matchRegex(normalizeEOL(post), normalizeEOL(request.post));
     if (!matches.post) { return null; }
+  } else if (this.request.json && request.post) {
+    try {
+      json = JSON.parse(request.post);
+      if (!compareObjects(this.request.json, json)) { return null; }
+    } catch (e) {
+      return null;
+    }
   }
 
   if (this.request.method instanceof Array) {
@@ -112,6 +119,10 @@ function purifyRequest(incoming) {
     file: incoming.file,
     post: incoming.post
   };
+
+  if (incoming.json) {
+    outgoing.json = JSON.parse(incoming.json);
+  }
 
   outgoing.headers = purifyAuthorization(outgoing.headers);
   outgoing = pruneUndefined(outgoing);
@@ -204,6 +215,20 @@ function compareHashMaps(configured, incoming) {
   }
 
   return headers;
+}
+
+function compareObjects(configured, incoming) {
+  var key;
+
+  for (key in configured) {
+    if (typeof configured[key] !== typeof incoming[key]) { return false; }
+
+    if (typeof configured[key] === 'object') {
+      if (!compareObjects(configured[key], incoming[key])) { return false; }
+    } else if (configured[key] !== incoming[key]) { return false; }
+  }
+
+  return true;
 }
 
 function matchRegex(compileMe, testMe) {

@@ -182,7 +182,7 @@ describe('Endpoint', function () {
 
   describe('constructor', function () {
     it('should at least copy over valid data', function () {
-      var expectedBody;
+      var expectedBody, expectedJSON;
       var data = {
         request: {
           url: '/',
@@ -194,7 +194,8 @@ describe('Endpoint', function () {
             header: 'string'
           },
           post: 'data',
-          file: 'file.txt'
+          file: 'file.txt',
+          json: '{"key":"value"}'
         },
         response: [{
           latency: 3000,
@@ -208,13 +209,19 @@ describe('Endpoint', function () {
       };
       var actual = new Endpoint(data);
       var actualbody = actual.response[0].body.toString();
+      var actualJSON = actual.request.json;
 
       delete actual.response[0].body;
       expectedBody = data.response[0].body;
       delete data.response[0].body;
 
+      delete actual.request.json;
+      expectedJSON = JSON.parse(data.request.json);
+      delete data.request.json;
+
       assert.deepEqual(actual, data);
       assert(expectedBody === actualbody);
+      assert.deepEqual(expectedJSON, actualJSON);
     });
 
     it('should default method to GET', function () {
@@ -324,6 +331,19 @@ describe('Endpoint', function () {
       actual = new Endpoint(this.data);
 
       assert(actual.response[0].body.toString() === expected);
+    });
+
+    it('should JSON parse the object json in request', function () {
+      var actual, expected;
+      expected = {
+        key: 'value'
+      };
+      this.data.request = {
+        json: '{"key":"value"}'
+      };
+
+      actual = new Endpoint(this.data);
+      assert.deepEqual(actual.request.json, expected);
     });
 
     it('should get the Origin header', function () {
