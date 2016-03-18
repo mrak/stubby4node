@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.3.0
+
+* __BREAKING CHANGES from 0.2.x__
+  * In `0.2.x` and below, you could pass `request.headers.authorization` as a `username:password` string to signify Basic auth and stubby would automatically prefix `Basic ` and base64-encode the user/pass string. This breaks other forms of web auth that uses the `Authorization` header.
+  ```yaml
+  # Before
+  request:
+    headers:
+      authorization: 'username:password'
+  # Now
+  request:
+    headers:
+      authorization: 'Basic username:password'
+  ```
+  Stubby will still base64-encode the `username:password` if it sees that `Basic ` is specified and the `:` character is present. Otherwise it will take it as-is.
+* __New features__
+  * `json:` option for endpoints -- instead of using `post:` or `file:` for matching the body of incoming requests, you can specify `json: ` with a JSON string and its content will be deeply matched for incoming request bodies.
+
 ## 0.2.13
 
 * fixes a crash when using `start()` without any options
