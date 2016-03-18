@@ -72,7 +72,7 @@
     method: POST
     post: some=data
     headers:
-      authorization: stubby:passwordZ0r
+      authorization: Basic stubby:passwordZ0r
   response:
     status: 201
     headers:

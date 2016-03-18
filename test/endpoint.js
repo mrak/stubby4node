@@ -299,7 +299,7 @@ describe('Endpoint', function () {
       var actual, expected;
       expected = 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=';
       this.data.request.headers = {
-        authorization: 'username:password'
+        authorization: 'Basic username:password'
       };
 
       actual = new Endpoint(this.data);

@@ -167,14 +167,17 @@ function purifyHeaders(incoming) {
 }
 
 function purifyAuthorization(headers) {
-  var auth;
+  var auth, userpass;
 
   if (headers == null || headers.authorization == null) { return headers; }
 
   auth = headers.authorization || '';
-  if (!/:/.test(auth)) { return headers; }
 
-  headers.authorization = 'Basic ' + new Buffer(auth).toString('base64');
+  if (/^Basic .+:.+$/.test(auth)) {
+    userpass = auth.substr(6);
+    headers.authorization = 'Basic ' + new Buffer(userpass).toString('base64');
+  }
+
   return headers;
 }
 
