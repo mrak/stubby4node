@@ -405,6 +405,52 @@ describe('Endpoints', function () {
         });
       });
 
+      describe('post versus from', function () {
+        it('should match response with form params', function () {
+          var expected = {
+            status: 200
+          };
+          sut.create({
+            request: {
+              url: '/testing',
+              form: {email: 'name@mail.com', var2: 'val2'},
+              method: 'post'
+            },
+            response: expected
+          });
+          data = {
+            url: '/testing',
+            post: 'email=name%40mail.com&var2=val2',
+            method: 'POST'
+          };
+          sut.find(data, callback);
+
+          assert(callback.calledWith(null));
+        });
+
+        it('should not match response with form params, if params not supplied', function () {
+          var expected = {
+            status: 200
+          };
+          sut.create({
+            request: {
+              url: '/testing',
+              form: {var1: 'val1', var2: 'val2'},
+              method: 'post'
+            },
+            response: expected
+          });
+          data = {
+            url: '/testing',
+            post: 'var3=val3',
+            method: 'POST'
+          };
+          sut.find(data, callback);
+
+          assert(callback.calledWith("Endpoint with given request doesn't exist."));
+        });
+      });
+
       describe('response body versus file', function () {
         it('should return response with body as content if file is not supplied', function () {
           var expected = 'the body!';

@@ -48,6 +48,9 @@ Endpoint.prototype.matches = function (request) {
     } catch (e) {
       return null;
     }
+  } else if (this.request.form && request.post) {
+    matches.post = compareHashMaps(this.request.form, q.decode(request.post));
+    if (!matches.post) { return null; }
   }
 
   if (this.request.method instanceof Array) {
@@ -117,7 +120,8 @@ function purifyRequest(incoming) {
     headers: purifyHeaders(incoming.headers),
     query: incoming.query,
     file: incoming.file,
-    post: incoming.post
+    post: incoming.post,
+    form: incoming.form
   };
 
   if (incoming.json) {

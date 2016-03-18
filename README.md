@@ -746,7 +746,6 @@ stubby2.start({
 
 Non-breaking changes
 
-* `post` parameter as a hashmap under `request` for easy form-submission value matching
 * Allow multi-value fields (arrays and maps) as query/post params
 
 Breaking changes
