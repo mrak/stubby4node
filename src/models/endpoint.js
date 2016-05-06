@@ -88,7 +88,7 @@ function record(me, urlToRecord) {
   });
 
   recorder.on('error', function (e) { out.warn('error recording response ' + urlToRecord + ': ' + e.message); });
-  recording.post = new Buffer(me.request.post == null ? 0 : me.request.post, 'utf8');
+  recording.post = me.request.post == null ? new Buffer(0) : new Buffer(me.request.post, 'utf8');
 
   if (me.request.file != null) {
     try {

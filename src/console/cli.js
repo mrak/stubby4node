@@ -138,7 +138,7 @@ function getArgs(argv) {
   if (argv == null) { argv = process.argv; }
 
   params = args.parse(options, argv);
-  params.datadir = path.resolve(path.dirname(params.data));
+  params.datadir = path.resolve(path.dirname(params.data || '.'));
 
   if (params.watch) { params.watch = params.data; }
 
