@@ -11,7 +11,7 @@ A configurable server for mocking/stubbing external systems during development.
 ## Table of Contents
 
 * [Installation](#installation)
-* [Requirements](#requirements)
+* [Requirements](#supported-runtimes)
 * [Starting the Server(s)](#starting-the-servers)
 * [Command-line Switches](#command-line-switches)
 * [Endpoint Configuration](#endpoint-configuration)
@@ -37,13 +37,14 @@ This will install `stubby` as a command in your `PATH`. Leave off the `-g` flag 
     cd stubby4node
     npm start -- <stubby args>
 
-## Requirements
+## Supported Runtimes
 
 * [node.js](http://nodejs.org/)
   * iojs
   * 0.10.x
   * 0.12.x
-  * node LTS
+  * 4.x
+  * 5.x
   * node latest
 
 Development is on x86-64 Linux.
