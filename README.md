@@ -11,7 +11,7 @@ A configurable server for mocking/stubbing external systems during development.
 ## Table of Contents
 
 * [Installation](#installation)
-* [Requirements](#supported-runtimes)
+* [Supported Runtimes](#supported-runtimes)
 * [Starting the Server(s)](#starting-the-servers)
 * [Command-line Switches](#command-line-switches)
 * [Endpoint Configuration](#endpoint-configuration)
