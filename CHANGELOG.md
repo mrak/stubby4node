@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+
+* Fixes `path` errors in Node 6
+
 ## 0.3.0
 
 * __BREAKING CHANGES from 0.2.x__
