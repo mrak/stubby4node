@@ -101,6 +101,13 @@
     file: test/data/endpoints.file
     body: body contents!
 
+- request:
+    url: /file/module
+    method: POST
+  response:
+    file: test/data/endpoints.js
+    body: body contents!
+
 
 
 -  request:

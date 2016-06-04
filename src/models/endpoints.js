@@ -100,14 +100,14 @@ Endpoints.prototype.find = function (data, callback) {
     if (!captures) { continue; }
 
     matched = ce.clone(endpoint);
-    return this.found(matched, captures, callback);
+    return this.found(matched, captures, callback, data);
   }
 
   return callback(NO_MATCH);
 };
 
-Endpoints.prototype.found = function (endpoint, captures, callback) {
-  var filename;
+Endpoints.prototype.found = function (endpoint, captures, callback, data) {
+  var filename, filePath, body;
   var response = endpoint.response[this.sightings[endpoint.id]++ % endpoint.response.length];
   var _ref = response.body;
 
@@ -116,8 +116,21 @@ Endpoints.prototype.found = function (endpoint, captures, callback) {
 
   if (response.file != null) {
     filename = applyCaptures(response.file, captures);
+    filePath = path.resolve(this.datadir, filename);
+
     try {
-      response.body = fs.readFileSync(path.resolve(this.datadir, filename));
+      if (path.extname(filename) === '.js') {
+        body = require(filePath.toString())({
+          response: response,
+          endpoint: endpoint,
+          captures: captures,
+          data: data
+        });
+
+        response.body = new Buffer(body, 'utf8');
+      } else {
+        response.body = fs.readFileSync(filePath);
+      }
     } catch (e) { /* ignored */ }
   }
 
