@@ -134,3 +134,14 @@
       array: one,two
   response:
     body: query as array works!
+
+
+
+- request:
+    url: /post/decoded/character
+    query:
+      q: '{'
+    method: POST
+  response:
+    - body: 'decoded matched!'
+      status: 200

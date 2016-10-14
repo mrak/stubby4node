@@ -330,4 +330,26 @@ describe('End 2 End Stubs Test Suite', function () {
       });
     });
   });
+
+  describe('encoded special character query params', function () {
+    it('should handle a query param that has been configured as decoded, sent as encoded', function (done) {
+      this.context.url = '/post/decoded/character?q=%7B';
+      this.context.method = 'post';
+
+      createRequest(this.context, function (response) {
+        assert(response.data === 'decoded matched!');
+        done();
+      });
+    });
+
+    it('should handle a query param that has been configured as decoded, sent as decoded', function (done) {
+      this.context.url = '/post/decoded/character?q={';
+      this.context.method = 'post';
+
+      createRequest(this.context, function (response) {
+        assert(response.data === 'decoded matched!');
+        done();
+      });
+    });
+  });
 });
