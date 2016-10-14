@@ -55,7 +55,7 @@ function setupStartOptions(options, callback) {
     options = {};
   }
 
-  if (options.mute == null) { options.mute = true; }
+  if (options.quiet == null) { options.quiet = true; }
 
   defaults = CLI.getArgs([]);
   for (key in defaults) {
@@ -64,7 +64,7 @@ function setupStartOptions(options, callback) {
     }
   }
 
-  out.mute = options.mute;
+  out.quiet = options.quiet;
   return [options, callback];
 }
 

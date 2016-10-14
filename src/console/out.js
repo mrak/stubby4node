@@ -12,45 +12,45 @@ var YELLOW = '\x1B[33m';
 var RESET = '\x1B[0m';
 
 var out = {
-  mute: false,
+  quiet: false,
   log: function (msg) {
-    if (this.mute) { return; }
+    if (this.quiet) { return; }
     console.log(msg);
   },
   status: function (msg) {
-    if (this.mute) { return; }
+    if (this.quiet) { return; }
     console.log(BOLD + BLACK + msg + RESET);
   },
   dump: function (data) {
-    if (this.mute) { return; }
+    if (this.quiet) { return; }
     console.dir(data);
   },
   info: function (msg) {
-    if (this.mute) { return; }
+    if (this.quiet) { return; }
     console.info(BLUE + msg + RESET);
   },
   ok: function (msg) {
-    if (this.mute) { return; }
+    if (this.quiet) { return; }
     console.log(GREEN + msg + RESET);
   },
   error: function (msg) {
-    if (this.mute) { return; }
+    if (this.quiet) { return; }
     console.error(RED + msg + RESET);
   },
   warn: function (msg) {
-    if (this.mute) { return; }
+    if (this.quiet) { return; }
     console.warn(YELLOW + msg + RESET);
   },
   incoming: function (msg) {
-    if (this.mute) { return; }
+    if (this.quiet) { return; }
     console.log(CYAN + msg + RESET);
   },
   notice: function (msg) {
-    if (this.mute) { return; }
+    if (this.quiet) { return; }
     console.log(MAGENTA + msg + RESET);
   },
   trace: function () {
-    if (this.mute) { return; }
+    if (this.quiet) { return; }
     console.log(RED);
     console.trace();
     console.log(RESET);

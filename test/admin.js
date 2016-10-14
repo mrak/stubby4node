@@ -3,7 +3,7 @@
 var Admin = require('../src/portals/admin').Admin;
 var assert = require('assert');
 
-require('../src/console/out').mute = true;
+require('../src/console/out').quiet = true;
 
 describe('Admin', function () {
   var endpoints, request, response, sut;

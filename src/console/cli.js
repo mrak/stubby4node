@@ -41,8 +41,8 @@ var options = [{
   default: '0.0.0.0',
   description: 'Hostname at which to bind stubby.'
 }, {
-  name: 'mute',
-  flag: 'm',
+  name: 'quiet',
+  flag: 'q',
   description: 'Prevent stubby from printing to the console.'
 }, {
   name: 'pfx',

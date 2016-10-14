@@ -1,8 +1,15 @@
 # Changelog
 
-## unreleased
+## 4.0.0
 
-* Adds `hits` to the endpoint data that is returned from the admin portal that represents the amount of times that endpoint has been hit from the stubs portal.
+This project has been stable for some time, best we move to actual semver and
+not prerelease versioning. This release on the old versioning system would have been release `0.4.0`. It is now `4.0.0` instead.
+
+* __BREAKING CHANGES from 0.3.x__
+  * The `mute` option has been renamed `quiet` to be more consistent with other cli tools
+
+* __New features__
+  * Adds `hits` to the endpoint data that is returned from the admin portal that represents the amount of times that endpoint has been hit from the stubs portal.
 
 ## 0.3.1
 

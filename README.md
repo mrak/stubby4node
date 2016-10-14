@@ -58,7 +58,7 @@ Some systems require you to `sudo` before running services on port certain ports
 ## Command-line Switches
 
 ```
-stubby [-a <port>] [-c <file>] [-d <file>] [-h] [-k <file>] [-l <hostname>] [-m] [-p <file>]
+stubby [-a <port>] [-c <file>] [-d <file>] [-h] [-k <file>] [-l <hostname>] [-p <file>] [-q]
        [-s <port>] [-t <port>] [-v] [-w]
 
 -a, --admin <port>          Port for admin portal. Defaults to 8889.
@@ -67,7 +67,7 @@ stubby [-a <port>] [-c <file>] [-d <file>] [-h] [-k <file>] [-l <hostname>] [-m]
 -h, --help                  This help text.
 -k, --key <file>            Private key file. Use with --cert.
 -l, --location <hostname>   Hostname at which to bind stubby.
--m, --mute                  Prevent stubby from printing to the console.
+-q, --quiet                 Prevent stubby from printing to the console.
 -p, --pfx <file>            PFX file. Ignored if used with --key/--cert
 -s, --stubs <port>          Port for stubs portal. Defaults to 8882.
 -t, --tls <port>            Port for https stubs portal. Defaults to 7443.
@@ -675,7 +675,7 @@ What can I do with it, you ask? Read on!
    * `cert`: certificate file contents (in PEM format)
    * `pfx`: pfx file contents (mutually exclusive with key/cert options)
    * `watch`: filename to monitor and load as stubby's data when changes occur
-   * `mute`: defaults to `true`. Pass in `false` to have console output (if available)
+   * `quiet`: defaults to `true`. Pass in `false` to have console output (if available)
    * `_httpsOptions`: additional options to pass to the [underlying tls
      server](http://nodejs.org/api/tls.html#tls_tls_createserver_options_secureconnectionlistener).
 * `callback`: takes one parameter: the error message (if there is one), undefined otherwise

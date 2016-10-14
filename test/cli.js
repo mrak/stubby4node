@@ -244,7 +244,7 @@ describe('CLI', function () {
         cert: 'a certificate',
         pfx: 'a pfx',
         tls: '443',
-        mute: true,
+        quiet: true,
         watch: filename,
         datadir: process.cwd(),
         help: undefined, // eslint-disable-line no-undefined
@@ -255,7 +255,7 @@ describe('CLI', function () {
       this.sandbox.stub(sut, 'cert').returns(expected.cert);
       this.sandbox.stub(sut, 'pfx').returns(expected.pfx);
 
-      actual = sut.getArgs(['-s', expected.stubs, '-a', expected.admin, '-d', filename, '-l', expected.location, '-k', 'mocked', '-c', 'mocked', '-p', 'mocked', '-t', expected.tls, '-m', '-w']);
+      actual = sut.getArgs(['-s', expected.stubs, '-a', expected.admin, '-d', filename, '-l', expected.location, '-k', 'mocked', '-c', 'mocked', '-p', 'mocked', '-t', expected.tls, '-q', '-w']);
 
       assert.deepStrictEqual(actual, expected);
     });
