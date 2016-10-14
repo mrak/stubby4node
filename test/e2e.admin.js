@@ -3,7 +3,7 @@
 var Stubby = require('../src/main').Stubby;
 var fs = require('fs');
 var yaml = require('js-yaml');
-var ce = require('cloneextend');
+var clone = require('../src/lib/clone');
 var endpointData = yaml.load((fs.readFileSync('test/data/e2e.yaml', 'utf8')).trim());
 var assert = require('assert');
 var createRequest = require('./helpers/create-request');
@@ -51,7 +51,7 @@ describe('End 2 End Admin Test Suite', function () {
 
   it('should be able to retreive an endpoint through GET', function (done) {
     var id = 3;
-    var endpoint = ce.clone(endpointData[id - 1]);
+    var endpoint = clone(endpointData[id - 1]);
     endpoint.id = id;
     this.context.url = '/' + id;
     this.context.method = 'get';
@@ -75,7 +75,7 @@ describe('End 2 End Admin Test Suite', function () {
   it('should be able to edit an endpoint through PUT', function (done) {
     var self = this;
     var id = 2;
-    var endpoint = ce.clone(endpointData[id - 1]);
+    var endpoint = clone(endpointData[id - 1]);
     this.context.url = '/' + id;
     endpoint.request.url = '/munchkin';
     this.context.method = 'put';

@@ -1,11 +1,11 @@
 'use strict';
 
-var ce = require('cloneextend');
 var fs = require('fs');
 var ejs = require('ejs');
 var path = require('path');
 var isutf8 = require('isutf8');
 var Endpoint = require('./endpoint');
+var clone = require('../lib/clone');
 var NOT_FOUND = "Endpoint with the given id doesn't exist.";
 var NO_MATCH = "Endpoint with given request doesn't exist.";
 
@@ -32,7 +32,7 @@ Endpoints.prototype.create = function (data, callback) {
     item.id = ++self.lastId;
     self.db[item.id] = item;
     self.sightings[item.id] = 0;
-    callback(null, ce.clone(item));
+    callback(null, clone(item));
   }
 
   if (data instanceof Array) {
@@ -47,7 +47,7 @@ Endpoints.prototype.retrieve = function (id, callback) {
 
   if (!this.db[id]) { return callback(NOT_FOUND); }
 
-  callback(null, ce.clone(this.db[id]));
+  callback(null, clone(this.db[id]));
 };
 
 Endpoints.prototype.update = function (id, data, callback) {
@@ -84,7 +84,7 @@ Endpoints.prototype.gather = function (callback) {
     }
   }
 
-  callback(null, ce.clone(all));
+  callback(null, clone(all));
 };
 
 Endpoints.prototype.find = function (data, callback) {
@@ -99,7 +99,7 @@ Endpoints.prototype.find = function (data, callback) {
 
     if (!captures) { continue; }
 
-    matched = ce.clone(endpoint);
+    matched = clone(endpoint);
     return this.found(matched, captures, callback);
   }
 
