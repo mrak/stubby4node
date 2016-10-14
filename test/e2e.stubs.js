@@ -92,38 +92,39 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.url = '/basic/all';
       this.context.method = 'delete';
 
-      createRequest(this.context, function (response) {
+      createRequest(self.context, function (response) {
         assert(response.statusCode === 200);
-        self.context = {
-          port: port,
-          finished: false,
-          url: '/basic/all',
-          method: 'get'
-        };
+        self.context.finished = false;
+        self.context.url = '/basic/all';
+        self.context.method = 'get';
 
         createRequest(self.context, function (response2) {
           assert(response2.statusCode === 200);
 
-          self.context = {
-            port: port,
-            finished: false,
-            url: '/basic/all',
-            method: 'put'
-          };
+          self.context.finished = false;
+          self.context.url = '/basic/all';
+          self.context.method = 'put';
 
           createRequest(self.context, function (response3) {
             assert(response3.statusCode === 200);
 
-            self.context = {
-              port: port,
-              finished: false,
-              url: '/basic/all',
-              method: 'post'
-            };
+            self.context.finished = false;
+            self.context.url = '/basic/all';
+            self.context.method = 'post';
 
             createRequest(self.context, function (response4) {
               assert(response4.statusCode === 200);
-              done();
+
+              self.context.port = 8889;
+              self.context.finished = false;
+              self.context.url = '/6';
+              self.context.method = 'get';
+
+              createRequest(self.context, function (response5) {
+                assert(response5.statusCode === 200);
+                assert(JSON.parse(response5.data).hits === 4);
+                done();
+              });
             });
           });
         });
@@ -154,6 +155,7 @@ describe('End 2 End Stubs Test Suite', function () {
 
       createRequest(this.context, function (response) {
         var headers = response.headers;
+
         assert.deepEqual(headers['set-cookie'], expected);
         done();
       });

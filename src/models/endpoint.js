@@ -15,6 +15,7 @@ function Endpoint(endpoint, datadir) {
 
   this.request = purifyRequest(endpoint.request);
   this.response = purifyResponse(this, endpoint.response);
+  this.hits = 0;
 }
 
 Endpoint.prototype.matches = function (request) {

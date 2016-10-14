@@ -34,7 +34,7 @@
   '           </ul>',
   '        </td>',
   '     </tr>',
-  '     <% } if(request.headers) { %>',
+  '     <% } if(request.headers && Object.keys(request.headers).length > 0) { %>',
   '     <tr>',
   '        <th class="property">headers</th>',
   '        <td>',
@@ -67,7 +67,7 @@
   '        <th class="property">status</th>',
   '        <td><%= response.status %></td>',
   '     </tr>',
-  '     <% } if(request.headers) { %>',
+  '     <% } if(response.headers && Object.keys(response.headers).length > 0) { %>',
   '     <tr>',
   '        <th class="property">headers</th>',
   '        <td>',
@@ -97,6 +97,10 @@
   '        <td><%= response[0].latency %></td>',
   '     </tr>',
   '     <% } %>',
+  '     <tr>',
+  '        <th class="section">hits</th>',
+  '        <td><%= hits %></td>',
+  '     </tr>',
   '  </table>',
   '</li>',
   ].join('\n');
@@ -123,7 +127,7 @@
     var endpoint, _fn, _i, _len;
     var endpoints = JSON.parse(ajax.responseText);
 
-    for (var i; i < endpoints.length; i++) {
+    for (var i = 0; i < endpoints.length; i++) {
       var endpoint = endpoints[i];
 
       endpoint.queryParams = queryParams;

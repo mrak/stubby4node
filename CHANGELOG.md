@@ -1,5 +1,9 @@
 # Changelog
 
+## unreleased
+
+* Adds `hits` to the endpoint data that is returned from the admin portal that represents the amount of times that endpoint has been hit from the stubs portal.
+
 ## 0.3.1
 
 * Fixes `path` errors in Node 6

@@ -184,6 +184,7 @@ describe('Endpoint', function () {
     it('should at least copy over valid data', function () {
       var expectedBody, expectedJSON;
       var data = {
+        hits: 0,
         request: {
           url: '/',
           method: 'post',

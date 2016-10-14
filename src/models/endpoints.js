@@ -19,7 +19,6 @@ function Endpoints(data, callback, datadir) {
   this.db = {};
   this.lastId = 0;
   this.create(data, callback);
-  this.sightings = {};
 }
 
 Endpoints.prototype.create = function (data, callback) {
@@ -31,7 +30,6 @@ Endpoints.prototype.create = function (data, callback) {
     item = new Endpoint(item, self.datadir);
     item.id = ++self.lastId;
     self.db[item.id] = item;
-    self.sightings[item.id] = 0;
     callback(null, clone(item));
   }
 
@@ -99,6 +97,7 @@ Endpoints.prototype.find = function (data, callback) {
 
     if (!captures) { continue; }
 
+    endpoint.hits++;
     matched = clone(endpoint);
     return this.found(matched, captures, callback);
   }
@@ -108,7 +107,7 @@ Endpoints.prototype.find = function (data, callback) {
 
 Endpoints.prototype.found = function (endpoint, captures, callback) {
   var filename;
-  var response = endpoint.response[this.sightings[endpoint.id]++ % endpoint.response.length];
+  var response = endpoint.response[endpoint.hits % endpoint.response.length];
   var _ref = response.body;
 
   response.body = new Buffer(_ref != null ? _ref : 0, 'utf8');
