@@ -31,8 +31,8 @@ describe('Endpoints', function () {
       it('should assign id to entered endpoint', function () {
         sut.create(data, callback);
 
-        assert(sut.db[1] != null);
-        assert(sut.db[2] == null);
+        assert.notEqual(sut.db[1], null);
+        assert.equal(sut.db[2], null);
       });
 
       it('should call callback', function () {
@@ -44,9 +44,9 @@ describe('Endpoints', function () {
       it('should assign ids to entered endpoints', function () {
         sut.create([data, data], callback);
 
-        assert(sut.db[1] != null);
-        assert(sut.db[2] != null);
-        assert(sut.db[3] == null);
+        assert.notEqual(sut.db[1], null);
+        assert.notEqual(sut.db[2], null);
+        assert.equal(sut.db[3], null);
       });
 
       it('should call callback for each supplied endpoint', function () {
@@ -68,7 +68,7 @@ describe('Endpoints', function () {
 
         sut.retrieve(id, callback);
 
-        assert(callback.args[0][0] === null);
+        assert.strictEqual(callback.args[0][0], null);
         assert(callback.args[0][1]);
       });
 
@@ -150,7 +150,7 @@ describe('Endpoints', function () {
         sut.create({});
         sut.find(data, callback);
 
-        assert(callback.args[0][0] === null);
+        assert.strictEqual(callback.args[0][0], null);
         assert(callback.args[0][1]);
       });
 
@@ -194,7 +194,7 @@ describe('Endpoints', function () {
           };
 
           sut.find(data, function (err, match) {
-            assert(match.body === 'you posted "hello, there!" and "hello, there!"');
+            assert.strictEqual(match.body, 'you posted "hello, there!" and "hello, there!"');
             done();
           });
         });
@@ -217,7 +217,7 @@ describe('Endpoints', function () {
           };
           sut.find(data, callback);
 
-          assert(callback.args[0][1].body.toString().trim() === expected);
+          assert.strictEqual(callback.args[0][1].body.toString().trim(), expected);
         });
 
         it('should return binary data unmolested', function () {
@@ -240,7 +240,8 @@ describe('Endpoints', function () {
           sut.find(data, callback);
           body = callback.args[0][1].body;
 
-          assert(body instanceof Buffer && bufferEqual(body, expected));
+          assert(body instanceof Buffer);
+          assert(bufferEqual(body, expected));
         });
       });
 
@@ -422,7 +423,7 @@ describe('Endpoints', function () {
           };
           sut.find(data, callback);
 
-          assert(callback.args[0][1].body.toString() === expected);
+          assert.strictEqual(callback.args[0][1].body.toString(), expected);
         });
 
         it('should return response with body as content if file is supplied but cannot be found', function () {
@@ -442,7 +443,7 @@ describe('Endpoints', function () {
           };
           sut.find(data, callback);
 
-          assert(callback.args[0][1].body.toString() === expected);
+          assert.strictEqual(callback.args[0][1].body.toString(), expected);
         });
 
         it('should return response with file as content if file is supplied and exists', function () {
@@ -462,7 +463,7 @@ describe('Endpoints', function () {
           };
           sut.find(data, callback);
 
-          assert(callback.args[0][1].body.toString().trim() === expected);
+          assert.strictEqual(callback.args[0][1].body.toString().trim(), expected);
         });
       });
 

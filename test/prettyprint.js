@@ -8,19 +8,19 @@ describe('prettyprint', function () {
     it('should return an empty string if given no parameters', function () {
       var actual = sut.spacing();
 
-      assert(actual === '');
+      assert.strictEqual(actual, '');
     });
 
     it('should return five spaces if given 5', function () {
       var actual = sut.spacing(5);
 
-      assert(actual === '     ');
+      assert.strictEqual(actual, '     ');
     });
 
     it('should return empty string if given negative number', function () {
       var actual = sut.spacing(-5);
 
-      assert(actual === '');
+      assert.strictEqual(actual, '');
     });
   });
 
@@ -31,7 +31,7 @@ describe('prettyprint', function () {
       var words = 'one fish, two fish, red fish, blue fish'.split(' ');
       var actual = sut.wrap(words, continuationIndent, columns);
 
-      assert(actual === 'one fish, two fish, red\nfish, blue fish');
+      assert.strictEqual(actual, 'one fish, two fish, red\nfish, blue fish');
     });
 
     it('should indent before subsequent lines', function () {
@@ -40,7 +40,7 @@ describe('prettyprint', function () {
       var words = 'one fish, two fish, red fish, blue fish'.split(' ');
       var actual = sut.wrap(words, continuationIndent, columns);
 
-      assert(actual === 'one fish, two fish,\n     red fish, blue fish');
+      assert.strictEqual(actual, 'one fish, two fish,\n     red fish, blue fish');
     });
 
     it('should wrap past multiple lines', function () {
@@ -49,7 +49,7 @@ describe('prettyprint', function () {
       var words = 'one fish, two fish, red fish, blue fish'.split(' ');
       var actual = sut.wrap(words, continuationIndent, columns);
 
-      assert(actual === 'one fish,\n     two fish,\n     red fish,\n     blue fish');
+      assert.strictEqual(actual, 'one fish,\n     two fish,\n     red fish,\n     blue fish');
     });
   });
 });

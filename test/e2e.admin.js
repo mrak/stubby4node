@@ -44,7 +44,7 @@ describe('End 2 End Admin Test Suite', function () {
     this.context.url = '/ping';
 
     createRequest(this.context, function (response) {
-      assert(response.data === 'pong');
+      assert.strictEqual(response.data, 'pong');
       return done();
     });
   });
@@ -65,7 +65,7 @@ describe('End 2 End Admin Test Suite', function () {
         if (!req.hasOwnProperty(prop)) { continue; }
 
         value = req[prop];
-        assert(value === returned.request[prop]);
+        assert.strictEqual(value, returned.request[prop]);
       }
 
       done();
@@ -88,7 +88,7 @@ describe('End 2 End Admin Test Suite', function () {
       createRequest(self.context, function (response) {
         var returned = JSON.parse(response.data);
 
-        assert(returned.request.url === endpoint.request.url);
+        assert.strictEqual(returned.request.url, endpoint.request.url);
 
         done();
       });
@@ -112,7 +112,7 @@ describe('End 2 End Admin Test Suite', function () {
     createRequest(this.context, function (response) {
       var id = response.headers.location.replace(/localhost:8889\/([0-9]+)/, '$1');
 
-      assert(response.statusCode === 201);
+      assert.strictEqual(response.statusCode, 201);
 
       self.context = {
         port: port,
@@ -124,7 +124,7 @@ describe('End 2 End Admin Test Suite', function () {
       createRequest(self.context, function (response2) {
         var returned = JSON.parse(response2.data);
 
-        assert(returned.request.url === endpoint.request.url);
+        assert.strictEqual(returned.request.url, endpoint.request.url);
         done();
       });
     });
@@ -136,7 +136,7 @@ describe('End 2 End Admin Test Suite', function () {
     this.context.method = 'delete';
 
     createRequest(this.context, function (response) {
-      assert(response.statusCode === 204);
+      assert.strictEqual(response.statusCode, 204);
 
       self.context = {
         port: port,
@@ -146,7 +146,7 @@ describe('End 2 End Admin Test Suite', function () {
       };
 
       createRequest(self.context, function (response2) {
-        assert(response2.statusCode === 404);
+        assert.strictEqual(response2.statusCode, 404);
         done();
       });
     });

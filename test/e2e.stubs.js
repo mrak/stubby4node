@@ -42,7 +42,7 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'get';
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 200);
+        assert.strictEqual(response.statusCode, 200);
         done();
       });
     });
@@ -52,7 +52,7 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'put';
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 200);
+        assert.strictEqual(response.statusCode, 200);
         done();
       });
     });
@@ -62,7 +62,7 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'post';
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 200);
+        assert.strictEqual(response.statusCode, 200);
         done();
       });
     });
@@ -72,7 +72,7 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'delete';
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 200);
+        assert.strictEqual(response.statusCode, 200);
         done();
       });
     });
@@ -82,7 +82,7 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'head';
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 200);
+        assert.strictEqual(response.statusCode, 200);
         done();
       });
     });
@@ -93,27 +93,27 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'delete';
 
       createRequest(self.context, function (response) {
-        assert(response.statusCode === 200);
+        assert.strictEqual(response.statusCode, 200);
         self.context.finished = false;
         self.context.url = '/basic/all';
         self.context.method = 'get';
 
         createRequest(self.context, function (response2) {
-          assert(response2.statusCode === 200);
+          assert.strictEqual(response2.statusCode, 200);
 
           self.context.finished = false;
           self.context.url = '/basic/all';
           self.context.method = 'put';
 
           createRequest(self.context, function (response3) {
-            assert(response3.statusCode === 200);
+            assert.strictEqual(response3.statusCode, 200);
 
             self.context.finished = false;
             self.context.url = '/basic/all';
             self.context.method = 'post';
 
             createRequest(self.context, function (response4) {
-              assert(response4.statusCode === 200);
+              assert.strictEqual(response4.statusCode, 200);
 
               self.context.port = 8889;
               self.context.finished = false;
@@ -121,8 +121,8 @@ describe('End 2 End Stubs Test Suite', function () {
               self.context.method = 'get';
 
               createRequest(self.context, function (response5) {
-                assert(response5.statusCode === 200);
-                assert(JSON.parse(response5.data).hits === 4);
+                assert.strictEqual(response5.statusCode, 200);
+                assert.strictEqual(JSON.parse(response5.data).hits, 4);
                 done();
               });
             });
@@ -142,8 +142,8 @@ describe('End 2 End Stubs Test Suite', function () {
       createRequest(this.context, function (response) {
         var headers = response.headers;
 
-        assert(headers['access-control-allow-origin'] === expected);
-        assert(headers['access-control-allow-credentials'] === 'true');
+        assert.strictEqual(headers['access-control-allow-origin'], expected);
+        assert.strictEqual(headers['access-control-allow-credentials'], 'true');
         done();
       });
     });
@@ -156,7 +156,7 @@ describe('End 2 End Stubs Test Suite', function () {
       createRequest(this.context, function (response) {
         var headers = response.headers;
 
-        assert.deepEqual(headers['set-cookie'], expected);
+        assert.deepStrictEqual(headers['set-cookie'], expected);
         done();
       });
     });
@@ -168,7 +168,7 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'get';
 
       createRequest(this.context, function (response) {
-        assert(response.data === 'plain text');
+        assert.strictEqual(response.data, 'plain text');
         done();
       });
     });
@@ -178,8 +178,8 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'get';
 
       createRequest(this.context, function (response) {
-        assert(response.data.trim() === '{"property":"value"}');
-        assert(response.headers['content-type'] === 'application/json');
+        assert.strictEqual(response.data.trim(), '{"property":"value"}');
+        assert.strictEqual(response.headers['content-type'], 'application/json');
         done();
       });
     });
@@ -189,7 +189,7 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'get';
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 420);
+        assert.strictEqual(response.statusCode, 420);
         done();
       });
     });
@@ -203,7 +203,7 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'get';
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 200);
+        assert.strictEqual(response.statusCode, 200);
         done();
       });
     });
@@ -217,7 +217,7 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'get';
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 404);
+        assert.strictEqual(response.statusCode, 404);
         done();
       });
     });
@@ -227,8 +227,8 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'get';
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 200);
-        assert(response.data === 'query as array works!');
+        assert.strictEqual(response.statusCode, 200);
+        assert.strictEqual(response.data, 'query as array works!');
         done();
       });
     });
@@ -244,9 +244,9 @@ describe('End 2 End Stubs Test Suite', function () {
       };
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 201);
-        assert(response.headers.location === '/some/endpoint/id');
-        assert(response.data === 'resource has been created');
+        assert.strictEqual(response.statusCode, 201);
+        assert.strictEqual(response.headers.location, '/some/endpoint/id');
+        assert.strictEqual(response.data, 'resource has been created');
         done();
       });
     });
@@ -260,9 +260,9 @@ describe('End 2 End Stubs Test Suite', function () {
       };
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 201);
-        assert(response.headers.location === '/some/endpoint/id');
-        assert(response.data === 'resource has been created');
+        assert.strictEqual(response.statusCode, 201);
+        assert.strictEqual(response.headers.location, '/some/endpoint/id');
+        assert.strictEqual(response.data, 'resource has been created');
         done();
       });
     });
@@ -280,7 +280,7 @@ describe('End 2 End Stubs Test Suite', function () {
         var elapsed = new Date() - start;
 
         assert(elapsed > 1800 && elapsed < 3200);
-        assert(response.data === 'updated');
+        assert.strictEqual(response.data, 'updated');
 
         done();
       });
@@ -293,7 +293,7 @@ describe('End 2 End Stubs Test Suite', function () {
         this.context.url = '/file/body/missingfile';
 
         createRequest(this.context, function (response) {
-          assert(response.data === 'body contents!');
+          assert.strictEqual(response.data, 'body contents!');
           done();
         });
       });
@@ -302,7 +302,7 @@ describe('End 2 End Stubs Test Suite', function () {
         this.context.url = '/file/body';
 
         createRequest(this.context, function (response) {
-          assert(response.data.trim() === 'file contents!');
+          assert.strictEqual(response.data.trim(), 'file contents!');
           done();
         });
       });
@@ -315,7 +315,7 @@ describe('End 2 End Stubs Test Suite', function () {
         this.context.post = 'post contents!';
 
         createRequest(this.context, function (response) {
-          assert(response.statusCode === 200);
+          assert.strictEqual(response.statusCode, 200);
           done();
         });
       });
@@ -326,7 +326,7 @@ describe('End 2 End Stubs Test Suite', function () {
         this.context.post = 'file contents!';
 
         createRequest(this.context, function (response) {
-          assert(response.statusCode === 200);
+          assert.strictEqual(response.statusCode, 200);
           done();
         });
       });
@@ -339,7 +339,7 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'post';
 
       createRequest(this.context, function (response) {
-        assert(response.data === 'decoded matched!');
+        assert.strictEqual(response.data, 'decoded matched!');
         done();
       });
     });
@@ -349,7 +349,7 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'post';
 
       createRequest(this.context, function (response) {
-        assert(response.data === 'decoded matched!');
+        assert.strictEqual(response.data, 'decoded matched!');
         done();
       });
     });
