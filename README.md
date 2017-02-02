@@ -51,7 +51,7 @@ Development is on x86-64 Linux.
 
 ## Starting the Server(s)
 
-Some systems require you to `sudo` before running services on port certain ports (like 80)
+Some systems require you to `sudo` before running services on certain ports (like 80)
 
     [sudo] stubby
 
@@ -493,7 +493,7 @@ Submit `POST` requests to `localhost:8889`, `PUT` requests to `localhost:8889/:i
          Content-Type: application/json
       latency: 1000
       status: 200
-      body: You're request was successfully processed!
+      body: Your request was successfully processed!
 
 -  request:
       url: ^/path/to/anotherThing
@@ -541,7 +541,7 @@ Submit `POST` requests to `localhost:8889`, `PUT` requests to `localhost:8889/:i
         "Content-Type": "application/json"
       },
       "latency": 1000,
-      "body": "You're request was successfully processed!"
+      "body": "Your request was successfully processed!"
     }
   },
   {
