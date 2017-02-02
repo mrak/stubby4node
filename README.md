@@ -51,7 +51,7 @@ Development is on x86-64 Linux.
 
 ## Starting the Server(s)
 
-Some systems require you to `sudo` before running services on port certain ports (like 80)
+Some systems require you to `sudo` before running services on certain ports (like 80)
 
     [sudo] stubby
 
