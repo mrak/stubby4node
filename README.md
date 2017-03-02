@@ -39,13 +39,7 @@ This will install `stubby` as a command in your `PATH`. Leave off the `-g` flag 
 
 ## Supported Runtimes
 
-* [node.js](http://nodejs.org/)
-  * iojs
-  * 0.10.x
-  * 0.12.x
-  * 4.x
-  * 5.x
-  * node latest
+* [node.js](http://nodejs.org/) - latest and currently supported LTS versions
 
 Development is on x86-64 Linux.
 
