@@ -12,7 +12,7 @@ describe('End 2 End Admin Test Suite', function () {
   var sut;
   var port = 8889;
 
-  function stopStubby(finish) {
+  function stopStubby (finish) {
     if (sut != null) {
       sut.stop(finish);
     } else {
@@ -21,7 +21,7 @@ describe('End 2 End Admin Test Suite', function () {
   }
 
   beforeEach(function (done) {
-    function finish() {
+    function finish () {
       sut = new Stubby();
       return sut.start({
         data: endpointData

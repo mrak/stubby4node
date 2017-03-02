@@ -1,7 +1,7 @@
 'use strict';
 /* eslint-disable no-console */
 
-function stripper(args) {
+function stripper (args) {
   var key, value;
   for (key in args) {
     if (!args.hasOwnProperty(key)) { continue; }
@@ -12,7 +12,7 @@ function stripper(args) {
   return args;
 }
 
-function colorsafe(console) {
+function colorsafe (console) {
   if (process.stdout.isTTY) { return true; }
 
   console.raw = {};

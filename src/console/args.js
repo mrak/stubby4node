@@ -4,7 +4,7 @@ var pp = require('./prettyprint');
 var UNARY_FLAGS = /^-[a-zA-Z]+$/;
 var ANY_FLAG = /^-.+$/;
 
-function findOption(option, argv) {
+function findOption (option, argv) {
   var argIndex = -1;
 
   if (option.flag != null) {
@@ -18,7 +18,7 @@ function findOption(option, argv) {
   return argIndex;
 }
 
-function indexOfFlag(option, argv) {
+function indexOfFlag (option, argv) {
   var index = -1;
 
   argv.forEach(function (flag) {
@@ -30,11 +30,11 @@ function indexOfFlag(option, argv) {
   return index;
 }
 
-function optionSkipped(index, argv) {
+function optionSkipped (index, argv) {
   return ANY_FLAG.test(argv[index + 1]);
 }
 
-function unaryCheck(option, argv) {
+function unaryCheck (option, argv) {
   if (option.name != null && argv.indexOf('--' + option.name) !== -1) {
     return true;
   }
@@ -44,7 +44,7 @@ function unaryCheck(option, argv) {
   return indexOfFlag(option, argv) !== -1;
 }
 
-function pullPassedValue(option, argv) {
+function pullPassedValue (option, argv) {
   var argIndex;
 
   if (option.param == null) { return unaryCheck(option, argv); }
@@ -58,7 +58,7 @@ function pullPassedValue(option, argv) {
   return option.default;
 }
 
-function parse(options, argv) {
+function parse (options, argv) {
   var args = {};
 
   if (argv == null) { argv = process.argv; }
@@ -71,7 +71,7 @@ function parse(options, argv) {
   return args;
 }
 
-function helpText(options, programName) {
+function helpText (options, programName) {
   var inlineList = [];
   var firstColumn = {};
   var helpLines = [];

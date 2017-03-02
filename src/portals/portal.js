@@ -4,7 +4,7 @@ var CLI = require('../console/cli');
 var out = require('../console/out');
 var http = require('http');
 
-function Portal() {
+function Portal () {
   this.name = 'portal';
 }
 

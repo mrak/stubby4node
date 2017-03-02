@@ -3,7 +3,7 @@
 var Endpoint = require('../src/models/endpoint');
 var assert = require('assert');
 
-function waitsFor(fn, message, range, finish, time) {
+function waitsFor (fn, message, range, finish, time) {
   var temp, seconds, nanoseconds, elapsed;
   var min = range[0] != null ? range[0] : 0;
   var max = range[1] != null ? range[1] : range;
@@ -27,7 +27,7 @@ function waitsFor(fn, message, range, finish, time) {
   }, 1);
 }
 
-function compareOneWay(left, right) {
+function compareOneWay (left, right) {
   var key, value;
 
   for (key in left) {
@@ -47,7 +47,7 @@ function compareOneWay(left, right) {
   return true;
 }
 
-function compareObjects(one, two) {
+function compareObjects (one, two) {
   return compareOneWay(one, two) && compareOneWay(two, one);
 }
 

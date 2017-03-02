@@ -7,7 +7,7 @@ var url = require('url');
 var q = require('querystring');
 var out = require('../console/out');
 
-function Endpoint(endpoint, datadir) {
+function Endpoint (endpoint, datadir) {
   if (endpoint == null) { endpoint = {}; }
   if (datadir == null) { datadir = process.cwd(); }
 
@@ -61,7 +61,7 @@ Endpoint.prototype.matches = function (request) {
   return matches;
 };
 
-function record(me, urlToRecord) {
+function record (me, urlToRecord) {
   var recorder;
   var recording = {};
   var parsed = url.parse(urlToRecord);
@@ -103,11 +103,11 @@ function record(me, urlToRecord) {
   return recording;
 }
 
-function normalizeEOL(string) {
+function normalizeEOL (string) {
   return string.replace(/\r\n/g, '\n').replace(/\s*$/, '');
 }
 
-function purifyRequest(incoming) {
+function purifyRequest (incoming) {
   var outgoing;
 
   if (incoming == null) { incoming = {}; }
@@ -130,7 +130,7 @@ function purifyRequest(incoming) {
   return outgoing;
 }
 
-function purifyResponse(me, incoming) {
+function purifyResponse (me, incoming) {
   var outgoing = [];
 
   if (incoming == null) { incoming = []; }
@@ -154,7 +154,7 @@ function purifyResponse(me, incoming) {
   return outgoing;
 }
 
-function purifyHeaders(incoming) {
+function purifyHeaders (incoming) {
   var prop;
   var outgoing = {};
 
@@ -167,7 +167,7 @@ function purifyHeaders(incoming) {
   return outgoing;
 }
 
-function purifyAuthorization(headers) {
+function purifyAuthorization (headers) {
   var auth, userpass;
 
   if (headers == null || headers.authorization == null) { return headers; }
@@ -182,7 +182,7 @@ function purifyAuthorization(headers) {
   return headers;
 }
 
-function purifyBody(body) {
+function purifyBody (body) {
   if (body == null) { body = ''; }
 
   if (typeof body === 'object') {
@@ -192,7 +192,7 @@ function purifyBody(body) {
   return body;
 }
 
-function pruneUndefined(incoming) {
+function pruneUndefined (incoming) {
   var key, value;
   var outgoing = {};
 
@@ -206,7 +206,7 @@ function pruneUndefined(incoming) {
   return outgoing;
 }
 
-function compareHashMaps(configured, incoming) {
+function compareHashMaps (configured, incoming) {
   var key;
   var headers = {};
   if (configured == null) { configured = {}; }
@@ -221,7 +221,7 @@ function compareHashMaps(configured, incoming) {
   return headers;
 }
 
-function compareObjects(configured, incoming) {
+function compareObjects (configured, incoming) {
   var key;
 
   for (key in configured) {
@@ -235,7 +235,7 @@ function compareObjects(configured, incoming) {
   return true;
 }
 
-function matchRegex(compileMe, testMe) {
+function matchRegex (compileMe, testMe) {
   if (testMe == null) { testMe = ''; }
   return String(testMe).match(RegExp(compileMe, 'm'));
 }

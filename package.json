@@ -35,7 +35,7 @@
     "webroot"
   ],
   "scripts": {
-    "lint": "eslint src test",
+    "lint": "semistandard",
     "test": "npm run lint && mocha --recursive test --reporter dot",
     "start": "bin/stubby"
   },
@@ -56,12 +56,23 @@
   },
   "devDependencies": {
     "buffer-equal": "^1.0.0",
-    "eslint": "^1.2.1",
     "mocha": "^3.1.2",
+    "semistandard": "^9.2.1",
     "sinon": "^1.17.6"
   },
   "license": "Apache-2.0",
   "engine": {
     "node": ">=0.10"
+  },
+  "semistandard": {
+    "ignore": [
+      "webroot/js/external"
+    ],
+    "globals": [
+      "it",
+      "describe",
+      "beforeEach",
+      "afterEach"
+    ]
   }
 }

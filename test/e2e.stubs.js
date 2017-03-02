@@ -11,7 +11,7 @@ describe('End 2 End Stubs Test Suite', function () {
   var sut = null;
   var port = 8882;
 
-  function stopStubby(finish) {
+  function stopStubby (finish) {
     if (sut != null) {
       return sut.stop(finish);
     }
@@ -24,7 +24,7 @@ describe('End 2 End Stubs Test Suite', function () {
       port: port
     };
 
-    function finish() {
+    function finish () {
       sut = new Stubby();
       sut.start({
         data: endpointData

@@ -16,7 +16,7 @@ var options = [{
   name: 'cert',
   flag: 'c',
   param: 'file',
-  default: __dirname + '/../../tls/cert.pem',
+  default: path.resolve(__dirname, '../../tls/cert.pem'),
   description: 'Certificate file. Use with --key.'
 }, {
   name: 'data',
@@ -32,7 +32,7 @@ var options = [{
   name: 'key',
   flag: 'k',
   param: 'file',
-  default: __dirname + '/../../tls/key.pem',
+  default: path.resolve(__dirname, '../../tls/key.pem'),
   description: 'Private key file. Use with --cert.'
 }, {
   name: 'location',
@@ -71,7 +71,7 @@ var options = [{
   description: 'Auto-reload data file when edits are made.'
 }];
 
-function help(go) {
+function help (go) {
   if (go == null) { go = false; }
   if (!go) { return; }
 
@@ -79,7 +79,7 @@ function help(go) {
   process.exit();
 }
 
-function version(go) {
+function version (go) {
   var ver = (require('../../package.json')).version;
 
   if (!go) { return ver; }
@@ -88,7 +88,7 @@ function version(go) {
   process.exit();
 }
 
-function data(filename) {
+function data (filename) {
   var filedata;
 
   if (filename === null) { return []; }
@@ -109,11 +109,11 @@ function data(filename) {
   }
 }
 
-function key(file) { return readFile('k', 'key', file, 'pem'); }
-function cert(file) { return readFile('c', 'cert', file, 'pem'); }
-function pfx(file) { return readFile('p', 'pfx', file, 'pfx'); }
+function key (file) { return readFile('k', 'key', file, 'pem'); }
+function cert (file) { return readFile('c', 'cert', file, 'pem'); }
+function pfx (file) { return readFile('p', 'pfx', file, 'pfx'); }
 
-function readFile(flag, option, filename, type) {
+function readFile (flag, option, filename, type) {
   var filedata, extension;
 
   if (filename === null) { return null; }
@@ -131,7 +131,7 @@ function readFile(flag, option, filename, type) {
   return filedata.trim();
 }
 
-function getArgs(argv) {
+function getArgs (argv) {
   var self = this; // eslint-disable-line
   var params;
 

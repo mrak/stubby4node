@@ -8,7 +8,7 @@ var Stubby = require('../src/main').Stubby;
 describe('main', function () {
   var sut, options;
 
-  function stopStubby(finish) {
+  function stopStubby (finish) {
     if (sut != null) {
       sut.stop(finish);
     } else {
@@ -17,7 +17,7 @@ describe('main', function () {
   }
 
   beforeEach(function (done) {
-    function finish() {
+    function finish () {
       sut = new Stubby();
       done();
     }

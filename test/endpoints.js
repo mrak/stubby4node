@@ -193,7 +193,7 @@ describe('Endpoints', function () {
             post: 'hello, there!'
           };
 
-          sut.find(data, function (err, match) {
+          sut.find(data, function (_, match) {
             assert.strictEqual(match.body, 'you posted "hello, there!" and "hello, there!"');
             done();
           });

@@ -9,9 +9,9 @@ var clone = require('../lib/clone');
 var NOT_FOUND = "Endpoint with the given id doesn't exist.";
 var NO_MATCH = "Endpoint with given request doesn't exist.";
 
-function noop() {}
+function noop () {}
 
-function Endpoints(data, callback, datadir) {
+function Endpoints (data, callback, datadir) {
   if (callback == null) { callback = noop; }
   if (datadir == null) { datadir = process.cwd(); }
 
@@ -26,7 +26,7 @@ Endpoints.prototype.create = function (data, callback) {
 
   if (callback == null) { callback = noop; }
 
-  function insert(item) {
+  function insert (item) {
     item = new Endpoint(item, self.datadir);
     item.id = ++self.lastId;
     self.db[item.id] = item;
@@ -129,7 +129,7 @@ Endpoints.prototype.found = function (endpoint, captures, callback) {
   }
 };
 
-function applyCaptures(obj, captures) {
+function applyCaptures (obj, captures) {
   var results, key, value;
   if (typeof obj === 'string') {
     return ejs.render(obj.replace(/<%/g, '<%='), captures);

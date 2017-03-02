@@ -12,14 +12,14 @@ var https = require('https');
 var contract = require('./models/contract');
 var couldNotSave = "The supplied endpoint data couldn't be saved";
 
-function noop() {}
+function noop () {}
 
-function onListening(portal, port, protocol, location) {
+function onListening (portal, port, protocol, location) {
   if (protocol == null) { protocol = 'http'; }
   out.status(portal + ' portal running at ' + protocol + '://' + location + ':' + port);
 }
 
-function onError(err, port, location) {
+function onError (err, port, location) {
   var msg;
 
   switch (err.code) {
@@ -40,11 +40,11 @@ function onError(err, port, location) {
   process.exit();
 }
 
-function onEndpointLoaded(err, endpoint) {
+function onEndpointLoaded (_, endpoint) {
   out.notice('Loaded: ' + endpoint.request.method + ' ' + endpoint.request.url);
 }
 
-function setupStartOptions(options, callback) {
+function setupStartOptions (options, callback) {
   var defaults, key;
 
   options = options == null ? {} : options;
@@ -68,7 +68,7 @@ function setupStartOptions(options, callback) {
   return [options, callback];
 }
 
-function createHttpsOptions(options) {
+function createHttpsOptions (options) {
   var httpsOptions = options._httpsOptions || {};
 
   if (options.key && options.cert) {
@@ -81,7 +81,7 @@ function createHttpsOptions(options) {
   return httpsOptions;
 }
 
-function Stubby() {
+function Stubby () {
   this.endpoints = new Endpoints();
   this.stubsPortal = null;
   this.tlsPortal = null;

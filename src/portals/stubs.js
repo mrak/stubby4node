@@ -3,7 +3,7 @@
 var Portal = require('./portal').Portal;
 var qs = require('querystring');
 
-function Stubs(endpoints) {
+function Stubs (endpoints) {
   Portal.call(this);
   this.server = this.server.bind(this);
   this.Endpoints = endpoints;
@@ -37,7 +37,7 @@ Stubs.prototype.server = function (request, response) {
       query: extractQuery(request.url)
     };
 
-    function callback(err, endpointResponse) {
+    function callback (err, endpointResponse) {
       if (err) {
         self.writeHead(response, 404, {});
         self.responded(404, request.url, 'is not a registered endpoint');
@@ -60,11 +60,11 @@ Stubs.prototype.server = function (request, response) {
   });
 };
 
-function extractUrl(url) {
+function extractUrl (url) {
   return url.replace(/(.*)\?.*/, '$1');
 }
 
-function extractQuery(url) {
+function extractQuery (url) {
   return qs.parse(url.replace(/^.*\?(.*)$/, '$1'));
 }
 
