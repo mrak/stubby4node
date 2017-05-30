@@ -25,6 +25,11 @@ A configurable server for mocking/stubbing external systems during development.
 
 ## Installation
 
+### via docker
+
+    docker build -t stubby .
+    docker run -d -P stubby
+
 ### via npm
 
     npm install -g stubby
