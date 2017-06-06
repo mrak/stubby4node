@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 var CLI = require('../src/console/cli');
 var stubby = new (require('../src/main').Stubby);
 var options = CLI.getArgs();

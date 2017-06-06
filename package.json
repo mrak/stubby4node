@@ -37,7 +37,7 @@
   "scripts": {
     "lint": "semistandard",
     "test": "npm run lint && mocha --recursive test --reporter dot",
-    "start": "bin/stubby"
+    "start": "node bin/stubby.js"
   },
   "bin": {
     "stubby": "bin/stubby"
