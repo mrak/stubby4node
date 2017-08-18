@@ -147,7 +147,6 @@ A demonstration using regular expressions:
     * GET
     * POST
     * PUT
-    * POST
     * DELETE
     * etc.
 
