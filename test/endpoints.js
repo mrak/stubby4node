@@ -405,7 +405,7 @@ describe('Endpoints', function () {
         });
       });
 
-      describe('post versus from', function () {
+      describe('post versus form', function () {
         it('should match response with form params', function () {
           var expected = {
             status: 200
@@ -414,6 +414,50 @@ describe('Endpoints', function () {
             request: {
               url: '/testing',
               form: {email: 'name@mail.com', var2: 'val2'},
+              method: 'post'
+            },
+            response: expected
+          });
+          data = {
+            url: '/testing',
+            post: 'email=name%40mail.com&var2=val2',
+            method: 'POST'
+          };
+          sut.find(data, callback);
+
+          assert(callback.calledWith(null));
+        });
+
+        it('should not match response with incorrect form params', function () {
+          var expected = {
+            status: 200
+          };
+          sut.create({
+            request: {
+              url: '/testing',
+              form: {email: 'name@mail.com'},
+              method: 'post'
+            },
+            response: expected
+          });
+          data = {
+            url: '/testing',
+            post: 'email=fail%40mail.com',
+            method: 'POST'
+          };
+          sut.find(data, callback);
+
+          assert(callback.calledWith('Endpoint with given request doesn\'t exist.'));
+        });
+
+        it('should match response with extra form params', function () {
+          var expected = {
+            status: 200
+          };
+          sut.create({
+            request: {
+              url: '/testing',
+              form: {email: 'name@mail.com'},
               method: 'post'
             },
             response: expected
