@@ -10,7 +10,7 @@ var interval = 3000;
 var intervalId = null;
 var watching = false;
 
-function Watcher(endpoints, filename) {
+function Watcher (endpoints, filename) {
   var shasum;
 
   this.endpoints = endpoints;

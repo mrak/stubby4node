@@ -8,7 +8,7 @@ var Stubby = require('../src/main').Stubby;
 describe('main', function () {
   var sut, options;
 
-  function stopStubby(finish) {
+  function stopStubby (finish) {
     if (sut != null) {
       sut.stop(finish);
     } else {
@@ -17,7 +17,7 @@ describe('main', function () {
   }
 
   beforeEach(function (done) {
-    function finish() {
+    function finish () {
       sut = new Stubby();
       done();
     }
@@ -43,7 +43,7 @@ describe('main', function () {
           status: 800
         }
       }, function (err) {
-        assert(err === "The supplied endpoint data couldn't be saved");
+        assert.strictEqual(err, "The supplied endpoint data couldn't be saved");
         done();
       });
     });
@@ -63,7 +63,7 @@ describe('main', function () {
           status: 200
         }
       }, function (err) {
-        assert(err === null);
+        assert.strictEqual(err, null);
         done();
       });
     });
@@ -79,7 +79,7 @@ describe('main', function () {
           status: 800
         }
       }, function (err) {
-        assert(err === "The supplied endpoint data couldn't be saved");
+        assert.strictEqual(err, "The supplied endpoint data couldn't be saved");
         done();
       });
     });
@@ -93,7 +93,7 @@ describe('main', function () {
           status: 200
         }
       }, function (err) {
-        assert(err === null);
+        assert.strictEqual(err, null);
         done();
       });
     });
@@ -122,21 +122,21 @@ describe('main', function () {
     describe('options', function () {
       it('should default stub port to CLI port default', function (done) {
         sut.start(options, function () {
-          assert(options.stubs === defaults.stubs);
+          assert.strictEqual(options.stubs, defaults.stubs);
           done();
         });
       });
 
       it('should default admin port to CLI port default', function (done) {
         sut.start(options, function () {
-          assert(options.admin === defaults.admin);
+          assert.strictEqual(options.admin, defaults.admin);
           done();
         });
       });
 
       it('should default location to CLI default', function (done) {
         sut.start(options, function () {
-          assert(options.location === defaults.location);
+          assert.strictEqual(options.location, defaults.location);
           done();
         });
       });
@@ -144,21 +144,21 @@ describe('main', function () {
       it('should default data to empty array', function (done) {
         sut.start(options, function () {
           assert(options.data instanceof Array);
-          assert(options.data.length === 0);
+          assert.strictEqual(options.data.length, 0);
           done();
         });
       });
 
       it('should default key to null', function (done) {
         sut.start(options, function () {
-          assert(options.key === defaults.key);
+          assert.strictEqual(options.key, defaults.key);
           done();
         });
       });
 
       it('should default cert to null', function (done) {
         sut.start(options, function () {
-          assert(options.cert === defaults.cert);
+          assert.strictEqual(options.cert, defaults.cert);
           done();
         });
       });

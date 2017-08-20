@@ -117,7 +117,7 @@ var request = {
   }
 };
 
-function contract(endpoint) {
+function contract (endpoint) {
   var results, property;
   var errors = [];
 

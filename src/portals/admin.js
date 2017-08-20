@@ -6,7 +6,7 @@ var ns = require('node-static');
 var path = require('path');
 var status = new ns.Server(path.resolve(__dirname, '../../webroot'));
 
-function Admin(endpoints) {
+function Admin (endpoints) {
   Portal.call(this);
   this.server = this.server.bind(this);
   this.endpoints = endpoints;
@@ -55,7 +55,7 @@ Admin.prototype.goDELETE = function (request, response) {
 
   if (!id) { return this.notSupported(response); }
 
-  function callback(err) {
+  function callback (err) {
     if (err) { self.notFound(response); } else { self.noContent(response); }
   }
 
@@ -75,7 +75,7 @@ Admin.prototype.goGET = function (request, response) {
     return this.endpoints.retrieve(id, callback);
   }
 
-  callback = function (err, data) {
+  callback = function (_, data) {
     if (data.length === 0) { self.noContent(response); } else { self.ok(response, data); }
   };
 
@@ -91,7 +91,7 @@ Admin.prototype.processPUT = function (id, data, response) {
   errors = this.contract(data);
   if (errors) { return this.badRequest(response, errors); }
 
-  function callback(err) {
+  function callback (err) {
     if (err) { self.notFound(response); } else { self.noContent(response); }
   }
 
@@ -106,7 +106,7 @@ Admin.prototype.processPOST = function (data, response, request) {
 
   errors = this.contract(data);
   if (errors) { return this.badRequest(response, errors); }
-  function callback(err, endpoint) {
+  function callback (_, endpoint) {
     self.created(response, request, endpoint.id);
   }
 

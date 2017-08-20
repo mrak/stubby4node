@@ -2,12 +2,12 @@
 
 var times = require('../prototype/times'); // eslint-disable-line
 
-function spacing(length) {
+function spacing (length) {
   if (length == null) { length = 0; }
   return ' '.times(length);
 }
 
-function wrap(tokens, continuation, columns) {
+function wrap (tokens, continuation, columns) {
   var wrapped, gutter;
 
   if (continuation == null) { continuation = 0; }

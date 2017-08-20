@@ -35,7 +35,7 @@ describe('CLI', function () {
 
         var actual = sut.getArgs([]);
 
-        assert(actual.admin === expected);
+        assert.strictEqual(actual.admin, expected);
       });
 
       it('should return supplied value when provided', function () {
@@ -43,13 +43,13 @@ describe('CLI', function () {
 
         var actual = sut.getArgs(['-a', expected]);
 
-        assert(actual.admin === expected);
+        assert.strictEqual(actual.admin, expected);
       });
 
       it('should return supplied value when provided with full flag', function () {
         var expected = '81';
         var actual = sut.getArgs(['--admin', expected]);
-        assert(actual.admin === expected);
+        assert.strictEqual(actual.admin, expected);
       });
     });
 
@@ -59,7 +59,7 @@ describe('CLI', function () {
 
         var actual = sut.getArgs([]);
 
-        assert(actual.stubs === expected);
+        assert.strictEqual(actual.stubs, expected);
       });
 
       it('should return supplied value when provided', function () {
@@ -67,13 +67,13 @@ describe('CLI', function () {
 
         var actual = sut.getArgs(['-s', expected]);
 
-        assert(actual.stubs === expected);
+        assert.strictEqual(actual.stubs, expected);
       });
 
       it('should return supplied value when provided with full flag', function () {
         var expected = '80';
         var actual = sut.getArgs(['--stubs', expected]);
-        assert(actual.stubs === expected);
+        assert.strictEqual(actual.stubs, expected);
       });
     });
 
@@ -83,7 +83,7 @@ describe('CLI', function () {
 
         var actual = sut.getArgs([]);
 
-        assert(actual.tls === expected);
+        assert.strictEqual(actual.tls, expected);
       });
 
       it('should return supplied value when provided', function () {
@@ -91,7 +91,7 @@ describe('CLI', function () {
 
         var actual = sut.getArgs(['-t', expected]);
 
-        assert(actual.tls === expected);
+        assert.strictEqual(actual.tls, expected);
       });
 
       it('should return supplied value when provided with full flag', function () {
@@ -99,7 +99,7 @@ describe('CLI', function () {
 
         var actual = sut.getArgs(['--tls', expected]);
 
-        assert(actual.tls === expected);
+        assert.strictEqual(actual.tls, expected);
       });
     });
 
@@ -109,7 +109,7 @@ describe('CLI', function () {
 
         var actual = sut.getArgs([]);
 
-        assert(actual.location === expected);
+        assert.strictEqual(actual.location, expected);
       });
 
       it('should return supplied value when provided', function () {
@@ -117,7 +117,7 @@ describe('CLI', function () {
 
         var actual = sut.getArgs(['-l', expected]);
 
-        assert(actual.location === expected);
+        assert.strictEqual(actual.location, expected);
       });
 
       it('should return supplied value when provided with full flag', function () {
@@ -125,7 +125,7 @@ describe('CLI', function () {
 
         var actual = sut.getArgs(['--location', expected]);
 
-        assert(actual.location === expected);
+        assert.strictEqual(actual.location, expected);
       });
     });
 
@@ -192,12 +192,12 @@ describe('CLI', function () {
 
     it('should be about to parse json file with array', function () {
       var actual = sut.getArgs(['-d', 'test/data/cli.getData.json']);
-      assert.deepEqual(actual.data, expected);
+      assert.deepStrictEqual(actual.data, expected);
     });
 
     it('should be about to parse yaml file with array', function () {
       var actual = sut.getArgs(['-d', 'test/data/cli.getData.yaml']);
-      assert.deepEqual(actual.data, expected);
+      assert.deepStrictEqual(actual.data, expected);
     });
   });
 
@@ -207,7 +207,7 @@ describe('CLI', function () {
 
       var actual = sut.key('test/data/cli.getKey.pem');
 
-      assert(actual === expected);
+      assert.strictEqual(actual, expected);
     });
   });
 
@@ -217,7 +217,7 @@ describe('CLI', function () {
     it('should return contents of file', function () {
       var actual = sut.cert('test/data/cli.getCert.pem');
 
-      assert(actual === expected);
+      assert.strictEqual(actual, expected);
     });
   });
 
@@ -227,7 +227,7 @@ describe('CLI', function () {
 
       var actual = sut.pfx('test/data/cli.getPfx.pfx');
 
-      assert(actual === expected);
+      assert.strictEqual(actual, expected);
     });
   });
 
@@ -244,7 +244,7 @@ describe('CLI', function () {
         cert: 'a certificate',
         pfx: 'a pfx',
         tls: '443',
-        mute: true,
+        quiet: true,
         watch: filename,
         datadir: process.cwd(),
         help: undefined, // eslint-disable-line no-undefined
@@ -255,9 +255,9 @@ describe('CLI', function () {
       this.sandbox.stub(sut, 'cert').returns(expected.cert);
       this.sandbox.stub(sut, 'pfx').returns(expected.pfx);
 
-      actual = sut.getArgs(['-s', expected.stubs, '-a', expected.admin, '-d', filename, '-l', expected.location, '-k', 'mocked', '-c', 'mocked', '-p', 'mocked', '-t', expected.tls, '-m', '-w']);
+      actual = sut.getArgs(['-s', expected.stubs, '-a', expected.admin, '-d', filename, '-l', expected.location, '-k', 'mocked', '-c', 'mocked', '-p', 'mocked', '-t', expected.tls, '-q', '-w']);
 
-      assert.deepEqual(actual, expected);
+      assert.deepStrictEqual(actual, expected);
     });
   });
 });

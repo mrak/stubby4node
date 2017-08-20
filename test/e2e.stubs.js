@@ -11,7 +11,7 @@ describe('End 2 End Stubs Test Suite', function () {
   var sut = null;
   var port = 8882;
 
-  function stopStubby(finish) {
+  function stopStubby (finish) {
     if (sut != null) {
       return sut.stop(finish);
     }
@@ -24,7 +24,7 @@ describe('End 2 End Stubs Test Suite', function () {
       port: port
     };
 
-    function finish() {
+    function finish () {
       sut = new Stubby();
       sut.start({
         data: endpointData
@@ -42,7 +42,7 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'get';
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 200);
+        assert.strictEqual(response.statusCode, 200);
         done();
       });
     });
@@ -52,7 +52,7 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'put';
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 200);
+        assert.strictEqual(response.statusCode, 200);
         done();
       });
     });
@@ -62,7 +62,7 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'post';
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 200);
+        assert.strictEqual(response.statusCode, 200);
         done();
       });
     });
@@ -72,7 +72,7 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'delete';
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 200);
+        assert.strictEqual(response.statusCode, 200);
         done();
       });
     });
@@ -82,7 +82,7 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'head';
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 200);
+        assert.strictEqual(response.statusCode, 200);
         done();
       });
     });
@@ -92,38 +92,39 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.url = '/basic/all';
       this.context.method = 'delete';
 
-      createRequest(this.context, function (response) {
-        assert(response.statusCode === 200);
-        self.context = {
-          port: port,
-          finished: false,
-          url: '/basic/all',
-          method: 'get'
-        };
+      createRequest(self.context, function (response) {
+        assert.strictEqual(response.statusCode, 200);
+        self.context.finished = false;
+        self.context.url = '/basic/all';
+        self.context.method = 'get';
 
         createRequest(self.context, function (response2) {
-          assert(response2.statusCode === 200);
+          assert.strictEqual(response2.statusCode, 200);
 
-          self.context = {
-            port: port,
-            finished: false,
-            url: '/basic/all',
-            method: 'put'
-          };
+          self.context.finished = false;
+          self.context.url = '/basic/all';
+          self.context.method = 'put';
 
           createRequest(self.context, function (response3) {
-            assert(response3.statusCode === 200);
+            assert.strictEqual(response3.statusCode, 200);
 
-            self.context = {
-              port: port,
-              finished: false,
-              url: '/basic/all',
-              method: 'post'
-            };
+            self.context.finished = false;
+            self.context.url = '/basic/all';
+            self.context.method = 'post';
 
             createRequest(self.context, function (response4) {
-              assert(response4.statusCode === 200);
-              done();
+              assert.strictEqual(response4.statusCode, 200);
+
+              self.context.port = 8889;
+              self.context.finished = false;
+              self.context.url = '/6';
+              self.context.method = 'get';
+
+              createRequest(self.context, function (response5) {
+                assert.strictEqual(response5.statusCode, 200);
+                assert.strictEqual(JSON.parse(response5.data).hits, 4);
+                done();
+              });
             });
           });
         });
@@ -141,8 +142,8 @@ describe('End 2 End Stubs Test Suite', function () {
       createRequest(this.context, function (response) {
         var headers = response.headers;
 
-        assert(headers['access-control-allow-origin'] === expected);
-        assert(headers['access-control-allow-credentials'] === 'true');
+        assert.strictEqual(headers['access-control-allow-origin'], expected);
+        assert.strictEqual(headers['access-control-allow-credentials'], 'true');
         done();
       });
     });
@@ -154,7 +155,8 @@ describe('End 2 End Stubs Test Suite', function () {
 
       createRequest(this.context, function (response) {
         var headers = response.headers;
-        assert.deepEqual(headers['set-cookie'], expected);
+
+        assert.deepStrictEqual(headers['set-cookie'], expected);
         done();
       });
     });
@@ -166,7 +168,7 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'get';
 
       createRequest(this.context, function (response) {
-        assert(response.data === 'plain text');
+        assert.strictEqual(response.data, 'plain text');
         done();
       });
     });
@@ -176,8 +178,8 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'get';
 
       createRequest(this.context, function (response) {
-        assert(response.data.trim() === '{"property":"value"}');
-        assert(response.headers['content-type'] === 'application/json');
+        assert.strictEqual(response.data.trim(), '{"property":"value"}');
+        assert.strictEqual(response.headers['content-type'], 'application/json');
         done();
       });
     });
@@ -187,7 +189,7 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'get';
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 420);
+        assert.strictEqual(response.statusCode, 420);
         done();
       });
     });
@@ -201,7 +203,7 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'get';
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 200);
+        assert.strictEqual(response.statusCode, 200);
         done();
       });
     });
@@ -215,7 +217,7 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'get';
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 404);
+        assert.strictEqual(response.statusCode, 404);
         done();
       });
     });
@@ -225,8 +227,8 @@ describe('End 2 End Stubs Test Suite', function () {
       this.context.method = 'get';
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 200);
-        assert(response.data === 'query as array works!');
+        assert.strictEqual(response.statusCode, 200);
+        assert.strictEqual(response.data, 'query as array works!');
         done();
       });
     });
@@ -242,9 +244,9 @@ describe('End 2 End Stubs Test Suite', function () {
       };
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 201);
-        assert(response.headers.location === '/some/endpoint/id');
-        assert(response.data === 'resource has been created');
+        assert.strictEqual(response.statusCode, 201);
+        assert.strictEqual(response.headers.location, '/some/endpoint/id');
+        assert.strictEqual(response.data, 'resource has been created');
         done();
       });
     });
@@ -258,9 +260,9 @@ describe('End 2 End Stubs Test Suite', function () {
       };
 
       createRequest(this.context, function (response) {
-        assert(response.statusCode === 201);
-        assert(response.headers.location === '/some/endpoint/id');
-        assert(response.data === 'resource has been created');
+        assert.strictEqual(response.statusCode, 201);
+        assert.strictEqual(response.headers.location, '/some/endpoint/id');
+        assert.strictEqual(response.data, 'resource has been created');
         done();
       });
     });
@@ -278,7 +280,7 @@ describe('End 2 End Stubs Test Suite', function () {
         var elapsed = new Date() - start;
 
         assert(elapsed > 1800 && elapsed < 3200);
-        assert(response.data === 'updated');
+        assert.strictEqual(response.data, 'updated');
 
         done();
       });
@@ -291,7 +293,7 @@ describe('End 2 End Stubs Test Suite', function () {
         this.context.url = '/file/body/missingfile';
 
         createRequest(this.context, function (response) {
-          assert(response.data === 'body contents!');
+          assert.strictEqual(response.data, 'body contents!');
           done();
         });
       });
@@ -300,7 +302,7 @@ describe('End 2 End Stubs Test Suite', function () {
         this.context.url = '/file/body';
 
         createRequest(this.context, function (response) {
-          assert(response.data.trim() === 'file contents!');
+          assert.strictEqual(response.data.trim(), 'file contents!');
           done();
         });
       });
@@ -313,7 +315,7 @@ describe('End 2 End Stubs Test Suite', function () {
         this.context.post = 'post contents!';
 
         createRequest(this.context, function (response) {
-          assert(response.statusCode === 200);
+          assert.strictEqual(response.statusCode, 200);
           done();
         });
       });
@@ -324,9 +326,31 @@ describe('End 2 End Stubs Test Suite', function () {
         this.context.post = 'file contents!';
 
         createRequest(this.context, function (response) {
-          assert(response.statusCode === 200);
+          assert.strictEqual(response.statusCode, 200);
           done();
         });
+      });
+    });
+  });
+
+  describe('encoded special character query params', function () {
+    it('should handle a query param that has been configured as decoded, sent as encoded', function (done) {
+      this.context.url = '/post/decoded/character?q=%7B';
+      this.context.method = 'post';
+
+      createRequest(this.context, function (response) {
+        assert.strictEqual(response.data, 'decoded matched!');
+        done();
+      });
+    });
+
+    it('should handle a query param that has been configured as decoded, sent as decoded', function (done) {
+      this.context.url = '/post/decoded/character?q={';
+      this.context.method = 'post';
+
+      createRequest(this.context, function (response) {
+        assert.strictEqual(response.data, 'decoded matched!');
+        done();
       });
     });
   });

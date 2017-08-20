@@ -38,7 +38,7 @@ describe('contract', function () {
   it('should return no errors for valid data', function () {
     var result = sut(data);
 
-    assert(result === null);
+    assert.strictEqual(result, null);
   });
 
   it('should return no errors for an array of valid data', function () {
@@ -47,7 +47,7 @@ describe('contract', function () {
     data = [data, data];
     result = sut(data);
 
-    assert(result === null);
+    assert.strictEqual(result, null);
   });
 
   it('should return an array of errors when multiple problems are found', function () {
@@ -64,7 +64,7 @@ describe('contract', function () {
     data.response.status = 'a string';
 
     results = sut([data, data2]);
-    assert.deepEqual(results, expected);
+    assert.deepStrictEqual(results, expected);
   });
 
   it('should return array of errors for an array with an invalid datum', function () {
@@ -74,7 +74,7 @@ describe('contract', function () {
 
     result = sut(data);
 
-    assert(result.length === 1);
+    assert.strictEqual(result.length, 1);
   });
 
   describe('request', function () {
@@ -84,11 +84,11 @@ describe('contract', function () {
 
       delete data.request;
       actual = sut(data);
-      assert.deepEqual(actual, expected);
+      assert.deepStrictEqual(actual, expected);
 
       data.request = null;
       actual = sut(data);
-      assert.deepEqual(actual, expected);
+      assert.deepStrictEqual(actual, expected);
     });
 
     describe('query', function () {
@@ -97,11 +97,11 @@ describe('contract', function () {
 
         delete data.request.query;
         result = sut(data);
-        assert(result === null);
+        assert.strictEqual(result, null);
 
         data.request.query = null;
         result = sut(data);
-        assert(result === null);
+        assert.strictEqual(result, null);
       });
 
       it('cannot be an array', function () {
@@ -111,7 +111,7 @@ describe('contract', function () {
 
         actual = sut(data);
 
-        assert.deepEqual(actual, expected);
+        assert.deepStrictEqual(actual, expected);
       });
 
       it('cannot be a string', function () {
@@ -121,7 +121,7 @@ describe('contract', function () {
 
         actual = sut(data);
 
-        assert.deepEqual(actual, expected);
+        assert.deepStrictEqual(actual, expected);
       });
     });
 
@@ -131,11 +131,11 @@ describe('contract', function () {
 
         data.request.headers = null;
         result = sut(data);
-        assert(result === null);
+        assert.strictEqual(result, null);
 
         delete data.request.headers;
         result = sut(data);
-        assert(result === null);
+        assert.strictEqual(result, null);
       });
 
       it('cannot be an array', function () {
@@ -145,7 +145,7 @@ describe('contract', function () {
 
         actual = sut(data);
 
-        assert.deepEqual(actual, expected);
+        assert.deepStrictEqual(actual, expected);
       });
 
       it('cannot be a string', function () {
@@ -155,7 +155,7 @@ describe('contract', function () {
 
         actual = sut(data);
 
-        assert.deepEqual(actual, expected);
+        assert.deepStrictEqual(actual, expected);
       });
     });
 
@@ -166,11 +166,11 @@ describe('contract', function () {
 
         data.request.url = null;
         result = sut(data);
-        assert.deepEqual(result, expected);
+        assert.deepStrictEqual(result, expected);
 
         delete data.request.url;
         result = sut(data);
-        assert.deepEqual(result, expected);
+        assert.deepStrictEqual(result, expected);
       });
     });
 
@@ -181,7 +181,7 @@ describe('contract', function () {
 
         result = sut(data);
 
-        assert(result === null);
+        assert.strictEqual(result, null);
       });
 
       it('should accept lowercase methods', function () {
@@ -190,7 +190,7 @@ describe('contract', function () {
 
         result = sut(data);
 
-        assert(result === null);
+        assert.strictEqual(result, null);
       });
 
       it('should have no errors for a missing method (defaults to GET)', function () {
@@ -198,11 +198,11 @@ describe('contract', function () {
 
         data.request.method = null;
         result = sut(data);
-        assert(result === null);
+        assert.strictEqual(result, null);
 
         delete data.request.method;
         result = sut(data);
-        assert(result === null);
+        assert.strictEqual(result, null);
       });
 
       it('should return error if method isnt HTTP 1.1', function () {
@@ -212,7 +212,7 @@ describe('contract', function () {
 
         result = sut(data);
 
-        assert.deepEqual(result, expected);
+        assert.deepStrictEqual(result, expected);
       });
     });
 
@@ -221,11 +221,11 @@ describe('contract', function () {
 
       data.request.post = null;
       result = sut(data);
-      assert(result === null);
+      assert.strictEqual(result, null);
 
       delete data.request.post;
       result = sut(data);
-      assert(result === null);
+      assert.strictEqual(result, null);
     });
 
     it('should return no errors for a missing json field', function () {
@@ -233,11 +233,11 @@ describe('contract', function () {
 
       data.request.json = null;
       result = sut(data);
-      assert(result === null);
+      assert.strictEqual(result, null);
 
       delete data.request.json;
       result = sut(data);
-      assert(result === null);
+      assert.strictEqual(result, null);
     });
   });
 
@@ -247,11 +247,11 @@ describe('contract', function () {
 
       data.response = null;
       result = sut(data);
-      assert(result === null);
+      assert.strictEqual(result, null);
 
       delete data.response;
       result = sut(data);
-      assert(result === null);
+      assert.strictEqual(result, null);
     });
 
     it('should be acceptable as a string', function () {
@@ -260,7 +260,7 @@ describe('contract', function () {
 
       result = sut(data);
 
-      assert(result === null);
+      assert.strictEqual(result, null);
     });
 
     it('should be acceptable as an array', function () {
@@ -269,7 +269,7 @@ describe('contract', function () {
 
       result = sut(data);
 
-      assert(result === null);
+      assert.strictEqual(result, null);
     });
 
     it('should return errors if a response in the array is invalid', function () {
@@ -283,7 +283,7 @@ describe('contract', function () {
 
       result = sut(data);
 
-      assert.deepEqual(result, expected);
+      assert.deepStrictEqual(result, expected);
     });
 
     describe('headers', function () {
@@ -292,11 +292,11 @@ describe('contract', function () {
 
         data.response.headers = null;
         result = sut(data);
-        assert(result === null);
+        assert.strictEqual(result, null);
 
         delete data.response.headers;
         result = sut(data);
-        assert(result === null);
+        assert.strictEqual(result, null);
       });
 
       it('cannot be an array', function () {
@@ -306,7 +306,7 @@ describe('contract', function () {
 
         actual = sut(data);
 
-        assert.deepEqual(actual, expected);
+        assert.deepStrictEqual(actual, expected);
       });
 
       it('cannot be a string', function () {
@@ -316,7 +316,7 @@ describe('contract', function () {
 
         actual = sut(data);
 
-        assert.deepEqual(actual, expected);
+        assert.deepStrictEqual(actual, expected);
       });
     });
 
@@ -326,11 +326,11 @@ describe('contract', function () {
 
         data.response.status = null;
         result = sut(data);
-        assert(result === null);
+        assert.strictEqual(result, null);
 
         delete data.response.status;
         result = sut(data);
-        assert(result === null);
+        assert.strictEqual(result, null);
       });
 
       it('should return no errors when it is a number', function () {
@@ -339,7 +339,7 @@ describe('contract', function () {
 
         result = sut(data);
 
-        assert(result === null);
+        assert.strictEqual(result, null);
       });
 
       it('should return no errors when it is a string of a number', function () {
@@ -348,7 +348,7 @@ describe('contract', function () {
 
         result = sut(data);
 
-        assert(result === null);
+        assert.strictEqual(result, null);
       });
 
       it('cannot be a string that is not a number', function () {
@@ -358,7 +358,7 @@ describe('contract', function () {
 
         actual = sut(data);
 
-        assert.deepEqual(actual, expected);
+        assert.deepStrictEqual(actual, expected);
       });
 
       it('cannot be an object', function () {
@@ -368,7 +368,7 @@ describe('contract', function () {
 
         actual = sut(data);
 
-        assert.deepEqual(actual, expected);
+        assert.deepStrictEqual(actual, expected);
       });
 
       it('should return erros when less than 100', function () {
@@ -378,7 +378,7 @@ describe('contract', function () {
 
         actual = sut(data);
 
-        assert.deepEqual(actual, expected);
+        assert.deepStrictEqual(actual, expected);
       });
 
       it('should return erros when greater than or equal to 500', function () {
@@ -388,7 +388,7 @@ describe('contract', function () {
 
         actual = sut(data);
 
-        assert.deepEqual(actual, expected);
+        assert.deepStrictEqual(actual, expected);
       });
     });
 
@@ -399,7 +399,7 @@ describe('contract', function () {
 
         result = sut(data);
 
-        assert(result === null);
+        assert.strictEqual(result, null);
       });
 
       it('should return no errors when it a string representation of a number', function () {
@@ -408,7 +408,7 @@ describe('contract', function () {
 
         result = sut(data);
 
-        assert(result === null);
+        assert.strictEqual(result, null);
       });
 
       it('should return an error when a string cannot be parsed as a number', function () {
@@ -418,7 +418,7 @@ describe('contract', function () {
 
         actual = sut(data);
 
-        assert.deepEqual(actual, expected);
+        assert.deepStrictEqual(actual, expected);
       });
     });
 
@@ -427,11 +427,11 @@ describe('contract', function () {
 
       data.response.body = null;
       result = sut(data);
-      assert(result === null);
+      assert.strictEqual(result, null);
 
       delete data.response.body;
       result = sut(data);
-      assert(result === null);
+      assert.strictEqual(result, null);
     });
   });
 });

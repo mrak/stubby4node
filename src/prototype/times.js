@@ -1,7 +1,7 @@
 'use strict';
 /* eslint-disable no-extend-native */
 
-function noop() {}
+function noop () {}
 
 Object.defineProperty(Number.prototype, 'times', {
   configurable: true,

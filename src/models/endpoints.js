@@ -1,17 +1,17 @@
 'use strict';
 
-var ce = require('cloneextend');
 var fs = require('fs');
 var ejs = require('ejs');
 var path = require('path');
 var isutf8 = require('isutf8');
 var Endpoint = require('./endpoint');
+var clone = require('../lib/clone');
 var NOT_FOUND = "Endpoint with the given id doesn't exist.";
 var NO_MATCH = "Endpoint with given request doesn't exist.";
 
-function noop() {}
+function noop () {}
 
-function Endpoints(data, callback, datadir) {
+function Endpoints (data, callback, datadir) {
   if (callback == null) { callback = noop; }
   if (datadir == null) { datadir = process.cwd(); }
 
@@ -19,7 +19,6 @@ function Endpoints(data, callback, datadir) {
   this.db = {};
   this.lastId = 0;
   this.create(data, callback);
-  this.sightings = {};
 }
 
 Endpoints.prototype.create = function (data, callback) {
@@ -27,12 +26,11 @@ Endpoints.prototype.create = function (data, callback) {
 
   if (callback == null) { callback = noop; }
 
-  function insert(item) {
+  function insert (item) {
     item = new Endpoint(item, self.datadir);
     item.id = ++self.lastId;
     self.db[item.id] = item;
-    self.sightings[item.id] = 0;
-    callback(null, ce.clone(item));
+    callback(null, clone(item));
   }
 
   if (data instanceof Array) {
@@ -47,7 +45,7 @@ Endpoints.prototype.retrieve = function (id, callback) {
 
   if (!this.db[id]) { return callback(NOT_FOUND); }
 
-  callback(null, ce.clone(this.db[id]));
+  callback(null, clone(this.db[id]));
 };
 
 Endpoints.prototype.update = function (id, data, callback) {
@@ -84,7 +82,7 @@ Endpoints.prototype.gather = function (callback) {
     }
   }
 
-  callback(null, ce.clone(all));
+  callback(null, clone(all));
 };
 
 Endpoints.prototype.find = function (data, callback) {
@@ -99,7 +97,8 @@ Endpoints.prototype.find = function (data, callback) {
 
     if (!captures) { continue; }
 
-    matched = ce.clone(endpoint);
+    endpoint.hits++;
+    matched = clone(endpoint);
     return this.found(matched, captures, callback);
   }
 
@@ -108,7 +107,7 @@ Endpoints.prototype.find = function (data, callback) {
 
 Endpoints.prototype.found = function (endpoint, captures, callback) {
   var filename;
-  var response = endpoint.response[this.sightings[endpoint.id]++ % endpoint.response.length];
+  var response = endpoint.response[endpoint.hits % endpoint.response.length];
   var _ref = response.body;
 
   response.body = new Buffer(_ref != null ? _ref : 0, 'utf8');
@@ -130,7 +129,7 @@ Endpoints.prototype.found = function (endpoint, captures, callback) {
   }
 };
 
-function applyCaptures(obj, captures) {
+function applyCaptures (obj, captures) {
   var results, key, value;
   if (typeof obj === 'string') {
     return ejs.render(obj.replace(/<%/g, '<%='), captures);

@@ -3,7 +3,7 @@
 var Endpoint = require('../src/models/endpoint');
 var assert = require('assert');
 
-function waitsFor(fn, message, range, finish, time) {
+function waitsFor (fn, message, range, finish, time) {
   var temp, seconds, nanoseconds, elapsed;
   var min = range[0] != null ? range[0] : 0;
   var max = range[1] != null ? range[1] : range;
@@ -27,7 +27,7 @@ function waitsFor(fn, message, range, finish, time) {
   }, 1);
 }
 
-function compareOneWay(left, right) {
+function compareOneWay (left, right) {
   var key, value;
 
   for (key in left) {
@@ -47,7 +47,7 @@ function compareOneWay(left, right) {
   return true;
 }
 
-function compareObjects(one, two) {
+function compareObjects (one, two) {
   return compareOneWay(one, two) && compareOneWay(two, one);
 }
 
@@ -69,8 +69,8 @@ describe('Endpoint', function () {
         method: 'GET'
       });
 
-      assert(actual.url[0] === '/capture/me/');
-      assert(actual.url[1] === 'me');
+      assert.strictEqual(actual.url[0], '/capture/me/');
+      assert.strictEqual(actual.url[1], 'me');
     });
 
     it('should return regex captures for post', function () {
@@ -85,7 +85,7 @@ describe('Endpoint', function () {
         post: 'some sentence with a word in it'
       });
 
-      assert(actual.post[1] === 'word');
+      assert.strictEqual(actual.post[1], 'word');
     });
 
     it('should return regex captures for headers', function () {
@@ -104,7 +104,7 @@ describe('Endpoint', function () {
         }
       });
 
-      assert(actual.headers['content-type'][1] === 'json');
+      assert.strictEqual(actual.headers['content-type'][1], 'json');
     });
 
     it('should return regex captures for query', function () {
@@ -123,7 +123,7 @@ describe('Endpoint', function () {
         }
       });
 
-      assert(actual.query.variable[0] === 'value');
+      assert.strictEqual(actual.query.variable[0], 'value');
     });
   });
 
@@ -184,6 +184,7 @@ describe('Endpoint', function () {
     it('should at least copy over valid data', function () {
       var expectedBody, expectedJSON;
       var data = {
+        hits: 0,
         request: {
           url: '/',
           method: 'post',
@@ -220,8 +221,8 @@ describe('Endpoint', function () {
       delete data.request.json;
 
       assert.deepEqual(actual, data);
-      assert(expectedBody === actualbody);
-      assert.deepEqual(expectedJSON, actualJSON);
+      assert.strictEqual(expectedBody, actualbody);
+      assert.deepStrictEqual(expectedJSON, actualJSON);
     });
 
     it('should default method to GET', function () {
@@ -229,14 +230,14 @@ describe('Endpoint', function () {
 
       var actual = new Endpoint(this.data);
 
-      assert(actual.request.method === expected);
+      assert.strictEqual(actual.request.method, expected);
     });
 
     it('should default status to 200', function () {
       var expected = 200;
       var actual = new Endpoint(this.data);
 
-      assert(actual.response[0].status === expected);
+      assert.strictEqual(actual.response[0].status, expected);
     });
 
     it('should lower case headers properties', function () {
@@ -262,8 +263,8 @@ describe('Endpoint', function () {
 
       actual = new Endpoint(this.data);
 
-      assert.deepEqual(actual.response[0].headers, expected.response);
-      assert.deepEqual(actual.request.headers, expected.request);
+      assert.deepStrictEqual(actual.response[0].headers, expected.response);
+      assert.deepStrictEqual(actual.request.headers, expected.request);
     });
 
     it('should define multiple headers with same name', function () {
@@ -291,20 +292,20 @@ describe('Endpoint', function () {
 
       actual = new Endpoint(this.data);
 
-      assert.deepEqual(actual.response[0].headers, expected.response);
-      assert.deepEqual(actual.request.headers, expected.request);
+      assert.deepStrictEqual(actual.response[0].headers, expected.response);
+      assert.deepStrictEqual(actual.request.headers, expected.request);
     });
 
     it('should base64 encode authorization headers if not encoded', function () {
       var actual, expected;
       expected = 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=';
       this.data.request.headers = {
-        authorization: 'username:password'
+        authorization: 'Basic username:password'
       };
 
       actual = new Endpoint(this.data);
 
-      assert(actual.request.headers.authorization === expected);
+      assert.strictEqual(actual.request.headers.authorization, expected);
     });
 
     it('should not encode authorization headers if encoded', function () {
@@ -316,7 +317,7 @@ describe('Endpoint', function () {
 
       actual = new Endpoint(this.data);
 
-      assert(actual.request.headers.authorization === expected);
+      assert.strictEqual(actual.request.headers.authorization, expected);
     });
 
     it('should stringify object body in response', function () {
@@ -330,7 +331,7 @@ describe('Endpoint', function () {
 
       actual = new Endpoint(this.data);
 
-      assert(actual.response[0].body.toString() === expected);
+      assert.strictEqual(actual.response[0].body.toString(), expected);
     });
 
     it('should JSON parse the object json in request', function () {
@@ -343,7 +344,7 @@ describe('Endpoint', function () {
       };
 
       actual = new Endpoint(this.data);
-      assert.deepEqual(actual.request.json, expected);
+      assert.deepStrictEqual(actual.request.json, expected);
     });
 
     it('should get the Origin header', function () {
@@ -355,7 +356,7 @@ describe('Endpoint', function () {
 
       actual = new Endpoint(this.data);
 
-      assert(actual.request.headers.origin === expected);
+      assert.strictEqual(actual.request.headers.origin, expected);
     });
 
     it('should define aditional Cross-Origin headers', function () {
@@ -369,9 +370,9 @@ describe('Endpoint', function () {
 
       actual = new Endpoint(this.data);
 
-      assert(actual.request.headers.origin === expected);
-      assert(actual.request.headers['access-control-request-method'] === 'POST');
-      assert(actual.request.headers['access-control-request-headers'] === 'Content-Type, origin');
+      assert.strictEqual(actual.request.headers.origin, expected);
+      assert.strictEqual(actual.request.headers['access-control-request-method'], 'POST');
+      assert.strictEqual(actual.request.headers['access-control-request-headers'], 'Content-Type, origin');
     });
   });
 });

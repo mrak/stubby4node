@@ -7,7 +7,7 @@ var url = require('url');
 var q = require('querystring');
 var out = require('../console/out');
 
-function Endpoint(endpoint, datadir) {
+function Endpoint (endpoint, datadir) {
   if (endpoint == null) { endpoint = {}; }
   if (datadir == null) { datadir = process.cwd(); }
 
@@ -15,6 +15,7 @@ function Endpoint(endpoint, datadir) {
 
   this.request = purifyRequest(endpoint.request);
   this.response = purifyResponse(this, endpoint.response);
+  this.hits = 0;
 }
 
 Endpoint.prototype.matches = function (request) {
@@ -63,7 +64,7 @@ Endpoint.prototype.matches = function (request) {
   return matches;
 };
 
-function record(me, urlToRecord) {
+function record (me, urlToRecord) {
   var recorder;
   var recording = {};
   var parsed = url.parse(urlToRecord);
@@ -91,7 +92,7 @@ function record(me, urlToRecord) {
   });
 
   recorder.on('error', function (e) { out.warn('error recording response ' + urlToRecord + ': ' + e.message); });
-  recording.post = new Buffer(me.request.post == null ? 0 : me.request.post, 'utf8');
+  recording.post = me.request.post == null ? new Buffer(0) : new Buffer(me.request.post, 'utf8');
 
   if (me.request.file != null) {
     try {
@@ -105,11 +106,11 @@ function record(me, urlToRecord) {
   return recording;
 }
 
-function normalizeEOL(string) {
+function normalizeEOL (string) {
   return string.replace(/\r\n/g, '\n').replace(/\s*$/, '');
 }
 
-function purifyRequest(incoming) {
+function purifyRequest (incoming) {
   var outgoing;
 
   if (incoming == null) { incoming = {}; }
@@ -133,7 +134,7 @@ function purifyRequest(incoming) {
   return outgoing;
 }
 
-function purifyResponse(me, incoming) {
+function purifyResponse (me, incoming) {
   var outgoing = [];
 
   if (incoming == null) { incoming = []; }
@@ -157,7 +158,7 @@ function purifyResponse(me, incoming) {
   return outgoing;
 }
 
-function purifyHeaders(incoming) {
+function purifyHeaders (incoming) {
   var prop;
   var outgoing = {};
 
@@ -170,19 +171,22 @@ function purifyHeaders(incoming) {
   return outgoing;
 }
 
-function purifyAuthorization(headers) {
-  var auth;
+function purifyAuthorization (headers) {
+  var auth, userpass;
 
   if (headers == null || headers.authorization == null) { return headers; }
 
   auth = headers.authorization || '';
-  if (!/:/.test(auth)) { return headers; }
 
-  headers.authorization = 'Basic ' + new Buffer(auth).toString('base64');
+  if (/^Basic .+:.+$/.test(auth)) {
+    userpass = auth.substr(6);
+    headers.authorization = 'Basic ' + new Buffer(userpass).toString('base64');
+  }
+
   return headers;
 }
 
-function purifyBody(body) {
+function purifyBody (body) {
   if (body == null) { body = ''; }
 
   if (typeof body === 'object') {
@@ -192,7 +196,7 @@ function purifyBody(body) {
   return body;
 }
 
-function pruneUndefined(incoming) {
+function pruneUndefined (incoming) {
   var key, value;
   var outgoing = {};
 
@@ -206,7 +210,7 @@ function pruneUndefined(incoming) {
   return outgoing;
 }
 
-function compareHashMaps(configured, incoming) {
+function compareHashMaps (configured, incoming) {
   var key;
   var headers = {};
   if (configured == null) { configured = {}; }
@@ -221,7 +225,7 @@ function compareHashMaps(configured, incoming) {
   return headers;
 }
 
-function compareObjects(configured, incoming) {
+function compareObjects (configured, incoming) {
   var key;
 
   for (key in configured) {
@@ -235,7 +239,7 @@ function compareObjects(configured, incoming) {
   return true;
 }
 
-function matchRegex(compileMe, testMe) {
+function matchRegex (compileMe, testMe) {
   if (testMe == null) { testMe = ''; }
   return String(testMe).match(RegExp(compileMe, 'm'));
 }

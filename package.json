@@ -1,10 +1,12 @@
 {
   "name": "stubby",
-  "preferGlobal": true,
-  "version": "0.2.13",
+  "version": "4.0.0",
   "author": {
     "name": "Eric Mrak",
     "email": "mail@ericmrak.info"
+  },
+  "bugs": {
+    "url": "https://github.com/mrak/stubby4node"
   },
   "description": "a lightweight server for stubbing external systems and endpoints",
   "keywords": [
@@ -19,23 +21,27 @@
     "api",
     "rest"
   ],
-  "homepage": "http://stub.by",
+  "homepage": "https://github.com/mrak/stubby4node",
   "contributors": [
     {
       "name": "Eric Mrak",
       "email": "mail@ericmrak.info"
     }
   ],
+  "directories": {
+    "bin": "./bin",
+    "lib": "./src",
+    "man": "./man"
+  },
   "files": [
-    "src",
-    "package.json",
     "bin",
-    "tls",
     "man",
+    "src",
+    "tls",
     "webroot"
   ],
   "scripts": {
-    "lint": "eslint src test",
+    "lint": "semistandard",
     "test": "npm run lint && mocha --recursive test --reporter dot",
     "start": "bin/stubby"
   },
@@ -48,21 +54,31 @@
     "url": "https://github.com/mrak/stubby4node.git"
   },
   "dependencies": {
-    "async": ">=0.2.7",
-    "cloneextend": ">=0.0.3",
-    "ejs": ">=0.8.4",
-    "isutf8": ">=1.0.11",
-    "js-yaml": ">=1.0.1",
-    "node-static": ">=0.6.4"
+    "async": "^0.2.7",
+    "ejs": "^0.8.4",
+    "isutf8": "^1.0.11",
+    "js-yaml": "^1.0.1",
+    "node-static": "^0.6.4"
   },
   "devDependencies": {
-    "buffer-equal": "0.0.1",
-    "eslint": "^1.2.1",
-    "mocha": "^2.2.5",
-    "sinon": "^1.8.1"
+    "buffer-equal": "^1.0.0",
+    "mocha": "^3.1.2",
+    "semistandard": "^9.2.1",
+    "sinon": "^1.17.6"
   },
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "engine": {
-    "node": ">=0.10"
+    "node": ">=4.0.0"
+  },
+  "semistandard": {
+    "ignore": [
+      "webroot/js/external"
+    ],
+    "globals": [
+      "it",
+      "describe",
+      "beforeEach",
+      "afterEach"
+    ]
   }
 }

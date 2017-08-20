@@ -22,6 +22,8 @@
 
 [Andrew Yurisich](https://github.com/Droogans)
 
+[JJ4TH](https://github.com/jj4th)
+
 # Special Thanks
 
 Alexander Zagniotov

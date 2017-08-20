@@ -3,7 +3,7 @@
 var Stubby = require('../src/main').Stubby;
 var fs = require('fs');
 var yaml = require('js-yaml');
-var ce = require('cloneextend');
+var clone = require('../src/lib/clone');
 var endpointData = yaml.load((fs.readFileSync('test/data/e2e.yaml', 'utf8')).trim());
 var assert = require('assert');
 var createRequest = require('./helpers/create-request');
@@ -12,7 +12,7 @@ describe('End 2 End Admin Test Suite', function () {
   var sut;
   var port = 8889;
 
-  function stopStubby(finish) {
+  function stopStubby (finish) {
     if (sut != null) {
       sut.stop(finish);
     } else {
@@ -21,7 +21,7 @@ describe('End 2 End Admin Test Suite', function () {
   }
 
   beforeEach(function (done) {
-    function finish() {
+    function finish () {
       sut = new Stubby();
       return sut.start({
         data: endpointData
@@ -44,14 +44,14 @@ describe('End 2 End Admin Test Suite', function () {
     this.context.url = '/ping';
 
     createRequest(this.context, function (response) {
-      assert(response.data === 'pong');
+      assert.strictEqual(response.data, 'pong');
       return done();
     });
   });
 
   it('should be able to retreive an endpoint through GET', function (done) {
     var id = 3;
-    var endpoint = ce.clone(endpointData[id - 1]);
+    var endpoint = clone(endpointData[id - 1]);
     endpoint.id = id;
     this.context.url = '/' + id;
     this.context.method = 'get';
@@ -65,7 +65,7 @@ describe('End 2 End Admin Test Suite', function () {
         if (!req.hasOwnProperty(prop)) { continue; }
 
         value = req[prop];
-        assert(value === returned.request[prop]);
+        assert.strictEqual(value, returned.request[prop]);
       }
 
       done();
@@ -75,7 +75,7 @@ describe('End 2 End Admin Test Suite', function () {
   it('should be able to edit an endpoint through PUT', function (done) {
     var self = this;
     var id = 2;
-    var endpoint = ce.clone(endpointData[id - 1]);
+    var endpoint = clone(endpointData[id - 1]);
     this.context.url = '/' + id;
     endpoint.request.url = '/munchkin';
     this.context.method = 'put';
@@ -88,7 +88,7 @@ describe('End 2 End Admin Test Suite', function () {
       createRequest(self.context, function (response) {
         var returned = JSON.parse(response.data);
 
-        assert(returned.request.url === endpoint.request.url);
+        assert.strictEqual(returned.request.url, endpoint.request.url);
 
         done();
       });
@@ -112,7 +112,7 @@ describe('End 2 End Admin Test Suite', function () {
     createRequest(this.context, function (response) {
       var id = response.headers.location.replace(/localhost:8889\/([0-9]+)/, '$1');
 
-      assert(response.statusCode === 201);
+      assert.strictEqual(response.statusCode, 201);
 
       self.context = {
         port: port,
@@ -124,7 +124,7 @@ describe('End 2 End Admin Test Suite', function () {
       createRequest(self.context, function (response2) {
         var returned = JSON.parse(response2.data);
 
-        assert(returned.request.url === endpoint.request.url);
+        assert.strictEqual(returned.request.url, endpoint.request.url);
         done();
       });
     });
@@ -136,7 +136,7 @@ describe('End 2 End Admin Test Suite', function () {
     this.context.method = 'delete';
 
     createRequest(this.context, function (response) {
-      assert(response.statusCode === 204);
+      assert.strictEqual(response.statusCode, 204);
 
       self.context = {
         port: port,
@@ -146,7 +146,7 @@ describe('End 2 End Admin Test Suite', function () {
       };
 
       createRequest(self.context, function (response2) {
-        assert(response2.statusCode === 404);
+        assert.strictEqual(response2.statusCode, 404);
         done();
       });
     });

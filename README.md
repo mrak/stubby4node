@@ -11,7 +11,7 @@ A configurable server for mocking/stubbing external systems during development.
 ## Table of Contents
 
 * [Installation](#installation)
-* [Requirements](#requirements)
+* [Supported Runtimes](#supported-runtimes)
 * [Starting the Server(s)](#starting-the-servers)
 * [Command-line Switches](#command-line-switches)
 * [Endpoint Configuration](#endpoint-configuration)
@@ -37,27 +37,22 @@ This will install `stubby` as a command in your `PATH`. Leave off the `-g` flag 
     cd stubby4node
     npm start -- <stubby args>
 
-## Requirements
+## Supported Runtimes
 
-* [node.js](http://nodejs.org/)
-  * iojs
-  * 0.10.x
-  * 0.12.x
-  * node LTS
-  * node latest
+* [node.js](http://nodejs.org/) - latest and currently supported LTS versions
 
 Development is on x86-64 Linux.
 
 ## Starting the Server(s)
 
-Some systems require you to `sudo` before running services on port certain ports (like 80)
+Some systems require you to `sudo` before running services on certain ports (like 80)
 
     [sudo] stubby
 
 ## Command-line Switches
 
 ```
-stubby [-a <port>] [-c <file>] [-d <file>] [-h] [-k <file>] [-l <hostname>] [-m] [-p <file>]
+stubby [-a <port>] [-c <file>] [-d <file>] [-h] [-k <file>] [-l <hostname>] [-p <file>] [-q]
        [-s <port>] [-t <port>] [-v] [-w]
 
 -a, --admin <port>          Port for admin portal. Defaults to 8889.
@@ -66,7 +61,7 @@ stubby [-a <port>] [-c <file>] [-d <file>] [-h] [-k <file>] [-l <hostname>] [-m]
 -h, --help                  This help text.
 -k, --key <file>            Private key file. Use with --cert.
 -l, --location <hostname>   Hostname at which to bind stubby.
--m, --mute                  Prevent stubby from printing to the console.
+-q, --quiet                 Prevent stubby from printing to the console.
 -p, --pfx <file>            PFX file. Ignored if used with --key/--cert
 -s, --stubs <port>          Port for stubs portal. Defaults to 8882.
 -t, --tls <port>            Port for https stubs portal. Defaults to 7443.
@@ -152,7 +147,6 @@ A demonstration using regular expressions:
     * GET
     * POST
     * PUT
-    * POST
     * DELETE
     * etc.
 
@@ -492,7 +486,7 @@ Submit `POST` requests to `localhost:8889`, `PUT` requests to `localhost:8889/:i
          Content-Type: application/json
       latency: 1000
       status: 200
-      body: You're request was successfully processed!
+      body: Your request was successfully processed!
 
 -  request:
       url: ^/path/to/anotherThing
@@ -540,7 +534,7 @@ Submit `POST` requests to `localhost:8889`, `PUT` requests to `localhost:8889/:i
         "Content-Type": "application/json"
       },
       "latency": 1000,
-      "body": "You're request was successfully processed!"
+      "body": "Your request was successfully processed!"
     }
   },
   {
@@ -674,7 +668,7 @@ What can I do with it, you ask? Read on!
    * `cert`: certificate file contents (in PEM format)
    * `pfx`: pfx file contents (mutually exclusive with key/cert options)
    * `watch`: filename to monitor and load as stubby's data when changes occur
-   * `mute`: defaults to `true`. Pass in `false` to have console output (if available)
+   * `quiet`: defaults to `true`. Pass in `false` to have console output (if available)
    * `_httpsOptions`: additional options to pass to the [underlying tls
      server](http://nodejs.org/api/tls.html#tls_tls_createserver_options_secureconnectionlistener).
 * `callback`: takes one parameter: the error message (if there is one), undefined otherwise

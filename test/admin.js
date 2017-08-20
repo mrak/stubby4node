@@ -3,7 +3,7 @@
 var Admin = require('../src/portals/admin').Admin;
 var assert = require('assert');
 
-require('../src/console/out').mute = true;
+require('../src/console/out').quiet = true;
 
 describe('Admin', function () {
   var endpoints, request, response, sut;
@@ -77,7 +77,7 @@ describe('Admin', function () {
       var url = '/' + id;
       var actual = sut.getId(url);
 
-      assert(actual === id);
+      assert.strictEqual(actual, id);
     });
 
     it('should return nothing for root url', function () {
@@ -91,7 +91,7 @@ describe('Admin', function () {
     it('should status code with "405 Not Supported" code and end response', function () {
       sut.notSupported(response);
 
-      assert(response.statusCode === 405);
+      assert.strictEqual(response.statusCode, 405);
       assert(response.end.calledOnce);
     });
   });
@@ -127,7 +127,7 @@ describe('Admin', function () {
     it('should write header with "204 No Content" code and end response', function () {
       sut.noContent(response);
 
-      assert(response.statusCode === 204);
+      assert.strictEqual(response.statusCode, 204);
       assert(response.end.calledOnce);
     });
   });
@@ -144,19 +144,19 @@ describe('Admin', function () {
       var content = {};
       sut.ok(response, content);
       assert(response.end.calledOnce);
-      assert(response.end.args[0].length === 1);
+      assert.strictEqual(response.end.args[0].length, 1);
     });
 
     it('should write nothing if content is null', function () {
       var content;
       content = null;
       sut.ok(response, content);
-      assert(response.write.callCount === 0);
+      assert.strictEqual(response.write.callCount, 0);
     });
 
     it('should write nothing if content is undefined', function () {
       sut.ok(response);
-      assert(response.write.callCount === 0);
+      assert.strictEqual(response.write.callCount, 0);
     });
   });
 
@@ -182,7 +182,7 @@ describe('Admin', function () {
 
       sut.created(response, request, id);
 
-      assert.deepEqual(response.writeHead.args[0][1], expected);
+      assert.deepStrictEqual(response.writeHead.args[0][1], expected);
     });
   });
 
@@ -269,7 +269,7 @@ describe('Admin', function () {
 
         sut.processPUT('any id', data, response);
 
-        assert(endpoints.update.callCount === 0);
+        assert.strictEqual(endpoints.update.callCount, 0);
       });
 
       it('should return BAD REQUEST when contract is violated', function () {
@@ -309,7 +309,7 @@ describe('Admin', function () {
 
         sut.processPOST(data, response, request);
 
-        assert(endpoints.create.callCount === 0);
+        assert.strictEqual(endpoints.create.callCount, 0);
       });
 
       it('should return BAD REQUEST when contract is violated', function () {
