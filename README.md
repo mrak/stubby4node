@@ -255,7 +255,7 @@ Although not required, it is recommended to also specify a `application/json` he
       json: '{"key1":"value1","key2":"value2"}'
 ```
 
-JSON strings may contain `"key": "value"` pairs in any order: `{"key1":"value1, "key2":"value2"}` is equivalent to `{"key2":"value2, "key1":"value1"}`
+JSON strings may contain `"key": "value"` pairs in any order: `{"key1":"value1", "key2":"value2"}` is equivalent to `{"key2":"value2", "key1":"value1"}`
 
 #### headers
 
