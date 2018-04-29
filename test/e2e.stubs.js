@@ -289,6 +289,24 @@ describe('End 2 End Stubs Test Suite', function () {
 
   describe('file use', function () {
     describe('response', function () {
+      it('should handle file name interpolation', function (done) {
+        this.context.url = '/file/dynamic/1';
+
+        createRequest(this.context, function (response) {
+          assert.strictEqual(response.data.trim(), 'endpoints-1.file');
+          done();
+        });
+      });
+
+      it('should handle file content interpolation', function (done) {
+        this.context.url = '/file/dynamic/2';
+
+        createRequest(this.context, function (response) {
+          assert.strictEqual(response.data.trim(), 'endpoints-2.file');
+          done();
+        });
+      });
+
       it('should handle fallback to body if specified response file cannot be found', function (done) {
         this.context.url = '/file/body/missingfile';
 

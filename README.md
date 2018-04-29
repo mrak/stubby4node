@@ -403,7 +403,7 @@ The `response.body` can have token interpolations following the format of `< %PR
 ```
 
 __NOTE:__ If you are using the `file` property for your responses, keep in mind that the
-file _contents_ are interpolated, not the file _name_. In other words, the `<% ... %>` will appear in the files' contents and not on the line in your configuration that has `response.file`
+both the file _name_ and _contents_ are interpolated. In other words, the `<% ... %>` will appear in the files' contents as well as on the line in your configuration that has `response.file`
 
 ### Capture group IDs
 

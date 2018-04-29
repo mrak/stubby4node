@@ -87,7 +87,10 @@
     latency: 2000
     body: "updated"
 
-
+- request:
+    url: /file/dynamic/(.+)
+  response:
+    file: test/data/endpoints-<% url[1] %>.file
 
 - request:
     url: /file/body/missingfile
