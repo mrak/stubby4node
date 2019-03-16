@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.1.0
+
+* Adds support for POST forms as a hashmap
+
 ## 4.0.0
 
 This project has been stable for some time, best we move to actual semver and
