@@ -110,7 +110,7 @@ Endpoints.prototype.found = function (endpoint, captures, callback) {
   var response = endpoint.response[endpoint.hits % endpoint.response.length];
   var _ref = response.body;
 
-  response.body = new Buffer(_ref != null ? _ref : 0, 'utf8');
+  response.body = _ref != null ? Buffer.from(_ref, 'utf8') : Buffer.alloc(0);
   response.headers['x-stubby-resource-id'] = endpoint.id;
 
   if (response.file != null) {

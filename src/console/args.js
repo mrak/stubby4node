@@ -79,8 +79,8 @@ function helpText (options, programName) {
 
   options.forEach(function (option) {
     var param = option.param != null
-                ? ' <' + option.param + '>'
-                : '';
+      ? ' <' + option.param + '>'
+      : '';
 
     firstColumn[option.name] = '-' + option.flag + ', --' + option.name + param;
     inlineList.push('[-' + option.flag + param + ']');

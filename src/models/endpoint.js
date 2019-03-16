@@ -11,7 +11,7 @@ function Endpoint (endpoint, datadir) {
   if (endpoint == null) { endpoint = {}; }
   if (datadir == null) { datadir = process.cwd(); }
 
-  Object.defineProperty(this, 'datadir', {value: datadir});
+  Object.defineProperty(this, 'datadir', { value: datadir });
 
   this.request = purifyRequest(endpoint.request);
   this.response = purifyResponse(this, endpoint.response);
@@ -92,7 +92,7 @@ function record (me, urlToRecord) {
   });
 
   recorder.on('error', function (e) { out.warn('error recording response ' + urlToRecord + ': ' + e.message); });
-  recording.post = me.request.post == null ? new Buffer(0) : new Buffer(me.request.post, 'utf8');
+  recording.post = me.request.post == null ? Buffer.alloc(0) : Buffer.from(me.request.post, 'utf8');
 
   if (me.request.file != null) {
     try {
@@ -180,7 +180,7 @@ function purifyAuthorization (headers) {
 
   if (/^Basic .+:.+$/.test(auth)) {
     userpass = auth.substr(6);
-    headers.authorization = 'Basic ' + new Buffer(userpass).toString('base64');
+    headers.authorization = 'Basic ' + Buffer.from(userpass).toString('base64');
   }
 
   return headers;

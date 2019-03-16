@@ -7,7 +7,7 @@ function stripper (args) {
     if (!args.hasOwnProperty(key)) { continue; }
 
     value = args[key];
-    args[key] = value.replace(/\u001b\[(\d+;?)+m/g, '');
+    args[key] = value.replace(/\u001b\[(\d+;?)+m/g, ''); /* eslint-disable-line */
   }
   return args;
 }

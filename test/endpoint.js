@@ -168,7 +168,7 @@ describe('Endpoint', function () {
         },
         response: [
           'http://google.com',
-          {status: 420}
+          { status: 420 }
         ]
       };
 
@@ -220,9 +220,11 @@ describe('Endpoint', function () {
       expectedJSON = JSON.parse(data.request.json);
       delete data.request.json;
 
-      assert.deepEqual(actual, data);
+      ['hits', 'request', 'response'].forEach(key => {
+        assert.deepStrictEqual(actual[key], data[key]);
+      });
       assert.strictEqual(expectedBody, actualbody);
-      assert.deepStrictEqual(expectedJSON, actualJSON);
+      assert.deepStrictEqual(actualJSON, expectedJSON);
     });
 
     it('should default method to GET', function () {

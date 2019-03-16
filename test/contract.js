@@ -265,7 +265,7 @@ describe('contract', function () {
 
     it('should be acceptable as an array', function () {
       var result;
-      data.response = [{status: 200}];
+      data.response = [{ status: 200 }];
 
       result = sut(data);
 
@@ -364,7 +364,7 @@ describe('contract', function () {
       it('cannot be an object', function () {
         var actual;
         var expected = ["'response.status' must be integer-like."];
-        data.response.status = {property: 'value'};
+        data.response.status = { property: 'value' };
 
         actual = sut(data);
 

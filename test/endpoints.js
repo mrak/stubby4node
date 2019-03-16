@@ -31,8 +31,8 @@ describe('Endpoints', function () {
       it('should assign id to entered endpoint', function () {
         sut.create(data, callback);
 
-        assert.notEqual(sut.db[1], null);
-        assert.equal(sut.db[2], null);
+        assert.notStrictEqual(sut.db[1], undefined);
+        assert.strictEqual(sut.db[2], undefined);
       });
 
       it('should call callback', function () {
@@ -44,9 +44,9 @@ describe('Endpoints', function () {
       it('should assign ids to entered endpoints', function () {
         sut.create([data, data], callback);
 
-        assert.notEqual(sut.db[1], null);
-        assert.notEqual(sut.db[2], null);
-        assert.equal(sut.db[3], null);
+        assert.notStrictEqual(sut.db[1], undefined);
+        assert.notStrictEqual(sut.db[2], undefined);
+        assert.strictEqual(sut.db[3], undefined);
       });
 
       it('should call callback for each supplied endpoint', function () {
@@ -222,7 +222,7 @@ describe('Endpoints', function () {
 
         it('should return binary data unmolested', function () {
           var body;
-          var expected = new Buffer([0x80, 0x81, 0x82, 0xab, 0xcd, 0xef, 0x3c, 0x25, 0x20, 0x70, 0x6f, 0x73, 0x74, 0x5b, 0x30, 0x5d, 0x20, 0x25, 0x3e, 0xfe, 0xdc, 0xba, 0x82, 0x81, 0x80]);
+          var expected = Buffer.from([0x80, 0x81, 0x82, 0xab, 0xcd, 0xef, 0x3c, 0x25, 0x20, 0x70, 0x6f, 0x73, 0x74, 0x5b, 0x30, 0x5d, 0x20, 0x25, 0x3e, 0xfe, 0xdc, 0xba, 0x82, 0x81, 0x80]);
           sut.create({
             request: {
               url: '/',
@@ -414,7 +414,7 @@ describe('Endpoints', function () {
           sut.create({
             request: {
               url: '/testing',
-              form: {email: 'name@mail.com', var2: 'val2'},
+              form: { email: 'name@mail.com', var2: 'val2' },
               method: 'post'
             },
             response: expected
@@ -436,7 +436,7 @@ describe('Endpoints', function () {
           sut.create({
             request: {
               url: '/testing',
-              form: {email: 'name@mail.com'},
+              form: { email: 'name@mail.com' },
               method: 'post'
             },
             response: expected
@@ -458,7 +458,7 @@ describe('Endpoints', function () {
           sut.create({
             request: {
               url: '/testing',
-              form: {email: 'name@mail.com'},
+              form: { email: 'name@mail.com' },
               method: 'post'
             },
             response: expected
@@ -480,7 +480,7 @@ describe('Endpoints', function () {
           sut.create({
             request: {
               url: '/testing',
-              form: {var1: 'val1', var2: 'val2'},
+              form: { var1: 'val1', var2: 'val2' },
               method: 'post'
             },
             response: expected

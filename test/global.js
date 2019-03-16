@@ -4,11 +4,11 @@ var sinon = require('sinon');
 var assert = require('assert');
 
 if (!assert.deepStrictEqual) {
-  assert.deepStrictEqual = assert.deepEqual;
+  assert.deepStrictEqual = assert.deepEqual; /* eslint-disable-line */
 }
 
 beforeEach(function () {
-  this.sandbox = sinon.sandbox.create();
+  this.sandbox = sinon.createSandbox();
 });
 
 afterEach(function () {
