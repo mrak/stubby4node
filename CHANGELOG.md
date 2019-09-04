@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.1.1
+
+* Updates depenencies with reported vulnerabilities
+
 ## 4.1.0
 
 * Adds support for POST forms as a hashmap
