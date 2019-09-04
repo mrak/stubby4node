@@ -77,7 +77,7 @@ Endpoints.prototype.gather = function (callback) {
   if (callback == null) { callback = noop; }
 
   for (id in this.db) {
-    if (this.db.hasOwnProperty(id)) {
+    if (Object.prototype.hasOwnProperty.call(this.db, id)) {
       all.push(this.db[id]);
     }
   }
@@ -90,7 +90,7 @@ Endpoints.prototype.find = function (data, callback) {
   if (callback == null) { callback = noop; }
 
   for (id in this.db) {
-    if (!this.db.hasOwnProperty(id)) { continue; }
+    if (!Object.prototype.hasOwnProperty.call(this.db, id)) { continue; }
 
     endpoint = this.db[id];
     captures = endpoint.matches(data);
@@ -137,7 +137,7 @@ function applyCaptures (obj, captures) {
 
   results = [];
   for (key in obj) {
-    if (!obj.hasOwnProperty(key)) { continue; }
+    if (!Object.prototype.hasOwnProperty.call(obj, key)) { continue; }
 
     value = obj[key];
 

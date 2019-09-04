@@ -62,7 +62,7 @@ describe('End 2 End Admin Test Suite', function () {
       var req = endpoint.req;
 
       for (prop in req) {
-        if (!req.hasOwnProperty(prop)) { continue; }
+        if (!Object.prototype.hasOwnProperty.call(req, prop)) { continue; }
 
         value = req[prop];
         assert.strictEqual(value, returned.request[prop]);

@@ -142,7 +142,7 @@ function contract (endpoint) {
     errors.push(messages.request.missing);
   } else {
     for (property in request) {
-      if (request.hasOwnProperty(property)) {
+      if (Object.prototype.hasOwnProperty.call(request, property)) {
         errors.push(request[property](endpoint.request[property]));
       }
     }
@@ -155,7 +155,7 @@ function contract (endpoint) {
 
     endpoint.response.forEach(function (incoming) {
       for (property in response) {
-        if (response.hasOwnProperty(property)) {
+        if (Object.prototype.hasOwnProperty.call(response, property)) {
           errors.push(response[property](incoming[property]));
         }
       }

@@ -55,16 +55,16 @@
   },
   "dependencies": {
     "async": "^0.2.7",
-    "ejs": "^2.5.5",
-    "isutf8": "^2.0.3",
-    "js-yaml": "^3.12.2",
-    "node-static": "^0.6.4"
+    "ejs": "^2.7.1",
+    "isutf8": "^2.1.0",
+    "js-yaml": "^3.13.1",
+    "node-static": "^0.7.11"
   },
   "devDependencies": {
     "buffer-equal": "^1.0.0",
-    "mocha": "^6.0.2",
-    "semistandard": "^13.0.1",
-    "sinon": "^7.2.7"
+    "mocha": "^6.2.0",
+    "semistandard": "^14.0.1",
+    "sinon": "^7.4.2"
   },
   "license": "Apache-2.0",
   "engine": {

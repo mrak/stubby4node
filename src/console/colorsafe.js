@@ -4,7 +4,7 @@
 function stripper (args) {
   var key, value;
   for (key in args) {
-    if (!args.hasOwnProperty(key)) { continue; }
+    if (!Object.prototype.hasOwnProperty.call(args, key)) { continue; }
 
     value = args[key];
     args[key] = value.replace(/\u001b\[(\d+;?)+m/g, ''); /* eslint-disable-line */

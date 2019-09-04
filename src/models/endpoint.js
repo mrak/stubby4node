@@ -3,7 +3,6 @@
 var fs = require('fs');
 var path = require('path');
 var http = require('http');
-var url = require('url');
 var q = require('querystring');
 var out = require('../console/out');
 
@@ -67,7 +66,7 @@ Endpoint.prototype.matches = function (request) {
 function record (me, urlToRecord) {
   var recorder;
   var recording = {};
-  var parsed = url.parse(urlToRecord);
+  var parsed = new URL(urlToRecord);
   var options = {
     method: me.request.method == null ? 'GET' : me.request.method,
     hostname: parsed.hostname,
@@ -163,7 +162,7 @@ function purifyHeaders (incoming) {
   var outgoing = {};
 
   for (prop in incoming) {
-    if (incoming.hasOwnProperty(prop)) {
+    if (Object.prototype.hasOwnProperty.call(incoming, prop)) {
       outgoing[prop.toLowerCase()] = incoming[prop];
     }
   }
@@ -201,7 +200,7 @@ function pruneUndefined (incoming) {
   var outgoing = {};
 
   for (key in incoming) {
-    if (!incoming.hasOwnProperty(key)) { continue; }
+    if (!Object.prototype.hasOwnProperty.call(incoming, key)) { continue; }
 
     value = incoming[key];
     if (value != null) { outgoing[key] = value; }
@@ -217,7 +216,7 @@ function compareHashMaps (configured, incoming) {
   if (incoming == null) { incoming = {}; }
 
   for (key in configured) {
-    if (!configured.hasOwnProperty(key)) { continue; }
+    if (!Object.prototype.hasOwnProperty.call(configured, key)) { continue; }
     headers[key] = matchRegex(configured[key], incoming[key]);
     if (!headers[key]) { return null; }
   }

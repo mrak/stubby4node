@@ -31,7 +31,7 @@ function compareOneWay (left, right) {
   var key, value;
 
   for (key in left) {
-    if (!left.hasOwnProperty(key)) { continue; }
+    if (!Object.prototype.hasOwnProperty.call(left, key)) { continue; }
 
     value = left[key];
 
