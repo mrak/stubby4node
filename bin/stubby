@@ -4,7 +4,13 @@ var CLI = require('../src/console/cli');
 var stubby = new (require('../src/main').Stubby);
 var options = CLI.getArgs();
 
-stubby.start(options);
+stubby.start(options, function(errors) {
+  if(Array.isArray(errors)) {
+    console.log('Stubby is being stopped because of errors:'); 
+    console.log(errors);
+    process.exit(1);
+  }
+});
 
 process.on('SIGHUP', function() {
   stubby.delete(function () { stubby.start(options); });
