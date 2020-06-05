@@ -56,6 +56,8 @@ function setupStartOptions (options, callback) {
   }
 
   if (options.quiet == null) { options.quiet = true; }
+  if (options.debugStubs == null) { options.debugStubs = false; }
+  options.debugStubs = !options.quiet && options.debugStubs;
 
   defaults = CLI.getArgs([]);
   for (key in defaults) {
@@ -65,6 +67,7 @@ function setupStartOptions (options, callback) {
   }
 
   out.quiet = options.quiet;
+  out.debugStubs = options.debugStubs;
   return [options, callback];
 }
 
