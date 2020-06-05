@@ -53,7 +53,7 @@ Some systems require you to `sudo` before running services on certain ports (lik
 
 ```
 stubby [-a <port>] [-c <file>] [-d <file>] [-h] [-k <file>] [-l <hostname>] [-p <file>] [-q]
-       [-s <port>] [-t <port>] [-v] [-w]
+       [-s <port>] [-t <port>] [-v] [-w] [-q] [-r]
 
 -a, --admin <port>          Port for admin portal. Defaults to 8889.
 -c, --cert <file>           Certificate file. Use with --key.
@@ -67,6 +67,7 @@ stubby [-a <port>] [-c <file>] [-d <file>] [-h] [-k <file>] [-l <hostname>] [-p 
 -t, --tls <port>            Port for https stubs portal. Defaults to 7443.
 -v, --version               Prints stubby's version number.
 -w, --watch                 Auto-reload data file when edits are made.
+-r, --dittoResponse         Ditto the response back to the client, without any modifications.
 ```
 
 When used from the command-line, `stubby` responds to the `SIGHUP` signal to reload its configuration.
@@ -671,6 +672,7 @@ What can I do with it, you ask? Read on!
    * `quiet`: defaults to `true`. Pass in `false` to have console output (if available)
    * `_httpsOptions`: additional options to pass to the [underlying tls
      server](http://nodejs.org/api/tls.html#tls_tls_createserver_options_secureconnectionlistener).
+   * `dittoResponse`: tells stubby to send the response back without lower-casing the headers
 * `callback`: takes one parameter: the error message (if there is one), undefined otherwise
 
 #### start([callback])
