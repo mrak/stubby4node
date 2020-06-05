@@ -15,6 +15,7 @@ function Endpoints (data, callback, datadir) {
   if (callback == null) { callback = noop; }
   if (datadir == null) { datadir = process.cwd(); }
 
+  this.dittoResponse = false;
   this.datadir = datadir;
   this.db = {};
   this.lastId = 0;
@@ -27,7 +28,7 @@ Endpoints.prototype.create = function (data, callback) {
   if (callback == null) { callback = noop; }
 
   function insert (item) {
-    item = new Endpoint(item, self.datadir);
+    item = new Endpoint(item, self.datadir, self.dittoResponse);
     item.id = ++self.lastId;
     self.db[item.id] = item;
     callback(null, clone(item));

@@ -99,6 +99,7 @@ Stubby.prototype.start = function (o, cb) {
 
     if (errors) { return callback(errors); }
     if (options.datadir != null) { self.endpoints.datadir = options.datadir; }
+    if (options.dittoResponse != null) { self.endpoints.dittoResponse = options.dittoResponse; }
 
     self.endpoints.create(options.data, onEndpointLoaded);
 

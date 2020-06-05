@@ -6,14 +6,15 @@ var http = require('http');
 var q = require('querystring');
 var out = require('../console/out');
 
-function Endpoint (endpoint, datadir) {
+function Endpoint (endpoint, datadir, dittoResponse) {
   if (endpoint == null) { endpoint = {}; }
   if (datadir == null) { datadir = process.cwd(); }
+  if (dittoResponse == null) { dittoResponse = false; }
 
   Object.defineProperty(this, 'datadir', { value: datadir });
 
   this.request = purifyRequest(endpoint.request);
-  this.response = purifyResponse(this, endpoint.response);
+  this.response = purifyResponse(this, endpoint.response, dittoResponse);
   this.hits = 0;
 }
 
@@ -117,7 +118,7 @@ function purifyRequest (incoming) {
   outgoing = {
     url: incoming.url,
     method: incoming.method == null ? 'GET' : incoming.method,
-    headers: purifyHeaders(incoming.headers),
+    headers: purifyHeaders(incoming.headers, true),
     query: incoming.query,
     file: incoming.file,
     post: incoming.post,
@@ -133,7 +134,7 @@ function purifyRequest (incoming) {
   return outgoing;
 }
 
-function purifyResponse (me, incoming) {
+function purifyResponse (me, incoming, dittoResponse) {
   var outgoing = [];
 
   if (incoming == null) { incoming = []; }
@@ -145,7 +146,7 @@ function purifyResponse (me, incoming) {
       outgoing.push(record(me, response));
     } else {
       outgoing.push(pruneUndefined({
-        headers: purifyHeaders(response.headers),
+        headers: purifyHeaders(response.headers, !dittoResponse),
         status: parseInt(response.status, 10) || 200,
         latency: parseInt(response.latency, 10) || null,
         file: response.file,
@@ -157,13 +158,17 @@ function purifyResponse (me, incoming) {
   return outgoing;
 }
 
-function purifyHeaders (incoming) {
+function purifyHeaders (incoming, shouldLowerCase) {
   var prop;
   var outgoing = {};
 
   for (prop in incoming) {
     if (Object.prototype.hasOwnProperty.call(incoming, prop)) {
-      outgoing[prop.toLowerCase()] = incoming[prop];
+      if (shouldLowerCase) {
+        outgoing[prop.toLowerCase()] = incoming[prop];
+      } else {
+        outgoing[prop] = incoming[prop];
+      }
     }
   }
 
