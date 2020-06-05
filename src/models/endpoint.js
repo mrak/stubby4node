@@ -11,7 +11,7 @@ function Endpoint (endpoint, datadir) {
   if (datadir == null) { datadir = process.cwd(); }
 
   Object.defineProperty(this, 'datadir', { value: datadir });
-  out.debug("datadir: " + this.datadir, 'Datadir for files specified in endpoint configuration');
+  out.debug('datadir: ' + this.datadir, 'Datadir for files specified in endpoint configuration');
 
   this.request = purifyRequest(endpoint.request);
   this.response = purifyResponse(this, endpoint.response);
@@ -79,7 +79,6 @@ Endpoint.prototype.matches = function (request) {
   } else if (this.request.method.toUpperCase() !== request.method) {
     out.debug(request.method + ' not equal to ' + this.request.method);
     return null;
-
   } else {
     out.debug('Method matches');
   }
