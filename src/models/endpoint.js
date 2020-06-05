@@ -11,6 +11,7 @@ function Endpoint (endpoint, datadir) {
   if (datadir == null) { datadir = process.cwd(); }
 
   Object.defineProperty(this, 'datadir', { value: datadir });
+  out.debug("datadir: " + this.datadir, 'Datadir for files specified in endpoint configuration');
 
   this.request = purifyRequest(endpoint.request);
   this.response = purifyResponse(this, endpoint.response);
@@ -21,45 +22,69 @@ Endpoint.prototype.matches = function (request) {
   var file, post, json, upperMethods;
   var matches = {};
 
+  out.debugHeader('Endpoint matches');
+  out.debug(this);
+  out.debugHeader('URL match');
   matches.url = matchRegex(this.request.url, request.url);
+  out.debug(!(!matches.url), 'URL matches');
   if (!matches.url) { return null; }
 
+  out.debugHeader('Header match');
   matches.headers = compareHashMaps(this.request.headers, request.headers);
+  out.debug(!(!matches.headers), 'Header matches');
   if (!matches.headers) { return null; }
 
+  out.debugHeader('Query match');
   matches.query = compareHashMaps(this.request.query, request.query);
+  out.debug(!(!matches.query), 'Query matches');
   if (!matches.query) { return null; }
 
   file = null;
   if (this.request.file != null) {
     try {
       file = fs.readFileSync(path.resolve(this.datadir, this.request.file), 'utf8');
-    } catch (e) { /* ignored */ }
+    } catch (e) {
+      out.debug('Failed to read ' + this.request.file + ': ' + e);
+    }
   }
 
+  out.debugHeader('Post match');
   post = file || this.request.post;
   if (post && request.post) {
     matches.post = matchRegex(normalizeEOL(post), normalizeEOL(request.post));
+    out.debug(!(!matches.post), 'Post matches');
     if (!matches.post) { return null; }
   } else if (this.request.json && request.post) {
     try {
       json = JSON.parse(request.post);
-      if (!compareObjects(this.request.json, json)) { return null; }
+      matches.post = compareObjects(this.request.json, json);
+      out.debug(!(!matches.post), 'Post matches');
+      if (!matches.post) { return null; }
     } catch (e) {
       return null;
     }
   } else if (this.request.form && request.post) {
     matches.post = compareHashMaps(this.request.form, q.decode(request.post));
+    out.debug(!(!matches.post), 'Post matches');
     if (!matches.post) { return null; }
   }
 
+  out.debugHeader('Method match');
   if (this.request.method instanceof Array) {
     upperMethods = this.request.method.map(function (it) { return it.toUpperCase(); });
-    if (upperMethods.indexOf(request.method) === -1) { return null; }
+    if (upperMethods.indexOf(request.method) === -1) {
+      out.debug(request.method + ' not present in ' + upperMethods);
+      return null;
+    }
   } else if (this.request.method.toUpperCase() !== request.method) {
+    out.debug(request.method + ' not equal to ' + this.request.method);
     return null;
+
+  } else {
+    out.debug('Method matches');
   }
 
+  out.debug(matches, 'Endpoint matches');
   return matches;
 };
 
@@ -114,6 +139,8 @@ function purifyRequest (incoming) {
 
   if (incoming == null) { incoming = {}; }
 
+  out.debugHeader('Request');
+  out.debug(incoming, 'Configured request');
   outgoing = {
     url: incoming.url,
     method: incoming.method == null ? 'GET' : incoming.method,
@@ -130,27 +157,34 @@ function purifyRequest (incoming) {
 
   outgoing.headers = purifyAuthorization(outgoing.headers);
   outgoing = pruneUndefined(outgoing);
+  out.debug(outgoing, 'Purified request');
   return outgoing;
 }
 
 function purifyResponse (me, incoming) {
   var outgoing = [];
 
+  out.debugHeader('Response');
   if (incoming == null) { incoming = []; }
   if (!(incoming instanceof Array)) { incoming = [incoming]; }
   if (incoming.length === 0) { incoming.push({}); }
 
   incoming.forEach(function (response) {
+    out.debug(incoming, 'Configured response');
     if (typeof response === 'string') {
-      outgoing.push(record(me, response));
+      const outgoingResponse = record(me, response);
+      out.debug(outgoingResponse, 'Purified response');
+      outgoing.push(outgoingResponse);
     } else {
-      outgoing.push(pruneUndefined({
+      const outgoingResponse = pruneUndefined({
         headers: purifyHeaders(response.headers),
         status: parseInt(response.status, 10) || 200,
         latency: parseInt(response.latency, 10) || null,
         file: response.file,
         body: purifyBody(response.body)
-      }));
+      });
+      out.debug(outgoingResponse, 'Purified response');
+      outgoing.push(outgoingResponse);
     }
   });
 
@@ -218,6 +252,7 @@ function compareHashMaps (configured, incoming) {
   for (key in configured) {
     if (!Object.prototype.hasOwnProperty.call(configured, key)) { continue; }
     headers[key] = matchRegex(configured[key], incoming[key]);
+    out.debug('Header ' + key + ' matches: ' + !(!headers[key]));
     if (!headers[key]) { return null; }
   }
 
@@ -227,19 +262,33 @@ function compareHashMaps (configured, incoming) {
 function compareObjects (configured, incoming) {
   var key;
 
+  out.debug(configured, 'Configured object');
+  out.debug(incoming, 'Incoming object');
   for (key in configured) {
-    if (typeof configured[key] !== typeof incoming[key]) { return false; }
+    if (typeof configured[key] !== typeof incoming[key]) {
+      out.debug('Types are different for ' + key);
+      return false;
+    }
 
     if (typeof configured[key] === 'object') {
-      if (!compareObjects(configured[key], incoming[key])) { return false; }
-    } else if (configured[key] !== incoming[key]) { return false; }
+      if (!compareObjects(configured[key], incoming[key])) {
+        out.debug('Types are different for ' + key);
+        return false;
+      }
+    } else if (configured[key] !== incoming[key]) {
+      out.debug(key + ' does not match');
+      return false;
+    }
   }
 
+  out.debug('Objects match');
   return true;
 }
 
 function matchRegex (compileMe, testMe) {
   if (testMe == null) { testMe = ''; }
+  out.debug('Regex: ' + compileMe);
+  out.debug('String: ' + testMe);
   return String(testMe).match(RegExp(compileMe, 'm'));
 }
 
