@@ -6,6 +6,7 @@ var path = require('path');
 var isutf8 = require('isutf8');
 var Endpoint = require('./endpoint');
 var clone = require('../lib/clone');
+const out = require('../console/out');
 var NOT_FOUND = "Endpoint with the given id doesn't exist.";
 var NO_MATCH = "Endpoint with given request doesn't exist.";
 
@@ -89,6 +90,8 @@ Endpoints.prototype.find = function (data, callback) {
   var id, endpoint, captures, matched;
   if (callback == null) { callback = noop; }
 
+  out.debugHeader('Incoming request');
+  out.debug(data);
   for (id in this.db) {
     if (!Object.prototype.hasOwnProperty.call(this.db, id)) { continue; }
 
@@ -122,6 +125,8 @@ Endpoints.prototype.found = function (endpoint, captures, callback) {
 
   applyCaptures(response, captures);
 
+  out.debugHeader('Outgoing response');
+  out.debug(response);
   if (parseInt(response.latency, 10)) {
     setTimeout(function () { callback(null, response); }, response.latency);
   } else {
