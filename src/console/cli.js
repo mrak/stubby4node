@@ -69,6 +69,11 @@ var options = [{
   name: 'watch',
   flag: 'w',
   description: 'Auto-reload data file when edits are made.'
+}, {
+  name: 'dittoResponse',
+  flag: 'r',
+  default: false,
+  description: 'Maintain casing for response headers.'
 }];
 
 function help (go) {

@@ -269,6 +269,33 @@ describe('Endpoint', function () {
       assert.deepStrictEqual(actual.request.headers, expected.request);
     });
 
+    it('should not lower case response headers properties if dittoResponse is true', function () {
+      var actual, expected;
+      this.data.request = {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+      this.data.response = {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+      expected = {
+        request: {
+          'content-type': 'application/json'
+        },
+        response: {
+          'Content-Type': 'application/json'
+        }
+      };
+
+      actual = new Endpoint(this.data, null, true);
+
+      assert.deepStrictEqual(actual.response[0].headers, expected.response);
+      assert.deepStrictEqual(actual.request.headers, expected.request);
+    });
+
     it('should define multiple headers with same name', function () {
       var actual, expected;
       this.data.request = {
