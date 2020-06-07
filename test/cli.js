@@ -224,10 +224,28 @@ describe('CLI', function () {
   describe('pfx', function () {
     it('should return contents of file', function () {
       var expected = 'some generated pfx';
-
       var actual = sut.pfx('test/data/cli.getPfx.pfx');
-
       assert.strictEqual(actual, expected);
+    });
+  });
+
+  describe('-g, --debugStubs', function () {
+    it('should return default if no flag provided', function () {
+      const expected = false;
+      const actual = sut.getArgs([]);
+      assert.strictEqual(actual.debugStubs, expected);
+    });
+
+    it('should return supplied value when provided', function () {
+      const expected = true;
+      const actual = sut.getArgs(['-g', expected]);
+      assert.strictEqual(actual.debugStubs, expected);
+    });
+
+    it('should return supplied value when provided with full flag', function () {
+      const expected = true;
+      const actual = sut.getArgs(['--debugStubs', expected]);
+      assert.strictEqual(actual.debugStubs, expected);
     });
   });
 
@@ -247,6 +265,7 @@ describe('CLI', function () {
         quiet: true,
         watch: filename,
         datadir: process.cwd(),
+        debugStubs: false,
         help: undefined, // eslint-disable-line no-undefined
         version: (require('../package.json')).version
       };

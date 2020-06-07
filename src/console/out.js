@@ -13,6 +13,16 @@ var RESET = '\x1B[0m';
 
 var out = {
   quiet: false,
+  debugStubs: false,
+  debugHeader: function (msg) {
+    if (!this.debugStubs) { return; }
+    console.log('----- ' + msg.toUpperCase() + ' ------');
+  },
+  debug: function (msg, header) {
+    if (!this.debugStubs) { return; }
+    if (header !== undefined) { console.log('--- ' + header.toUpperCase() + ' ---'); }
+    console.log(msg);
+  },
   log: function (msg) {
     if (this.quiet) { return; }
     console.log(msg);

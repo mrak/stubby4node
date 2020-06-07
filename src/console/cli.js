@@ -45,6 +45,11 @@ var options = [{
   flag: 'q',
   description: 'Prevent stubby from printing to the console.'
 }, {
+  name: 'debugStubs',
+  flag: 'g',
+  default: false,
+  description: 'Emit logs to help debug stub matching.'
+}, {
   name: 'pfx',
   flag: 'p',
   param: 'file',
