@@ -24,6 +24,8 @@
 
 [JJ4TH](https://github.com/jj4th)
 
+[Aparna Sathyanarayan](https://github.com/aparna-sath)
+
 # Special Thanks
 
 Alexander Zagniotov
