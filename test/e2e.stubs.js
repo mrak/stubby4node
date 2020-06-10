@@ -87,6 +87,16 @@ describe('End 2 End Stubs Test Suite', function () {
       });
     });
 
+    it('should return a basic OPTIONS endpoint', function (done) {
+      this.context.url = '/basic/options';
+      this.context.method = 'options';
+
+      createRequest(this.context, function (response) {
+        assert.strictEqual(response.statusCode, 200);
+        done();
+      });
+    });
+
     it('should return a response for an endpoint with multiple methods', function (done) {
       var self = this;
       this.context.url = '/basic/all';
@@ -117,7 +127,7 @@ describe('End 2 End Stubs Test Suite', function () {
 
               self.context.port = 8889;
               self.context.finished = false;
-              self.context.url = '/6';
+              self.context.url = '/7';
               self.context.method = 'get';
 
               createRequest(self.context, function (response5) {

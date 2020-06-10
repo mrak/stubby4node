@@ -18,6 +18,10 @@
     method: HEAD
 
 - request:
+    url: /basic/options
+    method: OPTIONS
+
+- request:
     url: /basic/all
     method: [put, post, get, delete, head]
 
