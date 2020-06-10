@@ -231,6 +231,26 @@ describe('CLI', function () {
     });
   });
 
+  describe('-H, --case-sensitive-headers', function () {
+    it('should return default if no flag provided', function () {
+      const expected = false;
+      const actual = sut.getArgs([]);
+      assert.strictEqual(actual['case-sensitive-headers'], expected);
+    });
+
+    it('should return supplied value when provided', function () {
+      const expected = true;
+      const actual = sut.getArgs(['-H', expected]);
+      assert.strictEqual(actual['case-sensitive-headers'], expected);
+    });
+
+    it('should return supplied value when provided with full flag', function () {
+      const expected = true;
+      const actual = sut.getArgs(['--case-sensitive-headers', expected]);
+      assert.strictEqual(actual['case-sensitive-headers'], expected);
+    });
+  });
+
   describe('getArgs', function () {
     it('should gather all arguments', function () {
       var actual;
@@ -247,6 +267,7 @@ describe('CLI', function () {
         quiet: true,
         watch: filename,
         datadir: process.cwd(),
+        'case-sensitive-headers': true,
         help: undefined, // eslint-disable-line no-undefined
         version: (require('../package.json')).version
       };
@@ -255,7 +276,7 @@ describe('CLI', function () {
       this.sandbox.stub(sut, 'cert').returns(expected.cert);
       this.sandbox.stub(sut, 'pfx').returns(expected.pfx);
 
-      actual = sut.getArgs(['-s', expected.stubs, '-a', expected.admin, '-d', filename, '-l', expected.location, '-k', 'mocked', '-c', 'mocked', '-p', 'mocked', '-t', expected.tls, '-q', '-w']);
+      actual = sut.getArgs(['-s', expected.stubs, '-a', expected.admin, '-d', filename, '-l', expected.location, '-k', 'mocked', '-c', 'mocked', '-p', 'mocked', '-t', expected.tls, '-q', '-w', '-H']);
 
       assert.deepStrictEqual(actual, expected);
     });

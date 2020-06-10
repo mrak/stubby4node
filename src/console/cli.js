@@ -69,6 +69,10 @@ var options = [{
   name: 'watch',
   flag: 'w',
   description: 'Auto-reload data file when edits are made.'
+}, {
+  name: 'case-sensitive-headers',
+  flag: 'H',
+  description: 'Do no automatically lower-case response headers.'
 }];
 
 function help (go) {

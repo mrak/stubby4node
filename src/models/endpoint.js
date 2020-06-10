@@ -6,14 +6,14 @@ var http = require('http');
 var q = require('querystring');
 var out = require('../console/out');
 
-function Endpoint (endpoint, datadir) {
+function Endpoint (endpoint, datadir, caseSensitiveHeaders) {
   if (endpoint == null) { endpoint = {}; }
   if (datadir == null) { datadir = process.cwd(); }
 
   Object.defineProperty(this, 'datadir', { value: datadir });
 
   this.request = purifyRequest(endpoint.request);
-  this.response = purifyResponse(this, endpoint.response);
+  this.response = purifyResponse(this, endpoint.response, caseSensitiveHeaders);
   this.hits = 0;
 }
 
@@ -133,7 +133,7 @@ function purifyRequest (incoming) {
   return outgoing;
 }
 
-function purifyResponse (me, incoming) {
+function purifyResponse (me, incoming, caseSensitiveHeaders) {
   var outgoing = [];
 
   if (incoming == null) { incoming = []; }
@@ -145,7 +145,7 @@ function purifyResponse (me, incoming) {
       outgoing.push(record(me, response));
     } else {
       outgoing.push(pruneUndefined({
-        headers: purifyHeaders(response.headers),
+        headers: purifyHeaders(response.headers, caseSensitiveHeaders),
         status: parseInt(response.status, 10) || 200,
         latency: parseInt(response.latency, 10) || null,
         file: response.file,
@@ -157,13 +157,17 @@ function purifyResponse (me, incoming) {
   return outgoing;
 }
 
-function purifyHeaders (incoming) {
+function purifyHeaders (incoming, caseSensitiveHeaders) {
   var prop;
   var outgoing = {};
 
   for (prop in incoming) {
     if (Object.prototype.hasOwnProperty.call(incoming, prop)) {
-      outgoing[prop.toLowerCase()] = incoming[prop];
+      if (caseSensitiveHeaders) {
+        outgoing[prop] = incoming[prop];
+      } else {
+        outgoing[prop.toLowerCase()] = incoming[prop];
+      }
     }
   }
 
