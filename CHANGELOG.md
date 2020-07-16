@@ -1,5 +1,15 @@
 # Changelog
 
+## 5.0.0
+
+* __BREAKING CHANGES from 4.x__
+    * The exit code for the `stubby` bin script will reflect the expected/error
+        state of stubby.
+* Dependencies have been updated to prevent vulnerabilities.
+    * `acorn` updated from 7.0.0 to 7.1.1
+    * updated node versions for testing
+    * lodash updated from 4.17.15 to 4.17.19
+
 ## 4.1.1
 
 * Updates depenencies with reported vulnerabilities
