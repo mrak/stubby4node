@@ -99,6 +99,55 @@ describe('main', function () {
     });
   });
 
+  describe('delete', function () {
+    it('should call delete all when only a callback is passed', function (done) {
+      sut.endpoints = {
+        deleteAll: function (cb) {
+          cb(null);
+        }
+      };
+
+      sut.delete(function () {
+        done();
+      });
+    });
+
+    it('should call delete all when no params are passed', function (done) {
+      sut.endpoints = {
+        deleteAll: function () {
+          done();
+        }
+      };
+
+      sut.delete();
+    });
+
+    it('should call delete when an id is passed', function (done) {
+      sut.endpoints = {
+        delete: function (id, cb) {
+          assert.strictEqual(id, '1');
+          assert.strictEqual(cb, id);
+          done();
+        }
+      };
+
+      sut.delete('1');
+    });
+
+    it('should call delete when an id and callback are passed', function (done) {
+      sut.endpoints = {
+        delete: function (id, cb) {
+          assert.strictEqual(id, '1');
+          cb();
+        }
+      };
+
+      sut.delete('1', function () {
+        done();
+      });
+    });
+  });
+
   describe('start', function () {
     beforeEach(function () {
       options = {};

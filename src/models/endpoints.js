@@ -71,6 +71,15 @@ Endpoints.prototype.delete = function (id, callback) {
   callback();
 };
 
+Endpoints.prototype.deleteAll = function (callback) {
+  if (callback == null) { callback = noop; }
+
+  delete this.db;
+  this.db = {};
+
+  callback();
+};
+
 Endpoints.prototype.gather = function (callback) {
   var id;
   var all = [];

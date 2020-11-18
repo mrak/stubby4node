@@ -16,6 +16,7 @@ describe('Admin', function () {
       retrieve: this.sandbox.spy(),
       update: this.sandbox.spy(),
       delete: this.sandbox.spy(),
+      deleteAll: this.sandbox.spy(),
       gather: this.sandbox.spy()
     };
     sut = new Admin(endpoints, true);
@@ -325,13 +326,12 @@ describe('Admin', function () {
     });
 
     describe('goDELETE', function () {
-      it('should send not supported for the root url', function () {
+      it('should delete all for the root url', function () {
         this.sandbox.stub(sut, 'getId').returns('');
-        this.sandbox.spy(sut, 'notSupported');
 
         sut.goDELETE(request, response);
 
-        assert(sut.notSupported.calledOnce);
+        assert(endpoints.deleteAll.calledOnce);
       });
 
       it('should delete item if id was gathered', function () {
