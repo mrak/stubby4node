@@ -1,7 +1,7 @@
 'use strict';
 
-var sinon = require('sinon');
-var assert = require('assert');
+const sinon = require('sinon');
+const assert = require('assert');
 
 if (!assert.deepStrictEqual) {
   assert.deepStrictEqual = assert.deepEqual; /* eslint-disable-line */

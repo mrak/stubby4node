@@ -1,8 +1,8 @@
 'use strict';
 
-var assert = require('assert');
-var sut = require('../src/console/cli');
-var out = require('../src/console/out');
+const assert = require('assert');
+const sut = require('../src/console/cli');
+const out = require('../src/console/out');
 
 describe('CLI', function () {
   beforeEach(function () {
@@ -12,7 +12,7 @@ describe('CLI', function () {
 
   describe('version', function () {
     it('should return the version of stubby in package.json', function () {
-      var expected = require('../package.json').version;
+      const expected = require('../package.json').version;
 
       sut.version(true);
 
@@ -31,73 +31,73 @@ describe('CLI', function () {
   describe('getArgs', function () {
     describe('-a, --admin', function () {
       it('should return default if no flag provided', function () {
-        var expected = 8889;
+        const expected = 8889;
 
-        var actual = sut.getArgs([]);
+        const actual = sut.getArgs([]);
 
         assert.strictEqual(actual.admin, expected);
       });
 
       it('should return supplied value when provided', function () {
-        var expected = '81';
+        const expected = '81';
 
-        var actual = sut.getArgs(['-a', expected]);
+        const actual = sut.getArgs(['-a', expected]);
 
         assert.strictEqual(actual.admin, expected);
       });
 
       it('should return supplied value when provided with full flag', function () {
-        var expected = '81';
-        var actual = sut.getArgs(['--admin', expected]);
+        const expected = '81';
+        const actual = sut.getArgs(['--admin', expected]);
         assert.strictEqual(actual.admin, expected);
       });
     });
 
     describe('-s, --stubs', function () {
       it('should return default if no flag provided', function () {
-        var expected = 8882;
+        const expected = 8882;
 
-        var actual = sut.getArgs([]);
+        const actual = sut.getArgs([]);
 
         assert.strictEqual(actual.stubs, expected);
       });
 
       it('should return supplied value when provided', function () {
-        var expected = '80';
+        const expected = '80';
 
-        var actual = sut.getArgs(['-s', expected]);
+        const actual = sut.getArgs(['-s', expected]);
 
         assert.strictEqual(actual.stubs, expected);
       });
 
       it('should return supplied value when provided with full flag', function () {
-        var expected = '80';
-        var actual = sut.getArgs(['--stubs', expected]);
+        const expected = '80';
+        const actual = sut.getArgs(['--stubs', expected]);
         assert.strictEqual(actual.stubs, expected);
       });
     });
 
     describe('-t, --tls', function () {
       it('should return default if no flag provided', function () {
-        var expected = 7443;
+        const expected = 7443;
 
-        var actual = sut.getArgs([]);
+        const actual = sut.getArgs([]);
 
         assert.strictEqual(actual.tls, expected);
       });
 
       it('should return supplied value when provided', function () {
-        var expected = '443';
+        const expected = '443';
 
-        var actual = sut.getArgs(['-t', expected]);
+        const actual = sut.getArgs(['-t', expected]);
 
         assert.strictEqual(actual.tls, expected);
       });
 
       it('should return supplied value when provided with full flag', function () {
-        var expected = '443';
+        const expected = '443';
 
-        var actual = sut.getArgs(['--tls', expected]);
+        const actual = sut.getArgs(['--tls', expected]);
 
         assert.strictEqual(actual.tls, expected);
       });
@@ -105,25 +105,25 @@ describe('CLI', function () {
 
     describe('-l, --location', function () {
       it('should return default if no flag provided', function () {
-        var expected = '0.0.0.0';
+        const expected = '0.0.0.0';
 
-        var actual = sut.getArgs([]);
+        const actual = sut.getArgs([]);
 
         assert.strictEqual(actual.location, expected);
       });
 
       it('should return supplied value when provided', function () {
-        var expected = 'stubby.com';
+        const expected = 'stubby.com';
 
-        var actual = sut.getArgs(['-l', expected]);
+        const actual = sut.getArgs(['-l', expected]);
 
         assert.strictEqual(actual.location, expected);
       });
 
       it('should return supplied value when provided with full flag', function () {
-        var expected = 'stubby.com';
+        const expected = 'stubby.com';
 
-        var actual = sut.getArgs(['--location', expected]);
+        const actual = sut.getArgs(['--location', expected]);
 
         assert.strictEqual(actual.location, expected);
       });
@@ -136,7 +136,7 @@ describe('CLI', function () {
         assert(process.exit.calledOnce);
       });
       it('should print out version info', function () {
-        var version = require('../package.json').version;
+        const version = require('../package.json').version;
 
         sut.getArgs(['-v']);
 
@@ -161,7 +161,7 @@ describe('CLI', function () {
   });
 
   describe('data', function () {
-    var expected = [{
+    const expected = [{
       request: {
         url: '/testput',
         method: 'PUT',
@@ -191,31 +191,31 @@ describe('CLI', function () {
     }];
 
     it('should be about to parse json file with array', function () {
-      var actual = sut.getArgs(['-d', 'test/data/cli.getData.json']);
+      const actual = sut.getArgs(['-d', 'test/data/cli.getData.json']);
       assert.deepStrictEqual(actual.data, expected);
     });
 
     it('should be about to parse yaml file with array', function () {
-      var actual = sut.getArgs(['-d', 'test/data/cli.getData.yaml']);
+      const actual = sut.getArgs(['-d', 'test/data/cli.getData.yaml']);
       assert.deepStrictEqual(actual.data, expected);
     });
   });
 
   describe('key', function () {
     it('should return contents of file', function () {
-      var expected = 'some generated key';
+      const expected = 'some generated key';
 
-      var actual = sut.key('test/data/cli.getKey.pem');
+      const actual = sut.key('test/data/cli.getKey.pem');
 
       assert.strictEqual(actual, expected);
     });
   });
 
   describe('cert', function () {
-    var expected = 'some generated certificate';
+    const expected = 'some generated certificate';
 
     it('should return contents of file', function () {
-      var actual = sut.cert('test/data/cli.getCert.pem');
+      const actual = sut.cert('test/data/cli.getCert.pem');
 
       assert.strictEqual(actual, expected);
     });
@@ -223,9 +223,9 @@ describe('CLI', function () {
 
   describe('pfx', function () {
     it('should return contents of file', function () {
-      var expected = 'some generated pfx';
+      const expected = 'some generated pfx';
 
-      var actual = sut.pfx('test/data/cli.getPfx.pfx');
+      const actual = sut.pfx('test/data/cli.getPfx.pfx');
 
       assert.strictEqual(actual, expected);
     });
@@ -253,9 +253,8 @@ describe('CLI', function () {
 
   describe('getArgs', function () {
     it('should gather all arguments', function () {
-      var actual;
-      var filename = 'file.txt';
-      var expected = {
+      const filename = 'file.txt';
+      const expected = {
         data: 'a file',
         stubs: '88',
         admin: '90',
@@ -276,7 +275,7 @@ describe('CLI', function () {
       this.sandbox.stub(sut, 'cert').returns(expected.cert);
       this.sandbox.stub(sut, 'pfx').returns(expected.pfx);
 
-      actual = sut.getArgs(['-s', expected.stubs, '-a', expected.admin, '-d', filename, '-l', expected.location, '-k', 'mocked', '-c', 'mocked', '-p', 'mocked', '-t', expected.tls, '-q', '-w', '-H']);
+      const actual = sut.getArgs(['-s', expected.stubs, '-a', expected.admin, '-d', filename, '-l', expected.location, '-k', 'mocked', '-c', 'mocked', '-p', 'mocked', '-t', expected.tls, '-q', '-w', '-H']);
 
       assert.deepStrictEqual(actual, expected);
     });

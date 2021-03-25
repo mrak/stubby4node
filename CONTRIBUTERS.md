@@ -2,29 +2,31 @@
 
 [Eric Mrak](https://github.com/mrak)
 
-[Tomás Aparicio](https://github.com/h2non)
+[Andrew Yurisich](https://github.com/Droogans)
+
+[Aparna Sathyanarayan](https://github.com/aparna-sath)
+
+[Diego Santos da Silveira](https://github.com/diegosilveira)
+
+[Esco Obong](https://github.com/esco)
+
+[Hadi Michael](https://github.com/hadimichael)
+
+[JJ4TH](https://github.com/jj4th)
+
+[James Murphy](https://github.com/murphyj)
 
 [Jay Parlar](https://github.com/parlarjb)
 
 [Josh Price](https://github.com/joshprice)
 
+[Josh Stuart](https://github.com/joshystuart)
+
 [Mark Campbell](https://github.com/Nitrodist)
 
-[Hadi Michael](https://github.com/hadimichael)
-
-[Esco Obong](https://github.com/esco)
-
-[Diego Santos da Silveira](https://github.com/diegosilveira)
-
-[James Murphy](https://github.com/murphyj)
+[Tomás Aparicio](https://github.com/h2non)
 
 [Vincent Lemeunier](https://github.com/kombucha)
-
-[Andrew Yurisich](https://github.com/Droogans)
-
-[JJ4TH](https://github.com/jj4th)
-
-[Aparna Sathyanarayan](https://github.com/aparna-sath)
 
 # Special Thanks
 

@@ -54,22 +54,19 @@
     "url": "https://github.com/mrak/stubby4node.git"
   },
   "dependencies": {
-    "async": "^0.2.7",
-    "ejs": "^2.7.1",
-    "eslint-config-standard": "^13.0.1",
-    "isutf8": "^2.1.0",
-    "js-yaml": "^3.13.1",
+    "ejs": "^3.1.6",
+    "isutf8": "^3.1.1",
+    "js-yaml": "^4.0.0",
     "node-static": "^0.7.11"
   },
   "devDependencies": {
-    "buffer-equal": "^1.0.0",
-    "mocha": "^6.2.0",
-    "semistandard": "^14.0.1",
-    "sinon": "^7.4.2"
+    "mocha": "^8.3.1",
+    "semistandard": "^16.0.0",
+    "sinon": "^10.0.0"
   },
   "license": "Apache-2.0",
   "engine": {
-    "node": ">=4.0.0"
+    "node": ">=6.17.1"
   },
   "semistandard": {
     "ignore": [

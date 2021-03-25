@@ -1,7 +1,7 @@
 'use strict';
 
-var Portal = require('./portal').Portal;
-var qs = require('querystring');
+const Portal = require('./portal').Portal;
+const qs = require('querystring');
 
 function Stubs (endpoints) {
   Portal.call(this);
@@ -14,8 +14,8 @@ Stubs.prototype = Object.create(Portal.prototype);
 Stubs.prototype.constructor = Stubs;
 
 Stubs.prototype.server = function (request, response) {
-  var data = null;
-  var self = this;
+  let data = null;
+  const self = this;
 
   request.on('data', function (chunk) {
     data = data != null ? data : '';
@@ -25,11 +25,9 @@ Stubs.prototype.server = function (request, response) {
   });
 
   request.on('end', function () {
-    var criteria;
-
     self.received(request, response);
 
-    criteria = {
+    const criteria = {
       url: extractUrl(request.url),
       method: request.method,
       post: data,

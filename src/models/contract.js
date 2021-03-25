@@ -1,6 +1,6 @@
 'use strict';
 
-var httpMethods = [
+const httpMethods = [
   'GET',
   'PUT',
   'POST',
@@ -12,7 +12,7 @@ var httpMethods = [
   'OPTIONS'
 ];
 
-var messages = {
+const messages = {
   json: 'An unparseable JSON string was supplied.',
   request: {
     missing: "'request' object is required.",
@@ -40,13 +40,11 @@ var messages = {
   }
 };
 
-var response = {
+const response = {
   status: function (status) {
-    var parsed;
-
     if (!status) { return null; }
 
-    parsed = parseInt(status, 10);
+    const parsed = parseInt(status, 10);
 
     if (!parsed) { return messages.response.status.type; }
     if (parsed < 100) { return messages.response.status.small; }
@@ -71,7 +69,7 @@ var response = {
   }
 };
 
-var request = {
+const request = {
   url: function (url) {
     if (url) { return null; }
 
@@ -87,7 +85,7 @@ var request = {
     return null;
   },
   method: function (method) {
-    var i;
+    let i;
     if (!method) { return null; }
 
     if (!(method instanceof Array)) {
@@ -118,8 +116,8 @@ var request = {
 };
 
 function contract (endpoint) {
-  var results, property;
-  var errors = [];
+  let results, property;
+  let errors = [];
 
   if (typeof endpoint === 'string') {
     try {

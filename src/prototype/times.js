@@ -6,7 +6,7 @@ function noop () {}
 Object.defineProperty(Number.prototype, 'times', {
   configurable: true,
   value: function (fn) {
-    var i;
+    let i;
 
     if (fn == null) { fn = noop; }
     if (this <= 0) { return this; }
@@ -20,9 +20,9 @@ Object.defineProperty(Number.prototype, 'times', {
 Object.defineProperty(String.prototype, 'times', {
   configurable: true,
   value: function (num) {
-    var i;
-    var result = '';
-    var self = this;
+    let i;
+    let result = '';
+    const self = this;
 
     if (num == null) { num = 1; }
     if (num < 1) { return ''; }

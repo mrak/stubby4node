@@ -1,7 +1,7 @@
 /* global _, hljs */
 (function (window) {
-  var stubby = window.stubby || {};
-  var template = [ // eww
+  const stubby = window.stubby || {};
+  const template = [ // eww
     '<li>',
     '  <table>',
     '     <caption><a href="<%= adminUrl %>">Endpoint <%= id %></a></caption>',
@@ -107,10 +107,10 @@
   ].join('\n');
 
   function queryParams (query) {
-    var result = '?';
+    let result = '?';
 
-    for (var key in query) {
-      var value = query[key];
+    for (const key in query) {
+      const value = query[key];
 
       result += encodeURIComponent(key);
       result += '=';
@@ -121,20 +121,20 @@
     return result.replace(/&$/, '');
   }
 
-  var ajax = null;
-  var list = null;
+  let ajax = null;
+  let list = null;
 
   function success () {
-    var endpoint;
-    var endpoints = JSON.parse(ajax.responseText);
+    let endpoint;
+    const endpoints = JSON.parse(ajax.responseText);
 
-    for (var i = 0; i < endpoints.length; i++) {
+    for (let i = 0; i < endpoints.length; i++) {
       endpoint = endpoints[i];
 
       endpoint.queryParams = queryParams;
       endpoint.adminUrl = window.location.href.replace(/status/, endpoint.id);
 
-      var html = _.template(template)(endpoint);
+      const html = _.template(template)(endpoint);
       list.innerHTML += html;
     }
 

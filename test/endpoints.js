@@ -1,9 +1,17 @@
 'use strict';
 
-var sut;
-var Endpoints = require('../src/models/endpoints').Endpoints;
-var assert = require('assert');
-var bufferEqual = require('buffer-equal');
+let sut;
+const Endpoints = require('../src/models/endpoints').Endpoints;
+const assert = require('assert');
+
+function bufferEqual (l, r) {
+  if (!Buffer.isBuffer(l)) return undefined;
+  if (!Buffer.isBuffer(r)) return undefined;
+  if (typeof l.equals === 'function') return l.equals(r);
+  if (l.length !== r.length) return false;
+  for (let i = 0; i < l.length; i++) if (l[i] !== r[i]) return false;
+  return true;
+}
 
 describe('Endpoints', function () {
   beforeEach(function () {
@@ -11,14 +19,14 @@ describe('Endpoints', function () {
   });
 
   describe('operations', function () {
-    var callback;
+    let callback;
 
     beforeEach(function () {
       callback = this.sandbox.spy();
     });
 
     describe('create', function () {
-      var data;
+      let data;
 
       beforeEach(function () {
         data = {
@@ -57,10 +65,10 @@ describe('Endpoints', function () {
     });
 
     describe('retrieve', function () {
-      var id = 'any id';
+      const id = 'any id';
 
       it('should call callback with null, row if operation returns a row', function () {
-        var row = {
+        const row = {
           request: {},
           response: {}
         };
@@ -82,8 +90,8 @@ describe('Endpoints', function () {
     });
 
     describe('update', function () {
-      var id = 'any id';
-      var data = {
+      const id = 'any id';
+      const data = {
         request: {
           url: ''
         }
@@ -105,7 +113,7 @@ describe('Endpoints', function () {
     });
 
     describe('delete', function () {
-      var id = 'any id';
+      const id = 'any id';
 
       it('should call callback when database updates', function () {
         sut.db[id] = {};
@@ -124,7 +132,7 @@ describe('Endpoints', function () {
 
     describe('gather', function () {
       it('should call callback with rows if operation returns some rows', function () {
-        var data = [{}, {}];
+        const data = [{}, {}];
         sut.db = data;
 
         sut.gather(callback);
@@ -142,7 +150,7 @@ describe('Endpoints', function () {
     });
 
     describe('find', function () {
-      var data = {
+      let data = {
         method: 'GET'
       };
 
@@ -161,7 +169,7 @@ describe('Endpoints', function () {
       });
 
       it('should call callback after timeout if data response has a latency', function (done) {
-        var start = new Date();
+        const start = new Date();
 
         sut.create({
           request: {},
@@ -170,7 +178,7 @@ describe('Endpoints', function () {
           }
         });
         sut.find(data, function () {
-          var elapsed = new Date() - start;
+          const elapsed = new Date() - start;
           assert(elapsed > 900 && elapsed < 1100);
           done();
         });
@@ -200,7 +208,7 @@ describe('Endpoints', function () {
         });
 
         it('should replace captures in a text file', function () {
-          var expected = 'file contents!';
+          const expected = 'file contents!';
           sut.create({
             request: {
               url: '/',
@@ -221,8 +229,7 @@ describe('Endpoints', function () {
         });
 
         it('should return binary data unmolested', function () {
-          var body;
-          var expected = Buffer.from([0x80, 0x81, 0x82, 0xab, 0xcd, 0xef, 0x3c, 0x25, 0x20, 0x70, 0x6f, 0x73, 0x74, 0x5b, 0x30, 0x5d, 0x20, 0x25, 0x3e, 0xfe, 0xdc, 0xba, 0x82, 0x81, 0x80]);
+          const expected = Buffer.from([0x80, 0x81, 0x82, 0xab, 0xcd, 0xef, 0x3c, 0x25, 0x20, 0x70, 0x6f, 0x73, 0x74, 0x5b, 0x30, 0x5d, 0x20, 0x25, 0x3e, 0xfe, 0xdc, 0xba, 0x82, 0x81, 0x80]);
           sut.create({
             request: {
               url: '/',
@@ -238,7 +245,7 @@ describe('Endpoints', function () {
             post: 'binary'
           };
           sut.find(data, callback);
-          body = callback.args[0][1].body;
+          const body = callback.args[0][1].body;
 
           assert(body instanceof Buffer);
           assert(bufferEqual(body, expected));
@@ -247,7 +254,7 @@ describe('Endpoints', function () {
 
       describe('request json versus post or file', function () {
         it('should not match response if the request json does not match the incoming post', function () {
-          var expected = 'Endpoint with given request doesn\'t exist.';
+          const expected = 'Endpoint with given request doesn\'t exist.';
 
           sut.create({
             request: {
@@ -268,7 +275,7 @@ describe('Endpoints', function () {
         });
 
         it('should match response with json if json is supplied and neither post nor file are supplied', function () {
-          var expected = {
+          const expected = {
             status: 200
           };
           sut.create({
@@ -290,7 +297,7 @@ describe('Endpoints', function () {
         });
 
         it('should match response with post if post is supplied', function () {
-          var expected = {
+          const expected = {
             status: 200
           };
           sut.create({
@@ -313,7 +320,7 @@ describe('Endpoints', function () {
         });
 
         it('should match response with file if file is supplied', function () {
-          var expected = {
+          const expected = {
             status: 200
           };
           sut.create({
@@ -338,7 +345,7 @@ describe('Endpoints', function () {
 
       describe('request post versus file', function () {
         it('should match response with post if file is not supplied', function () {
-          var expected = {
+          const expected = {
             status: 200
           };
           sut.create({
@@ -360,7 +367,7 @@ describe('Endpoints', function () {
         });
 
         it('should match response with post file is supplied but cannot be found', function () {
-          var expected = {
+          const expected = {
             status: 200
           };
           sut.create({
@@ -383,7 +390,7 @@ describe('Endpoints', function () {
         });
 
         it('should match response with file if file is supplied and exists', function () {
-          var expected = {
+          const expected = {
             status: 200
           };
           sut.create({
@@ -408,7 +415,7 @@ describe('Endpoints', function () {
 
       describe('post versus form', function () {
         it('should match response with form params', function () {
-          var expected = {
+          const expected = {
             status: 200
           };
           sut.create({
@@ -430,7 +437,7 @@ describe('Endpoints', function () {
         });
 
         it('should not match response with incorrect form params', function () {
-          var expected = {
+          const expected = {
             status: 200
           };
           sut.create({
@@ -452,7 +459,7 @@ describe('Endpoints', function () {
         });
 
         it('should match response with extra form params', function () {
-          var expected = {
+          const expected = {
             status: 200
           };
           sut.create({
@@ -474,7 +481,7 @@ describe('Endpoints', function () {
         });
 
         it('should not match response with form params, if params not supplied', function () {
-          var expected = {
+          const expected = {
             status: 200
           };
           sut.create({
@@ -498,7 +505,7 @@ describe('Endpoints', function () {
 
       describe('response body versus file', function () {
         it('should return response with body as content if file is not supplied', function () {
-          var expected = 'the body!';
+          const expected = 'the body!';
           sut.create({
             request: {
               url: '/testing'
@@ -517,7 +524,7 @@ describe('Endpoints', function () {
         });
 
         it('should return response with body as content if file is supplied but cannot be found', function () {
-          var expected = 'the body!';
+          const expected = 'the body!';
           sut.create({
             request: {
               url: '/testing'
@@ -537,7 +544,7 @@ describe('Endpoints', function () {
         });
 
         it('should return response with file as content if file is supplied and exists', function () {
-          var expected = 'file contents!';
+          const expected = 'file contents!';
           sut.create({
             request: {
               url: '/testing'

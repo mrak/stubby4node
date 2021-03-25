@@ -1,22 +1,20 @@
 'use strict';
 
-var fs = require('fs');
-var crypto = require('crypto');
-var contract = require('../models/contract');
-var out = require('./out');
-var yaml = require('js-yaml');
+const fs = require('fs');
+const crypto = require('crypto');
+const contract = require('../models/contract');
+const out = require('./out');
+const yaml = require('js-yaml');
 
-var interval = 3000;
-var intervalId = null;
-var watching = false;
+const interval = 3000;
+let intervalId = null;
+let watching = false;
 
 function Watcher (endpoints, filename) {
-  var shasum;
-
   this.endpoints = endpoints;
   this.filename = filename;
 
-  shasum = crypto.createHash('sha1');
+  const shasum = crypto.createHash('sha1');
   shasum.update(fs.readFileSync(this.filename, 'utf8'));
 
   this.sha = shasum.digest('hex');
@@ -37,12 +35,12 @@ Watcher.prototype.activate = function () {
 };
 
 Watcher.prototype.refresh = function () {
-  var sha, errors;
-  var shasum = crypto.createHash('sha1');
-  var data = fs.readFileSync(this.filename, 'utf8');
+  let errors;
+  const shasum = crypto.createHash('sha1');
+  let data = fs.readFileSync(this.filename, 'utf8');
 
   shasum.update(data);
-  sha = shasum.digest('hex');
+  const sha = shasum.digest('hex');
 
   if (sha !== this.sha) {
     try {

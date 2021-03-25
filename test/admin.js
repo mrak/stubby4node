@@ -1,12 +1,12 @@
 'use strict';
 
-var Admin = require('../src/portals/admin').Admin;
-var assert = require('assert');
+const Admin = require('../src/portals/admin').Admin;
+const assert = require('assert');
 
 require('../src/console/out').quiet = true;
 
 describe('Admin', function () {
-  var endpoints, request, response, sut;
+  let endpoints, request, response, sut;
 
   beforeEach(function () {
     this.sandbox.spy(console, 'info');
@@ -37,36 +37,36 @@ describe('Admin', function () {
 
   describe('urlValid', function () {
     it('should accept the root url', function () {
-      var url = '/';
-      var result = sut.urlValid(url);
+      const url = '/';
+      const result = sut.urlValid(url);
 
       assert(result);
     });
 
     it('should not accept urls with a-z in them', function () {
-      var url = '/abcdefhijklmnopqrstuvwxyz';
-      var result = sut.urlValid(url);
+      const url = '/abcdefhijklmnopqrstuvwxyz';
+      const result = sut.urlValid(url);
 
       assert(!result);
     });
 
     it('should accept urls of digits', function () {
-      var url = '/1';
-      var result = sut.urlValid(url);
+      const url = '/1';
+      const result = sut.urlValid(url);
 
       assert(result);
     });
 
     it('should not accept urls not beginning in /', function () {
-      var url = '123456';
-      var result = sut.urlValid(url);
+      const url = '123456';
+      const result = sut.urlValid(url);
 
       assert(!result);
     });
 
     it('should not accept urls beginning with 0', function () {
-      var url = '/012';
-      var result = sut.urlValid(url);
+      const url = '/012';
+      const result = sut.urlValid(url);
 
       assert(!result);
     });
@@ -74,16 +74,16 @@ describe('Admin', function () {
 
   describe('getId', function () {
     it('should get valid id from url', function () {
-      var id = '123';
-      var url = '/' + id;
-      var actual = sut.getId(url);
+      const id = '123';
+      const url = '/' + id;
+      const actual = sut.getId(url);
 
       assert.strictEqual(actual, id);
     });
 
     it('should return nothing for root url', function () {
-      var url = '/';
-      var actual = sut.getId(url);
+      const url = '/';
+      const actual = sut.getId(url);
       assert(!actual);
     });
   });
@@ -142,15 +142,14 @@ describe('Admin', function () {
     });
 
     it('should write JSON content if supplied', function () {
-      var content = {};
+      const content = {};
       sut.ok(response, content);
       assert(response.end.calledOnce);
       assert.strictEqual(response.end.args[0].length, 1);
     });
 
     it('should write nothing if content is null', function () {
-      var content;
-      content = null;
+      const content = null;
       sut.ok(response, content);
       assert.strictEqual(response.write.callCount, 0);
     });
@@ -162,7 +161,7 @@ describe('Admin', function () {
   });
 
   describe('created', function () {
-    var id = null;
+    let id = null;
 
     beforeEach(function () {
       request.headers.host = 'testHost';
@@ -177,7 +176,7 @@ describe('Admin', function () {
     });
 
     it('should write header with Location set', function () {
-      var expected = {
+      const expected = {
         Location: request.headers.host + '/' + id
       };
 
@@ -258,7 +257,7 @@ describe('Admin', function () {
 
     describe('processPUT', function () {
       it('should update item if data is JSON parsable', function () {
-        var data = '{"property":"value"}';
+        const data = '{"property":"value"}';
 
         sut.processPUT('any id', data, response);
 
@@ -266,7 +265,7 @@ describe('Admin', function () {
       });
 
       it('should not update item if data isnt JSON parsable', function () {
-        var data = '<H#rg';
+        const data = '<H#rg';
 
         sut.processPUT('any id', data, response);
 
@@ -274,7 +273,7 @@ describe('Admin', function () {
       });
 
       it('should return BAD REQUEST when contract is violated', function () {
-        var data = '{"property":"value"}';
+        const data = '{"property":"value"}';
         sut.contract.returns([]);
         this.sandbox.spy(sut, 'badRequest');
 
@@ -298,7 +297,7 @@ describe('Admin', function () {
 
     describe('processPOST', function () {
       it('should create item if data is JSON parsable', function () {
-        var data = '{"property":"value"}';
+        const data = '{"property":"value"}';
 
         sut.processPOST(data, response, request);
 
@@ -306,7 +305,7 @@ describe('Admin', function () {
       });
 
       it('should not create item if data isnt JSON parsable', function () {
-        var data = '<H#rg';
+        const data = '<H#rg';
 
         sut.processPOST(data, response, request);
 
@@ -314,7 +313,7 @@ describe('Admin', function () {
       });
 
       it('should return BAD REQUEST when contract is violated', function () {
-        var data = '{"property":"value"}';
+        const data = '{"property":"value"}';
         sut.contract.returns([]);
         this.sandbox.spy(sut, 'badRequest');
 

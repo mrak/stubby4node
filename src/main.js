@@ -1,16 +1,15 @@
 'use strict';
 
-var Admin = require('./portals/admin').Admin;
-var Stubs = require('./portals/stubs').Stubs;
-var Endpoints = require('./models/endpoints').Endpoints;
-var Watcher = require('./console/watch');
-var async = require('async');
-var CLI = require('./console/cli');
-var out = require('./console/out');
-var http = require('http');
-var https = require('https');
-var contract = require('./models/contract');
-var couldNotSave = "The supplied endpoint data couldn't be saved";
+const Admin = require('./portals/admin').Admin;
+const Stubs = require('./portals/stubs').Stubs;
+const Endpoints = require('./models/endpoints').Endpoints;
+const Watcher = require('./console/watch');
+const CLI = require('./console/cli');
+const out = require('./console/out');
+const http = require('http');
+const https = require('https');
+const contract = require('./models/contract');
+const couldNotSave = "The supplied endpoint data couldn't be saved";
 
 function noop () {}
 
@@ -20,7 +19,7 @@ function onListening (portal, port, protocol, location) {
 }
 
 function onError (err, port, location) {
-  var msg;
+  let msg;
 
   switch (err.code) {
     case 'EACCES':
@@ -45,7 +44,7 @@ function onEndpointLoaded (_, endpoint) {
 }
 
 function setupStartOptions (options, callback) {
-  var defaults, key;
+  let key;
 
   options = options == null ? {} : options;
   callback = callback == null ? noop : callback;
@@ -57,7 +56,7 @@ function setupStartOptions (options, callback) {
 
   if (options.quiet == null) { options.quiet = true; }
 
-  defaults = CLI.getArgs([]);
+  const defaults = CLI.getArgs([]);
   for (key in defaults) {
     if (options[key] == null) {
       options[key] = defaults[key];
@@ -69,7 +68,7 @@ function setupStartOptions (options, callback) {
 }
 
 function createHttpsOptions (options) {
-  var httpsOptions = options._httpsOptions || {};
+  const httpsOptions = options._httpsOptions || {};
 
   if (options.key && options.cert) {
     httpsOptions.key = options.key;
@@ -89,13 +88,13 @@ function Stubby () {
 }
 
 Stubby.prototype.start = function (o, cb) {
-  var oc = setupStartOptions(o, cb);
-  var options = oc[0];
-  var callback = oc[1];
-  var self = this;
+  const oc = setupStartOptions(o, cb);
+  const options = oc[0];
+  const callback = oc[1];
+  const self = this;
 
   this.stop(function () {
-    var errors = contract(options.data);
+    const errors = contract(options.data);
 
     if (errors) { return callback(errors); }
     if (options.datadir != null) { self.endpoints.datadir = options.datadir; }
@@ -126,29 +125,29 @@ Stubby.prototype.start = function (o, cb) {
 };
 
 Stubby.prototype.stop = function (callback) {
-  var self = this;
+  const self = this;
 
   if (callback == null) { callback = noop; }
 
   setTimeout(function () {
     if (self.watcher != null) { self.watcher.deactivate(); }
 
-    async.parallel({
-      closeAdmin: function (cb) {
-        if (self.adminPortal && self.adminPortal.address()) { self.adminPortal.close(cb); } else { cb(); }
-      },
-      closeStubs: function (cb) {
-        if (self.stubsPortal && self.stubsPortal.address()) { self.stubsPortal.close(cb); } else { cb(); }
-      },
-      closeTls: function (cb) {
-        if (self.tlsPortal && self.tlsPortal.address()) { self.tlsPortal.close(cb); } else { return cb(); }
-      }
-    }, callback);
+    Promise.all([
+      new Promise((resolve) => {
+        if (self.adminPortal && self.adminPortal.address()) { self.adminPortal.close(resolve); } else { resolve(); }
+      }),
+      new Promise((resolve) => {
+        if (self.stubsPortal && self.stubsPortal.address()) { self.stubsPortal.close(resolve); } else { resolve(); }
+      }),
+      new Promise((resolve) => {
+        if (self.tlsPortal && self.tlsPortal.address()) { self.tlsPortal.close(resolve); } else { return resolve(); }
+      })
+    ]).then((results) => callback());
   }, 1);
 };
 
 Stubby.prototype.post = function (data, callback) {
-  var self = this;
+  const self = this;
 
   if (callback == null) { callback = noop; }
 
@@ -158,7 +157,7 @@ Stubby.prototype.post = function (data, callback) {
 };
 
 Stubby.prototype.get = function (id, callback) {
-  var self = this;
+  const self = this;
 
   if (id == null) { id = noop; }
   if (callback == null) { callback = id; }
@@ -169,7 +168,7 @@ Stubby.prototype.get = function (id, callback) {
 };
 
 Stubby.prototype.put = function (id, data, callback) {
-  var self = this;
+  const self = this;
 
   if (callback == null) { callback = noop; }
 
@@ -179,7 +178,7 @@ Stubby.prototype.put = function (id, data, callback) {
 };
 
 Stubby.prototype.delete = function (id, callback) {
-  var self = this;
+  const self = this;
 
   if (id == null) { id = noop; }
   if (callback == null) { callback = id; }

@@ -1,16 +1,16 @@
 'use strict';
 
-var Stubby = require('../src/main').Stubby;
-var fs = require('fs');
-var yaml = require('js-yaml');
-var clone = require('../src/lib/clone');
-var endpointData = yaml.load((fs.readFileSync('test/data/e2e.yaml', 'utf8')).trim());
-var assert = require('assert');
-var createRequest = require('./helpers/create-request');
+const Stubby = require('../src/main').Stubby;
+const fs = require('fs');
+const yaml = require('js-yaml');
+const clone = require('../src/lib/clone');
+const endpointData = yaml.load((fs.readFileSync('test/data/e2e.yaml', 'utf8')).trim());
+const assert = require('assert');
+const createRequest = require('./helpers/create-request');
 
 describe('End 2 End Admin Test Suite', function () {
-  var sut;
-  var port = 8889;
+  let sut;
+  const port = 8889;
 
   function stopStubby (finish) {
     if (sut != null) {
@@ -50,16 +50,16 @@ describe('End 2 End Admin Test Suite', function () {
   });
 
   it('should be able to retreive an endpoint through GET', function (done) {
-    var id = 3;
-    var endpoint = clone(endpointData[id - 1]);
+    const id = 3;
+    const endpoint = clone(endpointData[id - 1]);
     endpoint.id = id;
     this.context.url = '/' + id;
     this.context.method = 'get';
 
     createRequest(this.context, function (response) {
-      var prop, value;
-      var returned = JSON.parse(response.data);
-      var req = endpoint.req;
+      let prop, value;
+      const returned = JSON.parse(response.data);
+      const req = endpoint.req;
 
       for (prop in req) {
         if (!Object.prototype.hasOwnProperty.call(req, prop)) { continue; }
@@ -73,9 +73,9 @@ describe('End 2 End Admin Test Suite', function () {
   });
 
   it('should be able to edit an endpoint through PUT', function (done) {
-    var self = this;
-    var id = 2;
-    var endpoint = clone(endpointData[id - 1]);
+    const self = this;
+    const id = 2;
+    const endpoint = clone(endpointData[id - 1]);
     this.context.url = '/' + id;
     endpoint.request.url = '/munchkin';
     this.context.method = 'put';
@@ -86,7 +86,7 @@ describe('End 2 End Admin Test Suite', function () {
       self.context.method = 'get';
 
       createRequest(self.context, function (response) {
-        var returned = JSON.parse(response.data);
+        const returned = JSON.parse(response.data);
 
         assert.strictEqual(returned.request.url, endpoint.request.url);
 
@@ -96,8 +96,8 @@ describe('End 2 End Admin Test Suite', function () {
   });
 
   it('should be about to create an endpoint through POST', function (done) {
-    var self = this;
-    var endpoint = {
+    const self = this;
+    const endpoint = {
       request: {
         url: '/posted/endpoint'
       },
@@ -110,7 +110,7 @@ describe('End 2 End Admin Test Suite', function () {
     this.context.post = JSON.stringify(endpoint);
 
     createRequest(this.context, function (response) {
-      var id = response.headers.location.replace(/localhost:8889\/([0-9]+)/, '$1');
+      const id = response.headers.location.replace(/localhost:8889\/([0-9]+)/, '$1');
 
       assert.strictEqual(response.statusCode, 201);
 
@@ -122,7 +122,7 @@ describe('End 2 End Admin Test Suite', function () {
       };
 
       createRequest(self.context, function (response2) {
-        var returned = JSON.parse(response2.data);
+        const returned = JSON.parse(response2.data);
 
         assert.strictEqual(returned.request.url, endpoint.request.url);
         done();
@@ -131,7 +131,7 @@ describe('End 2 End Admin Test Suite', function () {
   });
 
   it('should be about to delete an endpoint through DELETE', function (done) {
-    var self = this;
+    const self = this;
     this.context.url = '/2';
     this.context.method = 'delete';
 

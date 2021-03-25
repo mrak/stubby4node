@@ -1,11 +1,11 @@
 'use strict';
 
-var pp = require('./prettyprint');
-var UNARY_FLAGS = /^-[a-zA-Z]+$/;
-var ANY_FLAG = /^-.+$/;
+const pp = require('./prettyprint');
+const UNARY_FLAGS = /^-[a-zA-Z]+$/;
+const ANY_FLAG = /^-.+$/;
 
 function findOption (option, argv) {
-  var argIndex = -1;
+  let argIndex = -1;
 
   if (option.flag != null) {
     argIndex = indexOfFlag(option, argv);
@@ -19,7 +19,7 @@ function findOption (option, argv) {
 }
 
 function indexOfFlag (option, argv) {
-  var index = -1;
+  let index = -1;
 
   argv.forEach(function (flag) {
     if (!UNARY_FLAGS.test(flag)) { return; }
@@ -45,11 +45,9 @@ function unaryCheck (option, argv) {
 }
 
 function pullPassedValue (option, argv) {
-  var argIndex;
-
   if (option.param == null) { return unaryCheck(option, argv); }
 
-  argIndex = findOption(option, argv);
+  const argIndex = findOption(option, argv);
 
   if (argIndex === -1) { return option.default; }
   if (argv[argIndex + 1] == null) { return option.default; }
@@ -59,7 +57,7 @@ function pullPassedValue (option, argv) {
 }
 
 function parse (options, argv) {
-  var args = {};
+  const args = {};
 
   if (argv == null) { argv = process.argv; }
 
@@ -72,13 +70,13 @@ function parse (options, argv) {
 }
 
 function helpText (options, programName) {
-  var inlineList = [];
-  var firstColumn = {};
-  var helpLines = [];
-  var gutter = 3;
+  const inlineList = [];
+  const firstColumn = {};
+  const helpLines = [];
+  let gutter = 3;
 
   options.forEach(function (option) {
-    var param = option.param != null
+    const param = option.param != null
       ? ' <' + option.param + '>'
       : '';
 
@@ -88,7 +86,7 @@ function helpText (options, programName) {
   });
 
   options.forEach(function (option) {
-    var helpLine = firstColumn[option.name];
+    let helpLine = firstColumn[option.name];
     helpLine += pp.spacing(gutter - helpLine.length);
     helpLine += pp.wrap(option.description.split(' '), gutter);
     helpLines.push(helpLine);

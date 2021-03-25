@@ -1,8 +1,8 @@
 'use strict';
 
-var CLI = require('../console/cli');
-var out = require('../console/out');
-var http = require('http');
+const CLI = require('../console/cli');
+const out = require('../console/out');
+const http = require('http');
 
 function Portal () {
   this.name = 'portal';
@@ -16,10 +16,10 @@ Portal.prototype.writeHead = function (response, statusCode, headers) {
 };
 
 Portal.prototype.received = function (request, response) {
-  var date = new Date();
-  var hours = ('0' + date.getHours()).slice(-2);
-  var minutes = ('0' + date.getMinutes()).slice(-2);
-  var seconds = ('0' + date.getSeconds()).slice(-2);
+  const date = new Date();
+  const hours = ('0' + date.getHours()).slice(-2);
+  const minutes = ('0' + date.getMinutes()).slice(-2);
+  const seconds = ('0' + date.getSeconds()).slice(-2);
 
   out.incoming(hours + ':' + minutes + ':' + seconds + ' -> ' + request.method + ' ' + this.name + request.url);
   response.setHeader('Server', 'stubby/' + CLI.version() + ' node/' + process.version + ' (' + process.platform + ' ' + process.arch + ')');
@@ -46,11 +46,11 @@ Portal.prototype.received = function (request, response) {
 };
 
 Portal.prototype.responded = function (status, url, message) {
-  var fn;
-  var date = new Date();
-  var hours = ('0' + date.getHours()).slice(-2);
-  var minutes = ('0' + date.getMinutes()).slice(-2);
-  var seconds = ('0' + date.getSeconds()).slice(-2);
+  let fn;
+  const date = new Date();
+  const hours = ('0' + date.getHours()).slice(-2);
+  const minutes = ('0' + date.getMinutes()).slice(-2);
+  const seconds = ('0' + date.getSeconds()).slice(-2);
 
   if (url == null) { url = ''; }
   if (message == null) { message = http.STATUS_CODES[status]; }

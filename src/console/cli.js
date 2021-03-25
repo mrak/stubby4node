@@ -1,12 +1,12 @@
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
-var yaml = require('js-yaml');
-var out = require('./out');
-var args = require('./args');
+const fs = require('fs');
+const path = require('path');
+const yaml = require('js-yaml');
+const out = require('./out');
+const args = require('./args');
 
-var options = [{
+const options = [{
   name: 'admin',
   flag: 'a',
   param: 'port',
@@ -84,7 +84,7 @@ function help (go) {
 }
 
 function version (go) {
-  var ver = (require('../../package.json')).version;
+  const ver = (require('../../package.json')).version;
 
   if (!go) { return ver; }
 
@@ -93,7 +93,7 @@ function version (go) {
 }
 
 function data (filename) {
-  var filedata;
+  let filedata;
 
   if (filename === null) { return []; }
 
@@ -118,12 +118,10 @@ function cert (file) { return readFile('c', 'cert', file, 'pem'); }
 function pfx (file) { return readFile('p', 'pfx', file, 'pfx'); }
 
 function readFile (flag, option, filename, type) {
-  var filedata, extension;
-
   if (filename === null) { return null; }
 
-  filedata = fs.readFileSync(filename, 'utf8');
-  extension = filename.replace(/^.*\.([a-zA-Z0-9]+)$/, '$1');
+  const filedata = fs.readFileSync(filename, 'utf8');
+  const extension = filename.replace(/^.*\.([a-zA-Z0-9]+)$/, '$1');
 
   if (!filedata) { return null; }
 
@@ -137,11 +135,10 @@ function readFile (flag, option, filename, type) {
 
 function getArgs (argv) {
   var self = this; // eslint-disable-line
-  var params;
 
   if (argv == null) { argv = process.argv; }
 
-  params = args.parse(options, argv);
+  const params = args.parse(options, argv);
   params.datadir = path.resolve(path.dirname(params.data || '.'));
 
   if (params.watch) { params.watch = params.data; }

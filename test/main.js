@@ -1,12 +1,12 @@
 'use strict';
 
-var CLI = require('../src/console/cli');
-var defaults = CLI.getArgs([]);
-var assert = require('assert');
-var Stubby = require('../src/main').Stubby;
+const CLI = require('../src/console/cli');
+const defaults = CLI.getArgs([]);
+const assert = require('assert');
+const Stubby = require('../src/main').Stubby;
 
 describe('main', function () {
-  var sut, options;
+  let sut, options;
 
   function stopStubby (finish) {
     if (sut != null) {

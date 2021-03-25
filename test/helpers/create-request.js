@@ -1,11 +1,10 @@
 'use strict';
 
-var http = require('http');
-var qs = require('querystring');
+const http = require('http');
+const qs = require('querystring');
 
 module.exports = function (context, callback) {
-  var request;
-  var options = {
+  const options = {
     port: context.port,
     method: context.method,
     path: context.url,
@@ -18,8 +17,8 @@ module.exports = function (context, callback) {
     options.path += '?' + qs.stringify(context.query);
   }
 
-  request = http.request(options, function (response) {
-    var data = '';
+  const request = http.request(options, function (response) {
+    let data = '';
 
     response.on('data', function (chunk) {
       data += chunk;

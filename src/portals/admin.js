@@ -1,10 +1,10 @@
 'use strict';
 
-var contract = require('../models/contract');
-var Portal = require('./portal').Portal;
-var ns = require('node-static');
-var path = require('path');
-var status = new ns.Server(path.resolve(__dirname, '../../webroot'));
+const contract = require('../models/contract');
+const Portal = require('./portal').Portal;
+const ns = require('node-static');
+const path = require('path');
+const status = new ns.Server(path.resolve(__dirname, '../../webroot'));
 
 function Admin (endpoints) {
   Portal.call(this);
@@ -28,9 +28,9 @@ Admin.prototype.goPong = function (response) {
 };
 
 Admin.prototype.goPUT = function (request, response) {
-  var id = this.getId(request.url);
-  var data = '';
-  var self = this;
+  const id = this.getId(request.url);
+  let data = '';
+  const self = this;
 
   if (!id) { return this.notSupported(response); }
 
@@ -39,9 +39,9 @@ Admin.prototype.goPUT = function (request, response) {
 };
 
 Admin.prototype.goPOST = function (request, response) {
-  var id = this.getId(request.url);
-  var data = '';
-  var self = this;
+  const id = this.getId(request.url);
+  let data = '';
+  const self = this;
 
   if (id) { return this.notSupported(response); }
 
@@ -50,8 +50,8 @@ Admin.prototype.goPOST = function (request, response) {
 };
 
 Admin.prototype.goDELETE = function (request, response) {
-  var id = this.getId(request.url);
-  var self = this;
+  const id = this.getId(request.url);
+  const self = this;
 
   function callback (err) {
     if (err) { self.notFound(response); } else { self.noContent(response); }
@@ -67,9 +67,9 @@ Admin.prototype.goDELETE = function (request, response) {
 };
 
 Admin.prototype.goGET = function (request, response) {
-  var callback;
-  var id = this.getId(request.url);
-  var self = this;
+  let callback;
+  const id = this.getId(request.url);
+  const self = this;
 
   if (id) {
     callback = function (err, endpoint) {
@@ -87,12 +87,11 @@ Admin.prototype.goGET = function (request, response) {
 };
 
 Admin.prototype.processPUT = function (id, data, response) {
-  var errors;
-  var self = this;
+  const self = this;
 
   try { data = JSON.parse(data); } catch (e) { return this.badRequest(response); }
 
-  errors = this.contract(data);
+  const errors = this.contract(data);
   if (errors) { return this.badRequest(response, errors); }
 
   function callback (err) {
@@ -103,12 +102,11 @@ Admin.prototype.processPUT = function (id, data, response) {
 };
 
 Admin.prototype.processPOST = function (data, response, request) {
-  var errors;
-  var self = this;
+  const self = this;
 
   try { data = JSON.parse(data); } catch (e) { return this.badRequest(response); }
 
-  errors = this.contract(data);
+  const errors = this.contract(data);
   if (errors) { return this.badRequest(response, errors); }
   function callback (_, endpoint) {
     self.created(response, request, endpoint.id);
@@ -185,7 +183,7 @@ Admin.prototype.getId = function (url) {
 };
 
 Admin.prototype.server = function (request, response) {
-  var self = this;
+  const self = this;
 
   this.received(request, response);
 

@@ -1,10 +1,10 @@
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
-var http = require('http');
-var q = require('querystring');
-var out = require('../console/out');
+const fs = require('fs');
+const path = require('path');
+const http = require('http');
+const q = require('querystring');
+const out = require('../console/out');
 
 function Endpoint (endpoint, datadir, caseSensitiveHeaders) {
   if (endpoint == null) { endpoint = {}; }
@@ -18,8 +18,8 @@ function Endpoint (endpoint, datadir, caseSensitiveHeaders) {
 }
 
 Endpoint.prototype.matches = function (request) {
-  var file, post, json, upperMethods;
-  var matches = {};
+  let file, json, upperMethods;
+  const matches = {};
 
   matches.url = matchRegex(this.request.url, request.url);
   if (!matches.url) { return null; }
@@ -37,7 +37,7 @@ Endpoint.prototype.matches = function (request) {
     } catch (e) { /* ignored */ }
   }
 
-  post = file || this.request.post;
+  const post = file || this.request.post;
   if (post && request.post) {
     matches.post = matchRegex(normalizeEOL(post), normalizeEOL(request.post));
     if (!matches.post) { return null; }
@@ -64,10 +64,9 @@ Endpoint.prototype.matches = function (request) {
 };
 
 function record (me, urlToRecord) {
-  var recorder;
-  var recording = {};
-  var parsed = new URL(urlToRecord);
-  var options = {
+  const recording = {};
+  const parsed = new URL(urlToRecord);
+  const options = {
     method: me.request.method == null ? 'GET' : me.request.method,
     hostname: parsed.hostname,
     headers: me.request.headers,
@@ -82,7 +81,7 @@ function record (me, urlToRecord) {
     options.path += q.stringify(me.request.query);
   }
 
-  recorder = http.request(options, function (res) {
+  const recorder = http.request(options, function (res) {
     recording.status = res.statusCode;
     recording.headers = res.headers;
     recording.body = '';
@@ -110,7 +109,7 @@ function normalizeEOL (string) {
 }
 
 function purifyRequest (incoming) {
-  var outgoing;
+  let outgoing;
 
   if (incoming == null) { incoming = {}; }
 
@@ -134,7 +133,7 @@ function purifyRequest (incoming) {
 }
 
 function purifyResponse (me, incoming, caseSensitiveHeaders) {
-  var outgoing = [];
+  const outgoing = [];
 
   if (incoming == null) { incoming = []; }
   if (!(incoming instanceof Array)) { incoming = [incoming]; }
@@ -158,8 +157,8 @@ function purifyResponse (me, incoming, caseSensitiveHeaders) {
 }
 
 function purifyHeaders (incoming, caseSensitiveHeaders) {
-  var prop;
-  var outgoing = {};
+  let prop;
+  const outgoing = {};
 
   for (prop in incoming) {
     if (Object.prototype.hasOwnProperty.call(incoming, prop)) {
@@ -175,11 +174,11 @@ function purifyHeaders (incoming, caseSensitiveHeaders) {
 }
 
 function purifyAuthorization (headers) {
-  var auth, userpass;
+  let userpass;
 
   if (headers == null || headers.authorization == null) { return headers; }
 
-  auth = headers.authorization || '';
+  const auth = headers.authorization || '';
 
   if (/^Basic .+:.+$/.test(auth)) {
     userpass = auth.substr(6);
@@ -200,8 +199,8 @@ function purifyBody (body) {
 }
 
 function pruneUndefined (incoming) {
-  var key, value;
-  var outgoing = {};
+  let key, value;
+  const outgoing = {};
 
   for (key in incoming) {
     if (!Object.prototype.hasOwnProperty.call(incoming, key)) { continue; }
@@ -214,8 +213,8 @@ function pruneUndefined (incoming) {
 }
 
 function compareHashMaps (configured, incoming) {
-  var key;
-  var headers = {};
+  let key;
+  const headers = {};
   if (configured == null) { configured = {}; }
   if (incoming == null) { incoming = {}; }
 
@@ -229,7 +228,7 @@ function compareHashMaps (configured, incoming) {
 }
 
 function compareObjects (configured, incoming) {
-  var key;
+  let key;
 
   for (key in configured) {
     if (typeof configured[key] !== typeof incoming[key]) { return false; }

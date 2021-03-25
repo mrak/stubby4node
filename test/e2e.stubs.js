@@ -1,15 +1,15 @@
 'use strict';
 
-var Stubby = require('../src/main').Stubby;
-var fs = require('fs');
-var yaml = require('js-yaml');
-var endpointData = yaml.load((fs.readFileSync('test/data/e2e.yaml', 'utf8')).trim());
-var assert = require('assert');
-var createRequest = require('./helpers/create-request');
+const Stubby = require('../src/main').Stubby;
+const fs = require('fs');
+const yaml = require('js-yaml');
+const endpointData = yaml.load((fs.readFileSync('test/data/e2e.yaml', 'utf8')).trim());
+const assert = require('assert');
+const createRequest = require('./helpers/create-request');
 
 describe('End 2 End Stubs Test Suite', function () {
-  var sut = null;
-  var port = 8882;
+  let sut = null;
+  const port = 8882;
 
   function stopStubby (finish) {
     if (sut != null) {
@@ -98,7 +98,7 @@ describe('End 2 End Stubs Test Suite', function () {
     });
 
     it('should return a response for an endpoint with multiple methods', function (done) {
-      var self = this;
+      const self = this;
       this.context.url = '/basic/all';
       this.context.method = 'delete';
 
@@ -142,7 +142,7 @@ describe('End 2 End Stubs Test Suite', function () {
     });
 
     it('should return the CORS headers', function (done) {
-      var expected = 'http://example.org';
+      const expected = 'http://example.org';
       this.context.url = '/basic/get';
       this.context.method = 'get';
       this.context.requestHeaders = {
@@ -150,7 +150,7 @@ describe('End 2 End Stubs Test Suite', function () {
       };
 
       createRequest(this.context, function (response) {
-        var headers = response.headers;
+        const headers = response.headers;
 
         assert.strictEqual(headers['access-control-allow-origin'], expected);
         assert.strictEqual(headers['access-control-allow-credentials'], 'true');
@@ -159,12 +159,12 @@ describe('End 2 End Stubs Test Suite', function () {
     });
 
     it('should return multiple headers with the same name', function (done) {
-      var expected = ['type=ninja', 'language=coffeescript'];
+      const expected = ['type=ninja', 'language=coffeescript'];
       this.context.url = '/duplicated/header';
       this.context.method = 'get';
 
       createRequest(this.context, function (response) {
-        var headers = response.headers;
+        const headers = response.headers;
 
         assert.deepStrictEqual(headers['set-cookie'], expected);
         done();
@@ -280,14 +280,14 @@ describe('End 2 End Stubs Test Suite', function () {
 
   describe('put', function () {
     it('should wait if a 2000ms latency is specified', function (done) {
-      var start = new Date();
+      const start = new Date();
 
       this.timeout(3500);
       this.context.url = '/put/latency';
       this.context.method = 'put';
 
       createRequest(this.context, function (response) {
-        var elapsed = new Date() - start;
+        const elapsed = new Date() - start;
 
         assert(elapsed > 1800 && elapsed < 3200);
         assert.strictEqual(response.data, 'updated');

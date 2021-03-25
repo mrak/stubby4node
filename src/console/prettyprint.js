@@ -8,7 +8,7 @@ function spacing (length) {
 }
 
 function wrap (tokens, continuation, columns) {
-  var wrapped, gutter;
+  let wrapped;
 
   if (continuation == null) { continuation = 0; }
   if (columns == null) { columns = process.stdout.columns; }
@@ -16,10 +16,10 @@ function wrap (tokens, continuation, columns) {
   if (continuation + tokens.join(' ').length <= columns) { return tokens.join(' '); }
 
   wrapped = '';
-  gutter = spacing(continuation);
+  const gutter = spacing(continuation);
 
   tokens.forEach(function (token) {
-    var lengthSoFar = continuation + wrapped.replace(/\n/g, '').length % columns || columns;
+    const lengthSoFar = continuation + wrapped.replace(/\n/g, '').length % columns || columns;
 
     if (lengthSoFar + token.length > columns) {
       wrapped += '\n' + gutter + token;

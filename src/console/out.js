@@ -1,17 +1,17 @@
 'use strict';
 /* eslint-disable no-console */
 
-var BOLD = '\x1B[1m';
-var BLACK = '\x1B[30m';
-var BLUE = '\x1B[34m';
-var CYAN = '\x1B[36m';
-var GREEN = '\x1B[32m';
-var MAGENTA = '\x1B[35m';
-var RED = '\x1B[31m';
-var YELLOW = '\x1B[33m';
-var RESET = '\x1B[0m';
+const BOLD = '\x1B[1m';
+const BLACK = '\x1B[30m';
+const BLUE = '\x1B[34m';
+const CYAN = '\x1B[36m';
+const GREEN = '\x1B[32m';
+const MAGENTA = '\x1B[35m';
+const RED = '\x1B[31m';
+const YELLOW = '\x1B[33m';
+const RESET = '\x1B[0m';
 
-var out = {
+const out = {
   quiet: false,
   log: function (msg) {
     if (this.quiet) { return; }

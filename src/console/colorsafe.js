@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 
 function stripper (args) {
-  var key, value;
+  let key, value;
   for (key in args) {
     if (!Object.prototype.hasOwnProperty.call(args, key)) { continue; }
 
