@@ -326,12 +326,25 @@ describe('Admin', function () {
     });
 
     describe('goDELETE', function () {
-      it('should delete all for the root url', function () {
+      it('should delete all stubs when calling from the root url', function () {
         this.sandbox.stub(sut, 'getId').returns('');
 
+        request.url = '/';
         sut.goDELETE(request, response);
 
         assert(endpoints.deleteAll.calledOnce);
+      });
+
+      ['/test', '/1/test'].forEach(function (url) {
+        it('should not delete all stubs when calling from non-root urls: ' + url, function () {
+          this.sandbox.stub(sut, 'getId').returns('');
+
+          request.url = url;
+          sut.goDELETE(request, response);
+
+          assert(endpoints.deleteAll.notCalled);
+          assert.strictEqual(response.statusCode, 405);
+        });
       });
 
       it('should delete item if id was gathered', function () {

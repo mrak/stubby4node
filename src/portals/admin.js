@@ -59,8 +59,10 @@ Admin.prototype.goDELETE = function (request, response) {
 
   if (id) {
     this.endpoints.delete(id, callback);
-  } else {
+  } else if (request.url === '/') {
     this.endpoints.deleteAll(callback);
+  } else {
+    this.notSupported(response);
   }
 };
 
