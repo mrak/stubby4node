@@ -186,9 +186,7 @@ Stubby.prototype.delete = function (id, callback) {
 
   setTimeout(function () {
     if (typeof id === 'function') {
-      delete self.endpoints.db;
-      self.endpoints.db = {};
-      callback();
+      self.endpoints.deleteAll(callback);
     } else {
       self.endpoints.delete(id, callback);
     }

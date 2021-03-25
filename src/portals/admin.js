@@ -53,13 +53,17 @@ Admin.prototype.goDELETE = function (request, response) {
   var id = this.getId(request.url);
   var self = this;
 
-  if (!id) { return this.notSupported(response); }
-
   function callback (err) {
     if (err) { self.notFound(response); } else { self.noContent(response); }
   }
 
-  this.endpoints.delete(id, callback);
+  if (id) {
+    this.endpoints.delete(id, callback);
+  } else if (request.url === '/') {
+    this.endpoints.deleteAll(callback);
+  } else {
+    this.notSupported(response);
+  }
 };
 
 Admin.prototype.goGET = function (request, response) {
