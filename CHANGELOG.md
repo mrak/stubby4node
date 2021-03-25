@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.1.0
+
+* You can now submit `DELETE /` to the admin endpoint to delete all configured stubbed endpoints (#89)
+
 ## 5.0.0
 
 * __BREAKING CHANGES from 4.x__
