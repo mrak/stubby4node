@@ -80,116 +80,118 @@ function createHttpsOptions (options) {
   return httpsOptions;
 }
 
-function Stubby () {
-  this.endpoints = new Endpoints();
-  this.stubsPortal = null;
-  this.tlsPortal = null;
-  this.adminPortal = null;
+class Stubby {
+  constructor () {
+    this.endpoints = new Endpoints();
+    this.stubsPortal = null;
+    this.tlsPortal = null;
+    this.adminPortal = null;
+  }
+
+  start (o, cb) {
+    const oc = setupStartOptions(o, cb);
+    const options = oc[0];
+    const callback = oc[1];
+    const self = this;
+
+    this.stop(function () {
+      const errors = contract(options.data);
+
+      if (errors) { return callback(errors); }
+      if (options.datadir != null) { self.endpoints.datadir = options.datadir; }
+      if (options['case-sensitive-headers'] != null) { self.endpoints.caseSensitiveHeaders = options['case-sensitive-headers']; }
+
+      self.endpoints.create(options.data, onEndpointLoaded);
+
+      self.tlsPortal = https.createServer(createHttpsOptions(options), new Stubs(self.endpoints).server);
+      self.tlsPortal.on('listening', function () { onListening('Stubs', options.tls, 'https', options.location); });
+      self.tlsPortal.on('error', function (err) { onError(err, options.tls, options.location); });
+      self.tlsPortal.listen(options.tls, options.location);
+
+      self.stubsPortal = http.createServer(new Stubs(self.endpoints).server);
+      self.stubsPortal.on('listening', function () { onListening('Stubs', options.stubs, 'http', options.location); });
+      self.stubsPortal.on('error', function (err) { onError(err, options.stubs, options.location); });
+      self.stubsPortal.listen(options.stubs, options.location);
+
+      self.adminPortal = http.createServer(new Admin(self.endpoints).server);
+      self.adminPortal.on('listening', function () { onListening('Admin', options.admin, 'http', options.location); });
+      self.adminPortal.on('error', function (err) { onError(err, options.admin, options.location); });
+      self.adminPortal.listen(options.admin, options.location);
+
+      if (options.watch) { self.watcher = new Watcher(self.endpoints, options.watch); }
+
+      out.info('\nQuit: ctrl-c\n');
+      callback();
+    });
+  }
+
+  stop (callback) {
+    const self = this;
+
+    if (callback == null) { callback = noop; }
+
+    setTimeout(function () {
+      if (self.watcher != null) { self.watcher.deactivate(); }
+
+      Promise.all([
+        new Promise((resolve) => {
+          if (self.adminPortal && self.adminPortal.address()) { self.adminPortal.close(resolve); } else { resolve(); }
+        }),
+        new Promise((resolve) => {
+          if (self.stubsPortal && self.stubsPortal.address()) { self.stubsPortal.close(resolve); } else { resolve(); }
+        }),
+        new Promise((resolve) => {
+          if (self.tlsPortal && self.tlsPortal.address()) { self.tlsPortal.close(resolve); } else { return resolve(); }
+        })
+      ]).then((results) => callback());
+    }, 1);
+  }
+
+  post (data, callback) {
+    const self = this;
+
+    if (callback == null) { callback = noop; }
+
+    setTimeout(function () {
+      if (contract(data)) { callback(couldNotSave); } else { self.endpoints.create(data, callback); }
+    }, 1);
+  }
+
+  get (id, callback) {
+    const self = this;
+
+    if (id == null) { id = noop; }
+    if (callback == null) { callback = id; }
+
+    setTimeout(function () {
+      if (typeof id === 'function') { self.endpoints.gather(callback); } else { self.endpoints.retrieve(id, callback); }
+    }, 1);
+  }
+
+  put (id, data, callback) {
+    const self = this;
+
+    if (callback == null) { callback = noop; }
+
+    setTimeout(function () {
+      if (contract(data)) { callback(couldNotSave); } else { self.endpoints.update(id, data, callback); }
+    }, 1);
+  }
+
+  delete (id, callback) {
+    const self = this;
+
+    if (id == null) { id = noop; }
+    if (callback == null) { callback = id; }
+
+    setTimeout(function () {
+      if (typeof id === 'function') {
+        self.endpoints.deleteAll(callback);
+      } else {
+        self.endpoints.delete(id, callback);
+      }
+    }, 1);
+  }
 }
-
-Stubby.prototype.start = function (o, cb) {
-  const oc = setupStartOptions(o, cb);
-  const options = oc[0];
-  const callback = oc[1];
-  const self = this;
-
-  this.stop(function () {
-    const errors = contract(options.data);
-
-    if (errors) { return callback(errors); }
-    if (options.datadir != null) { self.endpoints.datadir = options.datadir; }
-    if (options['case-sensitive-headers'] != null) { self.endpoints.caseSensitiveHeaders = options['case-sensitive-headers']; }
-
-    self.endpoints.create(options.data, onEndpointLoaded);
-
-    self.tlsPortal = https.createServer(createHttpsOptions(options), new Stubs(self.endpoints).server);
-    self.tlsPortal.on('listening', function () { onListening('Stubs', options.tls, 'https', options.location); });
-    self.tlsPortal.on('error', function (err) { onError(err, options.tls, options.location); });
-    self.tlsPortal.listen(options.tls, options.location);
-
-    self.stubsPortal = http.createServer(new Stubs(self.endpoints).server);
-    self.stubsPortal.on('listening', function () { onListening('Stubs', options.stubs, 'http', options.location); });
-    self.stubsPortal.on('error', function (err) { onError(err, options.stubs, options.location); });
-    self.stubsPortal.listen(options.stubs, options.location);
-
-    self.adminPortal = http.createServer(new Admin(self.endpoints).server);
-    self.adminPortal.on('listening', function () { onListening('Admin', options.admin, 'http', options.location); });
-    self.adminPortal.on('error', function (err) { onError(err, options.admin, options.location); });
-    self.adminPortal.listen(options.admin, options.location);
-
-    if (options.watch) { self.watcher = new Watcher(self.endpoints, options.watch); }
-
-    out.info('\nQuit: ctrl-c\n');
-    callback();
-  });
-};
-
-Stubby.prototype.stop = function (callback) {
-  const self = this;
-
-  if (callback == null) { callback = noop; }
-
-  setTimeout(function () {
-    if (self.watcher != null) { self.watcher.deactivate(); }
-
-    Promise.all([
-      new Promise((resolve) => {
-        if (self.adminPortal && self.adminPortal.address()) { self.adminPortal.close(resolve); } else { resolve(); }
-      }),
-      new Promise((resolve) => {
-        if (self.stubsPortal && self.stubsPortal.address()) { self.stubsPortal.close(resolve); } else { resolve(); }
-      }),
-      new Promise((resolve) => {
-        if (self.tlsPortal && self.tlsPortal.address()) { self.tlsPortal.close(resolve); } else { return resolve(); }
-      })
-    ]).then((results) => callback());
-  }, 1);
-};
-
-Stubby.prototype.post = function (data, callback) {
-  const self = this;
-
-  if (callback == null) { callback = noop; }
-
-  setTimeout(function () {
-    if (contract(data)) { callback(couldNotSave); } else { self.endpoints.create(data, callback); }
-  }, 1);
-};
-
-Stubby.prototype.get = function (id, callback) {
-  const self = this;
-
-  if (id == null) { id = noop; }
-  if (callback == null) { callback = id; }
-
-  setTimeout(function () {
-    if (typeof id === 'function') { self.endpoints.gather(callback); } else { self.endpoints.retrieve(id, callback); }
-  }, 1);
-};
-
-Stubby.prototype.put = function (id, data, callback) {
-  const self = this;
-
-  if (callback == null) { callback = noop; }
-
-  setTimeout(function () {
-    if (contract(data)) { callback(couldNotSave); } else { self.endpoints.update(id, data, callback); }
-  }, 1);
-};
-
-Stubby.prototype.delete = function (id, callback) {
-  const self = this;
-
-  if (id == null) { id = noop; }
-  if (callback == null) { callback = id; }
-
-  setTimeout(function () {
-    if (typeof id === 'function') {
-      self.endpoints.deleteAll(callback);
-    } else {
-      self.endpoints.delete(id, callback);
-    }
-  }, 1);
-};
 
 module.exports.Stubby = Stubby;

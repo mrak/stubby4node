@@ -11,131 +11,133 @@ const NO_MATCH = "Endpoint with given request doesn't exist.";
 
 function noop () {}
 
-function Endpoints (data, callback, datadir) {
-  if (callback == null) { callback = noop; }
-  if (datadir == null) { datadir = process.cwd(); }
+class Endpoints {
+  constructor (data, callback, datadir) {
+    if (callback == null) { callback = noop; }
+    if (datadir == null) { datadir = process.cwd(); }
 
-  this.caseSensitiveHeaders = false;
-  this.datadir = datadir;
-  this.db = {};
-  this.lastId = 0;
-  this.create(data, callback);
-}
-
-Endpoints.prototype.create = function (data, callback) {
-  const self = this;
-
-  if (callback == null) { callback = noop; }
-
-  function insert (item) {
-    item = new Endpoint(item, self.datadir, self.caseSensitiveHeaders);
-    item.id = ++self.lastId;
-    self.db[item.id] = item;
-    callback(null, clone(item));
+    this.caseSensitiveHeaders = false;
+    this.datadir = datadir;
+    this.db = {};
+    this.lastId = 0;
+    this.create(data, callback);
   }
 
-  if (data instanceof Array) {
-    data.forEach(insert);
-  } else if (data) {
-    insert(data);
-  }
-};
+  create (data, callback) {
+    const self = this;
 
-Endpoints.prototype.retrieve = function (id, callback) {
-  if (callback == null) { callback = noop; }
+    if (callback == null) { callback = noop; }
 
-  if (!this.db[id]) { return callback(NOT_FOUND); }
+    function insert (item) {
+      item = new Endpoint(item, self.datadir, self.caseSensitiveHeaders);
+      item.id = ++self.lastId;
+      self.db[item.id] = item;
+      callback(null, clone(item));
+    }
 
-  callback(null, clone(this.db[id]));
-};
-
-Endpoints.prototype.update = function (id, data, callback) {
-  if (callback == null) { callback = noop; }
-
-  if (!this.db[id]) { return callback(NOT_FOUND); }
-
-  const endpoint = new Endpoint(data, this.datadir);
-  endpoint.id = id;
-  this.db[endpoint.id] = endpoint;
-  callback();
-};
-
-Endpoints.prototype.delete = function (id, callback) {
-  if (callback == null) { callback = noop; }
-
-  if (!this.db[id]) { return callback(NOT_FOUND); }
-
-  delete this.db[id];
-  callback();
-};
-
-Endpoints.prototype.deleteAll = function (callback) {
-  if (callback == null) { callback = noop; }
-
-  delete this.db;
-  this.db = {};
-
-  callback();
-};
-
-Endpoints.prototype.gather = function (callback) {
-  let id;
-  const all = [];
-
-  if (callback == null) { callback = noop; }
-
-  for (id in this.db) {
-    if (Object.prototype.hasOwnProperty.call(this.db, id)) {
-      all.push(this.db[id]);
+    if (data instanceof Array) {
+      data.forEach(insert);
+    } else if (data) {
+      insert(data);
     }
   }
 
-  callback(null, clone(all));
-};
+  retrieve (id, callback) {
+    if (callback == null) { callback = noop; }
 
-Endpoints.prototype.find = function (data, callback) {
-  let id, endpoint, captures, matched;
-  if (callback == null) { callback = noop; }
+    if (!this.db[id]) { return callback(NOT_FOUND); }
 
-  for (id in this.db) {
-    if (!Object.prototype.hasOwnProperty.call(this.db, id)) { continue; }
-
-    endpoint = this.db[id];
-    captures = endpoint.matches(data);
-
-    if (!captures) { continue; }
-
-    endpoint.hits++;
-    matched = clone(endpoint);
-    return this.found(matched, captures, callback);
+    callback(null, clone(this.db[id]));
   }
 
-  return callback(NO_MATCH);
-};
+  update (id, data, callback) {
+    if (callback == null) { callback = noop; }
 
-Endpoints.prototype.found = function (endpoint, captures, callback) {
-  let filename;
-  const response = endpoint.response[endpoint.hits % endpoint.response.length];
-  const _ref = response.body;
+    if (!this.db[id]) { return callback(NOT_FOUND); }
 
-  response.body = _ref != null ? Buffer.from(_ref, 'utf8') : Buffer.alloc(0);
-  response.headers['x-stubby-resource-id'] = endpoint.id;
-
-  if (response.file != null) {
-    filename = applyCaptures(response.file, captures);
-    try {
-      response.body = fs.readFileSync(path.resolve(this.datadir, filename));
-    } catch (e) { /* ignored */ }
+    const endpoint = new Endpoint(data, this.datadir);
+    endpoint.id = id;
+    this.db[endpoint.id] = endpoint;
+    callback();
   }
 
-  applyCaptures(response, captures);
+  delete (id, callback) {
+    if (callback == null) { callback = noop; }
 
-  if (parseInt(response.latency, 10)) {
-    setTimeout(function () { callback(null, response); }, response.latency);
-  } else {
-    callback(null, response);
+    if (!this.db[id]) { return callback(NOT_FOUND); }
+
+    delete this.db[id];
+    callback();
   }
-};
+
+  deleteAll (callback) {
+    if (callback == null) { callback = noop; }
+
+    delete this.db;
+    this.db = {};
+
+    callback();
+  }
+
+  gather (callback) {
+    let id;
+    const all = [];
+
+    if (callback == null) { callback = noop; }
+
+    for (id in this.db) {
+      if (Object.prototype.hasOwnProperty.call(this.db, id)) {
+        all.push(this.db[id]);
+      }
+    }
+
+    callback(null, clone(all));
+  }
+
+  find (data, callback) {
+    let id, endpoint, captures, matched;
+    if (callback == null) { callback = noop; }
+
+    for (id in this.db) {
+      if (!Object.prototype.hasOwnProperty.call(this.db, id)) { continue; }
+
+      endpoint = this.db[id];
+      captures = endpoint.matches(data);
+
+      if (!captures) { continue; }
+
+      endpoint.hits++;
+      matched = clone(endpoint);
+      return this.found(matched, captures, callback);
+    }
+
+    return callback(NO_MATCH);
+  }
+
+  found (endpoint, captures, callback) {
+    let filename;
+    const response = endpoint.response[endpoint.hits % endpoint.response.length];
+    const _ref = response.body;
+
+    response.body = _ref != null ? Buffer.from(_ref, 'utf8') : Buffer.alloc(0);
+    response.headers['x-stubby-resource-id'] = endpoint.id;
+
+    if (response.file != null) {
+      filename = applyCaptures(response.file, captures);
+      try {
+        response.body = fs.readFileSync(path.resolve(this.datadir, filename));
+      } catch (e) { /* ignored */ }
+    }
+
+    applyCaptures(response, captures);
+
+    if (parseInt(response.latency, 10)) {
+      setTimeout(function () { callback(null, response); }, response.latency);
+    } else {
+      callback(null, response);
+    }
+  }
+}
 
 function applyCaptures (obj, captures) {
   let key, value;

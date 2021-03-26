@@ -6,62 +6,64 @@ const http = require('http');
 const q = require('querystring');
 const out = require('../console/out');
 
-function Endpoint (endpoint, datadir, caseSensitiveHeaders) {
-  if (endpoint == null) { endpoint = {}; }
-  if (datadir == null) { datadir = process.cwd(); }
+class Endpoint {
+  constructor (endpoint, datadir, caseSensitiveHeaders) {
+    if (endpoint == null) { endpoint = {}; }
+    if (datadir == null) { datadir = process.cwd(); }
 
-  Object.defineProperty(this, 'datadir', { value: datadir });
+    Object.defineProperty(this, 'datadir', { value: datadir });
 
-  this.request = purifyRequest(endpoint.request);
-  this.response = purifyResponse(this, endpoint.response, caseSensitiveHeaders);
-  this.hits = 0;
-}
-
-Endpoint.prototype.matches = function (request) {
-  let file, json, upperMethods;
-  const matches = {};
-
-  matches.url = matchRegex(this.request.url, request.url);
-  if (!matches.url) { return null; }
-
-  matches.headers = compareHashMaps(this.request.headers, request.headers);
-  if (!matches.headers) { return null; }
-
-  matches.query = compareHashMaps(this.request.query, request.query);
-  if (!matches.query) { return null; }
-
-  file = null;
-  if (this.request.file != null) {
-    try {
-      file = fs.readFileSync(path.resolve(this.datadir, this.request.file), 'utf8');
-    } catch (e) { /* ignored */ }
+    this.request = purifyRequest(endpoint.request);
+    this.response = purifyResponse(this, endpoint.response, caseSensitiveHeaders);
+    this.hits = 0;
   }
 
-  const post = file || this.request.post;
-  if (post && request.post) {
-    matches.post = matchRegex(normalizeEOL(post), normalizeEOL(request.post));
-    if (!matches.post) { return null; }
-  } else if (this.request.json && request.post) {
-    try {
-      json = JSON.parse(request.post);
-      if (!compareObjects(this.request.json, json)) { return null; }
-    } catch (e) {
+  matches (request) {
+    let file, json, upperMethods;
+    const matches = {};
+
+    matches.url = matchRegex(this.request.url, request.url);
+    if (!matches.url) { return null; }
+
+    matches.headers = compareHashMaps(this.request.headers, request.headers);
+    if (!matches.headers) { return null; }
+
+    matches.query = compareHashMaps(this.request.query, request.query);
+    if (!matches.query) { return null; }
+
+    file = null;
+    if (this.request.file != null) {
+      try {
+        file = fs.readFileSync(path.resolve(this.datadir, this.request.file), 'utf8');
+      } catch (e) { /* ignored */ }
+    }
+
+    const post = file || this.request.post;
+    if (post && request.post) {
+      matches.post = matchRegex(normalizeEOL(post), normalizeEOL(request.post));
+      if (!matches.post) { return null; }
+    } else if (this.request.json && request.post) {
+      try {
+        json = JSON.parse(request.post);
+        if (!compareObjects(this.request.json, json)) { return null; }
+      } catch (e) {
+        return null;
+      }
+    } else if (this.request.form && request.post) {
+      matches.post = compareHashMaps(this.request.form, q.decode(request.post));
+      if (!matches.post) { return null; }
+    }
+
+    if (this.request.method instanceof Array) {
+      upperMethods = this.request.method.map(function (it) { return it.toUpperCase(); });
+      if (upperMethods.indexOf(request.method) === -1) { return null; }
+    } else if (this.request.method.toUpperCase() !== request.method) {
       return null;
     }
-  } else if (this.request.form && request.post) {
-    matches.post = compareHashMaps(this.request.form, q.decode(request.post));
-    if (!matches.post) { return null; }
-  }
 
-  if (this.request.method instanceof Array) {
-    upperMethods = this.request.method.map(function (it) { return it.toUpperCase(); });
-    if (upperMethods.indexOf(request.method) === -1) { return null; }
-  } else if (this.request.method.toUpperCase() !== request.method) {
-    return null;
+    return matches;
   }
-
-  return matches;
-};
+}
 
 function record (me, urlToRecord) {
   const recording = {};
