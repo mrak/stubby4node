@@ -11,27 +11,19 @@ describe('End 2 End Stubs Test Suite', function () {
   let sut = null;
   const port = 8882;
 
-  function stopStubby (finish) {
-    if (sut != null) {
-      return sut.stop(finish);
-    }
-    return finish();
+  async function stopStubby () {
+    if (sut != null) await sut.stop();
   }
 
-  beforeEach(function (done) {
+  beforeEach(async function () {
     this.context = {
       done: false,
       port: port
     };
 
-    function finish () {
-      sut = new Stubby();
-      sut.start({
-        data: endpointData
-      }, done);
-    }
-
-    stopStubby(finish);
+    await stopStubby();
+    sut = new Stubby();
+    await sut.start({ data: endpointData });
   });
 
   afterEach(stopStubby);

@@ -12,33 +12,23 @@ describe('End 2 End Admin Test Suite', function () {
   let sut;
   const port = 8889;
 
-  function stopStubby (finish) {
-    if (sut != null) {
-      sut.stop(finish);
-    } else {
-      finish();
-    }
+  async function stopStubby () {
+    if (sut != null) await sut.stop();
   }
 
-  beforeEach(function (done) {
-    function finish () {
-      sut = new Stubby();
-      return sut.start({
-        data: endpointData
-      }, done);
-    }
-
+  beforeEach(async function () {
     this.context = {
       done: false,
       port: port
     };
 
-    stopStubby(finish);
+    await stopStubby();
+
+    sut = new Stubby();
+    await sut.start({ data: endpointData });
   });
 
-  afterEach(function (done) {
-    stopStubby(done);
-  });
+  afterEach(stopStubby);
 
   it('should react to /ping', function (done) {
     this.context.url = '/ping';
@@ -84,6 +74,7 @@ describe('End 2 End Admin Test Suite', function () {
     createRequest(this.context, function () {
       endpoint.id = id;
       self.context.method = 'get';
+      self.context.post = null;
 
       createRequest(self.context, function (response) {
         const returned = JSON.parse(response.data);

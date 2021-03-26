@@ -6,33 +6,33 @@ const path = require('path');
 const isutf8 = require('isutf8');
 const Endpoint = require('./endpoint');
 const clone = require('../lib/clone');
+const util = require('util');
 const NOT_FOUND = "Endpoint with the given id doesn't exist.";
 const NO_MATCH = "Endpoint with given request doesn't exist.";
+const sleep = util.promisify(setTimeout);
 
 function noop () {}
 
 class Endpoints {
-  constructor (data, callback, datadir) {
-    if (callback == null) { callback = noop; }
+  constructor (data, datadir) {
     if (datadir == null) { datadir = process.cwd(); }
 
     this.caseSensitiveHeaders = false;
     this.datadir = datadir;
     this.db = {};
     this.lastId = 0;
-    this.create(data, callback);
+    this.create(data);
   }
 
-  create (data, callback) {
+  async create (data, callback) {
     const self = this;
-
-    if (callback == null) { callback = noop; }
+    if (callback == null) callback = noop;
 
     function insert (item) {
       item = new Endpoint(item, self.datadir, self.caseSensitiveHeaders);
       item.id = ++self.lastId;
       self.db[item.id] = item;
-      callback(null, clone(item));
+      callback(clone(item));
     }
 
     if (data instanceof Array) {
@@ -42,48 +42,34 @@ class Endpoints {
     }
   }
 
-  retrieve (id, callback) {
-    if (callback == null) { callback = noop; }
+  async retrieve (id) {
+    if (!this.db[id]) throw new Error(NOT_FOUND);
 
-    if (!this.db[id]) { return callback(NOT_FOUND); }
-
-    callback(null, clone(this.db[id]));
+    return clone(this.db[id]);
   }
 
-  update (id, data, callback) {
-    if (callback == null) { callback = noop; }
-
-    if (!this.db[id]) { return callback(NOT_FOUND); }
+  async update (id, data) {
+    if (!this.db[id]) throw new Error(NOT_FOUND);
 
     const endpoint = new Endpoint(data, this.datadir);
     endpoint.id = id;
     this.db[endpoint.id] = endpoint;
-    callback();
   }
 
-  delete (id, callback) {
-    if (callback == null) { callback = noop; }
-
-    if (!this.db[id]) { return callback(NOT_FOUND); }
+  async delete (id) {
+    if (!this.db[id]) throw new Error(NOT_FOUND);
 
     delete this.db[id];
-    callback();
   }
 
-  deleteAll (callback) {
-    if (callback == null) { callback = noop; }
-
+  async deleteAll () {
     delete this.db;
     this.db = {};
-
-    callback();
   }
 
-  gather (callback) {
+  async gather () {
     let id;
     const all = [];
-
-    if (callback == null) { callback = noop; }
 
     for (id in this.db) {
       if (Object.prototype.hasOwnProperty.call(this.db, id)) {
@@ -91,12 +77,11 @@ class Endpoints {
       }
     }
 
-    callback(null, clone(all));
+    return clone(all);
   }
 
-  find (data, callback) {
+  async find (data) {
     let id, endpoint, captures, matched;
-    if (callback == null) { callback = noop; }
 
     for (id in this.db) {
       if (!Object.prototype.hasOwnProperty.call(this.db, id)) { continue; }
@@ -108,13 +93,13 @@ class Endpoints {
 
       endpoint.hits++;
       matched = clone(endpoint);
-      return this.found(matched, captures, callback);
+      return await this.found(matched, captures);
     }
 
-    return callback(NO_MATCH);
+    throw new Error(NO_MATCH);
   }
 
-  found (endpoint, captures, callback) {
+  async found (endpoint, captures) {
     let filename;
     const response = endpoint.response[endpoint.hits % endpoint.response.length];
     const _ref = response.body;
@@ -131,11 +116,8 @@ class Endpoints {
 
     applyCaptures(response, captures);
 
-    if (parseInt(response.latency, 10)) {
-      setTimeout(function () { callback(null, response); }, response.latency);
-    } else {
-      callback(null, response);
-    }
+    if (parseInt(response.latency, 10)) await sleep(response.latency);
+    return response;
   }
 }
 

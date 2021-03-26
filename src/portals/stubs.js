@@ -22,7 +22,7 @@ class Stubs extends Portal {
       return data;
     });
 
-    request.on('end', function () {
+    request.on('end', async function () {
       self.received(request, response);
 
       const criteria = {
@@ -33,26 +33,20 @@ class Stubs extends Portal {
         query: extractQuery(request.url)
       };
 
-      function callback (err, endpointResponse) {
-        if (err) {
-          self.writeHead(response, 404, {});
-          self.responded(404, request.url, 'is not a registered endpoint');
-        } else {
-          self.writeHead(response, endpointResponse.status, endpointResponse.headers);
-          response.write(endpointResponse.body);
-          self.responded(endpointResponse.status, request.url);
-        }
-
-        response.end();
-      }
-
       try {
-        self.Endpoints.find(criteria, callback);
+        const endpointResponse = await self.Endpoints.find(criteria);
+        self.writeHead(response, endpointResponse.status, endpointResponse.headers);
+        response.write(endpointResponse.body);
+        self.responded(endpointResponse.status, request.url);
       } catch (e) {
-        response.statusCode = 500;
-        self.responded(500, request.url, 'unexpectedly generated a server error: ' + e.message);
-        response.end();
+        self.writeHead(response, 404, {});
+        self.responded(404, request.url, 'is not a registered endpoint');
+        // response.statusCode = 500;
+        // self.responded(500, request.url, 'unexpectedly generated a server error: ' + e.message);
+        // response.end();
       }
+
+      response.end();
     });
   }
 }

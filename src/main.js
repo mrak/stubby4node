@@ -11,8 +11,6 @@ const https = require('https');
 const contract = require('./models/contract');
 const couldNotSave = "The supplied endpoint data couldn't be saved";
 
-function noop () {}
-
 function onListening (portal, port, protocol, location) {
   if (protocol == null) { protocol = 'http'; }
   out.status(portal + ' portal running at ' + protocol + '://' + location + ':' + port);
@@ -39,20 +37,14 @@ function onError (err, port, location) {
   process.exit();
 }
 
-function onEndpointLoaded (_, endpoint) {
+function onEndpointLoaded (endpoint) {
   out.notice('Loaded: ' + endpoint.request.method + ' ' + endpoint.request.url);
 }
 
-function setupStartOptions (options, callback) {
+function setupStartOptions (options) {
   let key;
 
   options = options == null ? {} : options;
-  callback = callback == null ? noop : callback;
-
-  if (typeof options === 'function') {
-    callback = options;
-    options = {};
-  }
 
   if (options.quiet == null) { options.quiet = true; }
 
@@ -64,7 +56,7 @@ function setupStartOptions (options, callback) {
   }
 
   out.quiet = options.quiet;
-  return [options, callback];
+  return options;
 }
 
 function createHttpsOptions (options) {
@@ -88,110 +80,78 @@ class Stubby {
     this.adminPortal = null;
   }
 
-  start (o, cb) {
-    const oc = setupStartOptions(o, cb);
-    const options = oc[0];
-    const callback = oc[1];
-    const self = this;
+  async start (o) {
+    const options = setupStartOptions(o);
 
-    this.stop(function () {
-      const errors = contract(options.data);
+    await this.stop();
 
-      if (errors) { return callback(errors); }
-      if (options.datadir != null) { self.endpoints.datadir = options.datadir; }
-      if (options['case-sensitive-headers'] != null) { self.endpoints.caseSensitiveHeaders = options['case-sensitive-headers']; }
+    const errors = contract(options.data);
 
-      self.endpoints.create(options.data, onEndpointLoaded);
+    if (errors) { throw new Error(errors); }
+    if (options.datadir != null) { this.endpoints.datadir = options.datadir; }
+    if (options['case-sensitive-headers'] != null) { this.endpoints.caseSensitiveHeaders = options['case-sensitive-headers']; }
 
-      self.tlsPortal = https.createServer(createHttpsOptions(options), new Stubs(self.endpoints).server);
-      self.tlsPortal.on('listening', function () { onListening('Stubs', options.tls, 'https', options.location); });
-      self.tlsPortal.on('error', function (err) { onError(err, options.tls, options.location); });
-      self.tlsPortal.listen(options.tls, options.location);
+    await this.endpoints.create(options.data, onEndpointLoaded);
 
-      self.stubsPortal = http.createServer(new Stubs(self.endpoints).server);
-      self.stubsPortal.on('listening', function () { onListening('Stubs', options.stubs, 'http', options.location); });
-      self.stubsPortal.on('error', function (err) { onError(err, options.stubs, options.location); });
-      self.stubsPortal.listen(options.stubs, options.location);
+    this.tlsPortal = https.createServer(createHttpsOptions(options), new Stubs(this.endpoints).server);
+    this.tlsPortal.on('listening', function () { onListening('Stubs', options.tls, 'https', options.location); });
+    this.tlsPortal.on('error', function (err) { onError(err, options.tls, options.location); });
+    this.tlsPortal.listen(options.tls, options.location);
 
-      self.adminPortal = http.createServer(new Admin(self.endpoints).server);
-      self.adminPortal.on('listening', function () { onListening('Admin', options.admin, 'http', options.location); });
-      self.adminPortal.on('error', function (err) { onError(err, options.admin, options.location); });
-      self.adminPortal.listen(options.admin, options.location);
+    this.stubsPortal = http.createServer(new Stubs(this.endpoints).server);
+    this.stubsPortal.on('listening', function () { onListening('Stubs', options.stubs, 'http', options.location); });
+    this.stubsPortal.on('error', function (err) { onError(err, options.stubs, options.location); });
+    this.stubsPortal.listen(options.stubs, options.location);
 
-      if (options.watch) { self.watcher = new Watcher(self.endpoints, options.watch); }
+    this.adminPortal = http.createServer(new Admin(this.endpoints).server);
+    this.adminPortal.on('listening', function () { onListening('Admin', options.admin, 'http', options.location); });
+    this.adminPortal.on('error', function (err) { onError(err, options.admin, options.location); });
+    this.adminPortal.listen(options.admin, options.location);
 
-      out.info('\nQuit: ctrl-c\n');
-      callback();
+    if (options.watch) { this.watcher = new Watcher(this.endpoints, options.watch); }
+
+    out.info('\nQuit: ctrl-c\n');
+  }
+
+  async stop () {
+    if (this.watcher != null) { this.watcher.deactivate(); }
+
+    if (this.adminPortal && this.adminPortal.address()) { await promisify(this.adminPortal, 'close'); }
+    if (this.stubsPortal && this.stubsPortal.address()) { await promisify(this.stubsPortal, 'close'); }
+    if (this.tlsPortal && this.tlsPortal.address()) { await promisify(this.tlsPortal, 'close'); }
+  }
+
+  async post (data) {
+    if (contract(data)) {
+      throw new Error(couldNotSave);
+    } else {
+      await this.endpoints.create(data);
+    }
+  }
+
+  async get (id) {
+    if (id == null) await this.endpoints.gather();
+    else await this.endpoints.retrieve(id);
+  }
+
+  async put (id, data) {
+    if (contract(data)) throw new Error(couldNotSave);
+    else await this.endpoints.update(id, data);
+  }
+
+  async delete (id) {
+    if (id == null) await this.endpoints.deleteAll();
+    else await this.endpoints.delete(id);
+  }
+}
+
+function promisify (obj, method) {
+  return new Promise((resolve, reject) => {
+    obj[method]((err) => {
+      if (err) reject(err);
+      else resolve();
     });
-  }
-
-  stop (callback) {
-    const self = this;
-
-    if (callback == null) { callback = noop; }
-
-    setTimeout(function () {
-      if (self.watcher != null) { self.watcher.deactivate(); }
-
-      Promise.all([
-        new Promise((resolve) => {
-          if (self.adminPortal && self.adminPortal.address()) { self.adminPortal.close(resolve); } else { resolve(); }
-        }),
-        new Promise((resolve) => {
-          if (self.stubsPortal && self.stubsPortal.address()) { self.stubsPortal.close(resolve); } else { resolve(); }
-        }),
-        new Promise((resolve) => {
-          if (self.tlsPortal && self.tlsPortal.address()) { self.tlsPortal.close(resolve); } else { return resolve(); }
-        })
-      ]).then((results) => callback());
-    }, 1);
-  }
-
-  post (data, callback) {
-    const self = this;
-
-    if (callback == null) { callback = noop; }
-
-    setTimeout(function () {
-      if (contract(data)) { callback(couldNotSave); } else { self.endpoints.create(data, callback); }
-    }, 1);
-  }
-
-  get (id, callback) {
-    const self = this;
-
-    if (id == null) { id = noop; }
-    if (callback == null) { callback = id; }
-
-    setTimeout(function () {
-      if (typeof id === 'function') { self.endpoints.gather(callback); } else { self.endpoints.retrieve(id, callback); }
-    }, 1);
-  }
-
-  put (id, data, callback) {
-    const self = this;
-
-    if (callback == null) { callback = noop; }
-
-    setTimeout(function () {
-      if (contract(data)) { callback(couldNotSave); } else { self.endpoints.update(id, data, callback); }
-    }, 1);
-  }
-
-  delete (id, callback) {
-    const self = this;
-
-    if (id == null) { id = noop; }
-    if (callback == null) { callback = id; }
-
-    setTimeout(function () {
-      if (typeof id === 'function') {
-        self.endpoints.deleteAll(callback);
-      } else {
-        self.endpoints.delete(id, callback);
-      }
-    }, 1);
-  }
+  });
 }
 
 module.exports.Stubby = Stubby;

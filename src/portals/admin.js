@@ -46,44 +46,52 @@ class Admin extends Portal {
     request.on('end', function () { self.processPOST(data, response, request); });
   }
 
-  goDELETE (request, response) {
+  async goDELETE (request, response) {
     const id = this.getId(request.url);
     const self = this;
 
-    function callback (err) {
-      if (err) { self.notFound(response); } else { self.noContent(response); }
-    }
-
     if (id) {
-      this.endpoints.delete(id, callback);
+      try {
+        await this.endpoints.delete(id);
+        self.noContent(response);
+      } catch { self.notFound(response); }
     } else if (request.url === '/') {
-      this.endpoints.deleteAll(callback);
+      try {
+        await this.endpoints.deleteAll();
+        self.noContent(response);
+      } catch { self.notFound(response); }
     } else {
       this.notSupported(response);
     }
   }
 
-  goGET (request, response) {
-    let callback;
+  async goGET (request, response) {
     const id = this.getId(request.url);
-    const self = this;
 
     if (id) {
-      callback = function (err, endpoint) {
-        if (err) { self.notFound(response); } else { self.ok(response, endpoint); }
-      };
-
-      return this.endpoints.retrieve(id, callback);
+      try {
+        const endpoint = await this.endpoints.retrieve(id);
+        this.ok(response, endpoint);
+      } catch (err) { this.notFound(response); }
+    } else {
+      const data = await this.endpoints.gather();
+      if (data.length === 0) { this.noContent(response); } else { this.ok(response, data); }
     }
-
-    callback = function (_, data) {
-      if (data.length === 0) { self.noContent(response); } else { self.ok(response, data); }
-    };
-
-    return this.endpoints.gather(callback);
   }
 
-  processPUT (id, data, response) {
+  async processPUT (id, data, response) {
+    try { data = JSON.parse(data); } catch (e) { return this.badRequest(response); }
+
+    const errors = this.contract(data);
+    if (errors) { return this.badRequest(response, errors); }
+
+    try {
+      await this.endpoints.update(id, data);
+      this.noContent(response);
+    } catch (_) { this.notFound(response); }
+  }
+
+  async processPOST (data, response, request) {
     const self = this;
 
     try { data = JSON.parse(data); } catch (e) { return this.badRequest(response); }
@@ -91,25 +99,11 @@ class Admin extends Portal {
     const errors = this.contract(data);
     if (errors) { return this.badRequest(response, errors); }
 
-    function callback (err) {
-      if (err) { self.notFound(response); } else { self.noContent(response); }
-    }
-
-    this.endpoints.update(id, data, callback);
-  }
-
-  processPOST (data, response, request) {
-    const self = this;
-
-    try { data = JSON.parse(data); } catch (e) { return this.badRequest(response); }
-
-    const errors = this.contract(data);
-    if (errors) { return this.badRequest(response, errors); }
-    function callback (_, endpoint) {
+    function callback (endpoint) {
       self.created(response, request, endpoint.id);
     }
 
-    this.endpoints.create(data, callback);
+    await this.endpoints.create(data, callback);
   }
 
   ok (response, result) {
