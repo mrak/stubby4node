@@ -27,28 +27,28 @@ describe('Endpoints', function () {
         };
       });
 
-      it('should assign id to entered endpoint', async () => {
+      it('should assign id to entered endpoint', () => {
         sut.create(data);
 
         assert.notStrictEqual(sut.db[1], undefined);
         assert.strictEqual(sut.db[2], undefined);
       });
 
-      it('should call return created item', async () => {
+      it('should call return created item', () => {
         const item = sut.create(data);
 
         assert(item != null);
       });
 
-      it('should assign ids to entered endpoints', async () => {
-        await sut.create([data, data]);
+      it('should assign ids to entered endpoints', () => {
+        sut.create([data, data]);
 
         assert.notStrictEqual(sut.db[1], undefined);
         assert.notStrictEqual(sut.db[2], undefined);
         assert.strictEqual(sut.db[3], undefined);
       });
 
-      it('should call callback for each supplied endpoint', async () => {
+      it('should call callback for each supplied endpoint', () => {
         const results = sut.create([data, data]);
 
         assert(results.length === 2);
@@ -58,22 +58,22 @@ describe('Endpoints', function () {
     describe('retrieve', function () {
       const id = 'any id';
 
-      it('should resolve row if operation returns a row', async () => {
+      it('should resolve row if operation returns a row', () => {
         const row = {
           request: {},
           response: {}
         };
         sut.db[id] = row;
 
-        const actual = await sut.retrieve(id);
+        const actual = sut.retrieve(id);
 
         assert(actual);
       });
 
-      it('should reject with error msg if operation does not find item', async () => {
+      it('should throw with error msg if operation does not find item', () => {
         sut.db = [];
 
-        await assert.rejects(async () => { await sut.retrieve(id); }, {
+        assert.throws(() => { sut.retrieve(id); }, {
           message: "Endpoint with the given id doesn't exist."
         });
       });
@@ -87,10 +87,11 @@ describe('Endpoints', function () {
         }
       };
 
-      it('should resolve when database updates', async () => {
+      it('should not throw when database updates', () => {
         sut.db[id] = {};
 
-        await sut.update(id, data);
+        sut.update(id, data);
+        assert(Object.prototype.hasOwnProperty.call(sut.db[id], 'request'));
       });
 
       it('should reject with error msg if operation does not find item', async () => {
@@ -149,22 +150,6 @@ describe('Endpoints', function () {
         await assert.rejects(async () => { await sut.find(data); }, {
           message: "Endpoint with given request doesn't exist."
         });
-      });
-
-      it('should resolve after timeout if data response has a latency', async () => {
-        await sut.create({
-          request: {},
-          response: {
-            latency: 1000
-          }
-        });
-
-        const start = new Date();
-
-        await sut.find(data);
-
-        const elapsed = new Date() - start;
-        assert(elapsed > 900 && elapsed < 1100);
       });
 
       describe('dynamic templating', function () {

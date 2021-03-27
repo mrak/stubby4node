@@ -27,39 +27,36 @@ class Admin extends Portal {
   goPUT (request, response) {
     const id = this.getId(request.url);
     let data = '';
-    const self = this;
 
     if (!id) { return this.notSupported(response); }
 
     request.on('data', function (chunk) { data += chunk; });
-    request.on('end', function () { self.processPUT(id, data, response); });
+    request.on('end', () => { this.processPUT(id, data, response); });
   }
 
   goPOST (request, response) {
     const id = this.getId(request.url);
     let data = '';
-    const self = this;
 
     if (id) { return this.notSupported(response); }
 
     request.on('data', function (chunk) { data += chunk; });
-    request.on('end', function () { self.processPOST(data, response, request); });
+    request.on('end', () => { this.processPOST(data, response, request); });
   }
 
-  async goDELETE (request, response) {
+  goDELETE (request, response) {
     const id = this.getId(request.url);
-    const self = this;
 
     if (id) {
       try {
         this.endpoints.delete(id);
-        self.noContent(response);
-      } catch { self.notFound(response); }
+        this.noContent(response);
+      } catch { this.notFound(response); }
     } else if (request.url === '/') {
       try {
         this.endpoints.deleteAll();
-        self.noContent(response);
-      } catch { self.notFound(response); }
+        this.noContent(response);
+      } catch { this.notFound(response); }
     } else {
       this.notSupported(response);
     }
@@ -92,15 +89,13 @@ class Admin extends Portal {
   }
 
   processPOST (data, response, request) {
-    const self = this;
-
     try { data = JSON.parse(data); } catch (e) { return this.badRequest(response); }
 
     const errors = this.contract(data);
     if (errors) { return this.badRequest(response, errors); }
 
     const endpoint = this.endpoints.create(data);
-    self.created(response, request, endpoint.id);
+    this.created(response, request, endpoint.id);
   }
 
   ok (response, result) {
@@ -171,12 +166,10 @@ class Admin extends Portal {
   }
 
   server (request, response) {
-    const self = this;
-
     this.received(request, response);
 
-    response.on('finish', function () {
-      self.responded(response.statusCode, request.url);
+    response.on('finish', () => {
+      this.responded(response.statusCode, request.url);
     });
 
     if (request.url === '/ping') { return this.goPong(response); }

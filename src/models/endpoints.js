@@ -6,10 +6,8 @@ const path = require('path');
 const isutf8 = require('isutf8');
 const Endpoint = require('./endpoint');
 const clone = require('../lib/clone');
-const util = require('util');
 const NOT_FOUND = "Endpoint with the given id doesn't exist.";
 const NO_MATCH = "Endpoint with given request doesn't exist.";
-const sleep = util.promisify(setTimeout);
 
 class Endpoints {
   constructor (data, datadir) {
@@ -77,7 +75,7 @@ class Endpoints {
     return clone(all);
   }
 
-  async find (data) {
+  find (data) {
     let id, endpoint, captures, matched;
 
     for (id in this.db) {
@@ -90,13 +88,13 @@ class Endpoints {
 
       endpoint.hits++;
       matched = clone(endpoint);
-      return await this.found(matched, captures);
+      return this.found(matched, captures);
     }
 
     throw new Error(NO_MATCH);
   }
 
-  async found (endpoint, captures) {
+  found (endpoint, captures) {
     let filename;
     const response = endpoint.response[endpoint.hits % endpoint.response.length];
     const _ref = response.body;
@@ -113,7 +111,6 @@ class Endpoints {
 
     applyCaptures(response, captures);
 
-    if (parseInt(response.latency, 10)) await sleep(response.latency);
     return response;
   }
 }

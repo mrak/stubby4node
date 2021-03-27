@@ -87,12 +87,12 @@ function helpText (options, programName) {
 
   options.forEach(function (option) {
     let helpLine = firstColumn[option.name];
-    helpLine += pp.spacing(gutter - helpLine.length);
-    helpLine += pp.wrap(option.description.split(' '), gutter);
+    helpLine += helpLine.padEnd(gutter - helpLine.length, ' ');
+    helpLine += pp(option.description.split(' '), gutter);
     helpLines.push(helpLine);
   });
 
-  return programName + ' ' + pp.wrap(inlineList, programName.length + 1) + '\n\n' + helpLines.join('\n');
+  return programName + ' ' + pp(inlineList, programName.length + 1) + '\n\n' + helpLines.join('\n');
 }
 
 module.exports = {

@@ -1,22 +1,12 @@
 'use strict';
 
-var times = require('../prototype/times'); // eslint-disable-line
-
-function spacing (length) {
-  if (length == null) { length = 0; }
-  return ' '.times(length);
-}
-
-function wrap (tokens, continuation, columns) {
+function prettyPrint (tokens, continuation = 0, columns = process.stdout.columns) {
   let wrapped;
-
-  if (continuation == null) { continuation = 0; }
-  if (columns == null) { columns = process.stdout.columns; }
 
   if (continuation + tokens.join(' ').length <= columns) { return tokens.join(' '); }
 
   wrapped = '';
-  const gutter = spacing(continuation);
+  const gutter = ''.padEnd(continuation);
 
   tokens.forEach(function (token) {
     const lengthSoFar = continuation + wrapped.replace(/\n/g, '').length % columns || columns;
@@ -31,7 +21,4 @@ function wrap (tokens, continuation, columns) {
   return wrapped.trim();
 }
 
-module.exports = {
-  spacing: spacing,
-  wrap: wrap
-};
+module.exports = prettyPrint;

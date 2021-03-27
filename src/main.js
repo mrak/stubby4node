@@ -77,7 +77,6 @@ class Stubby {
   }
 
   async start (o) {
-    const self = this;
     const options = setupStartOptions(o);
 
     await this.stop();
@@ -95,7 +94,7 @@ class Stubby {
     this.tlsPortal = https.createServer(createHttpsOptions(options), new Stubs(this.endpoints).server);
     this.tlsPortal.on('listening', function () { onListening('Stubs', options.tls, 'https', options.location); });
     this.tlsPortal.on('error', function (err) { onError(err, options.tls, options.location); });
-    await new Promise((resolve) => self.tlsPortal.listen(options.tls, options.location, resolve));
+    await new Promise((resolve) => this.tlsPortal.listen(options.tls, options.location, resolve));
 
     this.stubsPortal = http.createServer(new Stubs(this.endpoints).server);
     this.stubsPortal.on('listening', function () { onListening('Stubs', options.stubs, 'http', options.location); });

@@ -13,7 +13,6 @@ class Stubs extends Portal {
 
   server (request, response) {
     let data = null;
-    const self = this;
 
     request.on('data', function (chunk) {
       data = data != null ? data : '';
@@ -22,41 +21,36 @@ class Stubs extends Portal {
       return data;
     });
 
-    request.on('end', async function () {
-      self.received(request, response);
+    request.on('end', () => {
+      this.received(request, response);
 
       const criteria = {
-        url: extractUrl(request.url),
+        url: request.url.replace(/(.*)\?.*/, '$1'),
         method: request.method,
         post: data,
         headers: request.headers,
-        query: extractQuery(request.url)
+        query: qs.parse(request.url.replace(/^.*\?(.*)$/, '$1'))
       };
 
       try {
-        const endpointResponse = await self.Endpoints.find(criteria);
-        self.writeHead(response, endpointResponse.status, endpointResponse.headers);
-        response.write(endpointResponse.body);
-        self.responded(endpointResponse.status, request.url);
+        const endpointResponse = this.Endpoints.find(criteria);
+        const finalize = () => {
+          this.writeHead(response, endpointResponse.status, endpointResponse.headers);
+          response.write(endpointResponse.body);
+          this.responded(endpointResponse.status, request.url);
+          response.end();
+        };
+        if (parseInt(endpointResponse.latency, 10)) setTimeout(finalize, endpointResponse.latency);
+        else finalize();
       } catch (e) {
-        self.writeHead(response, 404, {});
-        self.responded(404, request.url, 'is not a registered endpoint');
+        this.writeHead(response, 404, {});
+        this.responded(404, request.url, 'is not a registered endpoint');
         // response.statusCode = 500;
         // self.responded(500, request.url, 'unexpectedly generated a server error: ' + e.message);
-        // response.end();
+        response.end();
       }
-
-      response.end();
     });
   }
-}
-
-function extractUrl (url) {
-  return url.replace(/(.*)\?.*/, '$1');
-}
-
-function extractQuery (url) {
-  return qs.parse(url.replace(/^.*\?(.*)$/, '$1'));
 }
 
 module.exports.Stubs = Stubs;
