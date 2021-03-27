@@ -37,10 +37,6 @@ function onError (err, port, location) {
   process.exit();
 }
 
-function onEndpointLoaded (endpoint) {
-  out.notice('Loaded: ' + endpoint.request.method + ' ' + endpoint.request.url);
-}
-
 function setupStartOptions (options) {
   let key;
 
@@ -81,6 +77,7 @@ class Stubby {
   }
 
   async start (o) {
+    const self = this;
     const options = setupStartOptions(o);
 
     await this.stop();
@@ -91,22 +88,24 @@ class Stubby {
     if (options.datadir != null) { this.endpoints.datadir = options.datadir; }
     if (options['case-sensitive-headers'] != null) { this.endpoints.caseSensitiveHeaders = options['case-sensitive-headers']; }
 
-    await this.endpoints.create(options.data, onEndpointLoaded);
+    this.endpoints.create(options.data).forEach((endpoint) => {
+      out.notice('Loaded: ' + endpoint.request.method + ' ' + endpoint.request.url);
+    });
 
     this.tlsPortal = https.createServer(createHttpsOptions(options), new Stubs(this.endpoints).server);
     this.tlsPortal.on('listening', function () { onListening('Stubs', options.tls, 'https', options.location); });
     this.tlsPortal.on('error', function (err) { onError(err, options.tls, options.location); });
-    this.tlsPortal.listen(options.tls, options.location);
+    await new Promise((resolve) => self.tlsPortal.listen(options.tls, options.location, resolve));
 
     this.stubsPortal = http.createServer(new Stubs(this.endpoints).server);
     this.stubsPortal.on('listening', function () { onListening('Stubs', options.stubs, 'http', options.location); });
     this.stubsPortal.on('error', function (err) { onError(err, options.stubs, options.location); });
-    this.stubsPortal.listen(options.stubs, options.location);
+    await new Promise((resolve) => this.stubsPortal.listen(options.stubs, options.location, resolve));
 
     this.adminPortal = http.createServer(new Admin(this.endpoints).server);
     this.adminPortal.on('listening', function () { onListening('Admin', options.admin, 'http', options.location); });
     this.adminPortal.on('error', function (err) { onError(err, options.admin, options.location); });
-    this.adminPortal.listen(options.admin, options.location);
+    await new Promise((resolve) => this.adminPortal.listen(options.admin, options.location, resolve));
 
     if (options.watch) { this.watcher = new Watcher(this.endpoints, options.watch); }
 
@@ -116,42 +115,33 @@ class Stubby {
   async stop () {
     if (this.watcher != null) { this.watcher.deactivate(); }
 
-    if (this.adminPortal && this.adminPortal.address()) { await promisify(this.adminPortal, 'close'); }
-    if (this.stubsPortal && this.stubsPortal.address()) { await promisify(this.stubsPortal, 'close'); }
-    if (this.tlsPortal && this.tlsPortal.address()) { await promisify(this.tlsPortal, 'close'); }
+    if (this.adminPortal && this.adminPortal.address()) await new Promise((resolve) => (this.adminPortal.close(resolve)));
+    if (this.stubsPortal && this.stubsPortal.address()) await new Promise((resolve) => (this.stubsPortal.close(resolve)));
+    if (this.tlsPortal && this.tlsPortal.address()) await new Promise((resolve) => (this.tlsPortal.close(resolve)));
   }
 
-  async post (data) {
+  post (data) {
     if (contract(data)) {
       throw new Error(couldNotSave);
     } else {
-      await this.endpoints.create(data);
+      this.endpoints.create(data);
     }
   }
 
-  async get (id) {
-    if (id == null) await this.endpoints.gather();
-    else await this.endpoints.retrieve(id);
+  get (id) {
+    if (id == null) return this.endpoints.gather();
+    else return this.endpoints.retrieve(id);
   }
 
-  async put (id, data) {
+  put (id, data) {
     if (contract(data)) throw new Error(couldNotSave);
-    else await this.endpoints.update(id, data);
+    else return this.endpoints.update(id, data);
   }
 
-  async delete (id) {
-    if (id == null) await this.endpoints.deleteAll();
-    else await this.endpoints.delete(id);
+  delete (id) {
+    if (id == null) this.endpoints.deleteAll();
+    else this.endpoints.delete(id);
   }
-}
-
-function promisify (obj, method) {
-  return new Promise((resolve, reject) => {
-    obj[method]((err) => {
-      if (err) reject(err);
-      else resolve();
-    });
-  });
 }
 
 module.exports.Stubby = Stubby;

@@ -7,10 +7,6 @@ if (!assert.deepStrictEqual) {
   assert.deepStrictEqual = assert.deepEqual; /* eslint-disable-line */
 }
 
-beforeEach(function () {
-  this.sandbox = sinon.createSandbox();
-});
+beforeEach(function () { this.sandbox = sinon.createSandbox(); });
 
-afterEach(function () {
-  this.sandbox.restore();
-});
+afterEach(function () { this.sandbox.restore(); });

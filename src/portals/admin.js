@@ -52,12 +52,12 @@ class Admin extends Portal {
 
     if (id) {
       try {
-        await this.endpoints.delete(id);
+        this.endpoints.delete(id);
         self.noContent(response);
       } catch { self.notFound(response); }
     } else if (request.url === '/') {
       try {
-        await this.endpoints.deleteAll();
+        this.endpoints.deleteAll();
         self.noContent(response);
       } catch { self.notFound(response); }
     } else {
@@ -65,33 +65,33 @@ class Admin extends Portal {
     }
   }
 
-  async goGET (request, response) {
+  goGET (request, response) {
     const id = this.getId(request.url);
 
     if (id) {
       try {
-        const endpoint = await this.endpoints.retrieve(id);
+        const endpoint = this.endpoints.retrieve(id);
         this.ok(response, endpoint);
       } catch (err) { this.notFound(response); }
     } else {
-      const data = await this.endpoints.gather();
+      const data = this.endpoints.gather();
       if (data.length === 0) { this.noContent(response); } else { this.ok(response, data); }
     }
   }
 
-  async processPUT (id, data, response) {
+  processPUT (id, data, response) {
     try { data = JSON.parse(data); } catch (e) { return this.badRequest(response); }
 
     const errors = this.contract(data);
     if (errors) { return this.badRequest(response, errors); }
 
     try {
-      await this.endpoints.update(id, data);
+      this.endpoints.update(id, data);
       this.noContent(response);
     } catch (_) { this.notFound(response); }
   }
 
-  async processPOST (data, response, request) {
+  processPOST (data, response, request) {
     const self = this;
 
     try { data = JSON.parse(data); } catch (e) { return this.badRequest(response); }
@@ -99,11 +99,8 @@ class Admin extends Portal {
     const errors = this.contract(data);
     if (errors) { return this.badRequest(response, errors); }
 
-    function callback (endpoint) {
-      self.created(response, request, endpoint.id);
-    }
-
-    await this.endpoints.create(data, callback);
+    const endpoint = this.endpoints.create(data);
+    self.created(response, request, endpoint.id);
   }
 
   ok (response, result) {

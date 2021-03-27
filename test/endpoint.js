@@ -2,53 +2,7 @@
 
 const Endpoint = require('../src/models/endpoint');
 const assert = require('assert');
-
-function waitsFor (fn, message, range, finish, time) {
-  const min = range[0] != null ? range[0] : 0;
-  const max = range[1] != null ? range[1] : range;
-
-  if (time == null) { time = process.hrtime(); }
-
-  const temp = time == null ? process.hrtime() : process.hrtime(time);
-  const seconds = temp[0];
-  const nanoseconds = temp[1];
-  const elapsed = seconds * 1000 + nanoseconds / 1000000;
-
-  assert(elapsed < max, 'Timed out waiting ' + max + 'ms for ' + message);
-
-  if (fn()) {
-    assert(elapsed > min, 'Condition succeeded before ' + min + 'ms were up');
-    return finish();
-  }
-
-  setTimeout(function () {
-    waitsFor(fn, message, range, finish, time);
-  }, 1);
-}
-
-function compareOneWay (left, right) {
-  let key, value;
-
-  for (key in left) {
-    if (!Object.prototype.hasOwnProperty.call(left, key)) { continue; }
-
-    value = left[key];
-
-    if (right[key] !== value) { continue; }
-
-    if (typeof value === 'object') {
-      if (!compareObjects(value, right[key])) { continue; }
-    }
-
-    return false;
-  }
-
-  return true;
-}
-
-function compareObjects (one, two) {
-  return compareOneWay(one, two) && compareOneWay(two, one);
-}
+const waitsFor = require('./helpers/waits-for');
 
 describe('Endpoint', function () {
   beforeEach(function () {

@@ -11,8 +11,6 @@ const NOT_FOUND = "Endpoint with the given id doesn't exist.";
 const NO_MATCH = "Endpoint with given request doesn't exist.";
 const sleep = util.promisify(setTimeout);
 
-function noop () {}
-
 class Endpoints {
   constructor (data, datadir) {
     if (datadir == null) { datadir = process.cwd(); }
@@ -24,31 +22,30 @@ class Endpoints {
     this.create(data);
   }
 
-  async create (data, callback) {
+  create (data) {
     const self = this;
-    if (callback == null) callback = noop;
 
     function insert (item) {
       item = new Endpoint(item, self.datadir, self.caseSensitiveHeaders);
       item.id = ++self.lastId;
       self.db[item.id] = item;
-      callback(clone(item));
+      return item;
     }
 
     if (data instanceof Array) {
-      data.forEach(insert);
+      return data.map(insert);
     } else if (data) {
-      insert(data);
+      return insert(data);
     }
   }
 
-  async retrieve (id) {
+  retrieve (id) {
     if (!this.db[id]) throw new Error(NOT_FOUND);
 
     return clone(this.db[id]);
   }
 
-  async update (id, data) {
+  update (id, data) {
     if (!this.db[id]) throw new Error(NOT_FOUND);
 
     const endpoint = new Endpoint(data, this.datadir);
@@ -56,18 +53,18 @@ class Endpoints {
     this.db[endpoint.id] = endpoint;
   }
 
-  async delete (id) {
+  delete (id) {
     if (!this.db[id]) throw new Error(NOT_FOUND);
 
     delete this.db[id];
   }
 
-  async deleteAll () {
+  deleteAll () {
     delete this.db;
     this.db = {};
   }
 
-  async gather () {
+  gather () {
     let id;
     const all = [];
 

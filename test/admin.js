@@ -12,12 +12,12 @@ describe('Admin', function () {
     this.sandbox.spy(console, 'info');
 
     endpoints = {
-      create: this.sandbox.spy(),
+      create: this.sandbox.stub(),
       retrieve: this.sandbox.spy(),
       update: this.sandbox.spy(),
       delete: this.sandbox.spy(),
       deleteAll: this.sandbox.spy(),
-      gather: this.sandbox.spy()
+      gather: this.sandbox.stub()
     };
     sut = new Admin(endpoints, true);
     request = {
@@ -208,7 +208,7 @@ describe('Admin', function () {
 
     it('should call goPUT if method is PUT', function () {
       this.sandbox.stub(sut, 'urlValid').returns(true);
-      this.sandbox.spy(sut, 'goPUT');
+      this.sandbox.stub(sut, 'goPUT');
       request.method = 'PUT';
 
       sut.server(request, response);
@@ -218,7 +218,7 @@ describe('Admin', function () {
 
     it('should call goGET if method is GET', function () {
       this.sandbox.stub(sut, 'urlValid').returns(true);
-      this.sandbox.spy(sut, 'goGET');
+      this.sandbox.stub(sut, 'goGET');
 
       request.method = 'GET';
       sut.server(request, response);
@@ -227,7 +227,7 @@ describe('Admin', function () {
 
     it('should call goDELETE if method is DELETE', function () {
       this.sandbox.stub(sut, 'urlValid').returns(true);
-      this.sandbox.spy(sut, 'goDELETE');
+      this.sandbox.stub(sut, 'goDELETE');
       request.method = 'DELETE';
 
       sut.server(request, response);
@@ -298,6 +298,7 @@ describe('Admin', function () {
     describe('processPOST', function () {
       it('should create item if data is JSON parsable', function () {
         const data = '{"property":"value"}';
+        endpoints.create.returns({ id: 1 });
 
         sut.processPOST(data, response, request);
 
@@ -358,6 +359,7 @@ describe('Admin', function () {
     describe('goGET', function () {
       it('should gather all for the root url', function () {
         this.sandbox.stub(sut, 'getId').returns('');
+        endpoints.gather.returns([]);
 
         sut.goGET(request, response);
 

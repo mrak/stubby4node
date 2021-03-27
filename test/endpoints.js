@@ -4,15 +4,7 @@ let sut;
 const Endpoints = require('../src/models/endpoints').Endpoints;
 const sinon = require('sinon');
 const assert = require('assert');
-
-function bufferEqual (l, r) {
-  if (!Buffer.isBuffer(l)) return undefined;
-  if (!Buffer.isBuffer(r)) return undefined;
-  if (typeof l.equals === 'function') return l.equals(r);
-  if (l.length !== r.length) return false;
-  for (let i = 0; i < l.length; i++) if (l[i] !== r[i]) return false;
-  return true;
-}
+const bufferEqual = require('./helpers/buffer-equal');
 
 describe('Endpoints', function () {
   beforeEach(function () {
@@ -20,12 +12,6 @@ describe('Endpoints', function () {
   });
 
   describe('operations', function () {
-    let callback;
-
-    beforeEach(function () {
-      callback = sinon.spy();
-    });
-
     afterEach(function () {
       sinon.restore();
     });
@@ -42,20 +28,20 @@ describe('Endpoints', function () {
       });
 
       it('should assign id to entered endpoint', async () => {
-        await sut.create(data);
+        sut.create(data);
 
         assert.notStrictEqual(sut.db[1], undefined);
         assert.strictEqual(sut.db[2], undefined);
       });
 
-      it('should call callback', async () => {
-        await sut.create(data, callback);
+      it('should call return created item', async () => {
+        const item = sut.create(data);
 
-        assert(callback.calledOnce);
+        assert(item != null);
       });
 
       it('should assign ids to entered endpoints', async () => {
-        await sut.create([data, data], callback);
+        await sut.create([data, data]);
 
         assert.notStrictEqual(sut.db[1], undefined);
         assert.notStrictEqual(sut.db[2], undefined);
@@ -63,9 +49,9 @@ describe('Endpoints', function () {
       });
 
       it('should call callback for each supplied endpoint', async () => {
-        await sut.create([data, data], callback);
+        const results = sut.create([data, data]);
 
-        assert(callback.calledTwice);
+        assert(results.length === 2);
       });
     });
 
