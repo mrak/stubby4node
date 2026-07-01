@@ -41,7 +41,16 @@ class Endpoint {
     const post = file || this.request.post;
     if (post && request.post) {
       matches.post = matchRegex(normalizeEOL(post), normalizeEOL(request.post));
-      if (!matches.post) { return null; }
+      if (!matches.post) {
+        // Try to compare with JSON format
+        try {
+          const jsonRequest = JSON.parse(request.post);
+          const jsonPostRequest = JSON.parse(post);
+          if (!compareObjects(jsonRequest, jsonPostRequest)) { return null; }
+        } catch (e) {
+          return null;
+        }
+      }
     } else if (this.request.json && request.post) {
       try {
         json = JSON.parse(request.post);
