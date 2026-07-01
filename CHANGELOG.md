@@ -1,5 +1,19 @@
 # Changelog
 
+## 6.0.0
+
+* Requires Node.js >= 18.0.0
+* Development dependencies updated:
+  * Switched from `semistandard` to `eslint` ^8.0.0 for code linting and style checking
+  * `mocha` ^11.7.6
+  * `sinon` ^22.0.0
+* Production dependencies:
+  * Switched from `node-static` to `serve-static` ^2.2.0 for serving static files
+  * `ejs` ^6.0.1
+  * `finalhandler` ^2.1.0
+  * `isutf8` ^4.0.1
+  * `js-yaml` ^5.2.0
+
 ## 5.1.0
 
 * You can now submit `DELETE /` to the admin endpoint to delete all configured stubbed endpoints (#89)

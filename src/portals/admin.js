@@ -2,9 +2,10 @@
 
 const contract = require('../models/contract');
 const Portal = require('./portal').Portal;
-const ns = require('node-static');
+const finalhandler = require('finalhandler');
+const serveStatic = require('serve-static');
 const path = require('path');
-const status = new ns.Server(path.resolve(__dirname, '../../webroot'));
+const status = serveStatic(path.resolve(__dirname, '../../webroot'));
 const urlPattern = /^\/([1-9][0-9]*)?$/;
 
 class Admin extends Portal {
@@ -173,7 +174,9 @@ class Admin extends Portal {
     });
 
     if (request.url === '/ping') { return this.goPong(response); }
-    if (/^\/(status|js|css)(\/.*)?$/.test(request.url)) { return status.serve(request, response); }
+    if (/^\/(status|js|css)(\/.*)?$/.test(request.url)) {
+      return status(request, response, finalhandler(request, response));
+    }
 
     if (this.urlValid(request.url)) {
       switch (request.method.toUpperCase()) {

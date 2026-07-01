@@ -96,6 +96,6 @@ function helpText (options, programName) {
 }
 
 module.exports = {
-  parse: parse,
-  helpText: helpText
+  parse,
+  helpText
 };

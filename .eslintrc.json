@@ -1,0 +1,34 @@
+{
+  "env": {
+    "node": true,
+    "es2021": true,
+    "mocha": true
+  },
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "script"
+  },
+  "globals": {
+    "it": "readonly",
+    "describe": "readonly",
+    "beforeEach": "readonly",
+    "afterEach": "readonly"
+  },
+  "rules": {
+    "semi": ["error", "always"],
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
+  },
+  "ignorePatterns": [
+    "webroot/js/external/**"
+  ],
+  "overrides": [
+    {
+      "files": ["webroot/**/*.js"],
+      "env": {
+        "browser": true,
+        "node": false
+      }
+    }
+  ]
+}

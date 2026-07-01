@@ -153,13 +153,13 @@ function getArgs (argv) {
 }
 
 module.exports = {
-  options: options,
-  help: help,
-  version: version,
-  data: data,
-  key: key,
-  cert: cert,
-  pfx: pfx,
-  readFile: readFile,
-  getArgs: getArgs
+  options,
+  help,
+  version,
+  data,
+  key,
+  cert,
+  pfx,
+  readFile,
+  getArgs
 };

@@ -18,7 +18,7 @@ describe('End 2 End Stubs Test Suite', function () {
   beforeEach(async function () {
     this.context = {
       done: false,
-      port: port
+      port
     };
 
     await stopStubby();

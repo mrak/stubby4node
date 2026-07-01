@@ -1,6 +1,6 @@
 {
   "name": "stubby",
-  "version": "5.1.0",
+  "version": "6.0.0",
   "author": {
     "name": "Eric Mrak",
     "email": "mail@ericmrak.info"
@@ -41,7 +41,7 @@
     "webroot"
   ],
   "scripts": {
-    "lint": "semistandard",
+    "lint": "eslint .",
     "test": "npm run lint && mocha --recursive test --reporter dot",
     "start": "bin/stubby"
   },
@@ -54,29 +54,19 @@
     "url": "https://github.com/mrak/stubby4node.git"
   },
   "dependencies": {
-    "ejs": "^3.1.6",
-    "isutf8": "^3.1.1",
-    "js-yaml": "^4.0.0",
-    "node-static": "^0.7.11"
+    "ejs": "^6.0.1",
+    "finalhandler": "^2.1.0",
+    "isutf8": "^4.0.1",
+    "js-yaml": "^5.2.0",
+    "serve-static": "^2.2.0"
   },
   "devDependencies": {
-    "mocha": "^8.3.1",
-    "semistandard": "^16.0.0",
-    "sinon": "^10.0.0"
+    "eslint": "^8.0.0",
+    "mocha": "^11.7.6",
+    "sinon": "^22.0.0"
   },
   "license": "Apache-2.0",
-  "engine": {
-    "node": ">=6.17.1"
-  },
-  "semistandard": {
-    "ignore": [
-      "webroot/js/external"
-    ],
-    "globals": [
-      "it",
-      "describe",
-      "beforeEach",
-      "afterEach"
-    ]
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

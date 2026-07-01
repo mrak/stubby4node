@@ -19,7 +19,7 @@ describe('End 2 End Admin Test Suite', function () {
   beforeEach(async function () {
     this.context = {
       done: false,
-      port: port
+      port
     };
 
     await stopStubby();
@@ -106,7 +106,7 @@ describe('End 2 End Admin Test Suite', function () {
       assert.strictEqual(response.statusCode, 201);
 
       self.context = {
-        port: port,
+        port,
         done: false,
         url: '/' + id,
         method: 'get'
@@ -130,7 +130,7 @@ describe('End 2 End Admin Test Suite', function () {
       assert.strictEqual(response.statusCode, 204);
 
       self.context = {
-        port: port,
+        port,
         done: false,
         url: '/2',
         method: 'get'

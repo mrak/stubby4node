@@ -141,7 +141,7 @@
     hljs.initHighlighting();
   }
 
-  function complete (e) {
+  function complete (_e) {
     if (ajax.readyState !== 4) { return; }
 
     if (ajax.status === 200) { return success(); } else { return console.error(ajax.statusText); }
